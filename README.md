@@ -31,3 +31,8 @@ Many of these test problems are challenging real-world problems of large scale.
 VSDP requires one of the aforementioned approximate solvers and the
 [interval toolbox "INTLAB"](http://www.ti3.tuhh.de/rump/intlab) in version 9
 or higher.
+
+
+## Contributors
+
+Viktor Härter, Marko Lange, and Christian Jansson (jansson@tuhh.de).
