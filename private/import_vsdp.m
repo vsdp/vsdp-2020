@@ -114,20 +114,20 @@ else
   error('VSDP:IMPORT_VSDP','cannot import coefficient matrix "A"');
 end
 % compact vectorized format
-if length(A)~=dim3
+if (any(size(A) - [dim3, m]) && any(size(A) - [m, dim3]))
   IF = 'SEDUMI';
   [A,Ivec] = vsvec(A,K,1,0,Ivec);
 end
-if length(Arad)~=dim3 && any(find(Arad,1))
-  Arad = vsvec(Arad,K,1,0,Ivec);
-elseif length(Arad)~=dim3
+if ~any(find(Arad,1))
   Arad = sparse(dim3,m);
+elseif (any(size(Arad) - [dim3, m]) && any(size(Arad) - [m, dim3]))
+  Arad = vsvec(Arad,K,1,0,Ivec);
 end
 % transposed format
-if size(A,2)==dim3
+if (size(A,1) == m)
   A = A';
 end
-if size(Arad,2)==dim3
+if (size(Arad,1) == m)
   Arad = Arad';
 end
 % check size of A

@@ -95,7 +95,8 @@ else
 end
 
 % column or row-wise
-[isize,idim] = max(size(A));
+idim = 1 + any(size(A,2)==[dim3 dim]);
+isize = size(A,idim);
 if isize>3 && all(isize~=[dim3 dim])
   error('VSDP:VSVEC','Cone dimension does not fit to size of input');
 elseif isize<=3 || isize==dim3
