@@ -22,8 +22,8 @@ function [K,A,c,x,z] = sdpt2vsdp(blk,A,c,x,z)
 %     - K.l is the number of nonnegative components
 %     - K.q lists the lengths of socp blocks
 %     - K.s lists the dimensions of semidefinite blocks
-% A: a nA3 x M Matrix, 
-%     whereas nA = dimf+diml+dimq+dims 
+% A: a nA3 x M Matrix,
+%     whereas nA = dimf+diml+dimq+dims
 %     dimf: number of free variables: dimf = sum(K.f>0)
 %     diml: number of nonnegative variables: diml = sum(K.l>0)
 %     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
@@ -50,12 +50,12 @@ function [K,A,c,x,z] = sdpt2vsdp(blk,A,c,x,z)
 
 %% check input
 if nargin<1 || isempty(blk)
-    error('VSDP:SDPT2VSDP','not enough input parameter');
+  error('VSDP:SDPT2VSDP','not enough input parameter');
 elseif nargin>1 && iscell(A) && all(min(size(A))~=[0 1])
-    error('VSDP:SDPT2VSDP',['this is an old SDPT3 input format '...
-        'not supported by this function']);
+  error('VSDP:SDPT2VSDP',['this is an old SDPT3 input format '...
+    'not supported by this function']);
 elseif size(blk,2)>2 && any([blk{:,3}])
-    error('VSDP:SDPT2VSDP','unsupported SDPT3 low rank structure input');
+  error('VSDP:SDPT2VSDP','unsupported SDPT3 low rank structure input');
 end
 
 
@@ -73,13 +73,13 @@ inds = find(blkvec=='s');
 ind = [indf; indl; indq; inds];
 
 if size(ind,1)~=size(blk,1)
-    error('VSDP:SDPT2VSDP','unsupported cell format or empty cells');
+  error('VSDP:SDPT2VSDP','unsupported cell format or empty cells');
 end
 
 
 %% create K
 K = struct('f',sum([blk{indf,2}]),'l',sum([blk{indl,2}]),...
-    'q',[blk{indq,2}]','s',[blk{inds,2}]');
+  'q',[blk{indq,2}]','s',[blk{inds,2}]');
 
 % what has to be processed
 doA = nargin>1 && iscell(A) && ~isempty(A{1}) && nargout>1;
@@ -90,59 +90,59 @@ doZ = nargin>4 && iscell(z) && ~isempty(z{1}) && nargout>4;
 
 %% convert c,x,z
 if doC || doX || doZ
-    % vectorize sdp blocks
-    for i = 1:length(inds)
-        j = inds(i);  % index of current sdp block group
-        js = blk{j,2}(:);  % index set for sdp blocks of j-th sdp group
-        if length(js)==1
-            blkI = triu(true(js));
-        else  % extract block diagonal
-            % block diagonal index computation to avoid additional for-loop
-            blkI = ones((js'*(js+1))/2,1);
-            ofI = ones(sum(js),1);
-            ofV = -ofI;
-            js(end) = [];
-            ofI(cumsum([2; js])) = [0; 1-js];
-            ofV(cumsum([1; js])) = [1; js-1];
-            ofV(2) = length(ofV) - (js(1)>1);
-            blkI(cumsum(cumsum(ofI(1:length(ofV))))) = cumsum(ofV);
-            blkI = cumsum(blkI);
-        end
-        if doC
-            c{j} = c{j}(blkI);
-        end
-        if doX
-            x{j} = x{j}(blkI);
-        end
-        if doZ
-            z{j} = z{j}(blkI);
-        end
+  % vectorize sdp blocks
+  for i = 1:length(inds)
+    j = inds(i);  % index of current sdp block group
+    js = blk{j,2}(:);  % index set for sdp blocks of j-th sdp group
+    if length(js)==1
+      blkI = triu(true(js));
+    else  % extract block diagonal
+      % block diagonal index computation to avoid additional for-loop
+      blkI = ones((js'*(js+1))/2,1);
+      ofI = ones(sum(js),1);
+      ofV = -ofI;
+      js(end) = [];
+      ofI(cumsum([2; js])) = [0; 1-js];
+      ofV(cumsum([1; js])) = [1; js-1];
+      ofV(2) = length(ofV) - (js(1)>1);
+      blkI(cumsum(cumsum(ofI(1:length(ofV))))) = cumsum(ofV);
+      blkI = cumsum(blkI);
     end
+    if doC
+      c{j} = c{j}(blkI);
+    end
+    if doX
+      x{j} = x{j}(blkI);
+    end
+    if doZ
+      z{j} = z{j}(blkI);
+    end
+  end
 end
 
 % cell to mat
 if doC
-    c = cat(1,c{ind});
+  c = cat(1,c{ind});
 else
-    c = [];
+  c = [];
 end
 if doX
-    x = sscale(cat(1,x{ind}),K,2);
+  x = sscale(cat(1,x{ind}),K,2);
 else
-    x = [];
+  x = [];
 end
 if doZ
-    z = cat(1,z{ind});
+  z = cat(1,z{ind});
 else
-    z = [];
+  z = [];
 end
 
 
 %% convert A
 if doA
-    A = sscale(cat(1,A{ind}),K,sqrt(0.5));
+  A = sscale(cat(1,A{ind}),K,sqrt(0.5));
 else
-    A = [];
+  A = [];
 end
 
 %_____________________________End SDPT2VSDP___________________________

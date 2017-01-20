@@ -40,7 +40,7 @@ function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
 %% requires VSDP or part of it to function properly is prohibited.       %%
 %% ********************************************************************* %%
 
-%% Last modified:  
+%% Last modified:
 % 31/07/10    V. Haerter, comments added
 % 08/08/11    V. Haerter, corrected errors in transforming linear blocks
 % 14/08/12    M. Lange, rewrite for improved performance and new functions
@@ -49,13 +49,13 @@ function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
 
 %% check input
 if nargin<4 || ~isstruct(K) || isempty(A) || isempty(b) || isempty(c)
-    error('VSDP:VSDP2SDPAM','the given problem is incomplete');
+  error('VSDP:VSDP2SDPAM','the given problem is incomplete');
 elseif nargin<5
-    x = [];  y = [];  z = [];
+  x = [];  y = [];  z = [];
 elseif nargin<6
-    y = [];  z = [];
+  y = [];  z = [];
 elseif nargin<7
-    z = [];
+  z = [];
 end
 
 c = c(:);  x = x(:);  y = y(:);  z = z(:);
@@ -66,18 +66,18 @@ c = c(:);  x = x(:);  y = y(:);  z = z(:);
 % prepare K
 fields = isfield(K,{'f','l','q','s'});
 if fields(1) && sum(K.f)>0
-    error('VSDP:VSDP2SDPAM','free variables are not supported by SDPA');
+  error('VSDP:VSDP2SDPAM','free variables are not supported by SDPA');
 elseif fields(3) && sum(K.q)>0
-    error('VSDP:VSDP2SDPAM','SOCP cone is not supported by SDPA');
+  error('VSDP:VSDP2SDPAM','SOCP cone is not supported by SDPA');
 elseif fields(2)
-    K.l = sum(K.l);
+  K.l = sum(K.l);
 else
-    K.l = 0;
+  K.l = 0;
 end
 if fields(4)
-    K.s = reshape(K.s(K.s>0),[],1);
+  K.s = reshape(K.s(K.s>0),[],1);
 else
-    K.s = [];
+  K.s = [];
 end
 
 % non-compact vectorized format
@@ -85,25 +85,25 @@ xdim = ~isempty(x);
 zdim = ~isempty(z);
 [c Imat] = vsmat(c,K,1,1);
 if zdim
-    c = [vsmat(z,K,1,1,Imat) c];
+  c = [vsmat(z,K,1,1,Imat) c];
 end
 if xdim
-    c = [vsmat(x,K,0.5,1,Imat) c];
+  c = [vsmat(x,K,0.5,1,Imat) c];
 end
 
 % A = [x z c A]
 if size(A,1)<size(A,2)
-    A = -[c vsmat(A,K,1,1,Imat)'];
+  A = -[c vsmat(A,K,1,1,Imat)'];
 else
-    A = -[c vsmat(A,K,1,1,Imat)];
+  A = -[c vsmat(A,K,1,1,Imat)];
 end
 
 % initialize outputs
 mDIM = length(b);
 if K.l
-    bLOCKsTRUCT = [-K.l K.s'];
+  bLOCKsTRUCT = [-K.l K.s'];
 else
-    bLOCKsTRUCT = K.s';
+  bLOCKsTRUCT = K.s';
 end
 nBLOCK = length(bLOCKsTRUCT);
 c = full(-b);  % full instead of sparse to catch a bug in sdpa
@@ -118,36 +118,36 @@ clear x z b y;
 
 %% transform linear part
 if K.l
-    At = A(1:K.l,:);
-    Y0{1} = At(:,1:xdim);
-    X0{1} = At(:,xdim+1:xdim+zdim);
-    for i = 1:mDIM+1
-        F{1,i} = At(:,xdim+zdim+i);
-    end
+  At = A(1:K.l,:);
+  Y0{1} = At(:,1:xdim);
+  X0{1} = At(:,xdim+1:xdim+zdim);
+  for i = 1:mDIM+1
+    F{1,i} = At(:,xdim+zdim+i);
+  end
 end
 
 
 %% transform sdp part
 blkj = K.l;
 for j = (K.l>0)+1:nBLOCK
-    nj = K.s(j-(K.l>0));
-    At = reshape(A(blkj+1:blkj+nj*nj,:),nj,[]);
-    blkj = blkj + nj*nj;
-    Y0{j} = At(:,1:xdim*nj);
-    X0{j} = At(:,xdim*nj+1:(xdim+zdim)*nj);
-    blki = xdim + zdim;
-    for i = 1:mDIM+1;
-        F{j,i} = At(:,blki+1:blki+nj);
-        blki = blki + nj;
-    end
+  nj = K.s(j-(K.l>0));
+  At = reshape(A(blkj+1:blkj+nj*nj,:),nj,[]);
+  blkj = blkj + nj*nj;
+  Y0{j} = At(:,1:xdim*nj);
+  X0{j} = At(:,xdim*nj+1:(xdim+zdim)*nj);
+  blki = xdim + zdim;
+  for i = 1:mDIM+1;
+    F{j,i} = At(:,blki+1:blki+nj);
+    blki = blki + nj;
+  end
 end
 
 % empty unused cell arrays
 if ~zdim
-    X0 = [];
+  X0 = [];
 end
 if ~xdim
-    Y0 = [];
+  Y0 = [];
 end
 
 %__________________________End of VSDP2SDPAM___________________________

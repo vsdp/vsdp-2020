@@ -1,10 +1,10 @@
 function [A,c,x,z] = vsdp2sedumi(A,c,x,z,K,opts)
-%% VSDP2SEDUMI:  transforms problem data from VSDP (intern) format to SeDuMi format 
+%% VSDP2SEDUMI:  transforms problem data from VSDP (intern) format to SeDuMi format
 %    [A c x z] = vsdp2sedumi(A,c,x,z,K,opts)
 %
 %% >> Input:
-% A: an M x nA3 matrix, or nA3 x M matrix in VSDP format 
-%     whereas nA3 = dimf+diml+dimq+dims3 
+% A: an M x nA3 matrix, or nA3 x M matrix in VSDP format
+%     whereas nA3 = dimf+diml+dimq+dims3
 %     dimf: number of free variables: dimf = sum(K.f>0)
 %     diml: number of nonnegative variables: diml = sum(K.l>0)
 %     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
@@ -24,7 +24,7 @@ function [A,c,x,z] = vsdp2sedumi(A,c,x,z,K,opts)
 %                           matrices.
 %                               -> default: false
 %
-%% >> Output: 
+%% >> Output:
 % A: linear constraints matrix (nA x M or M x nA) in SeDuMi format
 % c,x,z: nA x 1 vectors in SeDuMi format. The primal ojective vector may be
 %        created such that lower triangulars of sdp parts are zero.
@@ -46,7 +46,7 @@ function [A,c,x,z] = vsdp2sedumi(A,c,x,z,K,opts)
 %% requires VSDP or part of it to function properly is prohibited.       %%
 %% ********************************************************************* %%
 
-%% Last modified:  
+%% Last modified:
 % 31/07/10    V. Haerter, comments added
 % 11/07/12    M. Lange, added opts parameter and adapted for new functions
 % 27/07/12    M. Lange, adapted for new format and modified smat
@@ -55,45 +55,45 @@ function [A,c,x,z] = vsdp2sedumi(A,c,x,z,K,opts)
 
 %% input parameter
 if nargin<5 || ~isstruct(K)
-    error('VSDP:VSDP2SEDUMI','not enough input parameters\n');
+  error('VSDP:VSDP2SEDUMI','not enough input parameters\n');
 elseif nargin<6
-    opts = [];
+  opts = [];
 end
 
 global VSDP_OPTIONS;
 
 sflag = 1;  % symmetry flag  -> default: symmetric output
 if isfield(opts,'ALLOW_TRIANGULAR')
-    sflag = (opts.ALLOW_TRIANGULAR==false);
+  sflag = (opts.ALLOW_TRIANGULAR==false);
 elseif isfield(VSDP_OPTIONS,'ALLOW_TRIANGULAR')
-    sflag = (VSDP_OPTIONS.ALLOW_TRIANGULAR==false);
+  sflag = (VSDP_OPTIONS.ALLOW_TRIANGULAR==false);
 end
 
 % get problem data dimensions
 fields = isfield(K,{'f','l','q','s'});
 dim = 0;
 if fields(1)
-    dim = sum(K.f);
+  dim = sum(K.f);
 end
 if fields(2)
-    dim = dim + sum(K.l);
+  dim = dim + sum(K.l);
 end
 if fields(3)
-    dim = dim + sum(K.q);
+  dim = dim + sum(K.q);
 end
 if fields(4)
-    K.s = K.s(K.s>0);
-    dim3 = dim + sum(K.s.*(K.s+1))/2;
-    dim = dim + sum(K.s.*K.s);
+  K.s = K.s(K.s>0);
+  dim3 = dim + sum(K.s.*(K.s+1))/2;
+  dim = dim + sum(K.s.*K.s);
 else
-    dim3 = dim;
+  dim3 = dim;
 end
 
 % check dimension of input
 adim = [0 dim3 dim];  % allowed dimensions
 if all(length(A)~=adim) || all(length(c)~=adim) || all(length(x)~=adim) ...
-        || all(length(z)~=adim)
-    error('VSDP:VSDP2SEDUMI','cone structure does not match to matrix dimension');
+    || all(length(z)~=adim)
+  error('VSDP:VSDP2SEDUMI','cone structure does not match to matrix dimension');
 end
 
 
@@ -103,16 +103,16 @@ mu = 2-sflag;
 Imat = [];
 adim = [0 dim];
 if all(length(A)~=adim)
-    [A Imat] = vsmat(A,K,mu,sflag);
+  [A Imat] = vsmat(A,K,mu,sflag);
 end
 if all(length(c)~=adim)
-    [c Imat] = vsmat(c,K,mu,sflag,Imat);
+  [c Imat] = vsmat(c,K,mu,sflag,Imat);
 end
 if all(length(x)~=adim)
-    [x Imat] = vsmat(x,K,0.5,1,Imat);  % x has been created by svec(mu=2)
+  [x Imat] = vsmat(x,K,0.5,1,Imat);  % x has been created by svec(mu=2)
 end
 if all(length(z)~=adim)
-    z = vsmat(z,K,1,1,Imat);
+  z = vsmat(z,K,1,1,Imat);
 end
 
 %_____________________________End VSDP2SEDUMI___________________________

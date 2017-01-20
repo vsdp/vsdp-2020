@@ -62,9 +62,9 @@ function [lambdaMin,trN,dshift] = bnd4sd(A,sym,mode)
 
 % input matrix
 if nargin<1 || isempty(A)
-    error('BND4SD: No input matrix set.');
+  error('BND4SD: No input matrix set.');
 elseif ~(isnumeric(A) || isa(A,'intval') || all(isfield(A,{'mid','rad'})))
-    error('BND4SD: Datatype of input matrix is not accepted.');
+  error('BND4SD: Datatype of input matrix is not accepted.');
 end   % size & dimension is not checked. Error will occur in the code.
 
 
@@ -76,50 +76,50 @@ setround(0);    % for preparation only
 
 % prepare interval input
 if ~isnumeric(A)  % A is an interval structure or of type 'intval'
-	Arad = A.rad;
- 	A = A.mid;
+  Arad = A.rad;
+  A = A.mid;
 else
-	Arad = sparse(size(A,1),size(A,2));
+  Arad = sparse(size(A,1),size(A,2));
 end
 
 
 %% prepare A
 if ~isreal(A)
-    error('BND4SD: Complex input not yet supported')
+  error('BND4SD: Complex input not yet supported')
 elseif size(A,1)~=size(A,2) && size(A,2)~=1
-    A = A(:);
-    Arad = Arad(:);
+  A = A(:);
+  Arad = Arad(:);
 end
 n = size(A,1);
 
 if size(A,2)==1  % compact vectorized input
-    n = sqrt(2*n+0.25) - 0.5;
-    if n~=round(n)
-        error('BND4SD: Wrong dimension of vectorized input');
+  n = sqrt(2*n+0.25) - 0.5;
+  if n~=round(n)
+    error('BND4SD: Wrong dimension of vectorized input');
+  end
+  E(triu(true(n))) = full(A);  % E is place-holder, will be overwritten later
+  A = reshape(E,n,n);
+  A = A + triu(A,1)';
+  if nnz(A)<max(n^1.5,n*n/20);
+    A = sparse(A);
+  end
+  if any(Arad)
+    L(triu(true(n))) = full(Arad);  % L is used as place-holder again
+    Arad = reshape(L,n,n);
+    Arad = Arad + triu(Arad,1)';
+    if nnz(Arad)<n*n/5;
+      Arad = sparse(Arad);
     end
-    E(triu(true(n))) = full(A);  % E is place-holder, will be overwritten later
-    A = reshape(E,n,n);
-    A = A + triu(A,1)';
-    if nnz(A)<max(n^1.5,n*n/20);
-        A = sparse(A);
-    end
-    if any(Arad)
-        L(triu(true(n))) = full(Arad);  % L is used as place-holder again
-        Arad = reshape(L,n,n);
-        Arad = Arad + triu(Arad,1)';
-        if nnz(Arad)<n*n/5;
-            Arad = sparse(Arad);
-        end
-    else
-        Arad = sparse(size(A,1),size(A,2));
-    end
+  else
+    Arad = sparse(size(A,1),size(A,2));
+  end
 elseif nargin>=2 && ~isempty(sym) && ~sym  % non-symmetric input
-    setround(1);
-    E = 0.5 * A;  % E and L are used as place-holder
-    L = E';
-    A = E + L;  % sup(0.5*(A+A'))
-    Arad = 0.5 * (Arad+Arad') + (A + ((-E) - L));  % Arad + (sup(A)-inf(A))
-    setround(0);
+  setround(1);
+  E = 0.5 * A;  % E and L are used as place-holder
+  L = E';
+  A = E + L;  % sup(0.5*(A+A'))
+  Arad = 0.5 * (Arad+Arad') + (A + ((-E) - L));  % Arad + (sup(A)-inf(A))
+  setround(0);
 end
 
 
@@ -141,19 +141,19 @@ lambdaMin = inf;
 trN = 0;
 
 if ~all(index)
-    setround(-1);
-    lambdaMin = min(diag(A)-diag(Arad));
-    trN = sum(min(diag(A)-diag(Arad),0));
-    setround(0);
-    A = A(index,index);
-    Arad = Arad(index,index);
-    n = length(A);
+  setround(-1);
+  lambdaMin = min(diag(A)-diag(Arad));
+  trN = sum(min(diag(A)-diag(Arad),0));
+  setround(0);
+  A = A(index,index);
+  Arad = Arad(index,index);
+  n = length(A);
 end
 
 if isempty(A) % A was pure diagonal matrix
-    dshift = min(lambdaMin/mean(dshift),0) * dshift;
-    setround(rnd);
-    return;
+  dshift = min(lambdaMin/mean(dshift),0) * dshift;
+  setround(rnd);
+  return;
 end
 
 
@@ -162,32 +162,32 @@ end
 % approximate cholesky
 [L,p] = chol(A-diag(sparse(dshift(index))),'lower');
 if p~=0  % not semidefinite
-    [L,p] = chol(A-diag(sparse(0.4*dshift(index))),'lower');
+  [L,p] = chol(A-diag(sparse(0.4*dshift(index))),'lower');
 end
 if p~=0
-    [L,p] = chol(A,'lower');
+  [L,p] = chol(A,'lower');
 end
 if p==0 && ~isempty(find(isnan(L),1))
-    p = n;
+  p = n;
 end
 
 
 %% cholesky decomposition did not work
 if nargin==2 && mode==0 && p~=0
-    lambdaMin = -Inf;
-    trN = -Inf;
-    return;
+  lambdaMin = -Inf;
+  trN = -Inf;
+  return;
 elseif p~=0  % call vsdpneig
-    A = struct('mid',A,'rad',Arad);
-    clear Arad D E L;  % not needed anymore
-    lambda = vsdpneig(A,1);  % full enclosure
-    setround(-1);
-    lambda = lambda.mid - lambda.rad;  % inf(lambda)
-    lambdaMin = min(min(lambda),lambdaMin);
-    trN = sum(min(lambda,0)) + trN;
-    dshift = min((-lambdaMin)/mean(-dshift),0) * dshift;
-    setround(rnd);
-    return;
+  A = struct('mid',A,'rad',Arad);
+  clear Arad D E L;  % not needed anymore
+  lambda = vsdpneig(A,1);  % full enclosure
+  setround(-1);
+  lambda = lambda.mid - lambda.rad;  % inf(lambda)
+  lambdaMin = min(min(lambda),lambdaMin);
+  trN = sum(min(lambda,0)) + trN;
+  dshift = min((-lambdaMin)/mean(-dshift),0) * dshift;
+  setround(rnd);
+  return;
 end
 
 
@@ -199,7 +199,7 @@ E = max(E,L*L'-A)+Arad; % max(sup(A-L*L')-inf*I,sup(L*L'-A))
 
 
 if find(isnan(E) | tril(E,-1)<0,1)
-    disp('break');
+  disp('break');
 end
 
 % clear variables to save memory
@@ -226,13 +226,13 @@ y = sum(E,2);
 norm2bnd = max(y);
 
 while norm2bnd
-    oldnorm = norm2bnd;
-    x = y / norm2bnd;
-    y = E*x;
-    norm2bnd = max(y./x);
-    if norm2bnd*1.005>=oldnorm
-        break;
-    end
+  oldnorm = norm2bnd;
+  x = y / norm2bnd;
+  y = E*x;
+  norm2bnd = max(y./x);
+  if norm2bnd*1.005>=oldnorm
+    break;
+  end
 end
 
 % lambda_min(D+E) >= lambda_min(D) - norm(E,2)
@@ -241,18 +241,18 @@ lambdaMinO = lambdaMin;  % old upper bound for the eigenvalues
 lambdaMin = min(-(norm2bnd-maxd), lambdaMinO);
 
 if lambdaMin>=0
-    trN = 0;
-    return;
+  trN = 0;
+  return;
 elseif nargin>2 && mode>0  % do full eigenvalue enclosure
-    A = struct('mid',A,'rad',Arad);
-    clear Arad E;
-    lambda = vsdpneig(A,1);
-    lambda = lambda.rad - lambda.mid;  % -inf(lambda)
-    lambdaMin = max(min(-max(lambda),lambdaMinO),lambdaMin);
-    trN = - (sum(max(lambda,0)) - trN);
-    dshift = min(lambdaMin,0) * (dshift/mean(dshift));
-    setround(rnd);
-    return;
+  A = struct('mid',A,'rad',Arad);
+  clear Arad E;
+  lambda = vsdpneig(A,1);
+  lambda = lambda.rad - lambda.mid;  % -inf(lambda)
+  lambdaMin = max(min(-max(lambda),lambdaMinO),lambdaMin);
+  trN = - (sum(max(lambda,0)) - trN);
+  dshift = min(lambdaMin,0) * (dshift/mean(dshift));
+  setround(rnd);
+  return;
 end
 
 
@@ -262,17 +262,17 @@ end
 % -> sum(|lambda(E)|) <= sqrt(n) * norm(E,'fro')
 % -> sum(lambda_pos(E))+sum(lamda_neg(E)) = trace(E);
 %  => 2*sum(|lamda_neg(E)|) <= sqrt(n) * norm(E,'fro') - trace(E)
-lambda_sn = 0.5 * ( sqrtsup(n*(E(:)'*E(:))) + sum(-diag(E)) ); 
+lambda_sn = 0.5 * ( sqrtsup(n*(E(:)'*E(:))) + sum(-diag(E)) );
 
 if maxd<0  % if maxd<0: trN = trace(D) - sum(|lamda_neg(E)|)
-    trN = -((-n)*maxd + lambda_sn);
+  trN = -((-n)*maxd + lambda_sn);
 else
-    % for a given lambda_sn = sum(|lamda_neg(E)|), with maxd>0 and
-    % nneg := number of negative eigenvalues it holds:
-    % trN = - lambda_sn - nneg*maxd
-    %  => trN is maximized when nneg is minimized
-    nneg = floor(lambda_sn/norm2bnd);  % number of negative eigenvalues
-    trN = -max((-nneg)*lambdaMin,lambda_sn+(-nneg-1)*maxd);
+  % for a given lambda_sn = sum(|lamda_neg(E)|), with maxd>0 and
+  % nneg := number of negative eigenvalues it holds:
+  % trN = - lambda_sn - nneg*maxd
+  %  => trN is maximized when nneg is minimized
+  nneg = floor(lambda_sn/norm2bnd);  % number of negative eigenvalues
+  trN = -max((-nneg)*lambdaMin,lambda_sn+(-nneg-1)*maxd);
 end
 
 

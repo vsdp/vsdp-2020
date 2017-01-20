@@ -4,8 +4,8 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 %    [vA, I] = vsvec(A,K,mu,sflag,I)
 %
 %% >> Description:
-% For symmetric matrices X and Y it applies: 
-% <X,Y> := trace(X*Y) = svec(X,K,sqrt(2))'*svec(Y,K,sqrt(2)). 
+% For symmetric matrices X and Y it applies:
+% <X,Y> := trace(X*Y) = svec(X,K,sqrt(2))'*svec(Y,K,sqrt(2)).
 % Don't use mu = sqrt(2) for verified computations. Instead,
 % to avoid rounding errors use: svec(X,K,1)'*svec(Y,K,2).
 %
@@ -14,7 +14,7 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 %
 %% >> Input:
 % A: a M x nA matrix, or nA x M matrix, alternatively
-%     whereas nA = dimf+diml+dimq+dims 
+%     whereas nA = dimf+diml+dimq+dims
 %     dimf: number of free variables: dimf = sum_i(K.f(i)>0)
 %     diml: number of nonnegative variables: diml = sum_i(K.l(i)>0)
 %     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
@@ -51,7 +51,7 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 %% requires VSDP or part of it to function properly is prohibited.       %%
 %% ********************************************************************* %%
 
-%% Last modified:  
+%% Last modified:
 % 31/07/10    V. Haerter, comments added
 % 09/07/12    M. Lange, rewrite for faster indexing and non-symmetric input
 % 30/07/12    M. Lange, speed improvement + new input format
@@ -61,99 +61,99 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 
 % check input parameter
 if nargin<2 || ~isstruct(K)
-    error('VSDP:VSVEC','not enough input parameters\n');
+  error('VSDP:VSVEC','not enough input parameters\n');
 end
 if nargin<3 || isempty(mu)
-    mu = 1;
+  mu = 1;
 end
 if nargin<4 || isempty(sflag)
-    sflag = 1;  % assume symmetric case
+  sflag = 1;  % assume symmetric case
 end
 if nargin<5
-    I = [];
+  I = [];
 end
 
 % get problem data dimensions
 nos = 0;  % number of variables that are not in SDP-cone
 fields = isfield(K,{'f','l','q','s'});
 if fields(1)
-    nos = sum(K.f);
+  nos = sum(K.f);
 end
 if fields(2)
-    nos = nos + sum(K.l);
+  nos = nos + sum(K.l);
 end
 if fields(3)
-    nos = nos + sum(K.q);
+  nos = nos + sum(K.q);
 end
 if fields(4)
-    K.s = K.s(K.s>0);
-    dim = nos + sum(K.s.*K.s);
-    dim3 = nos + sum(K.s.*(K.s+1))/2;
+  K.s = K.s(K.s>0);
+  dim = nos + sum(K.s.*K.s);
+  dim3 = nos + sum(K.s.*(K.s+1))/2;
 else
-    dim = nos;
-    dim3 = nos;
+  dim = nos;
+  dim3 = nos;
 end
 
 % column or row-wise
 [isize idim] = max(size(A));
 if isize>3 && all(isize~=[dim3 dim])
-    error('VSDP:VSVEC','Cone dimension does not fit to size of input');
+  error('VSDP:VSVEC','Cone dimension does not fit to size of input');
 elseif isize<=3 || isize==dim3
-    % nothing to do
-    vA = A;
-    return; 
-end 
+  % nothing to do
+  vA = A;
+  return;
+end
 
 % input index
 if iscell(I) && length(I)==2 && length(I{1})==dim
-    Ilow = I{2};  I = I{1};
+  Ilow = I{2};  I = I{1};
 else
-    Ilow = [];  I = [];
+  Ilow = [];  I = [];
 end
 
 
 %% index creation  -  upper triangular part
 ns = length(K.s);
 if isempty(I)
-    I = cell(ns+1,1);
-    I{1} = true(nos,1);
-    for k = 1:ns
-        I{k+1} = reshape(triu(true(K.s(k))),[],1);
-    end
-    I = vertcat(I{:});
+  I = cell(ns+1,1);
+  I{1} = true(nos,1);
+  for k = 1:ns
+    I{k+1} = reshape(triu(true(K.s(k))),[],1);
+  end
+  I = vertcat(I{:});
 end
 
 
 %% index vector for lower triangular parts of sdp blocks
 if sflag==0 && isempty(Ilow)
-    Ilow = cell(ns+1,1);
-    Ilow{1} = (1:nos)';
-    blks = nos + 1;
-    for k = 2:ns+1
-        nk = K.s(k-1);
-        Ilow{k} = nk * ones(nk*(nk+1)/2,1);
-        Ilow{k}(cumsum([1 1:nk-1])) = [blks 1:-nk:1-nk*(nk-2)];
-        Ilow{k} = cumsum(Ilow{k});
-        blks = blks + nk*nk;
-    end
-    Ilow = vertcat(Ilow{:});
+  Ilow = cell(ns+1,1);
+  Ilow{1} = (1:nos)';
+  blks = nos + 1;
+  for k = 2:ns+1
+    nk = K.s(k-1);
+    Ilow{k} = nk * ones(nk*(nk+1)/2,1);
+    Ilow{k}(cumsum([1 1:nk-1])) = [blks 1:-nk:1-nk*(nk-2)];
+    Ilow{k} = cumsum(Ilow{k});
+    blks = blks + nk*nk;
+  end
+  Ilow = vertcat(Ilow{:});
 end
 
 
 %% remove all rows that are not indexed, regard mu
 switch 2*(sflag==1)+idim
-    case 1  % sflag==0 && idim==1
-        vA = 0.5 * (A(I,:) + A(Ilow,:));
-    case 2  % sflag==0 && idim==2
-        vA = 0.5 * (A(:,I) + A(:,Ilow));
-    case 3  % sflag==1  && idim==1
-        vA = A(I,:);
-    otherwise  % sflag==1 && idim==2
-        vA = A(:,I);
+  case 1  % sflag==0 && idim==1
+    vA = 0.5 * (A(I,:) + A(Ilow,:));
+  case 2  % sflag==0 && idim==2
+    vA = 0.5 * (A(:,I) + A(:,Ilow));
+  case 3  % sflag==1  && idim==1
+    vA = A(I,:);
+  otherwise  % sflag==1 && idim==2
+    vA = A(:,I);
 end
 
 if mu~=1
-    vA = sscale(vA,K,mu);
+  vA = sscale(vA,K,mu);
 end
 
 % write index cell

@@ -36,71 +36,71 @@ function [x z] = export_vsdp(IF,K,x,z)
 
 %% check input
 if nargin<3 || ~isstruct(K)
-    error('VSDP:EXPORT_VSDP','not enough input parameter or wrong data format');
+  error('VSDP:EXPORT_VSDP','not enough input parameter or wrong data format');
 elseif nargin<4
-    z = [];
+  z = [];
 end
 
 %% conversion
 if isempty(IF)
-    %% export internal VSDP format
-    % export x
-    if ~isempty(x)
-        x = vsvec(x,K,2,0);  % mu=2, does nothing if already compact vec format
-    end
-    % export z
-    if ~isempty(z)
-        z = vsvec(z,K,1,0);
-    end     
+  %% export internal VSDP format
+  % export x
+  if ~isempty(x)
+    x = vsvec(x,K,2,0);  % mu=2, does nothing if already compact vec format
+  end
+  % export z
+  if ~isempty(z)
+    z = vsvec(z,K,1,0);
+  end
 elseif strcmpi(IF,'VSDP01')
-    %% export old vsdp format
-    % check supported cones
-    if isfield(K,'f') && any(K.f>0) || isfield(K,'l') && any(K.l>0) || ...
-            isfield(K,'q') && any(K.q>0)
-        error('VSDP:EXPORT_VSDP','old vsdp format supports only semidefinite cone');
+  %% export old vsdp format
+  % check supported cones
+  if isfield(K,'f') && any(K.f>0) || isfield(K,'l') && any(K.l>0) || ...
+      isfield(K,'q') && any(K.q>0)
+    error('VSDP:EXPORT_VSDP','old vsdp format supports only semidefinite cone');
+  end
+  % convert x
+  if ~isempty(x)
+    x = vsvec(x,K,2,0);  % to verify that internal VSDP format is given
+    blke = length(x);
+    for j = length(K.s):-1:1
+      nj = K.s(j);
+      blks = blke - nj*(nj+1)/2 + 1;
+      Xt{j}(triu(true(nj))) = 0.5 * x(blks:blke);  % mu==2
+      Xt{j} = reshape(Xt{j},nj,nj);
+      Xt{j} = Xt{j} + Xt{j}';
+      blke = blks - 1;
     end
-    % convert x
-    if ~isempty(x)
-        x = vsvec(x,K,2,0);  % to verify that internal VSDP format is given
-        blke = length(x);
-        for j = length(K.s):-1:1
-            nj = K.s(j);
-            blks = blke - nj*(nj+1)/2 + 1;
-            Xt{j}(triu(true(nj))) = 0.5 * x(blks:blke);  % mu==2
-            Xt{j} = reshape(Xt{j},nj,nj);
-            Xt{j} = Xt{j} + Xt{j}';
-            blke = blks - 1;
-        end
-        x = Xt;
+    x = Xt;
+  end
+  % convert z
+  if ~isempty(z)
+    z = vsvec(z,K,1,0);  % to verify that internal VSDP format is given
+    blke = length(z);
+    for j = length(K.s):-1:1
+      nj = K.s(j);
+      blks = blke - nj*(nj+1)/2 + 1;
+      Zt{j}(triu(true(nj))) = z(blks:blke);
+      Xt{j} = reshape(Xt{j},nj,nj);
+      Zt{j} = Xt{j} + Xt{j}' - diag(sparse(diag(Xt{j})));
+      blke = blks - 1;
     end
-    % convert z
-    if ~isempty(z)
-        z = vsvec(z,K,1,0);  % to verify that internal VSDP format is given
-        blke = length(z);
-        for j = length(K.s):-1:1
-            nj = K.s(j);
-            blks = blke - nj*(nj+1)/2 + 1;
-            Zt{j}(triu(true(nj))) = z(blks:blke);
-            Xt{j} = reshape(Xt{j},nj,nj);
-            Zt{j} = Xt{j} + Xt{j}' - diag(sparse(diag(Xt{j})));
-            blke = blks - 1;
-        end
-        z = Zt;
-    end 
+    z = Zt;
+  end
 elseif strcmpi(IF,'SEDUMI')
-    %% export sedumi format
-    Imat = [];  % index vector to improve speed of smat
-    % convert x
-    if ~isempty(x)
-        [x Imat] = vsmat(x,K,0.5,1);
-    end
-    % convert z
-    if ~isempty(z)
-        z = vsmat(z,K,1,1,Imat);
-    end
+  %% export sedumi format
+  Imat = [];  % index vector to improve speed of smat
+  % convert x
+  if ~isempty(x)
+    [x Imat] = vsmat(x,K,0.5,1);
+  end
+  % convert z
+  if ~isempty(z)
+    z = vsmat(z,K,1,1,Imat);
+  end
 else
-    %% format not supported or detected
-    error('VSDP:EXPORT_VSDP','tries to export unsupported format');
+  %% format not supported or detected
+  error('VSDP:EXPORT_VSDP','tries to export unsupported format');
 end
 
 %_____________________________End EXPORT_VSDP____________________________

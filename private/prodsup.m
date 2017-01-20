@@ -10,25 +10,25 @@ function R = prodsup(Amid,Bmid,Arad,Brad)
 
 % sup(Amid*Bmid)
 if ~isreal(Amid) && ~isreal(Bmid)
-    R = real(Amid)*Bmid + imag(Amid)*(1j*Bmid);
+  R = real(Amid)*Bmid + imag(Amid)*(1j*Bmid);
 else
-    R = Amid*Bmid;
+  R = Amid*Bmid;
 end
 
 % matrices are point-matrices   ->  finish!
 if nargin<4
-    return;
+  return;
 end
 
 % initial interval radius
 Rrad = sparse(size(R,1),size(R,2));
 
 if ~isempty(find(Arad,1))  % regard Arad
-    Rrad = Rrad + Arad*(abs(Bmid)+Brad);
+  Rrad = Rrad + Arad*(abs(Bmid)+Brad);
 end
 
 if ~isempty(find(Brad,1))  % regard Brad
-    Rrad = Rrad + abs(Amid)*Brad;
+  Rrad = Rrad + abs(Amid)*Brad;
 end
 
 R = R + Rrad;
