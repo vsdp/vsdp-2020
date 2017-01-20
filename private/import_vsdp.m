@@ -25,24 +25,7 @@ function [A,Arad,b,brad,c,crad,K,x,y,z,IF] = import_vsdp(A,b,c,K,x,y,z)
 % z: an nA3 x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 07/08/12    M. Lange, written for common data import
-%
-%%
-% TODO: - rotated quadratic cones
-%       - import of cells containing mixed intervals
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 if nargin<4 || isempty(A) || isempty(b) || isempty(c) || isempty(K)

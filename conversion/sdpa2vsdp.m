@@ -28,24 +28,7 @@ function [A,b,c,K] = sdpa2vsdp(filename,blksize)
 %     - K.s lists the dimensions of semidefinite blocks
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/07/10    V. Haerter, comments added
-% 25/07/12    M. Lange, rewrite for improved performance
-% 04/08/12    M. Lange, add support for initial and full data
-%
-%%
-% TODO: (error when reading large scale problems)
-%
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% open file and import data
 if nargin~=1 || ~ischar(filename) || length(filename)<4

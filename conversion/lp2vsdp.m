@@ -28,26 +28,7 @@ function [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub)
 %     If 'd' problem was dualized and optimal value must be negated.
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/08/10    V. Haerter, comments added
-% 09/08/12    M. Lange, speed improvement and code reduction
-% 10/08/12    M. Lange, extended primal form conversion
-%
-%%
-% TODO: improvements:  - computations in primal form with interval
-%                        inclusion
-%                      - mirroring of variables <in> [-inf 0] to R+
-%
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 b = b(:);

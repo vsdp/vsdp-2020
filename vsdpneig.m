@@ -27,15 +27,6 @@ function lambda = vsdpneig(A,hermit)
 %
 %       Replaces "veigsym" by Christian Jansson
 %
-
-%
-% written    19/03/12  Marko Lange
-%  modified  20/04/12   - allow interval structure input
-%                       - removed most dependencies, still need 'setround'
-%                         function
-%  modified  07/08/12   - allow compact vectorized input
-%
-
 %
 % Example:
 %
@@ -67,6 +58,7 @@ function lambda = vsdpneig(A,hermit)
 %     0.0289
 %
 
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input data %%
 

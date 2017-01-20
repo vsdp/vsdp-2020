@@ -17,8 +17,7 @@ function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
 %          x of the above system, provided J is empty. Especially,
 %          existence of solutions is verified, and moreover
 %          X is computed close to x0 in a specified manner; for details see
-%          C. Jansson, Rigorous Lower and Upper Bounds in Linear
-%          Programming,  SIAM J. OPTIM. Vol.14, No.3, pp. 914-935.
+%          [Jansson2004].
 %
 %      I   index vector such that the p*p submatrix B(:,I) (or in the
 %          transposed case: B(I,:)) is nonsingular.
@@ -35,31 +34,8 @@ function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
 %             J.lower: violated indices of  xl <= X ,
 %             J.upper: violated indices of  X <= xu .
 %
-% Used Files: verifylss (INTLAB)
-%
-% written     01/12/05   Christian Jansson
-%  modified   03/21/06
-%  modified   27/07/10   Vikor Haerter
-%  modified   10/08/12   Marko Lange, parameters + pre-conditioning of I
-%  modified   17/09/12   Marko Lange, - removed pre-conditioning
-%                                     - added use of spdotK
-%                                     - stronger pivoting when using UMFPACK
-%
-% Reference: C. JANSSON, Termination and Verification for
-%            Ill-posed Semidefinite Programming Problems,
-%            to appear
-% http://optimization-online.org/DBHTML/|2005/06/1150.html.
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check parameter
 if nargin<7 || isempty(x0) || ~isnumeric(x0)

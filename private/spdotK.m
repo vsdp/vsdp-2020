@@ -21,16 +21,10 @@ function [res, resrad, q] = spdotK(varargin)
 %     for the computation of 'resrad' the setround function is needed,
 %          [for further information, see INTLAB]
 %
-% Note!
-%   this function implements algorithms from
-%   T. Ogita, S.M. Rump, S. Oishi: Accurate Sum and Dot Product,
-%     SIAM Journal on Scientific Computing (SISC), 26(6):1955-1988, 2005
-%
-%% last modified
-%   27/08/12   M.Lange, written
-%   05/09/12   M.Lange, added code for full matrices
+% Note: this function implements algorithms from [Ogita2005].
 %
 
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 % fast check for rounding mode
 rnd = getround();

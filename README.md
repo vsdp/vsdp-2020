@@ -36,3 +36,22 @@ or higher.
 ## Contributors
 
 Viktor Härter, Marko Lange, and Christian Jansson (jansson@tuhh.de).
+
+
+## References
+
+- [Jansson2009] C. Jansson, On verified numerical computations in convex
+  programming, Japan J. Indust. Appl. Math. (2009) 26: 337,
+  https://dx.doi.org/10.1007/BF03186539
+
+- [Jansson2005] C. Jansson, Termination and Verification for Ill-posed
+  Semidefinite Programming Problems,
+  http://www.optimization-online.org/DB_HTML/2005/06/1150.html
+
+- [Ogita2005] T. Ogita, S.M. Rump, and S. Oishi, Accurate Sum and Dot Product,
+  SIAM J. Sci. Comput. 26(6), 1955-1988,
+  https://dx.doi.org/10.1137/030601818
+
+- [Jansson2004] C. Jansson, Rigorous Lower and Upper Bounds in Linear
+  Programming, SIAM J. OPTIM. Vol.14, No.3, pp. 914-935,
+  https://dx.doi.org/10.1137/S1052623402416839

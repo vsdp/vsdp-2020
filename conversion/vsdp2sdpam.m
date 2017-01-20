@@ -30,22 +30,7 @@ function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
 % X0,Y0: cell arrays of initial points
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/07/10    V. Haerter, comments added
-% 08/08/11    V. Haerter, corrected errors in transforming linear blocks
-% 14/08/12    M. Lange, rewrite for improved performance and new functions
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 if nargin<4 || ~isstruct(K) || isempty(A) || isempty(b) || isempty(c)

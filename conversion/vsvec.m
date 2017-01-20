@@ -41,21 +41,7 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 %    following conversions of similar cone variables by svec.
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/07/10    V. Haerter, comments added
-% 09/07/12    M. Lange, rewrite for faster indexing and non-symmetric input
-% 30/07/12    M. Lange, speed improvement + new input format
-%
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% preparation
 

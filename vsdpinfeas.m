@@ -12,9 +12,9 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 %              x in K                  z in K*
 %
 %     where K is a cartesian product of the cones R+, SOCP, PSD.
-%     For theoretical introduction into verified conic programming see:
-%     C. Jansson. On Verified Numerical Computations in Convex Programming.
-%     Japan J. Indust. Appl. Math., 26:337–363, 2009
+%
+%     For a theoretical introduction into verified conic programming see
+%     [Jansson2009].
 %
 %% >> Input:
 % A: nA x m coefficient matrix in SeDuMi or VSDP internal format
@@ -66,24 +66,7 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 %    -0.0060
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/07/10    V. Haerter, comments added
-% 08/09/12    M. Lange, rewrite for new format
-%
-%% ToDo
-% - rotated quadratic cones
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 if nargin<7

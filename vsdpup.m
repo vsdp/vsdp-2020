@@ -12,9 +12,9 @@ function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 %              x in K                  z in K*
 %
 %     where K is a cartesian product of the cones R+, SOCP, PSD.
-%     For theoretical introduction into verified conic programming see:
-%     C. Jansson. On Verified Numerical Computations in Convex Programming.
-%     Japan J. Indust. Appl. Math., 26:337–363, 2009
+%
+%     For a theoretical introduction into verified conic programming see
+%     [Jansson2009].
 %
 %% >> Input:
 % A: nA x m coefficient matrix in SeDuMi or VSDP internal format
@@ -53,25 +53,7 @@ function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 % info.iter: number of iterations
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/07/10    V. Haerter, comments added
-% 08/18/12    M. Lange, complete rewrite
-% 18/08/12    M. Lange, preconditioning to find better basis indices
-%
-%%
-% TODO: rotated quadratic cones
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% input parameter
 

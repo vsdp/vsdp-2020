@@ -11,9 +11,9 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 %              x in K                 z in K*
 %
 %     where K is a cartesian product of the cones R+, SOCP, PSD.
-%     For theoretical introduction into verified conic programming see:
-%     C. Jansson. On Verified Numerical Computations in Convex Programming.
-%     Japan J. Indust. Appl. Math., 26:337–363, 2009
+%
+%     For a theoretical introduction into verified conic programming see
+%     [Jansson2009].
 %
 %% >> Input:
 % A: nA x m coefficient matrix in SeDuMi or VSDP internal format
@@ -49,35 +49,7 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 %     info = -1: an error occured
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 27/07/10    V. Haerter, 3 new interfaces for additional solvers,
-%             now we can use VSDP with overall 5 solvers:
-%             SDPT3, SDPA, SEDUMI, CSDP and SDPLR
-% 28/07/10    V. Haerter, adopted to new VSDP version, 2 new
-%             functions added: sdpt3_to_vsdp, sdpa_to_vsdp
-% 11/08/10    V. Haerter, new interfaces for LP_SOLVe and LINPROG
-%
-% 06/01/12    V. Haerter updated the lpsolve and linprog interfaces
-% 07/01/12    V. Haerter corrected second order cone test/insert test of
-%                        false orientation of the matrix A
-% 30/03/12    V. Haerter adopted for use of plain Sedumi input data format.
-% 20/07/12    M. Lange, rewrite for new internal format.
-%
-%% ToDo:
-% - rotated quadratic cones
-% - "info" for sdpa solver
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input parameter
 if nargin<4 || isempty(A) || isempty(b) || isempty(c) || isempty(K)

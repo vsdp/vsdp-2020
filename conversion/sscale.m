@@ -27,20 +27,7 @@ function vA = sscale(vA,K,mu)
 % vA: matrix of same dimension as input vA
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 10/07/12    M. Lange, rewrite for faster indexing and both formats
-% 28/07/12    M. Lange, speed improvements + allow scaling along rows
-%
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input parameter
 if nargin~=3 || ~isstruct(K)

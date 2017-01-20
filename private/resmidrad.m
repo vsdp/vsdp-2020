@@ -8,6 +8,7 @@ function [R,Rrad] = resmidrad(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
 % this function is used within VSDP (for efficiency reasons)
 % Important!    setround(1) is assumed
 
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% calculate inclusion for point-matrices
 if isreal(Amid) && isreal(Bmid) && isreal(Cmid) && isreal(Dmid)

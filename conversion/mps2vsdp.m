@@ -18,23 +18,7 @@ function [A,b,c,K,pd] = mps2vsdp(problem)
 %     If 'd' problem was dualized and optimal value must be negated.
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 29/08/12    M. Lange, written
-%
-%% ToDo:
-%       - support ranges
-%       - check of unsupported flags etc
-%
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 if ischar(problem)

@@ -30,20 +30,7 @@ function [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)
 % z: a nA3 x 1 vector - approx. dual optimal solution (slack vars)
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 22/08/12    M. Lange, written
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% prepare data
 if nargin<1 || isempty(bLOCKsTRUCT)

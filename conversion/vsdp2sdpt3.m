@@ -50,24 +50,7 @@ function [blk, At, ct, xt, zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
 % parameter is not checked. This has to be done in the calling function.
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/07/10    V. Haerter, comments added
-% 30/07/12    M. Lange, rewrite for new parameter and lower memory usage
-%
-%% ToDo
-% - code reduction
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% input parameter
 

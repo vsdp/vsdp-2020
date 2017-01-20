@@ -58,23 +58,7 @@ function [stat,opts] = vsdpinit(opts,display)
 %   - opts: copy of global option structure
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/08/10    V. Haerter, comments added
-% 09/09/10    V. Haerter, store Matlab version
-% 09/09/12    M. Lange, rewrite for new options structure
-%
-%% ToDo:
-%
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 

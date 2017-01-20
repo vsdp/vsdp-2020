@@ -8,6 +8,8 @@ function R = resmag(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
 % this function is used within VSDP (for efficiency reasons)
 % Important!    setround(1) is assumed
 
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+
 if (isreal(Amid) && isreal(Bmid) && isreal(Cmid) && isreal(Dmid))
   % max(sup(A*B-C*D),-inf(A*B-C*D)) = abs(A*B-C*D)
   R = Amid*Bmid + Cmid*(-Dmid);

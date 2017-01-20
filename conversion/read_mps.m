@@ -23,6 +23,8 @@ function problem = read_mps(filename)
 %                  columns i, j and k are in an SOS2 set
 %
 
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+
 % initiailize default output
 problem.name = '';
 problem.objsense = 'MINIMIZE';

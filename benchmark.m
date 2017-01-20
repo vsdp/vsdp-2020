@@ -18,20 +18,7 @@ function [s] = benchmark(path, filename, file, tfile, solverlist)
 % s: 0 if benchmark test completed, otherwise an error will be thrown
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 31/07/10    V. Haerter, comments added
-% 12/08/12    M. Lange, small adaptions for overworked VSDP
-%
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% preparation
 sysstr = computer;

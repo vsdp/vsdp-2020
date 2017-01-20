@@ -8,6 +8,8 @@ function R = prodsup(Amid,Bmid,Arad,Brad)
 % this function is used within VSDP (for efficiency reasons)
 % Important!    setround(1) is assumed
 
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+
 % sup(Amid*Bmid)
 if ~isreal(Amid) && ~isreal(Bmid)
   R = real(Amid)*Bmid + imag(Amid)*(1j*Bmid);

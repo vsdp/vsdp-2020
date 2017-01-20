@@ -16,23 +16,7 @@ function [x,z] = export_vsdp(IF,K,x,z)
 % x,y: in chosen format
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
-%% Last modified:
-% 17/08/12    M. Lange, written for common data export
-%
-%%
-% TODO: rotated quadratic cones
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 if nargin<3 || ~isstruct(K)

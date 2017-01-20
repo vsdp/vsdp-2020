@@ -37,16 +37,7 @@ function [K,A,c,x,z] = sdpt2vsdp(blk,A,c,x,z)
 % dual optimal solution vector (y) have the same format in VSDP and SDPT3.
 %
 
-%% ********************************************************************* %%
-%% This file is part of VSDP by V. Haerter, C. Jansson and M. Lange      %%
-%% Copyright (c) 2012, C. Jansson                                        %%
-%%                     Technical University of Hamburg (TUHH)            %%
-%%                     Institute for Reliable Computing (IRC)            %%
-%% VSDP can be freely used for private and academic purposes.            %%
-%% Commercial use or use in conjunction with a commercial program which  %%
-%% requires VSDP or part of it to function properly is prohibited.       %%
-%% ********************************************************************* %%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input
 if nargin<1 || isempty(blk)

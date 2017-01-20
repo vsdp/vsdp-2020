@@ -44,19 +44,7 @@ function [lambdaMin,trN,dshift] = bnd4sd(A,sym,mode)
 %   @dependencies: 'setround'-function [see Intlab]
 %
 
-%%
-% written   05/04/12   Marko Lange
-% modified  05/07/12    -> additional parameter MINEIG
-% modified  12/06/12    -> using eigs instead of eig
-% modified  17/06/12    -> completely rewritten for adaptive shifting
-% modified  21/08/12    -> added 'mode' parameter to enable call of vsdpneig
-%
-
-%%
-% ToDo
-%   - support for complex Hermitian matrices
-%
-
+% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 %% check input data %%
 
