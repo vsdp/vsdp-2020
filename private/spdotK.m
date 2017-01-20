@@ -41,7 +41,7 @@ if rnd~=0
 end
 
 % get precision value
-if even(nargin)
+if (mod (nargin, 2) == 0)
   K = 2;
 else
   K = varargin{end};
