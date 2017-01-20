@@ -1,9 +1,8 @@
-function [fL, y, dl, info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
-%% VSDPLOW - verified lower bound for an SQLP problem
-%    [fL y dl info] = vsdplow(A,b,c,K,[],y0)
-%    [fL y dl info] = vsdplow(A,b,c,K,x0,y0,z0,xu,opts)
+function [fL,y,dl,info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
+% VSDPLOW  Verified lower bound for semidefinite-quadratic-linear programming.
 %
-%% >> Description:
+%   [fL y dl info] = VSDPLOW(A,b,c,K,[],y0)
+%   [fL y dl info] = VSDPLOW(A,b,c,K,x0,y0,z0,xu,opts)
 %     computes verified lower bound of primal optimal value and rigorous
 %     enclosure of dual strict feasible (near optimal) solution of a conic
 %     problem in the standard primal-dual form:
@@ -17,7 +16,7 @@ function [fL, y, dl, info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
 %     For a theoretical introduction into verified conic programming see
 %     [Jansson2009].
 %
-%% >> Input:
+%
 % A: nA x m coefficient matrix in SeDuMi or VSDP internal format
 % b: a M x 1 vector
 % c: a nA x 1 vector, primal objective
@@ -47,18 +46,17 @@ function [fL, y, dl, info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
 %                             be used or not
 %                               -> default: false
 %
-%% >> Output:
+%
 % fL: verified lower bound of the primal optimal value
 %  y: an M x 1 vector - rigorous enclosure of dual strict feasible solution
 % dl: verified lower bounds of eigenvalues or spectral values of z=c-A'*y
 % info.iter: number of iterations
 %
+%   See also mysdps.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% input parameter
-
-% check number of input arguments
+% check input
 if nargin<6 || isempty(A) || isempty(b) || isempty(c) || isempty(K)
   error('VSDP:VSDPLOW','more input arguments are required');
 elseif nargin<8
@@ -67,7 +65,7 @@ elseif nargin<9
   opts = [];
 end
 
-global VSDP_OPTIONS;  % global options structure
+global VSDP_OPTIONS;
 
 % use starting point - default: false
 if ~isfield(VSDP_OPTIONS,'USE_STARTING_POINT')
@@ -93,7 +91,7 @@ for i = 1:length(optLIST)
 end
 
 
-%%  Preliminary steps / Prealocations
+%  Preliminary steps / Prealocations
 
 % initial output
 fL = -Inf;
@@ -148,13 +146,13 @@ pertI(1) = K.f + 1;
 pertI = cumsum(pertI);
 
 
-%% Algorithm with finite/infinite primal bounds xu
+% Algorithm with finite/infinite primal bounds xu
 % **** main loop ****
 while info.iter<=ITER_MAX
   info.iter = info.iter + 1;
   setround(1);  % default for rigorous computation in steps 1-3
   
-  %% 1.step: defect computation, free variables handling
+  % 1.step: defect computation, free variables handling
   if K.f>0 && max(xuf)==inf
     % solve dual linear constraints rigorously
     [y,I] = vuls([],[],struct('mid',Af,'rad',Afrad),...
@@ -183,7 +181,7 @@ while info.iter<=ITER_MAX
     defect = xuf' * (abs(z(1:K.f))+zrad(1:K.f));
   end
   
-  %% 2.step: verified lower bounds on cone eigenvalues
+  % 2.step: verified lower bounds on cone eigenvalues
   if K.l>0  % bound for linear variables
     ind = K.f+1:K.f+K.l;
     zjn = zrad(ind) - z(ind);  % -inf(zl)
@@ -221,7 +219,7 @@ while info.iter<=ITER_MAX
     blke = blks - 1;
   end
   
-  %% 3.step: cone feasibility check, computing lower bound
+  % 3.step: cone feasibility check, computing lower bound
   dli = find(dl<0);
   if ~any(isinf(xu(dli)))
     % inf(min(dl,0)*xu + b'*y - defect)
@@ -231,7 +229,7 @@ while info.iter<=ITER_MAX
     return;
   end
   
-  %% 4.step: create some perturbed problem
+  % 4.step: create some perturbed problem
   setround(0);  % no code for rigorous computations
   ind = 1:K.l+length(K.q);
   if isempty(ind)
@@ -246,7 +244,7 @@ while info.iter<=ITER_MAX
   end
   epsj(dli) = epsj(dli) * (1+ALPHA);  % update perturbation factor
   
-  %% 5.step: solve the perturbed problem
+  % 5.step: solve the perturbed problem
   clear dli ind z zrad;  % free some memory before calling solver
   [~,x0,y,z0,INFO] = mysdps(A,b,c+ceps,K,x0,y,z0,opts);
   % if could not found solution or dual infeasible, break
@@ -255,7 +253,6 @@ while info.iter<=ITER_MAX
     break;
   end
 end
-% **** end of main loop ****
 
 % reset rounding mode
 setround(rnd);

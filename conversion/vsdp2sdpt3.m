@@ -1,10 +1,9 @@
-function [blk, At, ct, xt, zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
-%% VSDP2SDPT3:  transforms problem data from VSDP to SDPT3 format
-%    [blk,At,ct,xt,zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
+function [blk,At,ct,xt,zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
+% VSDP2SDPT3  Convert problem data from VSDP 2012 to SDPT3 format.
 %
-% except for K all input parameter are optional
+%   [blk,At,ct,xt,zt] = VSDP2SDPT3(K,A,c,x0,z0,opts)
 %
-%% >> Input:
+% Input: except for K all input parameter are optional
 % K: a structure with following fields
 %     - K.f stores the number of free variables
 %     - K.l is the number of nonnegative components
@@ -30,7 +29,7 @@ function [blk, At, ct, xt, zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
 %                          block that should be grouped.
 %                               - default: 50
 %
-%% >> Output:
+% Output:
 % blk: a cell array describing the block diagonal structure of problem data
 % At: a cell array with At{1} = A(1:dimf,:), At{2} = A(dimf+1:dimf+diml,:)
 %     and the same for socp cone, and At{i} = [svec(Ai1) ... svec(Aim)]
@@ -42,7 +41,7 @@ function [blk, At, ct, xt, zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
 % Is: index vector which describes the reorganization of the sdp blocks to
 %     group small sdp blocks
 %
-%%
+%
 % Note that the right hand side of the linear constraints (b) and the
 % dual optimal solution vector (y) have the same format in VSDP and SDPT3.
 %
@@ -51,8 +50,6 @@ function [blk, At, ct, xt, zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
 %
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
-
-%% input parameter
 
 % check input
 if nargin<1 || ~isstruct(K)
@@ -98,7 +95,7 @@ else
 end
 
 
-%% preparation
+% preparation
 
 % get problem data dimensions
 fields = isfield(K,{'f','l','q','s'});
@@ -174,7 +171,7 @@ blk2e = 0;
 blk3e = 0;
 
 
-%% transform unconstrained variables
+% transform unconstrained variables
 if K.f>0
   blk{bli,1} = 'u';
   blk{bli,2} = K.f;
@@ -199,7 +196,7 @@ if K.f>0
 end
 
 
-%% transform linear variables
+% transform linear variables
 if K.l>0
   blk{bli,1} = 'l';
   blk{bli,2} = K.l;
@@ -224,7 +221,7 @@ if K.l>0
 end
 
 
-%% transform socp part
+% transform socp part
 if ~isempty(K.q)
   dimq = sum(K.q);
   blk{bli,1} = 'q';
@@ -250,7 +247,7 @@ if ~isempty(K.q)
 end
 
 
-%% transform sdp part, consider small blocks
+% transform sdp part, consider small blocks
 if ~isempty(K.s)
   
   % save index positions before processing sdp cells
@@ -260,7 +257,7 @@ if ~isempty(K.s)
   % starting index for current group
   kstart = 1;
   
-  %% create blk
+  % create blk
   blke = 0;
   for k = 1:length(K.s)
     blke = blke + K.s(k)*(K.s(k)+1)/2;
@@ -276,7 +273,7 @@ if ~isempty(K.s)
   end
   
   
-  %% create At cells for sdp part
+  % create At cells for sdp part
   if ~isempty(A)
     % keep sdp part only
     if blk3e>0 && idim
@@ -311,7 +308,7 @@ if ~isempty(K.s)
   end  % transformation of A
   
   
-  %% block - cell transformation for sdp part of c
+  % block - cell transformation for sdp part of c
   if ~isempty(c)
     blk2e = blk2s;  % reset index position
     for k = bls:bli-1
@@ -335,7 +332,7 @@ if ~isempty(K.s)
   end  % transformation of c
   
   
-  %% block - cell transformation for sdp part of x0
+  % block - cell transformation for sdp part of x0
   if ~isempty(x0)
     blk2e = blk2s;  % reset index position
     for k = bls:bli-1
@@ -361,7 +358,7 @@ if ~isempty(K.s)
   end  % transformation of x0
   
   
-  %% block - cell transformation for sdp part of z0
+  % block - cell transformation for sdp part of z0
   if ~isempty(z0)
     blk2e = blk2s;  % reset index position
     for k = bls:bli-1
@@ -389,7 +386,7 @@ if ~isempty(K.s)
 end  % transform sdp part
 
 
-%% remove unused cells
+% remove unused cells
 blk(bli:end,:) = [];
 At(bli:end) = [];
 ct(bli:end) = [];

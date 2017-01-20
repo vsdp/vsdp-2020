@@ -1,12 +1,11 @@
 function R = prodsup(Amid,Bmid,Arad,Brad)
-% helper function to compute a rigorous upper bound (supremum) for
-%       R = A*B
+% PRODSUP  Compute a rigorous upper bound (supremum) for A*B.
 %
 %   R = prodsup(Amid,Bmid)
 %   R = prodsup(Amid,Bmid,Arad,Brad)
 %
-% this function is used within VSDP (for efficiency reasons)
-% Important!    setround(1) is assumed
+% This function is used within VSDP (for efficiency reasons).
+% setround(1) is assumed.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 

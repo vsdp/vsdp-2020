@@ -1,6 +1,7 @@
 function [lambdaMin,trN,dshift] = bnd4sd(A,sym,mode)
-% NBND4SDP  calculates a lower bound for the smallest eigenvalue and the
-%           sum over all negative eigenvalues of A.
+% BND4SD  Calculates a lower bound for the smallest eigenvalue and the
+%         sum over all negative eigenvalues of A.
+%
 %           The matrix A is assumed to be nearly positive semidefinite.
 %           BND4SD can be used to find rigorous bounds for non-positive
 %           definiteness due to rounding errors. The function is designed
@@ -41,14 +42,10 @@ function [lambdaMin,trN,dshift] = bnd4sd(A,sym,mode)
 %                   perturbated matrix A+diag(dshift).
 %
 %
-%   @dependencies: 'setround'-function [see Intlab]
-%
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input data %%
-
-% input matrix
+% check input
 if nargin<1 || isempty(A)
   error('BND4SD: No input matrix set.');
 elseif ~(isnumeric(A) || isa(A,'intval') || all(isfield(A,{'mid','rad'})))
@@ -56,7 +53,7 @@ elseif ~(isnumeric(A) || isa(A,'intval') || all(isfield(A,{'mid','rad'})))
 end   % size & dimension is not checked. Error will occur in the code.
 
 
-%% prepare input data %%
+% prepare input data
 
 % get rounding mode and set round to nearest
 rnd = getround();
@@ -71,7 +68,7 @@ else
 end
 
 
-%% prepare A
+% prepare A
 if ~isreal(A)
   error('BND4SD: Complex input not yet supported')
 elseif size(A,1)~=size(A,2) && size(A,2)~=1
@@ -111,7 +108,7 @@ elseif nargin>=2 && ~isempty(sym) && ~sym  % non-symmetric input
 end
 
 
-%% calculate expected error for precondition shift
+% calculate expected error for precondition shift
 E = abs(A);
 d = sqrt(diag(E));
 setround(-1);
@@ -123,7 +120,7 @@ dshift = 8*eps*sqrt(sum(max(E))*sum(E)) + sum(Arad) + realmin;
 setround(0);
 
 
-%% remove zero rows/columns
+% remove zero rows/columns
 index = any(A-diag(sparse(diag(A)))) | any(Arad - diag(sparse(diag(Arad))));
 lambdaMin = inf;
 trN = 0;
@@ -145,9 +142,7 @@ if isempty(A) % A was pure diagonal matrix
 end
 
 
-%% approximative cholesky factorization with adaptive error shift %%
-
-% approximate cholesky
+% approximative cholesky factorization with adaptive error shift
 [L,p] = chol(A-diag(sparse(dshift(index))),'lower');
 if p~=0  % not semidefinite
   [L,p] = chol(A-diag(sparse(0.4*dshift(index))),'lower');
@@ -160,7 +155,7 @@ if p==0 && ~isempty(find(isnan(L),1))
 end
 
 
-%% cholesky decomposition did not work
+% cholesky decomposition did not work
 if nargin==2 && mode==0 && p~=0
   lambdaMin = -Inf;
   trN = -Inf;
@@ -179,7 +174,7 @@ elseif p~=0  % call vsdpneig
 end
 
 
-%% calculate error matrix %%
+% calculate error matrix
 setround(-1);
 E = -(L*L'-A) - diag(sparse(inf(n,1)));  % -inf(L*L'-A) = sup(A-L*L'), without diagonal
 setround(1);
@@ -199,7 +194,7 @@ E = min(E,E');
 % keep setround(1) as default rounding for verified norm bounds
 
 
-%% find lower bound for minimum eigenvalue %%
+% find lower bound for minimum eigenvalue
 
 % apply adaptive shift of diagonal elements
 d = -E(1:n+1:end);    % diagonal of E had opposite sign
@@ -244,7 +239,7 @@ elseif nargin>2 && mode>0  % do full eigenvalue enclosure
 end
 
 
-%% calculate trace bound %%
+% calculate trace bound
 
 % trN := trace of negative semidefinite part of A
 % -> sum(|lambda(E)|) <= sqrt(n) * norm(E,'fro')

@@ -1,8 +1,9 @@
 function [x,z] = export_vsdp(IF,K,x,z)
-%% EXPORT_VSDP - transform internal format back to imported problem format
-%    [x z] = read_vsdp(IF,K,x,z)
+% EXPORT_VSDP  Export internal format back to imported problem format.
 %
-%% >> Input:
+%   [x,z] = export_vsdp(IF,K,x,z)
+%
+% Input:
 % IF: 'SEDUMI', 'VSDP01' or [] for SeDuMi, old VSDP and new internal VSDP
 %     format, respectively
 % K: a structure with following fields
@@ -12,22 +13,22 @@ function [x,z] = export_vsdp(IF,K,x,z)
 %     - K.s lists the dimensions of semidefinite blocks
 % x,z: primal/dual solution vector in SeDuMi or VSDP internal format
 %
-%% >> Output:
+% Output:
 % x,y: in chosen format
 %
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input
+% check input
 if nargin<3 || ~isstruct(K)
   error('VSDP:EXPORT_VSDP','not enough input parameter or wrong data format');
 elseif nargin<4
   z = [];
 end
 
-%% conversion
+% conversion
 if isempty(IF)
-  %% export internal VSDP format
+  % export internal VSDP format
   % export x
   if ~isempty(x)
     x = vsvec(x,K,2,0);  % mu=2, does nothing if already compact vec format
@@ -37,7 +38,7 @@ if isempty(IF)
     z = vsvec(z,K,1,0);
   end
 elseif strcmpi(IF,'VSDP01')
-  %% export old vsdp format
+  % export old vsdp format
   % check supported cones
   if isfield(K,'f') && any(K.f>0) || isfield(K,'l') && any(K.l>0) || ...
       isfield(K,'q') && any(K.q>0)
@@ -72,7 +73,7 @@ elseif strcmpi(IF,'VSDP01')
     z = Zt;
   end
 elseif strcmpi(IF,'SEDUMI')
-  %% export sedumi format
+  % export sedumi format
   Imat = [];  % index vector to improve speed of smat
   % convert x
   if ~isempty(x)
@@ -83,7 +84,6 @@ elseif strcmpi(IF,'SEDUMI')
     z = vsmat(z,K,1,1,Imat);
   end
 else
-  %% format not supported or detected
   error('VSDP:EXPORT_VSDP','tries to export unsupported format');
 end
 

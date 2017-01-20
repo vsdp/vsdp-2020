@@ -1,15 +1,15 @@
 function [A,b,c,K] = sdpa2vsdp(filename,blksize)
-%% SDPA2VSDP: reads data from a SDPA file and converts them to VSDP
-%    [A,b,c,K] = sdpa2vsdp(sparse-problem-data.dat-s)
-%    [A,b,c,K] = sdpa2vsdp(dense-problem-data.dat)
-%    [x,y,INFO] = sdpa2vsdp(optimization-result.out)
-%    [x0,y0,z0,K] = sdpa2vsdp(sparse-initial-data.ini-s,blksize)
-%    [x0,y0,z0,K] = sdpa2vsdp(dense-initial-data.ini,blksize)
+% SDPA2VSDP  Read data from a SDPA file and converts them to VSDP
 %
-%% >> Input:
-% filename: string with the path + filname to the problem
+%   [A,b,c,K] = sdpa2vsdp(sparse-problem-data.dat-s)
+%   [A,b,c,K] = sdpa2vsdp(dense-problem-data.dat)
+%   [x,y,INFO] = sdpa2vsdp(optimization-result.out)
+%   [x0,y0,z0,K] = sdpa2vsdp(sparse-initial-data.ini-s,blksize)
+%   [x0,y0,z0,K] = sdpa2vsdp(dense-initial-data.ini,blksize)
 %
-%% >> Output:
+%      filename: string with the path + filname to the problem
+%
+% Output:
 % A: a nA3 x M Matrix,
 %     whereas nA3 = dimf+diml+dimq+dims3
 %     dimf: number of free variables: dimf = sum(K.f>0)
@@ -30,7 +30,7 @@ function [A,b,c,K] = sdpa2vsdp(filename,blksize)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% open file and import data
+% open file and import data
 if nargin~=1 || ~ischar(filename) || length(filename)<4
   error('VSDP:SDPA2VSDP','input argument must be a filename with extension');
 end
@@ -64,7 +64,7 @@ switch dtype
     % right hand side vector (b)
     b = -fscanf(fid,'%*[^0-9+-]%lf',m);
     
-    %% read data of A and c
+    % read data of A and c
     [data,cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
     fclose(fid);
     if cnt==0 || mod(cnt,5)~=0
@@ -79,7 +79,7 @@ switch dtype
       col(idx) = [];  blk(idx) = [];  i(idx) = [];  j(idx) = [];  data(idx) = [];
     end
     
-    %% block information
+    % block information
     idx = blksize>1;  % index vector for sdp blocks
     dims = abs(blksize(~idx));  % dimensions of lp blocks
     
@@ -87,7 +87,7 @@ switch dtype
     K.l = sum(dims);  % number of all linear variables
     K.s = reshape(blksize(idx),[],1);  % dimensions of sdp blocks
     
-    %% calculate offset positions
+    % calculate offset positions
     ofs = zeros(1,length(blksize));  % block offsets
     ofs(~idx) = cumsum([0 dims(1:end-1)]);  % linear block offsets
     ofs(idx) = cumsum([K.l; K.s(1:end-1).*(K.s(1:end-1)+1)/2]);
@@ -95,7 +95,7 @@ switch dtype
     idx = 0.5*idx';  % factor 0.5 for sdp part column offset:
     i = i + ofs(blk) + idx(blk).*j.*(j-1);  % overwrite i by offsets
     
-    %% create output
+    % create output
     dim3 = K.l + (K.s'*(K.s+1))/2;
     j = col>0;  % overwrite j by index vector for A
     A = sparse(i(j),col(j),data(j),dim3,m);
@@ -116,7 +116,7 @@ switch dtype
     % right hand side vector (b)
     b = -fscanf(fid,'%*[^0-9+-]%lf',m);
     
-    %% block information
+    % block information
     idx = blksize>1;  % index vector for sdp blocks
     dims = abs(blksize(~idx));  % dimensions of lp blocks
     
@@ -126,7 +126,7 @@ switch dtype
     
     dim = K.l + K.s'*K.s;
     
-    %% read data of A and c
+    % read data of A and c
     [c,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if cnt~=dim
       fclose(fid);
@@ -139,7 +139,7 @@ switch dtype
     end
     fclose(fid);
     
-    %% sort data: lp first
+    % sort data: lp first
     if find(idx,1)<=find(~idx,1,'last')
       idxs = cell(length(idx),1);
       for j = find(idx)'  % sdp part
@@ -172,7 +172,7 @@ switch dtype
     str = fgetl(fid);
     b = sscanf(str,'%*[^0-9+-]%lf',[inf 1]);
     
-    %% read data of x0 and z0
+    % read data of x0 and z0
     [data,cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
     fclose(fid);
     if cnt==0 || mod(cnt,5)~=0
@@ -187,7 +187,7 @@ switch dtype
       col(idx) = [];  blk(idx) = [];  i(idx) = [];  j(idx) = [];  data(idx) = [];
     end
     
-    %% block information
+    % block information
     idx = blksize>1;  % index vector for sdp blocks
     dims = abs(blksize(~idx));  % dimensions of lp blocks
     
@@ -195,7 +195,7 @@ switch dtype
     K.l = sum(dims);  % number of all linear variables
     K.s = reshape(blksize(idx),[],1);  % dimensions of sdp blocks
     
-    %% calculate offset positions
+    % calculate offset positions
     ofs = zeros(1,length(blksize));  % block offsets
     ofs(~idx) = cumsum([0 dims(1:end-1)]);  % linear block offsets
     ofs(idx) = cumsum([K.l; K.s(1:end-1).*(K.s(1:end-1)+1)/2]);
@@ -203,7 +203,7 @@ switch dtype
     idx = 0.5*idx';  % factor 0.5 for sdp part column offset:
     blk = i + ofs(blk) + idx(blk).*j.*(j-1);  % overwrite blk by offsets
     
-    %% create output
+    % create output
     dim3 = K.l + (K.s'*(K.s+1))/2;
     col = col<2;  % overwrite col by index vector for z0
     A = sparse(blk(col),1,data(col),dim3,1);  % z0
@@ -221,7 +221,7 @@ switch dtype
     str = fgetl(fid);
     b = -sscanf(str,'%*[^0-9+-]%lf',[inf 1]);
     
-    %% block information
+    % block information
     idx = blksize>1;  % index vector for sdp blocks
     dims = abs(blksize(~idx));  % dimensions of lp blocks
     
@@ -231,7 +231,7 @@ switch dtype
     
     dim = K.l + K.s'*K.s;
     
-    %% read data of z0 and x0
+    % read data of z0 and x0
     [c,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if (cnt~=dim)
       fclose(fid);
@@ -244,7 +244,7 @@ switch dtype
     end
     fclose(fid);
     
-    %% sort data: lp first
+    % sort data: lp first
     if (find(idx,1)<=find(~idx,1,'last'))
       idxs = cell(length(idx),1);
       for j = find(idx)'  % sdp part

@@ -1,12 +1,12 @@
 function [A,Arad,b,brad,c,crad,K,x,y,z,IF] = import_vsdp(A,b,c,K,x,y,z)
-%% IMPORT_VSDP - allows to read different supported formats
-%    [A b c K] = read_vsdp(A,b,c,K)
-%    [A b c K x y z IF] = read_vsdp(A,b,c,K,x,y,z)
+% IMPORT_VSDP  Imports different supported formats.
 %
-%% >> Input:
-% problem data in SEDUMI, old VSDP, or new VSDP internal format
+%   [A,Arad,b,brad,c,crad,K,x,y,z,IF] = IMPORT_VSDP(A,b,c,K,x,y,z)
+%   IMPORT_VSDP(...,x,y,z)
 %
-%% >> Output:
+%   Input: problem data in SEDUMI, old VSDP, or new VSDP internal format.
+%
+% Output:
 % A/Arad: an nA3 x M,
 %     whereas nA3 = dimf+diml+dimq+dims3
 %     dimf: number of free variables: dimf = sum(K.f>0)
@@ -27,7 +27,7 @@ function [A,Arad,b,brad,c,crad,K,x,y,z,IF] = import_vsdp(A,b,c,K,x,y,z)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input
+% check input
 if nargin<4 || isempty(A) || isempty(b) || isempty(c) || isempty(K)
   error('VSDP:IMPORT_VSDP','not enough input parameter');
 elseif nargin<5
@@ -53,7 +53,7 @@ end
 Ivec = [];
 
 
-%% prepare cone structure
+% prepare cone structure
 f = 0;  l = 0;  q = [];  s = [];
 fields = isfield(K,{'f','l','q','s'});
 if fields(1)
@@ -73,7 +73,7 @@ K = struct('f',f,'l',l,'q',q,'s',s);
 dim3 = f + l + sum(q) + sum(s.*(s+1))/2;
 
 
-%% prepare interval input for b
+% prepare interval input for b
 if isnumeric(b)
   b = b(:);  brad = sparse(size(b,1),1);
 elseif isa(b,'intval') || all(isfield(b,{'mid','rad'}))
@@ -88,7 +88,7 @@ if size(brad,1)~=m
 end
 
 
-%% prepare interval input for A
+% prepare interval input for A
 if isnumeric(A)
   Arad = 0;
 elseif isa(A,'intval') || all(isfield(A,{'mid','rad'}))
@@ -119,7 +119,7 @@ if any(size(A)~=[dim3 m] | size(Arad)~=[dim3 m])
 end
 
 
-%% prepare interval input for c
+% prepare interval input for c
 if isnumeric(c)
   c = c(:);  crad = 0;
 elseif isa(c,'intval') || all(isfield(c,{'mid','rad'}))
@@ -138,7 +138,7 @@ elseif size(crad,1)~=dim3
 end
 
 
-%% prepare x
+% prepare x
 if ~isempty(x)
   if ~isnumeric(x)
     error('VSDP:IMPORT_VSDP','primal solution vector "x" has to be numeric');
@@ -152,14 +152,14 @@ if ~isempty(x)
 end
 
 
-%% prepare y
+% prepare y
 if ~isnumeric(y) || all(length(y)~=[0 m])
   error('VSDP:IMPORT_VSDP','cannot import dual solution vector "y"');
 end
 y = y(:);
 
 
-%% prepare z
+% prepare z
 if ~isempty(z)
   if ~isnumeric(z)
     error('VSDP:IMPORT_VSDP','cannot import dual solution "z"');

@@ -1,15 +1,7 @@
 function [stat,opts] = vsdpinit(opts,display)
-%% VSDPINIT - Initialization and defaults for VSDP3
-%    [stat] = vsdpinit(par,val)
+% VSDPINIT  Initialization and defaults for VSDP.
 %
-%% >> Description:
-%     VSDPINIT can be used to initialize VSDP or setup option settings.
-%
-%     vsdpinit('clear') to clear all settings
-%     vsdpinit(opts)  updates global setting structure with opts structur
-%     vsdpinit('sdpt3')  same as  opts.SOLVER = 'sdpt3'; vsdpinit(opts)
-%
-%% >> Input:
+%   [stat,opts] = vsdpinit(opts,display)
 %
 %     - opts: option structure with the following fields
 %
@@ -51,16 +43,19 @@ function [stat,opts] = vsdpinit(opts,display)
 %                0 - display warnings
 %                1 - display warnings and additional information
 %
-%% >> Output:
+%
 %   - stat: number of option structure fields which have been detected in
 %           opts
 %
 %   - opts: copy of global option structure
 %
+%   Example:
+%
+%       vsdpinit('clear')  % clears all settings
+%       vsdpinit(opts)     % updates global setting structure with opts structur
+%       vsdpinit('sdpt3')  % same as  opts.SOLVER = 'sdpt3'; vsdpinit(opts)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
-
-%% check input
 
 % global option settings
 global VSDP_OPTIONS;
@@ -108,7 +103,7 @@ else
 end
 
 
-%% update options
+% update options
 stat = 0;  % number of read options fields
 
 % solver
@@ -236,7 +231,7 @@ end
 opts = VSDP_OPTIONS;
 
 
-%% message of successful start
+% message of successful start
 if display>0
   fprintf('\n___________________________________________________________________\n');
   fprintf('********************** Initialization of VSDP *********************\n');

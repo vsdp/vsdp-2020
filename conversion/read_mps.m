@@ -1,5 +1,5 @@
 function problem = read_mps(filename)
-%% READ_MPS  reads a file in MPS format and creates a problem structure
+% READ_MPS  Read a file in MPS format and creates a problem structure
 %
 %   @output  problem with the fields:
 %       - name:  name of the problem
@@ -62,7 +62,7 @@ end
 [line,f,lf] = getfields(fid);
 
 
-%% main loop
+% main loop
 while 1
   
   % check for missing section card.
@@ -72,7 +72,7 @@ while 1
     continue;
   end
   
-  %% handle simple section cards
+  % handle simple section cards
   section = find(strcmp(f{1},{'ENDATA','NAME','OBJSENSE','REFROW','OBJNAME'}),1);
   
   if ~isempty(section)
@@ -109,7 +109,7 @@ while 1
   end
   
   
-  %% Handle the ROWS Section.
+  % Handle the ROWS Section.
   if strcmp(f{1},'ROWS')
     [line,f,lf] = getfields(fid);
     precnt = premem;  % preallocation count
@@ -138,7 +138,7 @@ while 1
   end
   
   
-  %% handle COLUMNS section.
+  % handle COLUMNS section.
   if strcmp(f{1},'COLUMNS')
     colname = '';
     [line,f,lf] = getfields(fid);
@@ -230,7 +230,7 @@ while 1
   end
   
   
-  %% handle RHS section
+  % handle RHS section
   if strcmp(f{1},'RHS')
     [line,f,lf] = getfields(fid);
     
@@ -277,7 +277,7 @@ while 1
   end
   
   
-  %% handle the RANGES section.
+  % handle the RANGES section.
   if strcmp(f{1},'RANGES')
     [line,f,lf] = getfields(fid);
     rngname = 'DRNG';
@@ -316,7 +316,7 @@ while 1
   end
   
   
-  %% handle the BOUNDS section.
+  % handle the BOUNDS section.
   if strcmp(f{1},'BOUNDS')
     [line,f,lf] = getfields(fid);
     bndname = 'DBOUND';

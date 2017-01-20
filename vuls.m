@@ -1,17 +1,19 @@
 function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
-%% VULS: Verification for Underdetermined Linear Systems
-%       of inequalities and equations:
-%              A * x <= a,
-%              B * x  = b,   or if B is transposed:  x' * B = b'
-%              xl <= x <= xu
-% The input A (m*n matrix), a (m-vector), B (p*n or n*p matrix), and  b (p-vector)
-% can be real or interval quantities; the simple bounds xl, xu  must
-% be real, but may be infinite; the approximate solution x0 must be real.
-% The optional input vector I must contain p indices out of {1,...,n} such
-% that the submatrix B(:,I) is nonsingular; if opts.VERIFY_FULL_LSS is true
-% the full non-symmetric lss enclosure algorithm will be applied.
+% VULS  Verification for underdetermined linear systems.
 %
-%% Output:
+%         A * x <= a,
+%         B * x == b,     or if B is transposed:  x' * B == b'
+%         xl <= x <= xu.
+%
+%   The input A (m*n matrix), a (m-vector), B (p*n or n*p matrix), and b
+%   (p-vector) can be real or interval quantities; the simple bounds xl and xu
+%   must be real, but may be infinite; the approximate solution x0 must be real.
+%   The optional input vector I must contain p indices out of {1,...,n} such
+%   that the submatrix B(:,I) is nonsingular; if opts.VERIFY_FULL_LSS is true
+%   the full non-symmetric lss enclosure algorithm will be applied.
+%
+%   The output is:
+%
 %      X   a box (n-interval vector), containing for every real
 %          input (A,a,B,b)  within the interval input data a  solution
 %          x of the above system, provided J is empty. Especially,
@@ -34,10 +36,11 @@ function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
 %             J.lower: violated indices of  xl <= X ,
 %             J.upper: violated indices of  X <= xu .
 %
+%   See also vsdpinfeas, vsdplow, vsdpup.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check parameter
+% check parameter
 if nargin<7 || isempty(x0) || ~isnumeric(x0)
   error('VULS: not enough input parameter or no initial solution set');
 end
@@ -109,7 +112,7 @@ if nargin<9
 end
 
 
-%% import options
+% import options
 global VSDP_OPTIONS;
 
 % full non-symmetric matrix lss verification
@@ -121,7 +124,8 @@ elseif isfield(VSDP_OPTIONS,'VERIFY_FULL_LSS')
 end
 
 
-%% preparation
+% preparation
+
 % initial output
 X = nan(n,1);
 J.ineqlin = [];

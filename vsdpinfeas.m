@@ -1,9 +1,8 @@
 function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
-%% VSDPINFEAS - infeasibility check for semidefinite-quadratic-linear programming
-%    [infeas x y] = vsdpinfeas(A,b,C,K,choose,x0,y0,z0)
+% VSDPINFEAS Infeasibility check for semidefinite-quadratic-linear programming.
 %
-%% >> Description:
-%     computes verified upper bound of primal optimal value and rigorous
+%   [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,z0,opts)
+%     Computes verified upper bound of primal optimal value and rigorous
 %     enclosure of primal strict feasible (near optimal) solution of a conic
 %     problem in the standard primal-dual form:
 %
@@ -16,7 +15,7 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 %     For a theoretical introduction into verified conic programming see
 %     [Jansson2009].
 %
-%% >> Input:
+% Input:
 % A: nA x m coefficient matrix in SeDuMi or VSDP internal format
 % b: a M x 1 vector
 % c: a nA x 1 vector, primal objective
@@ -36,7 +35,7 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 %                              the code is a little bit slower
 %                                   -> default: true
 %
-%% >> Output:
+% Output:
 % infeas: 1 if primal infeasibility is proved
 %         0 if couldn't prove infeasibility
 %        -1 if dual infeasibility is proved
@@ -45,7 +44,8 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 % y: a M x 1 vector - a rigorous Farkas solution if primal
 %    infeasiblity could be proved (dual unbounded ray)
 %
-%% EXAMPLE:
+%   Example:
+%
 % EPS = -0.01; DELTA = 0.1;
 %  min <[0 0; 0 0],X>
 %  s.t. <[1 0; 0 0],X> = [EPS];
@@ -65,10 +65,11 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 %  -100.5998
 %    -0.0060
 %
+%   See also mysdps.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input
+% check input
 if nargin<7
   error('VSDP:VSDPINFEAS','to few input arguments');
 elseif nargin<9
@@ -107,10 +108,10 @@ setround(0);
 [A,Arad,b,brad,c,crad,K,x0,y0,~,IF] = import_vsdp(A,b,c,K,x0,y0,[]);
 
 
-%% check primal infeasibility
+% check primal infeasibility
 if choose=='p'
   
-  %% 1.step: rigorous enclosure for z = -A*y
+  % 1.step: rigorous enclosure for z = -A*y
   if K.f>0
     % solve dual linear constraints rigorously
     y0 = vuls([],[],struct('mid',A(1:K.f,:),'rad',Arad(1:K.f,:)),...
@@ -131,7 +132,7 @@ if choose=='p'
   % z = -A*y  (with free variables)
   [z,zrad] = resmidrad(0,0,A,y0,0,0,Arad,y0rad);
   
-  %% 2.step: check positive cost
+  % 2.step: check positive cost
   alpha = prodsup(-b',y0,brad',y0rad);
   if alpha>=0
     disp('VSDPINFEAS: could not verify primal infeasibility');
@@ -139,7 +140,7 @@ if choose=='p'
     return;
   end
   
-  %% 3.step: verified lower bounds on cone eigenvalues
+  % 3.step: verified lower bounds on cone eigenvalues
   dl = inf;
   % bound for linear variables
   if K.l>0
@@ -176,7 +177,7 @@ if choose=='p'
     blke = blks - 1;
   end
   
-  %% 4.step: final feasibility check, compute result
+  % 4.step: final feasibility check, compute result
   if dl>=0
     infeas = 1;
     if any(y0rad)
@@ -189,10 +190,10 @@ if choose=='p'
   return;
   
   
-  %% check dual infeasibility
+  % check dual infeasibility
 elseif choose=='d'
   
-  %% 1.step: check c'*x > 0
+  % 1.step: check c'*x > 0
   [alpha, alpharad] = spdotK(c,x0,3);
   setround(1);  % default rounding mode for verification
   alpharad = alpharad + crad'*x0;
@@ -202,7 +203,7 @@ elseif choose=='d'
     return;
   end
   
-  %% 2.step: inclusion for x such that A*x = 0
+  % 2.step: inclusion for x such that A*x = 0
   vx = vuls([],[],struct('mid',A,'rad',Arad),0*b,[],[],x0,[],opts);
   if ~isstruct(vx)
     disp('VSDPINFEAS: could not verify dual infeasibility');
@@ -225,7 +226,7 @@ elseif choose=='d'
   x0rad = sparse(vx.rad);
   x0 = full(vx.mid);
   
-  %% 3.step: verified lower bounds on cone eigenvalues
+  % 3.step: verified lower bounds on cone eigenvalues
   lb = inf;
   % bound for linear variables
   if K.l>0
@@ -266,16 +267,13 @@ elseif choose=='d'
     blke = blke - blk3;
   end
   
-  %% 4.step: final feasibility check, compute result
+  % 4.step: final feasibility check, compute result
   if lb>=0
     infeas = -1;
     x = export_vsdp(IF,K,midrad(full(x0),full(x0rad)));
   end
   setround(rnd);
   return;
-  
-  
-  %% wrong "choose" parameter
 else
   error('VSDP:VSDPINFEAS','"choose" must be p or d');
 end

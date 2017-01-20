@@ -1,12 +1,11 @@
 function R = resmag(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
-% helper function to compute a rigorous upper bound for
-%       R = magnitude(A*B-C*D),
+% RESMAG  Compute a rigorous upper bound for magnitude(A*B-C*D).
 %
-%   R = resmag(Amid,Bmid,Cmid,Dmid)
-%   R = resmag(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
+%   R = RESMAG(Amid,Bmid,Cmid,Dmid)
+%   R = RESMAG(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
 %
-% this function is used within VSDP (for efficiency reasons)
-% Important!    setround(1) is assumed
+% This function is used within VSDP (for efficiency reasons).
+% setround(1) is assumed.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 

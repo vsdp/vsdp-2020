@@ -1,8 +1,8 @@
 function [K,A,c,x,z] = vsdp12vsdp(blk,At,C,Xt,Zt)
-%% VSDP2SEDUMI:  transforms problem data from VSDP 0.1 to new VSDP format
-%    [K,A,c,x,z] = vsdp12vsdp(blk,At,C,Xt,Zt)
+% VSDP12VSDP  Convert problem data from VSDP 2006 to VSDP 2012 format.
 %
-%% >> Input:
+%   [K,A,c,x,z] = vsdp12vsdp(blk,At,C,Xt,Zt)
+%
 % blk: a cell array describing the block diagonal structure of problem data
 % At: a cell array with At{i,1:m} = [svec(Ai1) ... svec(Aim)]
 %     for positive semidefinite cone constraint matrices, where Aij is the
@@ -11,7 +11,6 @@ function [K,A,c,x,z] = vsdp12vsdp(blk,At,C,Xt,Zt)
 % Xt: a cell array of matrices, initial primal solution
 % Zt: a cell array of matrices, initial dual solution
 %
-%% >> Output:
 % A: a dims3 x M Matrix,
 %     whereas dims3: sum of all sdp variables: dims3 = sum_i(K.s(i)*(K.s(i)+1)/2)
 % c: dims3 x 1 vector for primal objective function

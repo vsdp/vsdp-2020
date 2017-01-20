@@ -1,5 +1,5 @@
 function [res, resrad, q] = spdotK(varargin)
-%% SPDOTK   Dot products in K-fold precision
+% SPDOTK  Dot products in K-fold precision.
 %
 %   [res, resrad] = spdotK(A1,x1,...,An,xn,K)
 %
@@ -50,7 +50,7 @@ end
 factor = 134217729;  % splitting factor 2^27+1
 
 
-%% prepare input
+% prepare input
 
 % check whether Ai*xi or Ai.'*xi shall be computed
 szs = zeros(floor(nargin/2),4);  % [size(Ai) size(xi); ...]
@@ -81,7 +81,7 @@ end
 
 
 if 10*nnz(A)<numel(A)
-  %% two-product - sparse
+  % two-product - sparse
   
   % vertical: A.'*x
   if horz
@@ -172,7 +172,7 @@ if 10*nnz(A)<numel(A)
   end
   
 else
-  %% two-product - full
+  % two-product - full
   
   % use full matrix
   if issparse(A)
@@ -286,7 +286,7 @@ else
 end
 
 
-%% compute radius
+% compute radius
 if nargout<2
   % for-loop is faster than  res + cellfun(@(x) sum(x),q)
   for i = 1:length(q)

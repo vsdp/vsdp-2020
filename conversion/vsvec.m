@@ -1,9 +1,10 @@
 function [vA, I] = vsvec(A,K,mu,sflag,I)
-%% VSVEC:  svec operator for VSDP3
-%    vA = vsvec(A,K,mu,sflag)
-%    [vA, I] = vsvec(A,K,mu,sflag,I)
+% VSVEC  Vectorize a symmetric block diagonal matrix.
 %
-%% >> Description:
+%    vA = VSVEC(A,K,mu,sflag)
+%    [vA, I] = VSVEC(A,K,mu,sflag,I)
+%
+% Description:
 % For symmetric matrices X and Y it applies:
 % <X,Y> := trace(X*Y) = svec(X,K,sqrt(2))'*svec(Y,K,sqrt(2)).
 % Don't use mu = sqrt(2) for verified computations. Instead,
@@ -12,7 +13,7 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 % For a symmetric matrix X let A=X(:). Then for K.s=n  (n=length(X))
 %   svec(A,K,mu) = [x11 mu*x12 x22 mu*x13 mu*x23 x33 ... mu*x1n ... xnn]
 %
-%% >> Input:
+% Input:
 % A: a M x nA matrix, or nA x M matrix, alternatively
 %     whereas nA = dimf+diml+dimq+dims
 %     dimf: number of free variables: dimf = sum_i(K.f(i)>0)
@@ -33,7 +34,7 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 % I: index cell for matrix conversion. Setting the index vector "I" avoids
 %    creation of the index vector and saves some computation time.
 %
-%% >> Output:
+% Output:
 % vA: an M x nA3 matrix, or nA3 x M matrix (depends on input)
 %     whereas nA3 = dimf+diml+dimq+dims3
 %     dims3: sum of all sdp variables: dims3 = sum_i(K.s(i)*(K.s(i)+1)/2)
@@ -42,8 +43,6 @@ function [vA, I] = vsvec(A,K,mu,sflag,I)
 %
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
-
-%% preparation
 
 % check input parameter
 if nargin<2 || ~isstruct(K)
@@ -99,7 +98,7 @@ else
 end
 
 
-%% index creation  -  upper triangular part
+% index creation  -  upper triangular part
 ns = length(K.s);
 if isempty(I)
   I = cell(ns+1,1);
@@ -111,7 +110,7 @@ if isempty(I)
 end
 
 
-%% index vector for lower triangular parts of sdp blocks
+% index vector for lower triangular parts of sdp blocks
 if sflag==0 && isempty(Ilow)
   Ilow = cell(ns+1,1);
   Ilow{1} = (1:nos)';
@@ -127,7 +126,7 @@ if sflag==0 && isempty(Ilow)
 end
 
 
-%% remove all rows that are not indexed, regard mu
+% remove all rows that are not indexed, regard mu
 switch 2*(sflag==1)+idim
   case 1  % sflag==0 && idim==1
     vA = 0.5 * (A(I,:) + A(Ilow,:));

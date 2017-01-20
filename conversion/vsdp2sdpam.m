@@ -1,8 +1,9 @@
 function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
-%% VSDP2SDPT3:  transforms problem data from VSDP3 to SDPAM format
-%    [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpt3(At,b,c,K)
+% VSDP2SDPAM  Convert problem data from VSDP 2012 to SDPAM format.
 %
-%% >> Input:
+%   [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
+%
+% Input:
 % A: a nA3 x M Matrix,
 %     whereas nA = dimf+diml+dimq+dims3
 %     dimf: number of free variables: dimf = sum(K.f>0)
@@ -20,7 +21,7 @@ function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
 % y: a M x 1 vector - approx. dual optimal solution
 % z: a nA3 x 1 vector - approx. dual optimal solution (slack vars)
 %
-%% >> Output:
+% Output:
 % mDIM: scalar - number of primal variables
 % nBLOCK: scalar - number of blocks of F
 % bLOCKsTRUCT: scalar - represents the block structure of F
@@ -32,7 +33,7 @@ function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input
+% check input
 if nargin<4 || ~isstruct(K) || isempty(A) || isempty(b) || isempty(c)
   error('VSDP:VSDP2SDPAM','the given problem is incomplete');
 elseif nargin<5
@@ -43,10 +44,10 @@ elseif nargin<7
   z = [];
 end
 
-c = c(:);  x = x(:);  y = y(:);  z = z(:);
-
-
-%% prepare data
+c = c(:);
+x = x(:);
+y = y(:);
+z = z(:);
 
 % prepare K
 fields = isfield(K,{'f','l','q','s'});
@@ -100,8 +101,7 @@ Y0 = cell(nBLOCK,1);
 % free some memory
 clear x z b y;
 
-
-%% transform linear part
+% transform linear part
 if K.l
   At = A(1:K.l,:);
   Y0{1} = At(:,1:xdim);
@@ -111,8 +111,7 @@ if K.l
   end
 end
 
-
-%% transform sdp part
+% transform sdp part
 blkj = K.l;
 for j = (K.l>0)+1:nBLOCK
   nj = K.s(j-(K.l>0));

@@ -1,26 +1,24 @@
-function [s] = benchmark(path, filename, file, tfile, solverlist)
-%% BECNHMARKING - a routine to perform a benchmark
-%    s = benchmarking(path, filename, file, tfile)
+function s = benchmark(path, filename, file, tfile, solverlist)
+% BENCHMARK  Performs a benchmark.
 %
-%% >> Description:
-% A benchmark test will be performed on problems found on path 'path'.
-% The results (optimal values ,rigorous lower and upper bounds and times)
-% are saved in the textfiles 'filename' reps. 'filename'_timings or
-% in the files given by handels 'file' resp. 'tfile'. Some Tex sequences
-% for tables in Latex will be created.
+%   s = BENCHMARK(path, filename, file, tfile, solverlist)
+%      A benchmark test will be performed on problems found on path 'path'.
+%      The results (optimal values ,rigorous lower and upper bounds and times)
+%      are saved in the textfiles 'filename' reps. 'filename'_timings or
+%      in the files given by handels 'file' resp. 'tfile'. Some Tex sequences
+%      for tables in Latex will be created.
 %
-%% >> Input:
-% path: path of test problems
-% filename: name of the file for the results
-% file, tfile: file handels for results if not given by 'filename'
-%
-%% >> Output:
-% s: 0 if benchmark test completed, otherwise an error will be thrown
+%      path:         path of test problems
+%      filename:     name of the file for the results
+%      file, tfile:  file handels for results if not given by 'filename'
+%      solverlist:   list of solvers to use.
+%      s:            0 if benchmark test completed, otherwise an error will be
+%                    thrown
 %
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% preparation
+% preparation
 sysstr = computer;
 if isempty(strfind(sysstr,'WIN'))
   nlstr= '\n';

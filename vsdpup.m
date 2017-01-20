@@ -1,61 +1,60 @@
 function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
-%% VSDPLOW - verified upper bound for semidefinite-quadratic-linear programming
-%    [fU x lb info] = vsdpup(A,b,c,K,x0,y0,z0)
+% VSDPUP  Verified upper bound for semidefinite-quadratic-linear programming.
 %
-%% >> Description:
-%     computes verified upper bound of primal optimal value and rigorous
-%     enclosure of primal strict feasible (near optimal) solution of a conic
-%     problem in the standard primal-dual form:
+%   [fU,x,lb,info] = VSDPUP(A,b,c,K)
+%      Computes verified upper bound of primal optimal value and rigorous
+%      enclosure of primal strict feasible (near optimal) solution of a conic
+%      problem in the standard primal-dual form:
 %
-%    (P)  min  c'*x          (D)  max  b'*y
-%         s.t. A*x = b            s.t. z := c - A'*y
-%              x in K                  z in K*
+%         (P)  min  c'*x          (D)  max  b'*y
+%              s.t. A*x = b            s.t. z := c - A'*y
+%                   x in K                  z in K*
 %
-%     where K is a cartesian product of the cones R+, SOCP, PSD.
+%      where K is a cartesian product of the cones R+, SOCP, PSD.
 %
-%     For a theoretical introduction into verified conic programming see
-%     [Jansson2009].
+%      For theoretical introduction into verified conic programming see
+%      [Jansson2009].
 %
-%% >> Input:
-% A: nA x m coefficient matrix in SeDuMi or VSDP internal format
-% b: a M x 1 vector
-% c: a nA x 1 vector, primal objective
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
-% x0: a nA x 1 vector - a primal feasible (eps-optimal) solution
-% y0: a M x 1 vector - a dual feasible (eps-optimal) solution
-% z0: a nA x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
-% yu: upperbounds of the absolute value of dual optimal solution y
-% opts: structure for additional parameter settings:
-%     fields:
-%     	'ITER_MAX'   maximum number of iterations that can be used to
-%                    perturbate the problem and find a feasible solution
-%    	'ALPHA'   growing factor for problem perturbation
-%                       -> default: 0.5
-%     	'FULL_EIGS_ENCLOSURE'  if true code for stronger complete
-%                              eigenvalue enclosure will be applied
-%                              the code is a little bit slower
-%                                   -> default: true
-%     	'SOLVER'  to select one of the supported solvers:
-%               'sedumi','sdpt3','sdpa','csdp','sdplr', 'lp_solve','linprog'
-%    	'USE_STARTING_POINT'  decides whether initial starting point shall
-%                             be used or not
-%                               -> default: false
 %
-%% >> Output:
-% fU: verified upper bound of the primal optimal value
-%  x: a nA x 1 vector - rigorous enclosure of primal strict feasible solution
-% lb: verified lower bounds of eigenvalues or spectral values of X with
-%     respect to K
-% info.iter: number of iterations
+%         A: nA x m coefficient matrix in SeDuMi or VSDP internal format
+%         b: a M x 1 vector
+%         c: a nA x 1 vector, primal objective
+%         K: a structure with following fields
+%            - K.f stores the number of free variables
+%            - K.l is the number of nonnegative components
+%            - K.q lists the lengths of socp blocks
+%            - K.s lists the dimensions of semidefinite blocks
+%         x0: a nA x 1 vector - a primal feasible (eps-optimal) solution
+%         y0: a M x 1 vector - a dual feasible (eps-optimal) solution
+%         z0: a nA x 1 vector - a dual feasible (eps-optimal) solution
+%             (slack vars)
 %
+%         fU: verified upper bound of the primal optimal value
+%         x:  a nA x 1 vector - rigorous enclosure of primal strict feasible
+%             solution
+%         lb: verified lower bounds of eigenvalues or spectral values of X with
+%             respect to K
+%         info.iter: number of iterations
+%
+%   VSDPUP(...,yu,opts)
+%         yu: upperbounds of the absolute value of dual optimal solution y
+%         opts: structure for additional parameter settings:
+%            'ITER_MAX'  maximum number of iterations that can be used to
+%                        perturbate the problem and find a feasible solution
+%            'ALPHA'  growing factor for problem perturbation (default: 0.5)
+%            'FULL_EIGS_ENCLOSURE'  if true code for stronger complete
+%                                   eigenvalue enclosure will be applied
+%                                   the code is a little bit slower
+%                                   (default: true)
+%            'SOLVER'  to select one of the supported solvers
+%            'USE_STARTING_POINT'  decides whether initial starting point shall
+%                                  be used or not (default: false)
+%
+%   See also mysdps.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% input parameter
+% input parameter
 
 % check number of input arguments
 if nargin<5 || isempty(A) || isempty(b) || isempty(c) || isempty(K)
@@ -96,7 +95,7 @@ for i = 1:length(optLIST)
 end
 
 
-%%  Preliminary steps / Prealocations
+%  Preliminary steps / Prealocations
 
 % default output
 fU = Inf;
@@ -133,14 +132,14 @@ elseif length(yu)~=m
 end
 
 
-%% Algorithm with finite dual bounds yu, projection into cone
+% Algorithm with finite dual bounds yu, projection into cone
 if max(yu)<inf
   setround(1);  % default rounding mode for verification code
   x = full(x);  % faster for verification code
-  
+
   % projection of linear part
   x(K.f+1:K.f+K.l) = max(x(K.f+1:K.f+K.l),0);
-  
+
   % projection of socp part
   blke = K.f + K.l;
   for j = 1:length(K.q)
@@ -150,7 +149,7 @@ if max(yu)<inf
     x(blke+1) = max(xj1,xjn);  % very simple projection
     blke = blke + K.q(j);
   end
-  
+
   % projection of sdp part, force to psd cone
   blke = K.f + K.l + sum(K.q);
   for j = 1:length(K.s)
@@ -163,7 +162,7 @@ if max(yu)<inf
     end
     blke = blke + dind(end);
   end
-  
+
   % x <in> K:  now regard defect = |A*x-b|
   defect = resmag(x',A,b',1,0,Arad,brad',0);
   % fU = sup(x'*c + defect*yu)
@@ -174,7 +173,7 @@ if max(yu)<inf
   return;
 end
 
-%% Algorithm with infinite dual bounds yu
+% Algorithm with infinite dual bounds yu
 % variable declarations and allocations
 x0 = x;  % starting point
 lb = -inf(nc,1);  % dual lower bounds
@@ -191,12 +190,12 @@ pertI(1) = K.f + 1;
 pertI = cumsum(pertI);
 
 
-%% **** main loop ****
+% **** main loop ****
 while info.iter<=ITER_MAX
   info.iter = info.iter + 1;
   setround(1);  % default rounding for verification part
-  
-  %% 1.step: compute rigorous enclosure for x
+
+  % 1.step: compute rigorous enclosure for x
   [x, I] = vuls([],[],struct('mid',A,'rad',Arad),...
     struct('mid',b,'rad',brad),[],[],x,I,opts);
   if ~isstruct(x)
@@ -206,8 +205,8 @@ while info.iter<=ITER_MAX
     xrad = sparse(x.rad);
     x = full(x.mid);
   end
-  
-  %% 2.step: verified lower bounds on cone eigenvalues
+
+  % 2.step: verified lower bounds on cone eigenvalues
   if K.l>0  % bound for linear variables
     ind = K.f+1:K.f+K.l;
     xjn = xrad(ind) - x(ind);  % -inf(xl)
@@ -247,8 +246,8 @@ while info.iter<=ITER_MAX
     pertS{j} = epsj(ofs) * pertS{j}(:);
     blke = blke - blk3;
   end
-  
-  %% 3.step: cone feasibility check, computing upper bound
+
+  % 3.step: cone feasibility check, computing upper bound
   lbi = lb<0;
   if ~any(lbi)
     fU = prodsup(x',c,xrad',crad);  % sup(x'*c)
@@ -256,8 +255,8 @@ while info.iter<=ITER_MAX
     setround(rnd);
     return;
   end
-  
-  %% 4.step: create some perturbed problem
+
+  % 4.step: create some perturbed problem
   setround(0);  % no code for rigorous computations
   ind = 1:K.l+length(K.q);
   if isempty(ind)
@@ -271,8 +270,8 @@ while info.iter<=ITER_MAX
     break;
   end
   epsj(lbi) = epsj(lbi) * (1+ALPHA);  % update perturbation factor
-  
-  %% 5.step: solve the perturbed problem
+
+  % 5.step: solve the perturbed problem
   clear lbi ind vx x xrad;  % free some memory before calling solver
   [~,x0,y0,z0,INFO] = mysdps(A,b+(xeps'*A)',c,K,x0,y0,z0,opts);
   % if could not find solution or primal infeasible: break

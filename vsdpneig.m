@@ -1,5 +1,6 @@
 function lambda = vsdpneig(A,hermit)
-% VSDPNEIG  rigorous enclosure of all eigenvalues of a normal matrix.
+% VSDPNEIG  Rigorous enclosure of all eigenvalues of a normal matrix.
+%
 %           Input matrix A has to be normal.
 %           A may also be an interval matrix, full or sparse. This interval
 %           matrix can be defined as:
@@ -8,7 +9,9 @@ function lambda = vsdpneig(A,hermit)
 %                  as 'mid' and the second as 'rad',
 %               3. a class of type 'intval' [see INTLAB toolbox].
 %
-%   @params
+%   Replaces "veigsym" from VSDP 2006.
+%
+%   lambda = VSDPNEIG(A,hermit)
 %       A:  Normal input matrix. Normality is not checked. However, if the
 %           condition of the approximative eigen-vector matrix is too bad
 %           the function will throw a warning.
@@ -18,15 +21,9 @@ function lambda = vsdpneig(A,hermit)
 %               equal to A' the matrix will be treated as an
 %               arbitrary normal matrix.
 %
-%   @output
 %       lambda: If A is of type 'intval' lambda will be of the same type,
 %               else lambda is a structure with the fields 'mid' and 'rad'
 %               which are describing the corresponding interval vector.
-%
-%   @dependencies: 'setround'-function [see Intlab]
-%
-%       Replaces "veigsym" by Christian Jansson
-%
 %
 % Example:
 %
@@ -57,12 +54,11 @@ function lambda = vsdpneig(A,hermit)
 %     0.0246
 %     0.0289
 %
+%   See also vsdplow, vsdpup, vsdpinfeas.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input data %%
-
-% input matrix
+% check input
 if nargin<1 || isempty(A)
   error('VSDPNEIG: No input matrix set.');
 elseif ~(isnumeric(A) || isa(A,'intval') || all(isfield(A,{'mid','rad'})))
@@ -74,8 +70,7 @@ if nargin<2 || ~islogical(hermit)
 end
 
 
-%% prepare input data %%
-
+% prepare input data
 % get rounding mode and set round to nearest
 rnd = getround();
 setround(0);    % for preparation only
@@ -91,7 +86,7 @@ else
   Arad = sparse(size(A,1),size(A,2));
 end
 
-%% prepare A
+% prepare A
 if size(A,1)~=size(A,2) && size(A,2)~=1
   A = A(:);
   Arad = Arad(:);
@@ -123,7 +118,7 @@ end
 e = ones(n,1);
 
 
-%% approximate eigenvalue decomposition %%
+% approximate eigenvalue decomposition
 [X,d] = eig(full(A));
 d = diag(d);
 
@@ -131,7 +126,7 @@ d = diag(d);
 % d = ( sum(conj(X).*(A*X),1)./(sum(conj(X).*X,1).^0.5) ).';
 
 
-%% calculate verified bounds by applying perturbation theorems %%
+% calculate verified bounds by applying perturbation theorems
 
 % default rounding mode for verification -> up
 setround(1);
@@ -221,7 +216,7 @@ end
 drad = r*e;  % radius of eigenvalue diagonal vector
 
 
-%% using generalized perturbation theorem for tighter inclusion %%
+% using generalized perturbation theorem for tighter inclusion
 
 % split into clusters of eigenvalues and update residual norms
 if hermit  % Cao: sharp version of Kahan's perturbation theorem
@@ -300,14 +295,13 @@ end
 
 
 
-%%% modified normposA from INTLAB by Siegfried M. Rump %%%
-
 function normbnd = norm22pos(A)
 % upper bound for squared spectral norm of nonnegative matrix A
 % applying collatz theorem to power iteration
 %
 % note: this is a helper function used by vsdpneig,
 %       parameters are not checked
+%       modified normposA from INTLAB by S.M. Rump
 
 % setround(1)       % here not set, already done in calling function
 

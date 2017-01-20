@@ -1,8 +1,9 @@
 function [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)
-%% VSDP2SDPT3:  transforms problem data from SDPAM to VSDP3 format
+% SDPAM2VSDP  Convert problem data from SDPAM to VSDP 2012 format.
+%
 %    [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)
 %
-%% >> Input:
+% Input:
 % mDIM: scalar - number of primal variables
 % nBLOCK: scalar - number of blocks of F
 % bLOCKsTRUCT: scalar - represents the block structure of F
@@ -11,7 +12,7 @@ function [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)
 % x0: vector for initial solution
 % X0,Y0: cell arrays of initial points
 %
-%% >> Output:
+% Output:
 % A: a nA3 x M Matrix,
 %     whereas nA = dimf+diml+dimq+dims3
 %     dimf: number of free variables: dimf = sum(K.f>0)
@@ -32,7 +33,7 @@ function [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% prepare data
+% prepare data
 if nargin<1 || isempty(bLOCKsTRUCT)
   error('VSDP:SDPAM2VSDP','"bLOCKsTRUCT" has to be set');
 end
@@ -49,18 +50,16 @@ inds = find(bLOCKsTRUCT>1);
 % index vector to speed up svec
 Ivec = [];
 
-
-%% create K
 K = struct('l',sum(abs(bLOCKsTRUCT(indl))),'s',reshape(bLOCKsTRUCT(inds),[],1));
 
 
-%% convert c to b
+% convert c to b
 if nargin>1
   b = -c;
 end
 
 
-%% convert F to c & A
+% convert F to c & A
 if nargin>2 && ~isempty(F)
   % vectorize linear part, sort blocks
   F = [ cellfun(@(x) x(linspace(1,numel(x),length(x))),F(indl,:),...
@@ -85,13 +84,13 @@ else
 end
 
 
-%% write y
+% write y
 if nargin>4
   y = x0;
 end
 
 
-%% convert X0 to z
+% convert X0 to z
 if nargin>3 && ~isempty(X0) && nargout>6
   % vectorize + sort blocks
   X0 = [ cellfun(@(x) reshape(x(linspace(1,numel(x),length(x))),[],1),...
@@ -103,7 +102,7 @@ if nargin>3 && ~isempty(X0) && nargout>6
 end
 
 
-%% convert Y0 to x
+% convert Y0 to x
 if nargin>5 && ~isempty(Y0) && nargout>4
   % vectorize + sort blocks
   Y0 = [ cellfun(@(x) reshape(x(linspace(1,numel(x),length(x))),[],1),...

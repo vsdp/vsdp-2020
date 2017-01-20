@@ -1,9 +1,8 @@
 function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
-%% MYSDPS - interface to several conic solvers for VSDP3
-%     [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0)
+% MYSDPS  Interface to several conic solvers for VSDP.
 %
-%% >> Description:
-%     uses a preselected solver to get an approx. solution of a conic
+%   [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
+%     Uses a preselected solver to get an approx. solution of a conic
 %     problem in the standard primal-dual form:
 %
 %    (P)  min  c'*x          (D)  max  b'*y
@@ -15,7 +14,7 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 %     For a theoretical introduction into verified conic programming see
 %     [Jansson2009].
 %
-%% >> Input:
+% Input:
 % A: nA x m coefficient matrix in SeDuMi or VSDP internal format
 % b: a M x 1 vector
 % c: a nA x 1 vector, primal objective
@@ -35,7 +34,7 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 %                             be used or not
 %                               -> default: true
 %
-%% >> Output:
+% Output:
 % obj: obj(1) - primal approx. optimal value
 %      obj(2) - dual approx. optimal value
 % x: a nC x 1 vector - approx. primal optimal solution
@@ -48,10 +47,11 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 %     info = 3: problem indicated to be primal and dual infeasible
 %     info = -1: an error occured
 %
+%   See also vsdpinit.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input parameter
+% check input parameter
 if nargin<4 || isempty(A) || isempty(b) || isempty(c) || isempty(K)
   error('VSDP:MYSDPS','not enpugh input parameter');
 elseif nargin<5
@@ -84,7 +84,7 @@ end
 [A,~,b,~,c,~,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,x0,y0,z0);
 
 
-%% get solver number
+% get solver number
 solverLIST = {'sedumi','sdpt3','sdpa','csdp','sdplr', ...
   'lp_solve','linprog'};
 nsolvers = length(solverLIST);
@@ -107,10 +107,10 @@ x = [];  y = [];  z = [];
 info = -1;
 
 
-%% call solver for problem
+% call solver for problem
 
 if any(solverID==1) && exist('sedumi','file')==2
-  %% call sedumi
+  % call sedumi
   
   % options parameter for sedumi
   OPTIONS = [];
@@ -135,7 +135,7 @@ if any(solverID==1) && exist('sedumi','file')==2
   info = INFO.pinf + 2*INFO.dinf;
   
 elseif any(solverID==2) && exist('sqlp','file')==2
-  %% call sdpt3
+  % call sdpt3
   
   % options parameter for sdpt3
   OPTIONS = [];
@@ -163,7 +163,7 @@ elseif any(solverID==2) && exist('sqlp','file')==2
   end
   
 elseif any(solverID==3) && exist('sdpam','file')==2
-  %% call sdpa
+  % call sdpa
   
   % check cones
   if K.f>0 || sum(K.q)>0
@@ -197,7 +197,7 @@ elseif any(solverID==3) && exist('sdpam','file')==2
   
   
 elseif any(solverID==4) && exist('csdp','file')==2
-  %% call csdp
+  % call csdp
   
   % check cones
   if sum(K.q)>0
@@ -235,7 +235,7 @@ elseif any(solverID==4) && exist('csdp','file')==2
   end
   
 elseif any(solverID==5) && exist('sdplr','file')==2
-  %% call sdplr
+  % call sdplr
   
   % check cones
   if K.f>0 || sum(K.q)>0
@@ -268,7 +268,7 @@ elseif any(solverID==5) && exist('sdplr','file')==2
   info = 0;
   
 elseif any(solverID==6) && exist('lp_solve','file')==2
-  %% call lp_solve
+  % call lp_solve
   
   % test of not supported cones,
   if sum(K.q)>0 || sum(K.s)>0
@@ -287,7 +287,7 @@ elseif any(solverID==6) && exist('lp_solve','file')==2
   info = (stat==2) + 2*(stat==3);
   
 elseif any(solverID==7) && exist('linprog','file')==2
-  %% call linprog
+  % call linprog
   
   % options parameter for linprog
   OPTIONS = optimset('LargeScale','on');

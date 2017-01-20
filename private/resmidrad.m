@@ -1,16 +1,15 @@
 function [R,Rrad] = resmidrad(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
-% helper function to compute a rigorous midpoint radius enclosure for
-%       R = A*B-C*D
+% RESMIDRAD  Compute a rigorous midpoint radius enclosure for R = A*B-C*D.
 %
-%   [R,Rrad] = resmidrad(Amid,Bmid,Cmid,Dmid)
-%   [R,Rrad] = resmidrad(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
+%   [R,Rrad] = RESMIDRAD(Amid,Bmid,Cmid,Dmid)
+%   [R,Rrad] = RESMIDRAD(Amid,Bmid,Cmid,Dmid,Arad,Brad,Crad,Drad)
 %
-% this function is used within VSDP (for efficiency reasons)
-% Important!    setround(1) is assumed
+% This function is used within VSDP (for efficiency reasons).
+% setround(1) is assumed.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% calculate inclusion for point-matrices
+% calculate inclusion for point-matrices
 if isreal(Amid) && isreal(Bmid) && isreal(Cmid) && isreal(Dmid)
   % sup(A*B-C*D)
   R = Amid*Bmid + Cmid*(-Dmid);
@@ -52,7 +51,7 @@ if nargin<8
 end
 
 
-%% extend interval radius
+% extend interval radius
 if ~isempty(find(Arad,1))  % regard Arad
   Rrad = Rrad + Arad*(abs(Bmid)+Brad);
 end

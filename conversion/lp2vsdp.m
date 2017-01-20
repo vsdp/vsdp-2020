@@ -1,17 +1,17 @@
 function [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub)
-%% LP2VSDP:  transforms problem data from LP_SOLVE format to VSDP3 format
-%    [At,b,c,K] = lp2vsdp(A,b,c,e,lb,ub)
+% LP2VSDP  Converts problem data from LP_SOLVE format to VSDP 2012 format.
 %
-%% >> Description:
+%   [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub)
+%
 % The LP_SOLVE solver solves MILP problems of the form:
 %    max c'*x
 %    s.t. A*x <> b
 %         lb <= x <= ub
 % Function converts this form into the standard primal/dual form of conic
-% problems treated by VSDP3. Note, that if the problem gets dualized the
+% problems treated by VSDP 2012. Note, that if the problem gets dualized the
 % optimal value must be negated to get the right sign.
 %
-%% >> Input:
+% Input:
 % A: m x n matrix representing linear constraints
 % b: m x 1 vector of right sides for the inequality constraints
 % c: n x 1 vector of coefficients for primal objective function
@@ -20,7 +20,7 @@ function [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub)
 %     0 - equality
 %     1 - greater than
 %
-%% >> Output:
+% Output:
 % A:  Matrix of linear equations
 % b, c: - coefficients of primal/dual objective functions
 % K: K.f, K.l, K.q, K.s converted to column vectors
@@ -30,7 +30,7 @@ function [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input
+% check input
 b = b(:);
 c = c(:);
 [m,n] = size(A);

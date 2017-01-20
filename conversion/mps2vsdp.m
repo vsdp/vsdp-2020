@@ -1,12 +1,12 @@
 function [A,b,c,K,pd] = mps2vsdp(problem)
-%% MPS2VSDP:  reads/transform problem from MPS format to VSDP3 format
-%       [A,b,c,K,pd] = mps2vsdp(problem)
+% MPS2VSDP  Reads and converts problem from MPS format to VSDP 2012 format.
 %
-%% >> Input:
-% problem: can be the filename of a text file in MPS format or a problem
-%          structure as created by the read_mps function [see VSDP/read_mps]
+%   [A,b,c,K,pd] = mps2vsdp(problem)
 %
-%% >> Output:
+%      problem: can be the filename of a text file in MPS format or a problem
+%               structure as created by the read_mps function [see VSDP/read_mps]
+%
+% Output:
 % A: matrix of linear equations
 % b, c: - coefficients of primal/dual objective functions
 % K: a structure with following fields
@@ -20,7 +20,7 @@ function [A,b,c,K,pd] = mps2vsdp(problem)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input
+% check input
 if ischar(problem)
   problem = read_mps(problem);
 elseif isempty(problem) || ~all(isfield(problem,{'A','rowtypes'}))
@@ -28,18 +28,18 @@ elseif isempty(problem) || ~all(isfield(problem,{'A','rowtypes'}))
 end
 
 
-%% read A and c
+% read A and c
 idx = problem.rowtypes~='N';
 c = -sum(problem.A(~idx,:),1)';  % (-) because of maximization
 A = problem.A(idx,:);
 
 
-%% read e
+% read e
 e = problem.rowtypes(idx);
 e = (e=='G') - (e=='L');
 
 
-%% read b
+% read b
 if isfield(problem,'rhs') && ~isempty(problem.rhs)
   b = problem.rhs(idx,1);
 else
@@ -65,7 +65,7 @@ if isfield(problem,'ranges') && ~isempty(problem.ranges)
 end
 
 
-%% read lb and ub
+% read lb and ub
 if isfield(problem,'lowerbounds') && ~isempty(problem.lowerbounds)
   lb = problem.lowerbounds(:,1);
 else
@@ -78,7 +78,7 @@ else
 end
 
 
-%% transform LP format to VSDP format
+% transform LP format to VSDP format
 [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub);
 
 end

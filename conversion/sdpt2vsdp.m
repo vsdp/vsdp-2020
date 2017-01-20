@@ -1,10 +1,11 @@
 function [K,A,c,x,z] = sdpt2vsdp(blk,A,c,x,z)
-%% SDPT2VSDP - converts data in SDPT3 input format to VSDP format
-%    [K,A,c,x,z] = sdpt2vsdp(blk,At,c,x,z)
+% SDPT2VSDP  Convert data in SDPT3 input format to VSDP 2012 format.
 %
-% except for blk all input parameter are optional
+%   [K,A,c,x,z] = sdpt2vsdp(blk,At,c,x,z)
 %
-%% >> Input:
+% 
+%
+% Input: except for blk all input parameter are optional
 % blk: a cell array describing the block diagonal structure of SQL data
 % At: a cell array with At{1} = A(1:dimf,:), At{2} = A(dimf+1:dimf+diml,:)
 %     and the same for socp cone, and At{i} = [svec(Ai1) ... svec(Aim)]
@@ -16,7 +17,7 @@ function [K,A,c,x,z] = sdpt2vsdp(blk,A,c,x,z)
 %       -> approximate primal optimal solution
 % z: a cell array of matrices of dimensions given by K
 %
-%% >> Output:
+% Output:
 % K: a structure with following fields
 %     - K.f stores the number of free variables
 %     - K.l is the number of nonnegative components
@@ -32,14 +33,14 @@ function [K,A,c,x,z] = sdpt2vsdp(blk,A,c,x,z)
 % x: an nA3 x 1 vector   -> approximate optimal solution  - svec(mu=2)
 % z: an nA3 x 1 vector   -> approximate LMI dual vector  - svec(mu=1)
 %
-%%
+%
 % Note that the right hand side of the linear constraints (b) and the
 % dual optimal solution vector (y) have the same format in VSDP and SDPT3.
 %
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input
+% check input
 if nargin<1 || isempty(blk)
   error('VSDP:SDPT2VSDP','not enough input parameter');
 elseif nargin>1 && iscell(A) && all(min(size(A))~=[0 1])
@@ -50,7 +51,7 @@ elseif size(blk,2)>2 && any([blk{:,3}])
 end
 
 
-%% permutation index for cells if necessary
+% permutation index for cells if necessary
 
 % declare blk-vector
 blkvec = cat(1,blk{:,1});
@@ -68,7 +69,7 @@ if size(ind,1)~=size(blk,1)
 end
 
 
-%% create K
+% create K
 K = struct('f',sum([blk{indf,2}]),'l',sum([blk{indl,2}]),...
   'q',[blk{indq,2}]','s',[blk{inds,2}]');
 
@@ -79,7 +80,7 @@ doX = nargin>3 && iscell(x) && ~isempty(x{1}) && nargout>3;
 doZ = nargin>4 && iscell(z) && ~isempty(z{1}) && nargout>4;
 
 
-%% convert c,x,z
+% convert c,x,z
 if doC || doX || doZ
   % vectorize sdp blocks
   for i = 1:length(inds)
@@ -129,7 +130,7 @@ else
 end
 
 
-%% convert A
+% convert A
 if doA
   A = sscale(cat(1,A{ind}),K,sqrt(0.5));
 else

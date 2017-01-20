@@ -1,9 +1,10 @@
 function [A, I] = vsmat(vA,K,mu,sflag,I)
-%% VSMAT:  smat operator for VSDP3
-%    A = vsmat(vA,K,mu,sflag)
-%    [A, I] = vsmat(vA,K,mu,sflag,I)
+% VSMAT  SMAT operator for VSDP.
 %
-%% >> Description:
+%    A = VSMAT(vA,K,mu,sflag)
+%    [A, I] = VSMAT(vA,K,mu,sflag,I)
+%
+% Description:
 % For symmetric matrices X and Y it applies:
 % <X,Y> := trace(X*Y) = svec(X,K,sqrt(2))'*svec(Y,K,sqrt(2)).
 % The 'smat' operator is the converse operator of 'svec'.
@@ -14,7 +15,7 @@ function [A, I] = vsmat(vA,K,mu,sflag,I)
 %
 % it is:    vA = smat(svec(vA,K,mu),K,1/mu)
 %
-%% >> Input:
+% Input:
 % vA: an M x nA3 matrix, or nA3 x M matrix, alternatively
 %     whereas nA3 = dimf+diml+dimq+dims3
 %     dimf: number of free variables: dimf = sum_i(K.f(i)>0)
@@ -37,7 +38,7 @@ function [A, I] = vsmat(vA,K,mu,sflag,I)
 %    creation of the index vector and saves some computation time. If
 %    "sflag" is changed the index vector has to be computed again.
 %
-%% >> Output:
+% Output:
 % A: a M x nA matrix, or nA x M matrix, depending on the input
 %    whereas nA = dimf+diml+dimq+dims
 %    dims: sum of all sdp variables: dims = sum_i(K.s(i)^2)
@@ -47,7 +48,7 @@ function [A, I] = vsmat(vA,K,mu,sflag,I)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input parameter
+% check input
 if nargin<2
   error('VSDP:VSMAT','Not enough input parameter');
 end
@@ -94,7 +95,7 @@ elseif isize < 3 || isize==dim
 end
 
 
-%% mat-transformation index vector
+% mat-transformation index vector
 ns = length(K.s);
 if length(I)~=dim || (sflag==1 && ~isnumeric(I)) || (sflag~=1 && ~islogical(I))
   I = cell(ns+1,1);  % cell to hold index vectors for every sdp block
@@ -119,7 +120,7 @@ if length(I)~=dim || (sflag==1 && ~isnumeric(I)) || (sflag~=1 && ~islogical(I))
 end
 
 
-%% transform matrix
+% transform matrix
 if mu~=1
   vA = sscale(vA,K,mu);
 end

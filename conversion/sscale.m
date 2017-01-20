@@ -1,13 +1,13 @@
 function vA = sscale(vA,K,mu)
-%% SSCALE:  scale operator to scale the off-diagonal elements of sdp blocks
-%    vA = vscale(vA,K,mu)
+% SSCALE  Scale operator to scale the off-diagonal elements of sdp blocks.
 %
-%% >> Description:
+%   vA = sscale(vA,K,mu)
+%
 % For a symmetric matrix X it applies:
 %   vx = vscale(X(:),K,mu)  =>  vx = vX(:), where vX = mu*X + (1-mu)*I
 % The same holds valid for matrices in the SDPT3 format. (-> see svec)
 %
-%% >> Input:
+% Input:
 % vA: an nA x M, M x nA, nA3 x M, or M x nA3 matrix, alternatively,
 %     whereas nA = dimf+diml+dimq+dims,  nA3 = dimf+diml+dimq+dims3
 %     dimf: number of free variables: dimf = sum_i(K.f(i)>0)
@@ -23,13 +23,13 @@ function vA = sscale(vA,K,mu)
 % mu: scaling factor for off-diagonal elements
 %     for performance reasons and reversibilty mu=0 is not allowed
 %
-%% >> Output:
+% Output:
 % vA: matrix of same dimension as input vA
 %
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-%% check input parameter
+% check input
 if nargin~=3 || ~isstruct(K)
   error('VSDP:VSCALE','all input parameters have to be set\n');
 end
@@ -70,7 +70,7 @@ elseif mu==0
 end
 
 
-%% create index vector for diagonal entries
+% create index vector for diagonal entries
 if isize==dim  % full matrix format
   I = zeros(sum(K.s),1);
   I(cumsum([2; K.s(1:end-1)])) = K.s;
@@ -84,7 +84,7 @@ I(1) = nos + 1;
 I = cumsum(I);
 
 
-%% scale off-diagonal elements
+% scale off-diagonal elements
 transInt = false;  % transposed interval input
 if isa(vA,'intval') && idim==1
   vA = vA';
