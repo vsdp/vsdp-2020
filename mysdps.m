@@ -346,11 +346,9 @@ elseif any(solverID==7) && exist('linprog','file')==2
   info = [1 2] * (abs(flag)==[2; 3]);
   
 else
-  
   % no solver called
   warning('VSDP:MYSDPS','Solver not found!');
   disp('The selected solver could not be detected!');
-  
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end

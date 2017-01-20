@@ -115,4 +115,4 @@ if all(length(z)~=adim)
   z = vsmat(z,K,1,1,Imat);
 end
 
-%_____________________________End VSDP2SEDUMI___________________________
+end

@@ -282,4 +282,4 @@ end
 % reset warning state
 warning(wng);
 
-%______________________________END OF VSDPINIT____________________________
+end

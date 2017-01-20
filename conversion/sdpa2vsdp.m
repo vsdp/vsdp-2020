@@ -276,3 +276,5 @@ switch dtype
       A = [A(idx,:); A(idxs,:)];
     end
 end
+
+end

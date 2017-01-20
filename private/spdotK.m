@@ -312,4 +312,4 @@ if crnd~=rnd
   setround(rnd)
 end
 
-%____________________________ END OF SPDOTK _________________________
+end

@@ -127,5 +127,4 @@ if nargin>5 && ~isempty(Y0) && nargout>4
   x = vsvec(cat(1,Y0{:}),K,2,1,Ivec);  % mu=2
 end
 
-
-%__________________________End of SDPAM2VSDP___________________________
+end

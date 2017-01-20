@@ -32,3 +32,5 @@ if ~isempty(find(Brad,1))  % regard Brad
 end
 
 R = R + Rrad;
+
+end

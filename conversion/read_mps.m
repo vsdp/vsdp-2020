@@ -431,11 +431,8 @@ while 1
   end
 end
 
-%_________________________ END OF READ_MPS _____________________________
+end
 
-
-
-%%  HELPER FUNCTIONS  %%
 
 
 function [line,fields,lf] = getfields(fid)
@@ -457,8 +454,8 @@ while 1
     end
   end
 end
+end
 
-%_________________________ END OF GETFIELDS ____________________________
 
 
 function h = hash(key,n)
@@ -468,5 +465,4 @@ function h = hash(key,n)
 
 h = sum(key./(27.3:27+length(key)));
 h = round((h-floor(h))*(n-1)) + 1;
-
-%__________________________ END OF HASH _____________________________
+end

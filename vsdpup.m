@@ -309,4 +309,4 @@ if info.iter==ITER_MAX
 end
 fU = Inf; x = NaN; lb = NaN;
 
-%________________________________End VSDPUP_______________________________
+end

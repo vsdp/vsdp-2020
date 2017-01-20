@@ -278,8 +278,7 @@ end
 
 % reset rounding mode
 setround(rnd);
-
-%_____________________________END OF NBND4SDP____________________________
+end
 
 
 
@@ -289,3 +288,4 @@ setround(rnd);
 function res = sqrtsup(a)
 res = sqrt(a);
 res = res + realmin * (res.*(-res) > -a);
+end

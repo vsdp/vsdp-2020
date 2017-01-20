@@ -4,3 +4,4 @@ function res = sqrtsup(a)
 % only used in case the sqrt function does not regard the rounding mode
 res = sqrt(a);
 res = res + realmin * (res.*(-res) > -a);
+end

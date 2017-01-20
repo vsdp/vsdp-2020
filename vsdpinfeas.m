@@ -294,10 +294,7 @@ elseif choose=='d'
   
   %% wrong "choose" parameter
 else
-  
   error('VSDP:VSDPINFEAS','"choose" must be p or d');
-  
 end
 
-
-%______________________________End VSDPINFEAS_____________________________
+end

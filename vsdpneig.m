@@ -304,8 +304,7 @@ end
 
 % reset rounding mode
 setround(rnd);
-
-%________________________________END OF VSDPNEIG____________________________
+end
 
 
 
@@ -333,8 +332,8 @@ while normbnd
   end
   x = y / normbnd;
 end
+end
 
-%__________________________End of NORM22POS___________________________
 
 
 % the following is a small function to calculate a verified upper bound
@@ -343,3 +342,4 @@ end
 function res = sqrtsup(a)
 res = sqrt(a);
 res = res + realmin * (res*(-res) > -a);
+end

@@ -86,4 +86,4 @@ if nargin>4 && iscell(Zt) && ~isempty(Zt{1})
   clear Zt;
 end
 
-%_____________________________END OF VSDP12VSDP_________________________
+end

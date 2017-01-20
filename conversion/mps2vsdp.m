@@ -97,4 +97,4 @@ end
 %% transform LP format to VSDP format
 [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub);
 
-%___________________________End of MPS2VSDP____________________________
+end

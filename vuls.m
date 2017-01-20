@@ -225,4 +225,4 @@ if ~isIntval
   X = struct('mid',X.mid,'rad',X.rad);
 end
 
-%___________________________END OF VULS_________________________________
+end
