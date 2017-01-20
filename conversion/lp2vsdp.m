@@ -52,7 +52,7 @@ function [A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub)
 %% check input
 b = b(:);
 c = c(:);
-[m n] = size(A);
+[m,n] = size(A);
 if m~=length(b) || n~=length(c)
   error('VSDP:LP2VSDP','c or b not compatible with A');
 elseif m~=length(e)

@@ -265,7 +265,7 @@ while info.iter<=ITER_MAX
   
   %% 5.step: solve the perturbed problem
   clear dli ind z zrad;  % free some memory before calling solver
-  [obj,x0,y,z0,INFO] = mysdps(A,b,c+ceps,K,x0,y,z0,opts);
+  [~,x0,y,z0,INFO] = mysdps(A,b,c+ceps,K,x0,y,z0,opts);
   % if could not found solution or dual infeasible, break
   if isempty(y) || any(isnan(y)) || any(isinf(y)) || any(INFO(1)==[(1) 2 3])
     disp('VSDLOW: conic solver could not find solution for perturbed problem');

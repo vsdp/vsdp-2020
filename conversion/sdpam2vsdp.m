@@ -87,7 +87,7 @@ if nargin>2 && ~isempty(F)
   F = -cat(1,F{:,1});  % [c A] in SeDuMi format
   
   % compact VSDP format
-  [F Ivec] = vsvec(F,K,1,1);
+  [F,Ivec] = vsvec(F,K,1,1);
   
   % split into c and A
   c = F(:,1);
@@ -112,7 +112,7 @@ if nargin>3 && ~isempty(X0) && nargout>6
     cellfun(@(x) x(:),X0(inds),'UniformOutput',false) ];
   
   % concat + svec
-  [z Ivec] = vsvec(cat(1,X0{:}),K,1,1,Ivec);
+  [z,Ivec] = vsvec(cat(1,X0{:}),K,1,1,Ivec);
 end
 
 

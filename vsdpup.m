@@ -1,4 +1,4 @@
-function [fU x lb info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
+function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 %% VSDPLOW - verified upper bound for semidefinite-quadratic-linear programming
 %    [fU x lb info] = vsdpup(A,b,c,K,x0,y0,z0)
 %
@@ -292,7 +292,7 @@ while info.iter<=ITER_MAX
   
   %% 5.step: solve the perturbed problem
   clear lbi ind vx x xrad;  % free some memory before calling solver
-  [objt,x0,y0,z0,INFO] = mysdps(A,b+(xeps'*A)',c,K,x0,y0,z0,opts);
+  [~,x0,y0,z0,INFO] = mysdps(A,b+(xeps'*A)',c,K,x0,y0,z0,opts);
   % if could not find solution or primal infeasible: break
   if isempty(x0) || any(isnan(x0) | isinf(x0)) || any(INFO(1)==[1 (2) 3])
     disp('VSDPUP: could not find solution for perturbed problem');

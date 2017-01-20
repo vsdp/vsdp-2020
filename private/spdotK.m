@@ -86,7 +86,7 @@ else
 end
 
 
-if 10*nnz(A)<numel(A);
+if 10*nnz(A)<numel(A)
   %% two-product - sparse
   
   % vertical: A.'*x

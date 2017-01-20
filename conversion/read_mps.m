@@ -92,13 +92,13 @@ while 1
           problem.name = f{2};
         end
       case 3  % OBJSENSE
-        [line,f] = getfields(fid);
+        [~,f] = getfields(fid);
         problem.objsense = f{1};
       case 4  % REFROW
-        [line,f] = getfields(fid);
+        [~,f] = getfields(fid);
         problem.refrow = f{1};
       case 5  % OBJNAME
-        [line,f] = getfields(fid);
+        [~,f] = getfields(fid);
         problem.objname = f{1};
     end
     
@@ -192,9 +192,6 @@ while 1
       end
       
       % read entries in record
-      if strcmp(f{1},'DPLWRB25')
-        tt = 0;
-      end
       for i = 1+olf:2:lf-1
         rowno = rowtbl{hash(f{i},rown)};
         if length(rowno)>1
@@ -377,7 +374,7 @@ while 1
           disp(line);
           error('READ_MPS: invalid column in BOUNDS section');
         end
-      catch dummy
+      catch
         disp('hallo');
       end
       

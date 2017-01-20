@@ -119,7 +119,7 @@ if size(A,2)==1  % vectorized input
     X(triu(true(n))) = full(Arad);  % L is used as place-holder again
     Arad = reshape(X,n,n);
     Arad = Arad + triu(Arad,1)';
-    if nnz(Arad)<n*n/5;
+    if nnz(Arad)<n*n/5
       Arad = sparse(Arad);
     end
   else

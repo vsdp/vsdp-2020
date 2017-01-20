@@ -83,7 +83,7 @@ end
 % non-compact vectorized format
 xdim = ~isempty(x);
 zdim = ~isempty(z);
-[c Imat] = vsmat(c,K,1,1);
+[c,Imat] = vsmat(c,K,1,1);
 if zdim
   c = [vsmat(z,K,1,1,Imat) c];
 end
@@ -136,7 +136,7 @@ for j = (K.l>0)+1:nBLOCK
   Y0{j} = At(:,1:xdim*nj);
   X0{j} = At(:,xdim*nj+1:(xdim+zdim)*nj);
   blki = xdim + zdim;
-  for i = 1:mDIM+1;
+  for i = 1:mDIM+1
     F{j,i} = At(:,blki+1:blki+nj);
     blki = blki + nj;
   end

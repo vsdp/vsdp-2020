@@ -55,27 +55,27 @@ Ivec = [];
 
 % coefficient matrix
 if nargin>1 && iscell(At) && ~isempty(At{1})
-  [mblk nblk] = size(At);
+  [mblk,nblk] = size(At);
   A = cell(nblk,1);
   for i = nblk:-1:1
     % not memory but runtime efficient
     A{i} = reshape(cat(2,At{:,i}),[],mblk);
     At(:,i) = [];
   end
-  [A Ivec] = vsvec(cat(1,A{:}),K,1,1);
+  [A,Ivec] = vsvec(cat(1,A{:}),K,1,1);
 end
 
 % primal objective vector
 if nargin>2 && iscell(C) && ~isempty(C{1})
   C = cellfun(@(x) x(:),C,'UniformOutput',false);
-  [c Ivec] = vsvec(cat(1,C{:}),K,1,1,Ivec);
+  [c,Ivec] = vsvec(cat(1,C{:}),K,1,1,Ivec);
   clear C;
 end
 
 % initial primal solution vector
 if nargin>3 && iscell(Xt) && ~isempty(Xt{1})
   Xt = cellfun(@(x) x(:),Xt,'UniformOutput',false);
-  [x Ivec] = vsvec(cat(1,Xt{:}),K,2,1,Ivec);  % mu=2
+  [x,Ivec] = vsvec(cat(1,Xt{:}),K,2,1,Ivec);  % mu=2
   clear Xt;
 end
 

@@ -82,12 +82,12 @@ switch dtype
     b = -fscanf(fid,'%*[^0-9+-]%lf',m);
     
     %% read data of A and c
-    [data cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
+    [data,cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
     fclose(fid);
     if cnt==0 || mod(cnt,5)~=0
       error('VSDP:SDPA2VSDP','Could not read SDPA data');
     end
-    [col blk i j data] = deal(data(1,:), data(2,:), data(3,:), data(4,:), -data(5,:));
+    [col,blk,i,j,data] = deal(data(1,:), data(2,:), data(3,:), data(4,:), -data(5,:));
     
     % any i>j ?
     idx = find(i>j);
@@ -144,12 +144,12 @@ switch dtype
     dim = K.l + K.s'*K.s;
     
     %% read data of A and c
-    [c cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
+    [c,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if cnt~=dim
       fclose(fid);
       error('VSDP:SDPA2VSDP','Could not read SDPA data');
     end
-    [A cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim m]);
+    [A,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim m]);
     if cnt~=dim*m
       fclose(fid);
       error('VSDP:SDPA2VSDP','Could not read SDPA data');
@@ -190,12 +190,12 @@ switch dtype
     b = sscanf(str,'%*[^0-9+-]%lf',[inf 1]);
     
     %% read data of x0 and z0
-    [data cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
+    [data,cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
     fclose(fid);
     if cnt==0 || mod(cnt,5)~=0
       error('VSDP:SDPA2VSDP','Could not read SDPA data');
     end
-    [col blk i j data] = deal(data(1,:), data(2,:), data(3,:), data(4,:), data(5,:));
+    [col,blk,i,j,data] = deal(data(1,:), data(2,:), data(3,:), data(4,:), data(5,:));
     
     % any i>j ?
     idx = i>j;
@@ -249,12 +249,12 @@ switch dtype
     dim = K.l + K.s'*K.s;
     
     %% read data of z0 and x0
-    [c cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
+    [c,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if (cnt~=dim)
       fclose(fid);
       error('VSDP:SDPA2VSDP','Could not read SDPA data');
     end
-    [A cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
+    [A,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if (cnt~=dim)
       fclose(fid);
       error('VSDP:SDPA2VSDP','Could not read SDPA data');

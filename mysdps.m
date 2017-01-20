@@ -109,7 +109,7 @@ elseif isfield(VSDP_OPTIONS,'USE_STARTING_POINT')
 end
 
 % import data
-[A,dum,b,dum,c,dum,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,x0,y0,z0);
+[A,~,b,~,c,~,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,x0,y0,z0);
 
 
 %% get solver number
@@ -148,7 +148,7 @@ if any(solverID==1) && exist('sedumi','file')==2
     OPTIONS = VSDP_OPTIONS.SEDUMI_OPTIONS;
   end
   % transform data into sedumi format
-  [A c] = vsdp2sedumi(A,c,[],[],K,opts);
+  [A,c] = vsdp2sedumi(A,c,[],[],K,opts);
   % call sedumi
   [x,y,INFO] = sedumi(A,b,c,K,OPTIONS);
   % transform results to vsdp format
@@ -159,7 +159,7 @@ if any(solverID==1) && exist('sedumi','file')==2
     obj(2) = b'*y;
     z = c - A*y;
   end
-  [x z] = export_vsdp(IF,K,x,z);
+  [x,z] = export_vsdp(IF,K,x,z);
   info = INFO.pinf + 2*INFO.dinf;
   
 elseif any(solverID==2) && exist('sqlp','file')==2
@@ -181,8 +181,8 @@ elseif any(solverID==2) && exist('sqlp','file')==2
   % call sdpt3 solver [with intial point]
   [obj,x,y,z,INFO] = sqlp(blk,A,c,b,OPTIONS,x0,y0,z0);
   % transform results to vsdp format + export data
-  [dum,dum,dum,x,z] = sdpt2vsdp(blk,[],[],x,z);
-  [x z] = export_vsdp(IF,K,x,z);
+  [~,~,~,x,z] = sdpt2vsdp(blk,[],[],x,z);
+  [x,z] = export_vsdp(IF,K,x,z);
   % save info codes
   if isstruct(INFO)
     info = INFO.termcode;  % SDPT3-4.0 output
@@ -211,16 +211,16 @@ elseif any(solverID==3) && exist('sdpam','file')==2
     OPTIONS = VSDP_OPTIONS.SDPAM_OPTIONS;
   end
   % call csdp solver [with intial]
-  [dum,x0,X0,Y0,INFO] = sdpam(mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0,OPTIONS);
+  [~,x0,X0,Y0,~] = sdpam(mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0,OPTIONS);
   % transform results to vsdp format + export
-  [dum,dum,dum,dum,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,[],[],x0,X0,Y0);
+  [~,~,~,~,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,[],[],x0,X0,Y0);
   if ~isempty(x) && ~any(isnan(x))
     obj(1) = c'*x;
   end
   if ~isempty(y) && ~any(isnan(y))
     obj(2) = b'*y;
   end
-  [x z] = export_vsdp(IF,K,x,z);
+  [x,z] = export_vsdp(IF,K,x,z);
   info = 0;
   
   
@@ -257,7 +257,7 @@ elseif any(solverID==4) && exist('csdp','file')==2
   if ~isempty(y) && ~any(isnan(y))
     obj(2) = b'*y;
   end
-  [x z] = export_vsdp(IF,K,x,z);
+  [x,z] = export_vsdp(IF,K,x,z);
   if any(INFO==[0 1 2])
     info = INFO;
   end
@@ -292,7 +292,7 @@ elseif any(solverID==5) && exist('sdplr','file')==2
     obj(2) = b'*y;
     z = c - A*y;
   end
-  [x z] = export_vsdp(IF,K,x,z);
+  [x,z] = export_vsdp(IF,K,x,z);
   info = 0;
   
 elseif any(solverID==6) && exist('lp_solve','file')==2
@@ -303,7 +303,7 @@ elseif any(solverID==6) && exist('lp_solve','file')==2
     error('VSDP:MYSDPS','Second order and semidefinite cones are not supported by LPSOLVE');
   end
   % call lp_solve solver
-  [objt x y stat] = lp_solve(-full(c),A',full(b),zeros(length(b),1),[-inf(K.f,1);zeros(K.l,1)]);
+  [~,x,y,stat] = lp_solve(-full(c),A',full(b),zeros(length(b),1),[-inf(K.f,1);zeros(K.l,1)]);
   if ~isempty(x)
     obj(1) = c'*x;
   end
@@ -334,7 +334,7 @@ elseif any(solverID==7) && exist('linprog','file')==2
     x0 = [];
   end
   % call linprog solver [with intial point]
-  [x,tmp,flag,tmp,lambda] = ...
+  [x,~,flag,~,lambda] = ...
     linprog(full(c),[],[],A',full(b),[-inf(K.f,1); zeros(K.l,1)],inf(length(c),1),x0,OPTIONS);
   % transform results to vsdp format
   if ~isempty(x)

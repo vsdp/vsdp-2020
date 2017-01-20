@@ -165,11 +165,11 @@ if ~isempty(B)
   % determine the basis with lu decomposition
   if isempty(I)
     % bias towards greater x
-    [dum,I] = sort(abs(x0),'descend');
+    [~,I] = sort(abs(x0),'descend');
     if issparse(B)  % use UMFPACK
-      [dum,dum,rp,dum] = lu(B(I,:),[0.95 0.75],'vector');
+      [~,~,rp,~] = lu(B(I,:),[0.95 0.75],'vector');
     else
-      [dum,dum,rp] = lu(B(I,:),'vector');
+      [~,~,rp] = lu(B(I,:),'vector');
     end
     I = sort(I(rp(1:p)));  % sort for faster access
     clear dum rp idx isort xt;

@@ -103,13 +103,13 @@ mu = 2-sflag;
 Imat = [];
 adim = [0 dim];
 if all(length(A)~=adim)
-  [A Imat] = vsmat(A,K,mu,sflag);
+  [A,Imat] = vsmat(A,K,mu,sflag);
 end
 if all(length(c)~=adim)
-  [c Imat] = vsmat(c,K,mu,sflag,Imat);
+  [c,Imat] = vsmat(c,K,mu,sflag,Imat);
 end
 if all(length(x)~=adim)
-  [x Imat] = vsmat(x,K,0.5,1,Imat);  % x has been created by svec(mu=2)
+  [x,Imat] = vsmat(x,K,0.5,1,Imat);  % x has been created by svec(mu=2)
 end
 if all(length(z)~=adim)
   z = vsmat(z,K,1,1,Imat);

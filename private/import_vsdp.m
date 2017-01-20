@@ -1,4 +1,4 @@
-function [A Arad b brad c crad K x y z IF] = import_vsdp(A,b,c,K,x,y,z)
+function [A,Arad,b,brad,c,crad,K,x,y,z,IF] = import_vsdp(A,b,c,K,x,y,z)
 %% IMPORT_VSDP - allows to read different supported formats
 %    [A b c K] = read_vsdp(A,b,c,K)
 %    [A b c K x y z IF] = read_vsdp(A,b,c,K,x,y,z)
@@ -116,7 +116,7 @@ end
 % compact vectorized format
 if length(A)~=dim3
   IF = 'SEDUMI';
-  [A Ivec] = vsvec(A,K,1,0,Ivec);
+  [A,Ivec] = vsvec(A,K,1,0,Ivec);
 end
 if length(Arad)~=dim3 && any(find(Arad,1))
   Arad = vsvec(Arad,K,1,0,Ivec);
@@ -146,7 +146,7 @@ else
 end
 % compact vectorized format
 if size(c,1)~=dim3
-  [c Ivec] = vsvec(c,K,1,0,Ivec);
+  [c,Ivec] = vsvec(c,K,1,0,Ivec);
 end
 if size(crad,1)~=dim3 && any(find(crad,1))
   crad = vsvec(crad,K,1,0,Ivec);
@@ -163,7 +163,7 @@ if ~isempty(x)
   x = x(:);
   % compact vectorized format, mu=2
   if size(x,1)~=dim3
-    [x Ivec] = vsvec(x,K,1,0,Ivec);  % Ivec can only be used with mu=1
+    [x,Ivec] = vsvec(x,K,1,0,Ivec);  % Ivec can only be used with mu=1
     x = sscale(x,K,2);
   end
 end

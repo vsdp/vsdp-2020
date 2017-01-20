@@ -151,10 +151,10 @@ else
 end
 Imat = [];
 if length(c)~=dim
-  [c Imat] = vsmat(c,K,2,0);
+  [c,Imat] = vsmat(c,K,2,0);
 end
 if all(length(x0)~=[0 dim])  % vx0 = svec(x0(:),K,2), !! mu=2 !!
-  [x0 Imat] = vsmat(x0,K,1,0,Imat);
+  [x0,Imat] = vsmat(x0,K,1,0,Imat);
 end
 if all(length(z0)~=[0 dim])
   z0 = vsmat(z0,K,2,0,Imat);
@@ -346,7 +346,6 @@ if ~isempty(K.s)
           ct{k}{i} = 0.5 * sparse(ct{k}{i} + ct{k}{i}');
           blk2e = blk2e + nki*nki;
         end
-        nki = nk(end);
         ct{k} = blkdiag(ct{k}{:});
       end
     end

@@ -1,4 +1,4 @@
-function [stat opts] = vsdpinit(opts,display)
+function [stat,opts] = vsdpinit(opts,display)
 %% VSDPINIT - Initialization and defaults for VSDP3
 %    [stat] = vsdpinit(par,val)
 %
@@ -126,7 +126,6 @@ end
 
 %% update options
 stat = 0;  % number of read options fields
-wfields = 0;  % number of fields that could not be imported
 
 % solver
 solverLIST = {'sedumi','sdpt3','sdpa','csdp','sdplr', ...
@@ -140,7 +139,6 @@ if isfield(opts,'SOLVER')
     VSDP_OPTIONS.SOLVER = ofield;
   else
     warning('VSDP:VSDPINIT','selected solver is not supported');
-    wfields = wfields + 1;
   end
 elseif ~isfield(VSDP_OPTIONS,'SOLVER')
   warning('VSDP:VSDPINIT','no solver has been selected');
@@ -154,7 +152,6 @@ if isfield(opts,'USE_STARTING_POINT')
     VSDP_OPTIONS.USE_STARTING_POINT = ofield;
   else
     warning('VSDP:VSDPINIT','USE_STARTING_POINT has to be logical');
-    wfields = wfields + 1;
   end
 end
 
@@ -166,7 +163,6 @@ if isfield(opts,'ITER_MAX')
     VSDP_OPTIONS.MAX_ITER = ofield;
   else
     warning('VSDP:VSDPINIT','MAX_ITER not accepted');
-    wfields = wfields + 1;
   end
 end
 
@@ -178,7 +174,6 @@ if isfield(opts,'ALPHA')
     VSDP_OPTIONS.ALPHA = ofield;
   else
     warning('VSDP:VSDPINIT','ALPHA has wrong format or is zero');
-    wfields = wfields + 1;
   end
 end
 
@@ -190,7 +185,6 @@ if isfield(opts,'FULL_EIGS_ENCLOSURE')
     VSDP_OPTIONS.FULL_EIGS_ENCLOSURE = ofield;
   else
     warning('VSDP:VSDPINIT','FULL_EIGS_ENCLOSURE has to be logical');
-    wfields = wfields + 1;
   end
 end
 
@@ -202,7 +196,6 @@ if isfield(opts,'VERIFY_FULL_LSS')
     VSDP_OPTIONS.VERIFY_FULL_LSS = ofield;
   else
     warning('VSDP:VSDPINIT','VERIFY_FULL_LSS has to be logical');
-    wfields = wfields + 1;
   end
 end
 
@@ -214,7 +207,6 @@ if isfield(opts,'ALLOW_TRIANGULAR')
     VSDP_OPTIONS.ALLOW_TRIANGULAR = ofield;
   else
     warning('VSDP:VSDPINIT','ALLOW_TRIANGULAR has to be logical');
-    wfields = wfields + 1;
   end
 end
 
@@ -226,7 +218,6 @@ if isfield(opts,'SDPT3_VERSION')
     VSDP_OPTIONS.SDPT3_VERSION = ofield;
   else
     warning('VSDP:VSDPINIT','wrong SDPT3_VERSION format');
-    wfields = wfields + 1;
   end
 end
 
@@ -238,7 +229,6 @@ if isfield(opts,'MIN_SDPBLK_SIZE')
     VSDP_OPTIONS.MIN_SDPBLK_SIZE = ofield;
   else
     warning('VSDP:VSDPINIT','wrong MIN_SDPBLK_SIZE format');
-    wfields = wfields + 1;
   end
 end
 

@@ -100,14 +100,14 @@ if size(A,2)==1  % compact vectorized input
   E(triu(true(n))) = full(A);  % E is place-holder, will be overwritten later
   A = reshape(E,n,n);
   A = A + triu(A,1)';
-  if nnz(A)<max(n^1.5,n*n/20);
+  if nnz(A)<max(n^1.5,n*n/20)
     A = sparse(A);
   end
   if any(Arad)
     L(triu(true(n))) = full(Arad);  % L is used as place-holder again
     Arad = reshape(L,n,n);
     Arad = Arad + triu(Arad,1)';
-    if nnz(Arad)<n*n/5;
+    if nnz(Arad)<n*n/5
       Arad = sparse(Arad);
     end
   else

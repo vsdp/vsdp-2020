@@ -1,4 +1,4 @@
-function [infeas x y] = vsdpinfeas(A,b,c,K,choose,x0,y0,z0,opts)
+function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 %% VSDPINFEAS - infeasibility check for semidefinite-quadratic-linear programming
 %    [infeas x y] = vsdpinfeas(A,b,C,K,choose,x0,y0,z0)
 %
@@ -121,7 +121,7 @@ rnd = getround();
 setround(0);
 
 % import data
-[A,Arad,b,brad,c,crad,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,x0,y0,[]);
+[A,Arad,b,brad,c,crad,K,x0,y0,~,IF] = import_vsdp(A,b,c,K,x0,y0,[]);
 
 
 %% check primal infeasibility
@@ -210,7 +210,7 @@ if choose=='p'
 elseif choose=='d'
   
   %% 1.step: check c'*x > 0
-  [alpha alpharad] = spdotK(c,x0,3);
+  [alpha, alpharad] = spdotK(c,x0,3);
   setround(1);  % default rounding mode for verification
   alpharad = alpharad + crad'*x0;
   if alpharad>=-alpha

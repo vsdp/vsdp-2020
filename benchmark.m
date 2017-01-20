@@ -72,7 +72,7 @@ elseif (length(root)>2)  % if folder: exclude './' and '../' in root
   root([1 2]) = [];
 end
 % folders first than files
-[tmp idx] = sort([root(:).isdir],'descend');
+[~,idx] = sort([root(:).isdir],'descend');
 root = root(idx);
 
 % write table head if test subdirectory reached

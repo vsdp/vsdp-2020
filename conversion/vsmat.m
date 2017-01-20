@@ -98,7 +98,7 @@ end
 
 
 % column or row-wise
-[isize idim] = max(size(vA));
+[isize,idim] = max(size(vA));
 if isize>3 && all(isize~=[dim3 dim])
   error('VSDP:VSMAT','Cone dimension does not fit to size of input');
 elseif isize<=3 || isize==dim

@@ -1,4 +1,4 @@
-function [x z] = export_vsdp(IF,K,x,z)
+function [x,z] = export_vsdp(IF,K,x,z)
 %% EXPORT_VSDP - transform internal format back to imported problem format
 %    [x z] = read_vsdp(IF,K,x,z)
 %
@@ -92,7 +92,7 @@ elseif strcmpi(IF,'SEDUMI')
   Imat = [];  % index vector to improve speed of smat
   % convert x
   if ~isempty(x)
-    [x Imat] = vsmat(x,K,0.5,1);
+    [x,Imat] = vsmat(x,K,0.5,1);
   end
   % convert z
   if ~isempty(z)

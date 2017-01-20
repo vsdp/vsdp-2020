@@ -69,7 +69,7 @@ else
 end
 
 % svec or vec formated, column or row-wise
-[isize idim] = max(size(vA));
+[isize,idim] = max(size(vA));
 if all(isize~=[0 dim3 dim])
   error('VSDP:SSCALE','cone dimension does not fit to size of input');
 end
