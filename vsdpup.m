@@ -38,17 +38,8 @@ function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 %
 %   VSDPUP(...,yu,opts)
 %         yu: upperbounds of the absolute value of dual optimal solution y
-%         opts: structure for additional parameter settings:
-%            'ITER_MAX'  maximum number of iterations that can be used to
-%                        perturbate the problem and find a feasible solution
-%            'ALPHA'  growing factor for problem perturbation (default: 0.5)
-%            'FULL_EIGS_ENCLOSURE'  if true code for stronger complete
-%                                   eigenvalue enclosure will be applied
-%                                   the code is a little bit slower
-%                                   (default: true)
-%            'SOLVER'  to select one of the supported solvers
-%            'USE_STARTING_POINT'  decides whether initial starting point shall
-%                                  be used or not (default: false)
+%         opts: structure for additional parameter settings, explained in
+%               vsdpinit.
 %
 %   See also mysdps.
 
@@ -68,32 +59,6 @@ elseif nargin<8
 elseif nargin<9
   opts = [];
 end
-
-global VSDP_OPTIONS;  % global options structure
-
-% use starting point - default: false
-if ~isfield(VSDP_OPTIONS,'USE_STARTING_POINT')
-  VSDP_OPTIONS.USE_STARTING_POINT = false;
-end
-if ~isfield(opts,'USE_STARTING_POINT')
-  opts.USE_STARTING_POINT = VSDP_OPTIONS.USE_STARTING_POINT;
-end
-
-% parameter list
-optLIST = {'ITER_MAX','ALPHA','FULL_EIGS_ENCLOSURE'};
-optfs = isfield(opts,optLIST);
-goptfs = isfield(VSDP_OPTIONS,optLIST);
-
-% read parameters
-[ITER_MAX, ALPHA, FULL_EIGS_ENCLOSURE] = deal(10, 0.5, true);
-for i = 1:length(optLIST)
-  if optfs(i)
-    eval([optLIST{i},' = opts.',optLIST{i},';']);
-  elseif goptfs(i)
-    eval([optLIST{i},' = VSDP_OPTIONS.',optLIST{i},';']);
-  end
-end
-
 
 %  Preliminary steps / Prealocations
 
@@ -189,9 +154,10 @@ pertI = [ones(K.l+(~isempty(K.q)),1); K.q(1:end-1); cumsum(pertI)];
 pertI(1) = K.f + 1;
 pertI = cumsum(pertI);
 
+VSDP_OPTIONS = vsdpinit(opts);
 
 % **** main loop ****
-while info.iter<=ITER_MAX
+while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   info.iter = info.iter + 1;
   setround(1);  % default rounding for verification part
 
@@ -239,7 +205,7 @@ while info.iter<=ITER_MAX
       'rad',0.5*xrad(blke-blk3+1:blke));
     vx.mid(dind) = 2 * vx.mid(dind);  % regard mu=2 for x
     vx.rad = vx.rad + vx.rad.*sparse(dind,1,1,blk3,1);
-    [lmin,lb(ofs),pertS{j}] = bnd4sd(vx,1,FULL_EIGS_ENCLOSURE);
+    [lmin,lb(ofs),pertS{j}] = bnd4sd(vx,1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
     if lmin>0
       lb(ofs) = lmin;
     end
@@ -269,7 +235,7 @@ while info.iter<=ITER_MAX
     disp('VSDPUP: perturbation extended range');
     break;
   end
-  epsj(lbi) = epsj(lbi) * (1+ALPHA);  % update perturbation factor
+  epsj(lbi) = epsj(lbi) * (1 + VSDP_OPTIONS.ALPHA); % update perturbation factor
 
   % 5.step: solve the perturbed problem
   clear lbi ind vx x xrad;  % free some memory before calling solver
@@ -285,7 +251,7 @@ end
 setround(rnd);
 
 % write output
-if info.iter==ITER_MAX
+if (info.iter == VSDP_OPTIONS.ITER_MAX)
   disp('VSDPUP: maximum number of iterations reached');
 end
 fU = Inf; x = NaN; lb = NaN;

@@ -15,14 +15,7 @@ function [A,c,x,z] = vsdp2sedumi(A,c,x,z,K,opts)
 %     - K.l is the number of nonnegative components
 %     - K.q lists the lengths of socp blocks
 %     - K.s lists the dimensions of semidefinite blocks
-% opts: structure for additional parameter settings:
-%    regarded fields:
-%     - 'ALLOW_TRIANGULAR'  Some solvers like SeDuMi allow non-symmetric
-%                           input. If 'ALLOW_TRIANGULAR' is set true, VSDP
-%                           is increasing the speed of data conversion by
-%                           processing only a triangular part of the
-%                           matrices.
-%                               -> default: false
+% opts: structure for additional parameter settings, explained in vsdpinit.
 %
 % Output:
 % A: linear constraints matrix (nA x M or M x nA) in SeDuMi format
@@ -45,14 +38,11 @@ elseif nargin<6
   opts = [];
 end
 
-global VSDP_OPTIONS;
+VSDP_OPTIONS = vsdpinit(opts);
 
-sflag = 1;  % symmetry flag  -> default: symmetric output
-if isfield(opts,'ALLOW_TRIANGULAR')
-  sflag = (opts.ALLOW_TRIANGULAR==false);
-elseif isfield(VSDP_OPTIONS,'ALLOW_TRIANGULAR')
-  sflag = (VSDP_OPTIONS.ALLOW_TRIANGULAR==false);
-end
+% symmetry flag, default: (VSDP_OPTIONS.ALLOW_TRIANGULAR == false)
+% ==> symmetric output
+sflag = (VSDP_OPTIONS.ALLOW_TRIANGULAR == false);
 
 % get problem data dimensions
 fields = isfield(K,{'f','l','q','s'});

@@ -26,13 +26,7 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 % x0: a nA x 1 vector - a primal feasible (eps-optimal) solution
 % y0: a M x 1 vector - a dual feasible (eps-optimal) solution
 % z0: a nA x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
-% opts: structure for additional parameter settings:
-%     regarded fields:
-%     	'SOLVER'  to select one of the supported solvers:
-%               'sedumi','sdpt3','sdpa','csdp','sdplr', 'lp_solve','linprog'
-%    	'USE_STARTING_POINT'  decides whether initial starting point shall
-%                             be used or not
-%                               -> default: true
+% opts: structure for additional parameter settings, explained in vsdpinit.
 %
 % Output:
 % obj: obj(1) - primal approx. optimal value
@@ -64,61 +58,23 @@ elseif nargin<8
   opts = [];
 end
 
-global VSDP_OPTIONS;  % global option settings
+VSDP_OPTIONS = vsdpinit(opts);
 
-solver = [];  % default: allow every solver
-if isfield(opts,'SOLVER')
-  solver = opts.SOLVER;
-elseif isfield(VSDP_OPTIONS,'SOLVER')
-  solver = VSDP_OPTIONS.SOLVER;
-end
+useSTART = VSDP_OPTIONS.USE_STARTING_POINT;
+OPTIONS  = VSDP_OPTIONS.SOLVER_OPTIONS;
 
-useSTART = true;  % use starting point
-if isfield(opts,'USE_STARTING_POINT')
-  useSTART = logical(opts.USE_STARTING_POINT);
-elseif isfield(VSDP_OPTIONS,'USE_STARTING_POINT')
-  useSTART = logical(VSDP_OPTIONS.USE_STARTING_POINT);
-end
-
-% import data
 [A,~,b,~,c,~,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,x0,y0,z0);
 
-
-% get solver number
-solverLIST = {'sedumi','sdpt3','sdpa','csdp','sdplr', ...
-  'lp_solve','linprog'};
-nsolvers = length(solverLIST);
-if ischar(solver)
-  solverID = find(strncmpi(solver,solverLIST,4));
-elseif isnumeric(solver)
-  solverID = solver;
-else
-  solverID = [];
-end
-
-% if no solver selected -> allow all solvers
-if isempty(solverID)
-  solverID = 1:nsolvers;
-end
-
 % initialization of default output
-obj = [inf -inf];
-x = [];  y = [];  z = [];
+obj = [inf, -inf];
+%x = [];
+y = [];
+z = [];
 info = -1;
 
 
 % call solver for problem
-
-if any(solverID==1) && exist('sedumi','file')==2
-  % call sedumi
-  
-  % options parameter for sedumi
-  OPTIONS = [];
-  if isfield(opts,'SEDUMI_OPTIONS')
-    OPTIONS = opts.SEDUMI_OPTIONS;
-  elseif isfield(VSDP_OPTIONS,'SEDUMI_OPTIONS')
-    OPTIONS = VSDP_OPTIONS.SEDUMI_OPTIONS;
-  end
+if (strcmp(VSDP_OPTIONS.SOLVER,'sedumi') && (exist('sedumi','file') == 2))
   % transform data into sedumi format
   [A,c] = vsdp2sedumi(A,c,[],[],K,opts);
   % call sedumi
@@ -133,17 +89,8 @@ if any(solverID==1) && exist('sedumi','file')==2
   end
   [x,z] = export_vsdp(IF,K,x,z);
   info = INFO.pinf + 2*INFO.dinf;
-  
-elseif any(solverID==2) && exist('sqlp','file')==2
-  % call sdpt3
-  
-  % options parameter for sdpt3
-  OPTIONS = [];
-  if isfield(opts,'SDPT3_OPTIONS')
-    OPTIONS = opts.SDPT3_OPTIONS;
-  elseif isfield(VSDP_OPTIONS,'SDPT3_OPTIONS')
-    OPTIONS = VSDP_OPTIONS.SDPT3_OPTIONS;
-  end
+
+elseif (strcmp(VSDP_OPTIONS.SOLVER,'sdpt3') && (exist('sqlp','file') == 2))
   % use starting point ?
   if ~useSTART || isempty(x0) || isempty(y0) || isempty(z0)
     x0 = [];  y0 = [];  z0 = [];
@@ -162,9 +109,7 @@ elseif any(solverID==2) && exist('sqlp','file')==2
     info = INFO(1);  % SDPT3-3.x output
   end
   
-elseif any(solverID==3) && exist('sdpam','file')==2
-  % call sdpa
-  
+elseif (strcmp(VSDP_OPTIONS.SOLVER,'sdpa') && (exist('sdpam','file') == 2))
   % check cones
   if K.f>0 || sum(K.q)>0
     error('VSDP:MYSDPS','Second order cone and free variables are not supported by SDPAM');
@@ -175,13 +120,6 @@ elseif any(solverID==3) && exist('sdpam','file')==2
   end
   % transform data into sdpam format
   [mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x0,y0,z0);
-  % options parameter for sdpam
-  OPTIONS = [];
-  if isfield(opts,'SDPAM_OPTIONS')
-    OPTIONS = opts.SDPAM_OPTIONS;
-  elseif isfield(VSDP_OPTIONS,'SDPAM_OPTIONS')
-    OPTIONS = VSDP_OPTIONS.SDPAM_OPTIONS;
-  end
   % call csdp solver [with intial]
   [~,x0,X0,Y0,~] = sdpam(mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0,OPTIONS);
   % transform results to vsdp format + export
@@ -194,11 +132,8 @@ elseif any(solverID==3) && exist('sdpam','file')==2
   end
   [x,z] = export_vsdp(IF,K,x,z);
   info = 0;
-  
-  
-elseif any(solverID==4) && exist('csdp','file')==2
-  % call csdp
-  
+
+elseif (strcmp(VSDP_OPTIONS.SOLVER,'csdp') && (exist('csdp','file') == 2))
   % check cones
   if sum(K.q)>0
     error('VSDP:MYSDPS','Second order cone is not supported by CSDP');
@@ -208,14 +143,9 @@ elseif any(solverID==4) && exist('csdp','file')==2
       'The resulting problem is ill-posed.']);
   end
   % transform data into sedumi format which can be read by csdp
-  [A,c,x0,z0] = vsdp2sedumi(A,c,x0,z0,K,struct('ALLOW_TRIANGULAR',false));
+  [A,c,x0,z0] = vsdp2sedumi(A,c,x0,z0,K);
   % options parameter for csdp
   OPTIONS.check = 0;
-  if isfield(opts,'CSDP_OPTIONS')
-    OPTIONS = opts.CSDP_OPTIONS;
-  elseif isfield(VSDP_OPTIONS,'CSDP_OPTIONS')
-    OPTIONS = VSDP_OPTIONS.CSDP_OPTIONS;
-  end
   % call csdp solver [with intial]
   if useSTART && ~isempty(x0) && ~isempty(y0) && ~isempty(z0)
     [x,y,z,INFO] = csdp(A,full(b),full(c),K,OPTIONS,full(x0),full(y0),full(z0));
@@ -234,22 +164,13 @@ elseif any(solverID==4) && exist('csdp','file')==2
     info = INFO;
   end
   
-elseif any(solverID==5) && exist('sdplr','file')==2
-  % call sdplr
-  
+elseif (strcmp(VSDP_OPTIONS.SOLVER,'sdplr') && (exist('sdplr','file') == 2))
   % check cones
   if K.f>0 || sum(K.q)>0
     error('VSDP:MYSDPS','Second order cone and free variables are not supported by SDPLR');
   end
-  % options parameter for sdplr
-  OPTIONS = [];
-  if isfield(opts,'SDPLR_OPTIONS')
-    OPTIONS = opts.SDPLR_OPTIONS;
-  elseif isfield(VSDP_OPTIONS,'SDPLR_OPTIONS')
-    OPTIONS = VSDP_OPTIONS.SDPLR_OPTIONS;
-  end
   % transform data into sedumi format, which can be read by sdplr
-  [A,c,x0] = vsdp2sedumi(A,c,x0,[],K,struct('ALLOW_TRIANGULAR',false));
+  [A,c,x0] = vsdp2sedumi(A,c,x0,[],K);
   % call csdp solver [with intial]
   if useSTART && ~isempty(x0) && ~isempty(y0)
     [x,y] = sdplr(A,b,c,K,OPTIONS,[],x0,y0);
@@ -267,9 +188,8 @@ elseif any(solverID==5) && exist('sdplr','file')==2
   [x,z] = export_vsdp(IF,K,x,z);
   info = 0;
   
-elseif any(solverID==6) && exist('lp_solve','file')==2
-  % call lp_solve
-  
+elseif (strcmp(VSDP_OPTIONS.SOLVER,'lp_solve') ...
+    && (exist('lp_solve','file') == 2))
   % test of not supported cones,
   if sum(K.q)>0 || sum(K.s)>0
     error('VSDP:MYSDPS','Second order and semidefinite cones are not supported by LPSOLVE');
@@ -286,15 +206,10 @@ elseif any(solverID==6) && exist('lp_solve','file')==2
   end
   info = (stat==2) + 2*(stat==3);
   
-elseif any(solverID==7) && exist('linprog','file')==2
-  % call linprog
-  
+elseif (strcmp(VSDP_OPTIONS.SOLVER,'linprog') && (exist('linprog','file') == 2))
   % options parameter for linprog
-  OPTIONS = optimset('LargeScale','on');
-  if isfield(opts,'LINPROG_OPTIONS')
-    OPTIONS = opts.LINPROG_OPTIONS;
-  elseif isfield(VSDP_OPTIONS,'LINPROG_OPTIONS')
-    OPTIONS = VSDP_OPTIONS.LINPROG_OPTIONS;
+  if (isempty(OPTIONS))
+    OPTIONS = optimset('LargeScale','on');
   end
   
   % test of not supported cones,
@@ -318,9 +233,8 @@ elseif any(solverID==7) && exist('linprog','file')==2
   info = [1 2] * (abs(flag)==[2; 3]);
   
 else
-  % no solver called
-  warning('VSDP:MYSDPS','Solver not found!');
-  disp('The selected solver could not be detected!');
+  error('VSDP:MYSDPS','The solver %s could not be detected!!', ...
+    VSDP_OPTIONS.SOLVER);
 end
 
 end

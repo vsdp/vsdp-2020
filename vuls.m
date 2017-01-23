@@ -112,17 +112,7 @@ if nargin<9
 end
 
 
-% import options
-global VSDP_OPTIONS;
-
-% full non-symmetric matrix lss verification
-full_lss = false;  % function default
-if isfield(opts,'VERIFY_FULL_LSS')
-  full_lss = opts.VERIFY_FULL_LSS;
-elseif isfield(VSDP_OPTIONS,'VERIFY_FULL_LSS')
-  full_lss = VSDP_OPTIONS.VERIFY_FULL_LSS;
-end
-
+VSDP_OPTIONS = vsdpinit(opts);
 
 % preparation
 
@@ -170,7 +160,7 @@ if ~isempty(B)
     B = B';  Brad = Brad';
   end
   % verify lss
-  if full_lss
+  if (VSDP_OPTIONS.VERIFY_FULL_LSS)
     bI = midrad(full(bI),full(bIrad));
     B = midrad(full(B),full(Brad));
     XI = verifylss(B,bI);

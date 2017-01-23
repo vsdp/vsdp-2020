@@ -28,12 +28,7 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 % x0: a nA x 1 vector - a primal feasible (eps-optimal) solution
 % y0: a M x 1 vector - a dual feasible (eps-optimal) solution
 % z0: a nA x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
-% opts: structure for additional parameter settings:
-%     fields:
-%     	'FULL_EIGS_ENCLOSURE'  if true code for stronger complete
-%                              eigenvalue enclosure will be applied
-%                              the code is a little bit slower
-%                                   -> default: true
+% opts: structure for additional parameter settings, explained in vsdpinit.
 %
 % Output:
 % infeas: 1 if primal infeasibility is proved
@@ -78,7 +73,8 @@ end
 
 % default output
 infeas = 0;
-x = NaN;  y = NaN;
+x = NaN;
+y = NaN;
 
 % check if approximations are applicable
 if choose=='p' && (isempty(y0) || any(isnan(y0)))
@@ -89,16 +85,7 @@ elseif choose=='d' && (isempty(x0) || any(isnan(x0)))
   return;
 end
 
-% global options structure
-global VSDP_OPTIONS;
-
-% read option parameter
-FULL_EIGS_ENCLOSURE = true;
-if isfield(opts,'FULL_EIGS_ENCLOSURE')
-  FULL_EIGS_ENCLOSURE = opts.FULL_EIGS_ENCLOSURE;
-elseif isfield(VSDP_OPTIONS,'FULL_EIGS_ENCLOSURE')
-  FULL_EIGS_ENCLOSURE = VSDP_OPTIONS.FULL_EIGS_ENCLOSURE;
-end
+VSDP_OPTIONS = vsdpinit(opts);
 
 % rounding mode
 rnd = getround();
@@ -106,7 +93,6 @@ setround(0);
 
 % import data
 [A,Arad,b,brad,c,crad,K,x0,y0,~,IF] = import_vsdp(A,b,c,K,x0,y0,[]);
-
 
 % check primal infeasibility
 if choose=='p'
@@ -167,7 +153,7 @@ if choose=='p'
   for j = length(K.s):-1:1
     blks = blke - K.s(j)*(K.s(j)+1)/2 + 1;
     lambdaMin = bnd4sd(struct('mid',z(blks:blke),...
-      'rad',zrad(blks:blke)),1,FULL_EIGS_ENCLOSURE);
+      'rad',zrad(blks:blke)),1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
     if lambdaMin<0
       disp('VSDPINFEAS: could not verify primal infeasibility');
       setround(rnd);
@@ -257,7 +243,7 @@ elseif choose=='d'
       'rad',0.5*x0rad(blke-blk3+1:blke));
     vx.mid(dind) = 2 * vx.mid(dind);  % regard mu=2 for x
     vx.rad = vx.rad + vx.rad.*sparse(dind,1,1,blk3,1);
-    lambdaMin = bnd4sd(vx,1,FULL_EIGS_ENCLOSURE);
+    lambdaMin = bnd4sd(vx,1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
     if lambdaMin<0
       disp('VSDPINFEAS: could not verify dual infeasibility');
       setround(rnd);

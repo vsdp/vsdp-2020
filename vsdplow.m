@@ -30,21 +30,7 @@ function [fL,y,dl,info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
 % z0: a nA x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
 % xu: upper bounds of eigenvalues or spectral values of primal optimal
 %     solution x
-% opts: structure for additional parameter settings:
-%     regarded fields:
-%     	'ITER_MAX'   maximum number of iterations that can be used to
-%                    perturbate the problem and find a feasible solution
-%    	'ALPHA'   growing factor for problem perturbation
-%                       -> default: 0.5
-%     	'FULL_EIGS_ENCLOSURE'  if true code for stronger complete
-%                              eigenvalue enclosure will be applied
-%                              the code is a little bit slower
-%                                   -> default: true
-%     	'SOLVER'  to select one of the supported solvers:
-%               'sedumi','sdpt3','sdpa','csdp','sdplr', 'lp_solve','linprog'
-%    	'USE_STARTING_POINT'  decides whether initial starting point shall
-%                             be used or not
-%                               -> default: false
+% opts: structure for additional parameter settings, explained in vsdpinit.
 %
 %
 % fL: verified lower bound of the primal optimal value
@@ -64,32 +50,6 @@ elseif nargin<8
 elseif nargin<9
   opts = [];
 end
-
-global VSDP_OPTIONS;
-
-% use starting point - default: false
-if ~isfield(VSDP_OPTIONS,'USE_STARTING_POINT')
-  VSDP_OPTIONS.USE_STARTING_POINT = false;
-end
-if ~isfield(opts,'USE_STARTING_POINT')
-  opts.USE_STARTING_POINT = VSDP_OPTIONS.USE_STARTING_POINT;
-end
-
-% parameter list
-optLIST = {'ITER_MAX','ALPHA','FULL_EIGS_ENCLOSURE'};
-optfs = isfield(opts,optLIST);
-goptfs = isfield(VSDP_OPTIONS,optLIST);
-
-% read parameters
-[ITER_MAX, ALPHA, FULL_EIGS_ENCLOSURE] = deal(10, 0.5, true);
-for i = 1:length(optLIST)
-  if optfs(i)
-    eval([optLIST{i},' = opts.',optLIST{i},';']);
-  elseif goptfs(i)
-    eval([optLIST{i},' = VSDP_OPTIONS.',optLIST{i},';']);
-  end
-end
-
 
 %  Preliminary steps / Prealocations
 
@@ -147,8 +107,9 @@ pertI = cumsum(pertI);
 
 
 % Algorithm with finite/infinite primal bounds xu
+VSDP_OPTIONS = vsdpinit(opts);
 % **** main loop ****
-while info.iter<=ITER_MAX
+while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   info.iter = info.iter + 1;
   setround(1);  % default for rigorous computation in steps 1-3
   
@@ -211,7 +172,7 @@ while info.iter<=ITER_MAX
     ofs = K.l + length(K.q) + j;
     blks = blke - K.s(j)*(K.s(j)+1)/2 + 1;
     [lmin,dl(ofs),pertS{j}] = bnd4sd(struct('mid',z(blks:blke),...
-      'rad',zrad(blks:blke)),1,FULL_EIGS_ENCLOSURE);
+      'rad',zrad(blks:blke)),1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
     if lmin>0
       dl(ofs) = lmin;
     end
@@ -242,7 +203,7 @@ while info.iter<=ITER_MAX
     disp('VSDLOW: perturbation extended range');
     break;
   end
-  epsj(dli) = epsj(dli) * (1+ALPHA);  % update perturbation factor
+  epsj(dli) = epsj(dli) * (1 + VSDP_OPTIONS.ALPHA); % update perturbation factor
   
   % 5.step: solve the perturbed problem
   clear dli ind z zrad;  % free some memory before calling solver
@@ -258,7 +219,7 @@ end
 setround(rnd);
 
 % write output
-if info.iter==ITER_MAX
+if (info.iter == VSDP_OPTIONS.ITER_MAX)
   disp('VSDPLOW: maximum number of iterations reached');
 end
 y = NaN; fL = -Inf; dl = NaN;

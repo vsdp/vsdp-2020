@@ -18,16 +18,7 @@ function [blk,At,ct,xt,zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
 % c: nC x 1 vector - primal objective function
 % x0: a nC x 1 vector - approx. primal optimal solution
 % z0: a nC x 1 vector - approx. dual optimal solution (slack vars)
-% opts: structure for additional parameter settings:
-%     regarded fields:
-%       'SDPT3_VERSION'    Version number of SDPT3 solver.
-%                              - default: 4.0
-%       'MIN_SDPBLK_SIZE'  Minimum size of an sdp block. For efficiency
-%                          reasons SDPT3 allows to group smaller sdp
-%                          blocks. Every sdp block with a dimension that is
-%                          smaller MIN_SDPBLK_SIZE is considered as a small
-%                          block that should be grouped.
-%                               - default: 50
+% opts: structure for additional parameter settings, explained in vsdpinit.
 %
 % Output:
 % blk: a cell array describing the block diagonal structure of problem data
@@ -65,35 +56,6 @@ elseif nargin<5
 elseif nargin<6
   opts = [];
 end
-
-% global VSDP setting
-global VSDP_OPTIONS;
-
-% version number
-version = 4.0;  % assumed version number
-if isfield(opts,'SDPT3_VERSION')
-  version = opts.SDPT3_VERSION;
-elseif isfield(VSDP_OPTIONS,'SDPT3_VERSION')
-  version = VSDP_OPTIONS.SDPT3_VERSION;
-end
-
-% max blocksize for 'small' sdp blocks
-blksize = [];
-if version<4.0  % ignore MIN_SDPBLK_SIZE if SOLVER_VERSION < 4.0
-  blksize = 0;
-elseif isfield(opts,'MIN_SDPBLK_SIZE')
-  blksize = opts.MIN_SDPBLK_SIZE;
-elseif isfield(VSDP_OPTIONS,'MIN_SDPBLK_SIZE')
-  blksize = VSDP_OPTIONS.MIN_SDPBLK_SIZE;
-end
-
-% create sdp block group if  blk3s > blk3size = blksize*(blksize+1)/2
-if isempty(blksize)
-  blksize = 2500;
-else
-  blksize = blksize * (blksize+1) / 2;
-end
-
 
 % preparation
 
@@ -258,12 +220,13 @@ if ~isempty(K.s)
   kstart = 1;
   
   % create blk
+  VSDP_OPTIONS = vsdpinit(opts);
   blke = 0;
   for k = 1:length(K.s)
     blke = blke + K.s(k)*(K.s(k)+1)/2;
     
-    % group great enough or end of sdp data
-    if blke>blksize || k==length(K.s)
+    % group great enough or end of sdp data?
+    if ((blke > VSDP_OPTIONS.MIN_SDPBLK_SIZE) || (k == length(K.s)))
       blk{bli,1} = 's';
       blk{bli,2} = reshape(K.s(kstart:k),1,[]);
       blke = 0;
