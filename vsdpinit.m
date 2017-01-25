@@ -37,6 +37,11 @@ function opts = vsdpinit(opts,display)
 %       'SOLVER_OPTIONS'    Option structure for approximate solver that is
 %                           empty by default.
 %
+%       'VERBOSE_OUTPUT'    If false, VSDP is trying to minimize verbose
+%                           output of the supported solvers.  Otherwise the
+%                           default solver messages are printed. Default is
+%                           false.
+%
 %      The persistent settings can be cleared by calling 'clear vsdpinit'.
 %
 %   VSDPINIT('solver') optionally, pass the name of the solver to use.  See
@@ -174,6 +179,17 @@ end
 if (isfield(opts,'SOLVER_OPTIONS'))
   VSDP_OPTIONS.SOLVER_OPTIONS = opts.SOLVER_OPTIONS;
 end
+
+% verbose output
+if (isfield(opts,'VERBOSE_OUTPUT'))
+  try
+    validateattributes(opts.VERBOSE_OUTPUT,{'logical'},{'scalar'});
+    VSDP_OPTIONS.VERBOSE_OUTPUT = opts.VERBOSE_OUTPUT;
+  catch
+    error('VSDP:VSDPINIT', 'opts.VERBOSE_OUTPUT must be a logical scalar');
+  end
+end
+
 opts = VSDP_OPTIONS;
 
 % message of successful start
@@ -205,4 +221,5 @@ opts.VERIFY_FULL_LSS = false;
 opts.MIN_SDPBLK_SIZE = 2500;
 opts.ALLOW_TRIANGULAR = false;
 opts.SOLVER_OPTIONS = [];
+opts.VERBOSE_OUTPUT = false;
 end
