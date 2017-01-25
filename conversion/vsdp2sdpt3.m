@@ -105,12 +105,6 @@ end
 % row- or column-wise
 idim = 1 + (size(A,2)==dim3);
 
-% error if free variables are used with version < 4.0
-if version<4.0 && K.f>0
-  error('VSDP:VSDP2SDPT3', ...
-    'SDPT3 version < 4.0 does not support unconstrained variables');
-end
-
 % create cell arrays for output
 blk = cell(n,2);
 At = cell(n,1);
