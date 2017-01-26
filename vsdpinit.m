@@ -76,6 +76,13 @@ if (~isstruct(VSDP_OPTIONS))
     addpath(fullfile(vsdp_path, 'conversion'));
     path(path); % refresh path
   end
+  % Check for INTLAB
+  if (~(exist('INTLAB_Version_9.m', 'file') == 2))
+    error('VSDP:VSDPINIT','%s.  %s\n\n\t%s\n\n%s.\n\n', ...
+      'Interval toolbox "INTLAB" (>= 9) not found', ...
+      'Get a recent version from', 'http://www.ti3.tuhh.de/rump/intlab', ...
+      'and run "startintlab" from the root directory');
+  end
 end
 if (nargin == 0)
   opts = VSDP_OPTIONS;

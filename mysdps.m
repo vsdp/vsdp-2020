@@ -58,14 +58,6 @@ elseif nargin<8
   opts = [];
 end
 
-if (~exist('INTLAB_Version_9.m', 'file'))
-  fprintf(1, '%s.  %s\n\n\t%s\n\n%s.\n\n', ...
-    'Interval toolbox "INTLAB" (>= 9) not found', ...
-    'Get a recent version from', 'http://www.ti3.tuhh.de/rump/intlab', ...
-    'and run "startintlab" from the root directory');
-  error('VSDP:vsdpTest:noINTLAB', 'INTLAB (>= 9) not found');
-end
-
 VSDP_OPTIONS = vsdpinit(opts);
 OPTIONS = VSDP_OPTIONS.SOLVER_OPTIONS;
 
