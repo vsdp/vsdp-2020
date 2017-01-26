@@ -67,14 +67,24 @@ function opts = vsdpinit(opts,display)
 
 % Quick return for calls like opts = vsdpinit()
 persistent VSDP_OPTIONS;
+% First time initialization?
 if (~isstruct(VSDP_OPTIONS))
   VSDP_OPTIONS = getDefaultOptions();
-  % check whether path already exists, add path if necessary
+  % Check whether path already exists, add path if necessary
   vsdp_path = fullfile(fileparts(which('vsdpinit')));
   if isempty(strfind(path,vsdp_path))
     addpath(vsdp_path);
     addpath(fullfile(vsdp_path, 'conversion'));
     path(path); % refresh path
+  end
+  % Check for default solver
+  defaultSolver = 'sedumi';
+  defaultSolverAvailable = (exist('sedumi','file') == 2);
+  if (~defaultSolverAvailable)
+    warning('VSDP:VSDPINIT', ['Default solver ''%s'' is not available.\n', ...
+      '\t Please choose another supported and available solver.\n'...
+      '\t Type ''help vsdpinit'' for a list of supported solvers.'], ...
+      defaultSolver);
   end
   % Check for INTLAB
   if (~(exist('INTLAB_Version_9.m', 'file') == 2))
@@ -97,16 +107,47 @@ end
 
 % solver
 % for calls like vsdpinit('solver')
-solver_list = {'sedumi','sdpt3','sdpa','csdp','sdplr','lp_solve','linprog'};
 if (ischar(opts))
   opts = struct('SOLVER',opts);
 end
 if (isfield(opts,'SOLVER'))
-  if (~any(strcmp(opts.SOLVER,solver_list)))
+  defaultSolver = 'sedumi';
+  defaultSolverAvailable = (exist('sedumi','file') == 2);
+  setSolver = false;
+  switch (lower(opts.SOLVER))
+    case 'sedumi'
+      setSolver = defaultSolverAvailable;
+    case 'sdpt3'
+      setSolver = (exist('sqlp','file') == 2);
+    case 'sdpa'
+      setSolver = ((exist('sdpam','file') == 2) ...
+        && ((exist('mexsdpa','file') == 3) ...
+        || (exist('callSDPA','file') == 2)));
+    case 'csdp'
+      setSolver = (exist('csdp','file') == 2);
+    case 'sdplr'
+      setSolver = (exist('sdplr','file') == 2);
+    case 'lp_solve'
+      setSolver = (exist('lp_solve','file') == 2);
+    case 'linprog'
+      setSolver = (exist('linprog','file') == 2);
+  end
+  if (setSolver)
+    VSDP_OPTIONS.SOLVER = lower(opts.SOLVER);
+  elseif (~strcmp(VSDP_OPTIONS.SOLVER,defaultSolver))
+    % Else if another solver was successully set
     warning('VSDP:VSDPINIT', ...
-      'Invalid solver chosen.  Keep previous solver.');
+      'Solver ''%s'' is not available.  Keep solver: ''%s''.', opts.SOLVER, ...
+      VSDP_OPTIONS.SOLVER);
+  elseif (defaultSolverAvailable)
+    warning('VSDP:VSDPINIT', ...
+      'Solver ''%s'' is not available.  Use default solver: ''%s''.', ...
+      opts.SOLVER, defaultSolver);
+    VSDP_OPTIONS.SOLVER = 'sedumi';
   else
-    VSDP_OPTIONS.SOLVER = opts.SOLVER;
+    error('VSDP:VSDPINIT', ...
+      'Solver ''%s'' and the default solver ''%s'' are not available.', ...
+      opts.SOLVER, defaultSolver);
   end
 end
 
