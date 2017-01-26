@@ -75,6 +75,9 @@ if (~isstruct(VSDP_OPTIONS))
   if isempty(strfind(path,vsdp_path))
     addpath(vsdp_path);
     addpath(fullfile(vsdp_path, 'conversion'));
+    if (exist('OCTAVE_VERSION','builtin'))
+      addpath(fullfile(vsdp_path, 'octave'));
+    end
     path(path); % refresh path
   end
   % Check for default solver
