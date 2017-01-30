@@ -33,9 +33,16 @@ VSDP requires one of the aforementioned approximate solvers and the
 or higher.
 
 
+## Some demonstration
+
+Published output from
+[demovsdp.m](https://rawgit.com/siko1056/vsdp-2012-ng/master/doc/html/demovsdp.html)
+
+
 ## Contributors
 
-Viktor Härter, Marko Lange, and Christian Jansson (jansson@tuhh.de).
+Viktor Härter, Marko Lange, Kai Torben Ohlhus (kai.ohlhus@tuhh.de), and
+Christian Jansson (jansson@tuhh.de).
 
 
 ## References
@@ -48,10 +55,9 @@ Viktor Härter, Marko Lange, and Christian Jansson (jansson@tuhh.de).
   Semidefinite Programming Problems,
   http://www.optimization-online.org/DB_HTML/2005/06/1150.html
 
-- [Ogita2005] T. Ogita, S.M. Rump, and S. Oishi, Accurate Sum and Dot Product,
-  SIAM J. Sci. Comput. 26(6), 1955-1988,
-  https://dx.doi.org/10.1137/030601818
-
 - [Jansson2004] C. Jansson, Rigorous Lower and Upper Bounds in Linear
   Programming, SIAM J. OPTIM. Vol.14, No.3, pp. 914-935,
   https://dx.doi.org/10.1137/S1052623402416839
+
+- See the
+  [comprehensive list of references](https://rawgit.com/siko1056/vsdp-2012-ng/master/doc/html/references.html).
