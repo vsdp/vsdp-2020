@@ -6,7 +6,8 @@ function opts = vsdpinit(opts,display)
 %
 %               'SOLVER'    Select one of the supported solvers:
 %                           'sedumi', 'sdpt3', 'sdpa', 'csdp', 'sdplr',
-%                           'lp_solve', or 'linprog'.  Default is 'sedumi'.
+%                           'lp_solve', 'linprog', or 'glpk'.
+%                           Default is 'sedumi'.
 %
 %   'USE_STARTING_POINT'    Decides whether initial starting point shall be
 %                           used or not.  Default is false.
@@ -134,6 +135,10 @@ if (isfield(opts,'SOLVER'))
       setSolver = (exist('lp_solve','file') == 2);
     case 'linprog'
       setSolver = (exist('linprog','file') == 2);
+    case 'glpk'
+      setSolver = (exist('glpk', 'file') == 2);
+    otherwise
+      warning('VSDP:VSDPINIT', 'Solver ''%s'' is not supported.', opts.SOLVER);
   end
   if (setSolver)
     VSDP_OPTIONS.SOLVER = lower(opts.SOLVER);

@@ -15,8 +15,9 @@ supported as well.  Via its interface, VSDP provides an easy access to the
 conic solvers [CSDP](https://projects.coin-or.org/Csdp),
 [SeDuMi](https://github.com/sqlp/sedumi), [SDPA](https://sdpa.sourceforge.io),
 [SDPT3](https://github.com/sqlp/sdpt3), as well as
-[lp_solve](https://lpsolve.sourceforge.io) and
-[LINPROG](https://www.mathworks.com/help/optim/ug/linprog.html).
+[lp_solve](https://lpsolve.sourceforge.io),
+[LINPROG](https://www.mathworks.com/help/optim/ug/linprog.html), and
+[GLPK](https://www.gnu.org/software/glpk/).
 Detailed numerical results for the
 [NETLIB LP library](http://www.netlib.org/lp),
 [SDPLIB](http://euler.nmt.edu/~brian/sdplib/sdplib.html),
