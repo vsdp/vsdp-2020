@@ -1,4 +1,4 @@
-function [A,Arad,b,brad,c,crad,K,x,y,z,IF] = import_vsdp(A,b,c,K,x,y,z)
+function [A,Arad,b,brad,c,crad,K,x,y,z,use_fmt] = import_vsdp(A,b,c,K,x,y,z)
 % IMPORT_VSDP  Imports different supported formats.
 %
 %   [A,Arad,b,brad,c,crad,K,x,y,z,IF] = IMPORT_VSDP(A,b,c,K,x,y,z)
@@ -28,22 +28,26 @@ function [A,Arad,b,brad,c,crad,K,x,y,z,IF] = import_vsdp(A,b,c,K,x,y,z)
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 % check input
-if nargin<4 || isempty(A) || isempty(b) || isempty(c) || isempty(K)
+narginchk(4,7);
+if isempty(A) || isempty(b) || isempty(c) || isempty(K)
   error('VSDP:IMPORT_VSDP','not enough input parameter');
-elseif nargin<5
-  x = [];  y = [];  z = [];
-elseif nargin<6
-  y = [];  z = [];
-elseif nargin<7
+end
+if (nargin < 5)
+  x = [];
+end
+if (nargin < 6)
+  y = [];
+end
+if (nargin < 7)
   z = [];
 end
 
 % default input format
-IF = [];  % if empty: default internal format
+use_fmt = [];  % if empty: default internal format
 
 % import old vsdp format
 if iscell(A)  % (A,b,c,K,x,y,z) -> (blk,A,C,b,Xt,yt,Zt)
-  IF = 'VSDP01';
+  use_fmt = 'VSDP01';
   tmp = K;  % b
   [K,A,c,x,z] = vsdp12vsdp(A,b,c,x,z);  % (blk,A,C,Xt,Zt)
   b = tmp;
@@ -98,7 +102,7 @@ else
 end
 % compact vectorized format
 if (any(size(A) - [dim3, m]) && any(size(A) - [m, dim3]))
-  IF = 'SEDUMI';
+  use_fmt = 'SEDUMI';
   [A,Ivec] = vsvec(A,K,1,0,Ivec);
 end
 if ~any(find(Arad,1))
