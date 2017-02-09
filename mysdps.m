@@ -1,4 +1,4 @@
-function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
+function [obj,x,y,z,info] = mysdps(A,b,c,K,varargin)
 % MYSDPS  Interface to several conic solvers for VSDP.
 %
 %   [obj,x,y,z,info] = MYSDPS(A,b,c,K)
@@ -41,8 +41,8 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 %   MYSDPS(...,x0,y0,z0) optionally provide an initial guess (x0,y0,z0)
 %      to the approximate solver.
 %
-%   MYSDPS(...,x0,y0,z0,opts) like above, optionally provide a structure for
-%      additional parameter settings, explained in vsdpinit.
+%   MYSDPS(...,[],[],[],opts) optionally provide a structure for additional
+%      parameter settings, explained in vsdpinit.
 %
 %   Example:
 %
@@ -68,15 +68,6 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,x0,y0,z0,opts)
 
 % Check input
 narginchk(4,8);
-if (nargin < 5)
-  x0 = [];
-end
-if (nargin < 6)
-  y0 = [];
-end
-if (nargin < 7)
-  z0 = [];
-end
 if (nargin < 8)
   opts = [];
 end
@@ -84,7 +75,7 @@ end
 VSDP_OPTIONS = vsdpinit(opts);
 OPTIONS = VSDP_OPTIONS.SOLVER_OPTIONS;
 
-[A,~,b,~,c,~,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,x0,y0,z0);
+[A,~,b,~,c,~,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,varargin{1:nargin-4});
 
 % initialization of default output
 obj = [inf, -inf];
