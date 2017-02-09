@@ -1,66 +1,52 @@
 function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 % VSDPINFEAS Infeasibility check for semidefinite-quadratic-linear programming.
 %
-%   [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,z0,opts)
-%     Computes verified upper bound of primal optimal value and rigorous
-%     enclosure of primal strict feasible (near optimal) solution of a conic
-%     problem in the standard primal-dual form:
+%   [isinfeas,X,Y] = VSDPINFEAS(A,b,c,K,choose,x0,y0)
+%      The block-diagonal format (A,b,c,K) is explained in 'mysdps.m'.
 %
-%    (P)  min  c'*x          (D)  max  b'*y
-%         s.t. A*x = b            s.t. z := c - A'*y
-%              x in K                  z in K*
+%         'choose'    If the character is 'p', primal infeasibility should be
+%                     verified.  If 'd', dual infeasibility should be verified.
 %
-%     where K is a cartesian product of the cones R+, SOCP, PSD.
+%         'x0'        If 'choose == d', provide an approximate solution
+%                     computed by 'mysdps'.  Otherwise, this value is ignored.
 %
-%     For a theoretical introduction into verified conic programming see
-%     [Jansson2009].
+%         'y0'        If 'choose == p', provide an approximate solution
+%                     computed by 'mysdps'.  Otherwise, this value is ignored.
 %
-% Input:
-% A: nA x m coefficient matrix in SeDuMi or VSDP internal format
-% b: a M x 1 vector
-% c: a nA x 1 vector, primal objective
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
-% choose: 'p' or 'd' charachter for primal reps. dual infeasibility check
-% x0: a nA x 1 vector - a primal feasible (eps-optimal) solution
-% y0: a M x 1 vector - a dual feasible (eps-optimal) solution
-% z0: a nA x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
-% opts: structure for additional parameter settings, explained in vsdpinit.
+%      The output is:
 %
-% Output:
-% infeas: 1 if primal infeasibility is proved
-%         0 if couldn't prove infeasibility
-%        -1 if dual infeasibility is proved
-% x: a nC x 1 vector - a rigorous Farkas solution if dual
-%    infeasibility could be proved (primal unbounded ray)
-% y: a M x 1 vector - a rigorous Farkas solution if primal
-%    infeasiblity could be proved (dual unbounded ray)
+%         'isinfeas'  Returns 1 if the primal or dual problem is proved to
+%                     be infeasible and 0 if infeasibility cannot be verified.
+%
+%         'x'         Contains a rigorous certificate (improving ray) of dual
+%                     infeasibility, if it is not equal to NaN.
+%
+%         'y'         Is a rigorous certificate (improving ray) of primal
+%                     infeasibility, if it is not equal to NaN.
+%
+%   VSDPINFEAS(...,z0,opts) optionally provide an approximate solution 'z0',
+%      that is ignored and an option structure, explained in 'vsdpinit'.
 %
 %   Example:
 %
-% EPS = -0.01; DELTA = 0.1;
-%  min <[0 0; 0 0],X>
-%  s.t. <[1 0; 0 0],X> = [EPS];
-%       <[0 1; 1 DELTA],X> = [1];
-%       X is PSD
+%       %  min <[0 0; 0 0], X>
+%       % s.t. <[1 0; 0 0], X> = [e];
+%       %      <[0 1; 1 d], X> = [1];
+%       %                   X >= 0
 %
-% b = [EPS; 1];
-% c = zeros(4,1);
-% A = [1 0 0; 0 1 DELTA]';
-% choose = 'p';
+%       e = -0.01;  % Infeasible, because X(1,1) <= 0!
+%       d = 0.1;
+%       A1 = [1 0; 0 0];
+%       A2 = [0 1; 1 d];
+%       b = [e; 1];
+%       c = zeros(4,1);
+%       K.s = 2;
+%       A = [A1(:), A2(:)];  % vectorize
+%       [objt,x0,y0,z0,info] = mysdps(A,b,c,K);
+%       choose = 'p';
+%       [isinfeas, x, y] = vsdpinfeas(A,b,c,K,choose,x0,y0);
 %
-% [objt,x0,y0,z0,info] = mysdps(A,b,c,K);
-% [isinfeas x y] = vsdpinfeas(blk,A,c,b,choose,x0,y0,z0);
-% isinfeas =
-%      1
-% y =
-%  -100.5998
-%    -0.0060
-%
-%   See also mysdps.
+%   See also mysdps, vsdpinit.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 

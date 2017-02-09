@@ -1,44 +1,40 @@
 function [fL,y,dl,info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
 % VSDPLOW  Verified lower bound for semidefinite-quadratic-linear programming.
 %
-%   [fL y dl info] = VSDPLOW(A,b,c,K,[],y0)
-%   [fL y dl info] = VSDPLOW(A,b,c,K,x0,y0,z0,xu,opts)
-%     computes verified lower bound of primal optimal value and rigorous
-%     enclosure of dual strict feasible (near optimal) solution of a conic
-%     problem in the standard primal-dual form:
+%   [fL,y,dl,info] = VSDPLOW(A,b,c,K,[],y0) Computes a verified lower bound of
+%      the primal optimal value and a rigorous enclosure of dual strict feasible
+%      (near optimal) solutions of a conic problem in the standard primal-dual
+%      form.  This form and the block-diagonal format (A,b,c,K) is explained in
+%      'mysdps.m'.
 %
-%    (P)  min  c'*x          (D)  max  b'*y
-%         s.t. A*x = b            s.t. z := c - A'*y
-%              x in K                  z in K*
+%         'y0'     A dual feasible (eps-optimal) solution of the same dimension
+%                  as input b.  This solution can be computed using 'mysdps'.
 %
-%     where K is a cartesian product of the cones R+, SOCP, PSD.
+%      The output is:
 %
-%     For a theoretical introduction into verified conic programming see
-%     [Jansson2009].
+%         'fL'     Verified lower bound of the primal optimal value.
 %
+%         'y'      Rigorous enclosure of dual strict feasible solutions.
 %
-% A: nA x m coefficient matrix in SeDuMi or VSDP internal format
-% b: a M x 1 vector
-% c: a nA x 1 vector, primal objective
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
-% x0: a nA x 1 vector - a primal feasible (eps-optimal) solution
-% y0: a M x 1 vector - a dual feasible (eps-optimal) solution
-% z0: a nA x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
-% xu: upper bounds of eigenvalues or spectral values of primal optimal
-%     solution x
-% opts: structure for additional parameter settings, explained in vsdpinit.
+%         'dl'     Verified lower bounds of eigenvalues or spectral values of
+%                  z = c-A'*y.
 %
+%         'info'   Struct containing further information.
+%           - iter  The number of iterations.
 %
-% fL: verified lower bound of the primal optimal value
-%  y: an M x 1 vector - rigorous enclosure of dual strict feasible solution
-% dl: verified lower bounds of eigenvalues or spectral values of z=c-A'*y
-% info.iter: number of iterations
+%   VSDPLOW(A,b,c,K,x0,y0,z0) optionally provide the other approximate
+%      solutions of 'mysdps' (x0 and z0).
 %
-%   See also mysdps.
+%   VSDPLOW(A,b,c,K,[],y0,[],xu) optionally provide known finite upper bounds
+%      of the eigenvalues or spectral values of the primal optimal solution x.
+%      We recommend to use infinite bounds xu(j) instead of unreasonable large
+%      bounds xu(j).  This improves the quality of the lower bound in many
+%      cases, but may increase the computational time.
+%
+%   VSDPLOW(A,b,c,K,[],y0,[],[],opts) optionally provide a structure for
+%      additional parameter settings, explained in vsdpinit.
+%
+%   See also mysdps, vsdpinit.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 

@@ -1,47 +1,45 @@
 function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 % VSDPUP  Verified upper bound for semidefinite-quadratic-linear programming.
 %
-%   [fU,x,lb,info] = VSDPUP(A,b,c,K)
-%      Computes verified upper bound of primal optimal value and rigorous
-%      enclosure of primal strict feasible (near optimal) solution of a conic
-%      problem in the standard primal-dual form:
+%   [fL,y,dl,info] = VSDPUP(A,b,c,K,x0) Computes a verified upper bound of the
+%      primal optimal value and a rigorous enclosure of dual strict feasible
+%      (near optimal) solutions of a conic problem in the standard primal-dual
+%      form.  This form and the block-diagonal format (A,b,c,K) is explained in
+%      'mysdps.m'.
 %
-%         (P)  min  c'*x          (D)  max  b'*y
-%              s.t. A*x = b            s.t. z := c - A'*y
-%                   x in K                  z in K*
+%         'x0'     A primal feasible (eps-optimal) solution of the same
+%                  dimension as input c.  This solution can be computed using
+%                  'mysdps'.
 %
-%      where K is a cartesian product of the cones R+, SOCP, PSD.
+%      The output is:
 %
-%      For theoretical introduction into verified conic programming see
-%      [Jansson2009].
+%         'fU'     Verified upper bound of the dual optimal value.
 %
+%         'x'      Rigorous enclosure of primal strict feasible solutions.
 %
-%         A: nA x m coefficient matrix in SeDuMi or VSDP internal format
-%         b: a M x 1 vector
-%         c: a nA x 1 vector, primal objective
-%         K: a structure with following fields
-%            - K.f stores the number of free variables
-%            - K.l is the number of nonnegative components
-%            - K.q lists the lengths of socp blocks
-%            - K.s lists the dimensions of semidefinite blocks
-%         x0: a nA x 1 vector - a primal feasible (eps-optimal) solution
-%         y0: a M x 1 vector - a dual feasible (eps-optimal) solution
-%         z0: a nA x 1 vector - a dual feasible (eps-optimal) solution
-%             (slack vars)
+%         'lb'     Verified lower bounds of the eigenvalues or spectral values
+%                  of x with respect to K.
 %
-%         fU: verified upper bound of the primal optimal value
-%         x:  a nA x 1 vector - rigorous enclosure of primal strict feasible
-%             solution
-%         lb: verified lower bounds of eigenvalues or spectral values of X with
-%             respect to K
-%         info.iter: number of iterations
+%         'info'   Struct containing further information.
+%           - iter  The number of iterations.
 %
-%   VSDPUP(...,yu,opts)
-%         yu: upperbounds of the absolute value of dual optimal solution y
-%         opts: structure for additional parameter settings, explained in
-%               vsdpinit.
+%   VSDPUP(A,b,c,K,x0,y0,z0) optionally provide the other approximate
+%      solutions of 'mysdps' (y0 and z0).
 %
-%   See also mysdps.
+%   VSDPUP(A,b,c,K,x0,[],[],yu) optionally provide known finite upper bounds
+%      of the dual optimal solution y.  The following dual boundedness
+%      assumption is assumed: an optimal dual solution y satisfies
+%
+%         -yu(i) <= y(i) <= yu(i),  i = 1:m.
+%
+%      We recommend to use infinite bounds yu(i) instead of unreasonable large
+%      bounds yu(i).  This improves the quality of the lower bound in many 
+%      cases, but may increase the computational time.
+%
+%   VSDPUP(A,b,c,K,x0,[],[],[],opts) optionally provide a structure for
+%      additional parameter settings, explained in vsdpinit.
+%
+%   See also mysdps, vsdpinit.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
