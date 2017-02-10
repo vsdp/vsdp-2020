@@ -1,7 +1,7 @@
 function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 % VSDPUP  Verified upper bound for semidefinite-quadratic-linear programming.
 %
-%   [fL,y,dl,info] = VSDPUP(A,b,c,K,x0) Computes a verified upper bound of the
+%   [fU,x,lb,info] = VSDPUP(A,b,c,K,x0) Computes a verified upper bound of the
 %      primal optimal value and a rigorous enclosure of dual strict feasible
 %      (near optimal) solutions of a conic problem in the standard primal-dual
 %      form.  This form and the block-diagonal format (A,b,c,K) is explained in
@@ -39,7 +39,7 @@ function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 %   VSDPUP(A,b,c,K,x0,[],[],[],opts) optionally provide a structure for
 %      additional parameter settings, explained in vsdpinit.
 %
-%   See also mysdps, vsdpinit.
+%   See also mysdps, vsdpinit, vsdplow, vsdpinfeas.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 

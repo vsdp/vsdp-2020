@@ -15,8 +15,9 @@ function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
 %
 %      The output is:
 %
-%         'isinfeas'  Returns 1 if the primal or dual problem is proved to
-%                     be infeasible and 0 if infeasibility cannot be verified.
+%         'isinfeas'  Returns 1 if the primal or -1 if the dual problem is
+%                     proved to be infeasible and 0 if infeasibility cannot be
+%                     verified.
 %
 %         'x'         Contains a rigorous certificate (improving ray) of dual
 %                     infeasibility, if it is not equal to NaN.

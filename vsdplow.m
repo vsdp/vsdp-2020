@@ -34,7 +34,7 @@ function [fL,y,dl,info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
 %   VSDPLOW(A,b,c,K,[],y0,[],[],opts) optionally provide a structure for
 %      additional parameter settings, explained in vsdpinit.
 %
-%   See also mysdps, vsdpinit.
+%   See also mysdps, vsdpinit, vsdpup, vsdpinfeas.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
