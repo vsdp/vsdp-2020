@@ -265,6 +265,9 @@ switch (VSDP_OPTIONS.SOLVER)
     if (isempty(OPTIONS)) % Avoid warning
       OPTIONS = optimoptions('linprog','Algorithm','interior-point-legacy');
     end
+    if (~VSDP_OPTIONS.VERBOSE_OUTPUT)
+      OPTIONS = optimoptions(OPTIONS, 'Display', 'off');
+    end
     lbound = [-inf(K.f,1); zeros(K.l,1)]; % lower bound
     ubound = inf(length(c),1);            % upper bound
     
