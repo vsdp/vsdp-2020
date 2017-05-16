@@ -1,24 +1,32 @@
-function [K,A,c,x,z] = vsdp12vsdp(blk,At,C,Xt,Zt)
+function [K,At,c,x0,z0] = vsdp12vsdp(blk,A,C,X0,Z0)
 % VSDP12VSDP  Convert problem data from VSDP 2006 to VSDP 2012 format.
 %
-%   [K,A,c,x,z] = vsdp12vsdp(blk,At,C,Xt,Zt)
+%   [K,A,c,x0,z0] = VSDP12VSDP(blk,A,C,X0,Z0)
+%      The VSDP 2006 block-diagonal structure format is:
 %
-% blk: a cell array describing the block diagonal structure of problem data
-% At: a cell array with At{i,1:m} = [svec(Ai1) ... svec(Aim)]
-%     for positive semidefinite cone constraint matrices, where Aij is the
-%     matrix of j-th block and i-th constraint
-% C: a cell array of matrices of dimensions given by blk
-% Xt: a cell array of matrices, initial primal solution
-% Zt: a cell array of matrices, initial dual solution
+%         min  sum(j=1:n| <  C{j}, X{j}>)
+%         s.t. sum(j=1:n| <A{i,j}, X{j}>) = b(i)  for i = 1:m
+%              X{j} must be positive semidefinite for j = 1:n
 %
-% A: a dims3 x M Matrix,
-%     whereas dims3: sum of all sdp variables: dims3 = sum_i(K.s(i)*(K.s(i)+1)/2)
-% c: dims3 x 1 vector for primal objective function
-% x: dims3 x 1 vector, initial primal solution
-% z: dims3 x 1 vector, initial dual solution (slack vars)
-% K: a structure with following fields
-%     - K.s lists the dimensions of semidefinite blocks
+%      The problem data of the block-diagonal structure:
 %
+%         'blk'  cell(n,2)
+%         'A'    cell(m,n)
+%         'C'    cell(n,1)
+%         'b'  double(m,1)
+%
+%      The j-th block C{j} and the blocks A{i,j}, for i = 1:m, are real
+%      symmetric matrices of common size s_j, and blk(j,:) = {'s'; s_j}.
+%
+%      The blocks C{j} and A{i,j} must be stored as individual matrices in
+%      dense or sparse format.
+%
+%      The optional initial guess format is:
+%
+%         'X0'   cell(n,1)
+%         'Z0'   cell(n,1)
+%
+%   See also import_vsdp.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
@@ -30,24 +38,24 @@ else
 end
 
 % initial output
-A = [];
+At = [];
 c = [];
-x = [];
-z = [];
+x0 = [];
+z0 = [];
 
 % index vector to speed up svec
 Ivec = [];
 
 % coefficient matrix
-if nargin>1 && iscell(At) && ~isempty(At{1})
-  [mblk,nblk] = size(At);
-  A = cell(nblk,1);
+if nargin>1 && iscell(A) && ~isempty(A{1})
+  [mblk,nblk] = size(A);
+  At = cell(nblk,1);
   for i = nblk:-1:1
     % not memory but runtime efficient
-    A{i} = reshape(cat(2,At{:,i}),[],mblk);
-    At(:,i) = [];
+    At{i} = reshape(cat(2,A{:,i}),[],mblk);
+    A(:,i) = [];
   end
-  [A,Ivec] = vsvec(cat(1,A{:}),K,1,1);
+  [At,Ivec] = vsvec(cat(1,At{:}),K,1,1);
 end
 
 % primal objective vector
@@ -58,16 +66,16 @@ if nargin>2 && iscell(C) && ~isempty(C{1})
 end
 
 % initial primal solution vector
-if nargin>3 && iscell(Xt) && ~isempty(Xt{1})
-  Xt = cellfun(@(x) x(:),Xt,'UniformOutput',false);
-  [x,Ivec] = vsvec(cat(1,Xt{:}),K,2,1,Ivec);  % mu=2
+if nargin>3 && iscell(X0) && ~isempty(X0{1})
+  X0 = cellfun(@(x) x(:),X0,'UniformOutput',false);
+  [x0,Ivec] = vsvec(cat(1,X0{:}),K,2,1,Ivec);  % mu=2
   clear Xt;
 end
 
 % initial dual solution vector (slack variables)
-if nargin>4 && iscell(Zt) && ~isempty(Zt{1})
-  Zt = cellfun(@(x) x(:),Zt,'UniformOutput',false);
-  z = vsvec(cat(1,Zt{:}),K,1,1,Ivec);
+if nargin>4 && iscell(Z0) && ~isempty(Z0{1})
+  Z0 = cellfun(@(x) x(:),Z0,'UniformOutput',false);
+  z0 = vsvec(cat(1,Z0{:}),K,1,1,Ivec);
   clear Zt;
 end
 
