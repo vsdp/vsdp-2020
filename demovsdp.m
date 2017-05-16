@@ -94,11 +94,9 @@
 %% The Conic Programming Problem
 %
 % Let $\mathbb{R}^{n}_{+}$ denote the nonnegative orthant, and let
-% $$
-% \label{socpCone}
-% \mathbb{L}^{n} := \left\{ x = \begin{pmatrix} x_{1} \\ x_{:} \end{pmatrix}
-% \in \mathbb{R}^{n} \colon x_{1} \geq ||x_{:}||^{2} \right\},
-% $$
+% $
+% \mathbb{L}^{n} := \{x \in \mathbb{R}^{n} \colon x_{1} \geq ||x_{2:n}||_{2}\},
+% $
 % be the Lorentz cone.  We denote by $\langle c, x \rangle := c^{T} x$ the
 % usual Euclidean inner product of vectors in $\mathbb{R}^{n}$.
 %
