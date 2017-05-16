@@ -40,8 +40,8 @@ function opts = vsdpinit(opts,display)
 %
 %       'VERBOSE_OUTPUT'    If false, VSDP is trying to minimize verbose
 %                           output of the supported solvers.  Otherwise the
-%                           default solver messages are printed. Default is
-%                           false.
+%                           default solver messages and VSDP messages are
+%                           printed.  Default is false.
 %
 %      The persistent settings can be cleared by calling 'clear vsdpinit'.
 %
