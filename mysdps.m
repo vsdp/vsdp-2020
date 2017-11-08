@@ -91,17 +91,17 @@ switch (VSDP_OPTIONS.SOLVER)
       OPTIONS.fid = 0;
     end
     [A,c] = vsdp2sedumi(A,c,[],[],K,opts);
-    
+
     % Call solver
     [x,y,INFO] = sedumi(A,b,c,K,OPTIONS);
-    
+
     % Transform results to VSDP format
     if (~isempty(x) && ~isempty(y))
       z = c - A*y;
       obj = [c'*x, b'*y];
     end
     info = INFO.pinf + 2*INFO.dinf;
-    
+
   case 'sdpt3'
     % Setup
     if (~VSDP_OPTIONS.USE_STARTING_POINT || isempty(x0) || isempty(y0) ...
@@ -118,10 +118,10 @@ switch (VSDP_OPTIONS.SOLVER)
       end
     end
     [blk,A,c,x0,z0] = vsdp2sdpt3(K,A,c,x0,z0,opts);
-    
+
     % Call solver
     [obj,x,y,z,INFO] = sqlp(blk,A,c,b,OPTIONS,x0,y0,z0);
-    
+
     % Transform results to VSDP format
     [~,~,~,x,z] = sdpt2vsdp(blk,[],[],x,z);
     % save info codes
@@ -130,14 +130,14 @@ switch (VSDP_OPTIONS.SOLVER)
     else
       info = INFO(1);  % SDPT3-3.x output
     end
-    
+
   case 'sdpa'
     % Check cones
     if ((K.f > 0) || (sum(K.q) > 0))
       error('VSDP:MYSDPS', ...
         'SOCP (K.q) and free variables (K.f) are not supported by SDPAM');
     end
-    
+
     % Setup
     if (~VSDP_OPTIONS.USE_STARTING_POINT || isempty(x0) || isempty(y0) ...
         || isempty(z0))
@@ -149,7 +149,7 @@ switch (VSDP_OPTIONS.SOLVER)
       OPTIONS.print = 'no';
     end
     [mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x0,y0,z0);
-    
+
     % Call solver
     if (exist('mexsdpa','file') == 3)
       [~,x,X,Y,~] = sdpam(mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0,OPTIONS);
@@ -158,14 +158,14 @@ switch (VSDP_OPTIONS.SOLVER)
     else
       error('VSDP:MYSDPS', 'You need to compile the SDPA MEX-interface.');
     end
-    
+
     % Transform results to VSDP format
     [~,~,~,~,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,[],[],x,X,Y);
     if (~isempty(x) && ~isempty(y))
       obj = [c'*x, b'*y];
       info = 0;
     end
-    
+
   case 'csdp'
     % Check cones
     if (sum(K.q) > 0)
@@ -176,14 +176,14 @@ switch (VSDP_OPTIONS.SOLVER)
         'converting them to the difference of positive variables.  The ' ...
         'resulting problem is ill-posed.']);
     end
-    
+
     % Setup
     if (~VSDP_OPTIONS.VERBOSE_OUTPUT)
       OPTIONS.printlevel = 0;
     end
     OPTIONS.check = 0; % check problem data for symmetry.
     [A,c,x0,z0] = vsdp2sedumi(A,c,x0,z0,K); % that format can be read by csdp
-    
+
     % Call solver
     if (VSDP_OPTIONS.USE_STARTING_POINT && ~isempty(x0) && ~isempty(y0) ...
         && ~isempty(z0))
@@ -192,7 +192,7 @@ switch (VSDP_OPTIONS.SOLVER)
     else
       [x,y,z,INFO] = csdp(A,full(b),full(c),K,OPTIONS);
     end
-    
+
     % Transform results to VSDP format
     if (~isempty(x) && ~isempty(y))
       obj = [c'*x, b'*y];
@@ -200,31 +200,31 @@ switch (VSDP_OPTIONS.SOLVER)
     if any(INFO == [0, 1, 2])
       info = INFO;
     end
-    
+
   case 'sdplr'
     % Check cones
     if ((K.f > 0) || (sum(K.q) > 0))
       error('VSDP:MYSDPS', ...
         'SOCP (K.q) and free variables (K.f) are not supported by SDPLR');
     end
-    
+
     % Setup
     [A,c,x0] = vsdp2sedumi(A,c,x0,[],K); % that format can be read by sdplr
-    
+
     % Call solver
     if (VSDP_OPTIONS.USE_STARTING_POINT && ~isempty(x0) && ~isempty(y0))
       [x,y] = sdplr(A,b,c,K,OPTIONS,[],x0,y0);
     else
       [x,y] = sdplr(A,b,c,K,OPTIONS);
     end
-    
+
     % Transform results to VSDP format
     if (~isempty(x) && ~isempty(y))
       z = c - A*y;
       obj = [c'*x, b'*y];
       info = 0;
     end
-    
+
   case 'lp_solve'
     % Check cones
     if ((sum(K.q) > 0) || (sum(K.s) > 0))
@@ -250,14 +250,14 @@ switch (VSDP_OPTIONS.SOLVER)
       otherwise
         info = -1; % an error occured
     end
-    
+
   case 'linprog'
     % Check cones
     if ((sum(K.q) > 0) || (sum(K.s) > 0))
       error('VSDP:MYSDPS', ...
         'SOCP (K.q) and SDP (K.s) are not supported by LINPROG');
     end
-    
+
     % Setup
     if (~VSDP_OPTIONS.USE_STARTING_POINT || isempty(x0))
       x0 = [];
@@ -270,11 +270,11 @@ switch (VSDP_OPTIONS.SOLVER)
     end
     lbound = [-inf(K.f,1); zeros(K.l,1)]; % lower bound
     ubound = inf(length(c),1);            % upper bound
-    
+
     % Call solver
     [x,~,flag,~,lambda] = ...
       linprog(full(c),[],[],A',full(b),lbound,ubound,x0,OPTIONS);
-    
+
     % Transform results to VSDP format
     if (~isempty(x))
       y = -lambda.eqlin;
@@ -293,25 +293,25 @@ switch (VSDP_OPTIONS.SOLVER)
       otherwise
         info = -1; % an error occured
     end
-    
+
   case 'glpk'
     % Check cones
     if ((sum(K.q) > 0) || (sum(K.s) > 0))
       error('VSDP:MYSDPS', ...
         'SOCP (K.q) and SDP (K.s) are not supported by GLPK');
     end
-    
+
     % Setup
     sense = 1;  % minimization
     lbound = [-inf(K.f,1); zeros(K.l,1)]; % lower bound
     ubound = inf(length(c),1);            % upper bound
     vtype = repmat('C',length(c),1); % continuous variable
     ctype = repmat('S',length(b),1); % equality constraint
-    
+
     % Call solver
     [x,~,errnum,extra] = ...
       glpk(full(c),A',full(b),lbound,ubound,ctype,vtype,sense);
-    
+
     % Transform results to VSDP format
     if (~isempty(x))
       y = extra.lambda;
@@ -330,7 +330,7 @@ switch (VSDP_OPTIONS.SOLVER)
       otherwise
         info = -1; % an error occured
     end
-    
+
   otherwise
     error('VSDP:MYSDPS','The solver %s could not be detected!!', ...
       VSDP_OPTIONS.SOLVER);
