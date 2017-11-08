@@ -3,11 +3,7 @@ function lambda = vsdpneig(A,hermit)
 %
 %           Input matrix A has to be normal.
 %           A may also be an interval matrix, full or sparse. This interval
-%           matrix can be defined as:
-%               1. a structure with the fields 'mid' and 'rad',
-%               2. a cell array, where the first entry will be interpreted
-%                  as 'mid' and the second as 'rad',
-%               3. a class of type 'intval' [see INTLAB toolbox].
+%           matrix can be defined as a class of type 'intval' [see INTLAB].
 %
 %   Replaces "veigsym" from VSDP 2006.
 %
@@ -21,62 +17,38 @@ function lambda = vsdpneig(A,hermit)
 %               equal to A' the matrix will be treated as an
 %               arbitrary normal matrix.
 %
-%       lambda: If A is of type 'intval' lambda will be of the same type,
-%               else lambda is a structure with the fields 'mid' and 'rad'
-%               which are describing the corresponding interval vector.
+%       lambda: An interval vector with eigenvalue inclusions.
 %
-% Example:
+%   Example:
 %
-% A = [1 2 3; 2 1 4; 3 4 5];
-% A = midrad(A, 0.01*ones(3));
-% lambda = vsdpneig(A,true)
+%       A = [1 2 3;
+%            2 1 4;
+%            3 4 5];
+%       A = midrad(A, 0.01*ones(3));
+%       lambda = vsdpneig(A,true)
 % intval lambda =
 % [   -1.5125,   -1.4615]
 % [   -0.6172,   -0.5679]
 % [    9.0506,    9.1084]
-%
-% or:
-%
-% A.mid = [1 2 3; 2 1 4; 3 4 5];
-% A.rad = 0.01*ones(3);
-% lambda = vsdpneig(A,true)
-% lambda =
-%     mid: [3x1 double]
-%     rad: [3x1 double]
-% lambda.mid
-% ans =
-%    -1.4870
-%    -0.5925
-%     9.0795
-% lambda.rad
-% ans =
-%     0.0254
-%     0.0246
-%     0.0289
 %
 %   See also vsdplow, vsdpup, vsdpinfeas.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 % check input
-if nargin<1 || isempty(A)
+if (nargin < 1 || isempty(A))
   error('VSDPNEIG: No input matrix set.');
-elseif ~(isnumeric(A) || isa(A,'intval') || all(isfield(A,{'mid','rad'})))
+elseif ~(isnumeric(A) || isa(A,'intval'))
   error('VSDPNEIG: Datatype of input matrix is not accepted.');
 end   % size & dimension is not checked. Error will occur when calling eig.
 
-if nargin<2 || ~islogical(hermit)
+if (nargin < 2 || ~logical(hermit))
   hermit = false;
 end
 
-
-% prepare input data
-% get rounding mode and set round to nearest
+% set round to nearest
 rnd = getround();
-setround(0);    % for preparation only
-
-% is user using INTLAB?
-isintval = isa(A,'intval');
+setround(0);
 
 % prepare interval input
 if ~isnumeric(A)  % A is an interval structure or of type 'intval'
@@ -168,11 +140,7 @@ kappa = -(sqrtsup(norm22pos(E))-1);       % avoid switch of rounding mode
 % warning if A may not be normal
 if kappa<eps
   warning('VSDPNEIG:InclusionFailed','Eigenvector approximation is too bad.');
-  if isintval
-    lambda = midrad(d+1i,inf(size(d)));
-  else
-    lambda = struct('mid',d+1i,'rad',inf(size(d)));
-  end
+  lambda = midrad(d+1i,inf(size(d)));
   return;
 elseif kappa<1-eps*(n+1)^2
   warning('VSDPNEIG:WeakEnclosure','A may be not normal.');
@@ -280,17 +248,8 @@ else  % matrix is normal: use frobenius-norm for inclusion, see Kahan
   
 end  % is normal
 
-
-% update interval vector for lambda inclusion
-if isintval
-  lambda = midrad(d,drad);
-else
-  lambda = struct('mid',d,'rad',drad);
-end
-
-
-% reset rounding mode
-setround(rnd);
+lambda = midrad(d, drad);
+setround(rnd); % reset rounding mode
 end
 
 
