@@ -75,7 +75,12 @@ end
 VSDP_OPTIONS = vsdpinit(opts);
 OPTIONS = VSDP_OPTIONS.SOLVER_OPTIONS;
 
-[A,~,b,~,c,~,K,x0,y0,z0,IF] = import_vsdp(A,b,c,K,varargin{1:nargin-4});
+[A,b,c,K,x0,y0,z0,imported_fmt] = import_vsdp(A,b,c,K,varargin{1:nargin-4});
+
+% In case of interval data solve midpoint problem
+A = mid(A);
+b = mid(b);
+c = mid(c);
 
 % initialization of default output
 obj = [inf, -inf];
@@ -336,6 +341,6 @@ switch (VSDP_OPTIONS.SOLVER)
       VSDP_OPTIONS.SOLVER);
 end
 
-[x,z] = export_vsdp(IF,K,x,z);
+[x,z] = export_vsdp(imported_fmt,K,x,z);
 
 end

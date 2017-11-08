@@ -55,7 +55,7 @@ end
 
 VSDP_OPTIONS = vsdpinit(opts);
 
-[A,Arad,b,brad,c,crad,K,x0,y,z0] = import_vsdp(A,b,c,K,x0,y,z0);
+[A,b,c,K,x0,y,z0] = import_vsdp(A,b,c,K,x0,y,z0);
 
 % Check if approximations are applicable
 if (any(isnan(y)))
@@ -83,15 +83,8 @@ ceps = sparse(dim3,1);        % perturbation for c
 pertS = cell(length(K.s),1);  % diagonal perturbations of semidefinite blocks
 
 % Extract free part
-Af = A(1:K.f,:);
-Afrad = Arad(1:K.f,:);
-cf = c(1:K.f);
-cfrad = crad(1:K.f);
 xuf = xu(1:K.f);
 xu(1:K.f) = [];
-
-% Interval radius for y
-yrad = sparse(length(y),1);
 
 % Index vector for perturbation entries
 pertI = ones(sum(K.s),1);
@@ -115,25 +108,21 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   % Step 1: Defect computation, free variables handling
   if ((K.f > 0) && (isinf(max(xuf))))
     % Solve dual linear constraints rigorously
-    [y,I] = vuls([],[],struct('mid',Af,'rad',Afrad),...
-      struct('mid',cf,'rad',cfrad),[],[],y,I);
-    if ~isstruct(y)
+    [y,I] = vuls([], [], A(1:K.f,:), c(1:K.f), [], [], y, I);
+    if (~isa(y, 'intval'))
       err_msg = 'could not find solution of dual equations';
       break;
-    else
-      yrad = y.rad;
-      y = y.mid;
     end
   end
   
   % Compute rigorous enclosure for z = c - A*y  (with free variables)
-  [z,zrad] = spdotK(c,1,A,-y,2);  % for point matrices
-  zrad = zrad + crad;  % regard radii of other parameters
-  if any(yrad)
-    zrad = zrad + abs(A)*yrad;
+  [z,zrad] = spdotK(mid(c),1,A,-mid(y),2);  % for point matrices
+  zrad = zrad + rad(c);  % regard radii of other parameters
+  if any(rad(y))
+    zrad = zrad + abs(A)*rad(y);
   end
-  if ~isempty(find(Arad,1))
-    zrad = zrad + Arad*(abs(y)+yrad);
+  if ~isempty(find(rad(A),1))
+    zrad = zrad + rad(A)*(abs(mid(y))+rad(y));
   end
   
   defect = 0;  % defect by free variables
@@ -172,8 +161,8 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   for j = length(K.s):-1:1
     ofs = K.l + length(K.q) + j;
     blks = blke - K.s(j)*(K.s(j)+1)/2 + 1;
-    [lmin,dl(ofs),pertS{j}] = bnd4sd(struct('mid',z(blks:blke),...
-      'rad',zrad(blks:blke)),1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
+    [lmin,dl(ofs),pertS{j}] = bnd4sd(midrad(z(blks:blke), zrad(blks:blke)), ...
+      VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
     if (lmin > 0)
       dl(ofs) = lmin;
     end
@@ -185,8 +174,7 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   dli = find(dl < 0);
   if ~any(isinf(xu(dli)))
     % inf(min(dl,0)*xu + b'*y - defect)
-    fL = -(sum(dl(dli)'*(-xu(dli))) + prodsup(-b',y,brad',yrad) + defect);
-    y = midrad(full(y),full(yrad));
+    fL = -(sum(dl(dli)'*(-xu(dli))) + prodsup(-mid(b)',mid(y),rad(b)',rad(y)) + defect);
     setround(rnd);  % reset rounding mode
     return; % SUCCESS
   end

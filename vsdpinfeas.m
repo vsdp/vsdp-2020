@@ -58,7 +58,7 @@ end
 
 VSDP_OPTIONS = vsdpinit(opts);
 
-[A,Arad,b,brad,c,crad,K,x0,y0,~,IF] = import_vsdp(A,b,c,K,x0,y0,[]);
+[A,b,c,K,x0,y0,~,imported_fmt] = import_vsdp(A,b,c,K,x0,y0,[]);
 
 % Save rounding mode
 rnd = getround();
@@ -71,38 +71,32 @@ y = NaN;
 
 for i = 1 % Allows break in switch statement
   switch (choose)
-    
+
     case 'p' % Verify primal infeasibility
-      
+
       if (isempty(y0) || any(isnan(y0)))
         error('VSDP:VSDPINFEAS', 'inapplicable approximation y0 provided');
       end
-      
+
       % Step 1: Rigorous enclosure for z = -A*y
       if (K.f > 0)
         % Solve dual linear constraints rigorously
-        y0 = vuls([],[],struct('mid',A(1:K.f,:),'rad',Arad(1:K.f,:)),...
-          zeros(K.f,1),[],[],y0,[],opts);
-        if ~isstruct(y0)
+        y0 = vuls([], [], A(1:K.f,:), zeros(K.f,1), [], [], y0, [], opts);
+        if ~isa(y0, 'intval')
           break; % cannot verify infeasibility
-        else
-          y0rad = y0.rad;
-          y0 = y0.mid;
         end
-      else
-        y0rad = sparse(size(y0,1),1);
       end
       % default rounding mode for verification
       setround(1);
       % z = -A*y  (with free variables)
-      [z,zrad] = resmidrad(0,0,A,y0,0,0,Arad,y0rad);
-      
+      [z,zrad] = resmidrad(0,0,mid(A),y0,0,0,rad(A),rad(y0));
+
       % Step 2: Compute positive cost
-      alpha = prodsup(-b',y0,brad',y0rad);
+      alpha = prodsup(-mid(b)',mid(y0),rad(b)',rad(y0));
       if (alpha >= 0)
         break; % cannot verify infeasibility
       end
-      
+
       % Step 3: Verified lower bounds on cone eigenvalues
       dl = inf;
       % Bound for linear variables
@@ -126,57 +120,51 @@ for i = 1 % Allows break in switch statement
       blke = K.f + K.l + sum(K.q) + sum(K.s.*(K.s+1))/2;
       for j = length(K.s):-1:1
         blks = blke - K.s(j)*(K.s(j)+1)/2 + 1;
-        lambdaMin = bnd4sd(struct('mid',z(blks:blke),...
-          'rad',zrad(blks:blke)),1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
-        dl = min(dl,lambdaMin);
+        lambdaMin = bnd4sd(midrad(z(blks:blke), zrad(blks:blke)), ...
+          VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
+        dl = min(dl, lambdaMin);
         if (dl < 0)
           break; % cannot verify infeasibility
         end
         blke = blks - 1;
       end
-      
+
       % Step 4: Final feasibility check, compute result
       if (dl >= 0)
         infeas = 1;
-        if any(y0rad)
-          y = midrad(full(y0),full(y0rad));
-        else
-          y = y0;
-        end
+        y = y0;
       end
-      
-      
+
+
     case 'd' % Verify dual infeasibility
-      
+
       if (isempty(x0) || any(isnan(x0)))
         error('VSDP:VSDPINFEAS', 'inapplicable approximation x0 provided');
       end
-      
+
       % Step 1: Check c'*x > 0
       [alpha, alpharad] = spdotK(c,x0,3);
       setround(1);  % default rounding mode for verification
-      alpharad = alpharad + crad'*x0;
+      alpharad = alpharad + rad(c)' * x0;
       if (alpharad >= -alpha)
         break; % cannot verify infeasibility
       end
-      
+
       % Step 2: Inclusion for x such that A*x = 0
-      vx = vuls([],[],struct('mid',A,'rad',Arad),0*b,[],[],x0,[],opts);
-      if ~isstruct(vx)
+      vx = vuls([], [], A, 0*b, [], [], x0, [], opts);
+      if ~isa(vx, 'intval')
         break; % cannot verify infeasibility
-      elseif (prodsup(vx.mid',c,full(vx.rad)',crad) >= 0)  % if c'*x < 0
+      elseif (prodsup(mid(vx)',mid(c),full(rad(vx))',rad(c)) >= 0)  % if c'*x < 0
         A = cat(2,A,c);
-        Arad = cat(2,Arad,crad);
         % find inclusion such that c'*x = alpha
-        vx = vuls([],[],struct('mid',A,'rad',Arad),...
-          struct('mid',[b; alpha],'rad',[brad; 0]),[],[],x0,[],opts);
-        if ~isstruct(vx)
+        vx = vuls([], [], A, [b; alpha], [], [], x0, [], opts);
+        if ~isa(vx, 'intval')
           break; % cannot verify infeasibility
         end
       end
       x0rad = sparse(vx.rad);
       x0 = full(vx.mid);
-      
+
       % Step 3: Verified lower bounds on cone eigenvalues
       lb = inf;
       % Bound for linear variables
@@ -201,24 +189,27 @@ for i = 1 % Allows break in switch statement
       for j = length(K.s):-1:1
         dind = cumsum(1:K.s(j));  % index for diagonal entries
         blk3 = dind(end);
-        vx = struct('mid',x0(blke-blk3+1:blke) / 2, ...
-          'rad',x0rad(blke-blk3+1:blke) / 2);
-        vx.mid(dind) = 2 * vx.mid(dind);  % regard mu=2 for x
-        vx.rad = vx.rad + vx.rad.*sparse(dind,1,1,blk3,1);
-        lambdaMin = bnd4sd(vx,1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
+        vx = x0(blke-blk3+1:blke) / 2;
+        vx(dind) = 2 * vx(dind);  % regard mu=2 for x
+        vxrad = x0rad(blke-blk3+1:blke) / 2;
+        if (~iszero(vxrad))
+          vxrad = vxrad + vxrad.*sparse(dind,1,1,blk3,1);
+          vx = midrad(vx, vxrad);
+        end
+        lambdaMin = bnd4sd(vx, VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
         lb = min(lb,lambdaMin);
         if (lb < 0)
           break; % cannot verify infeasibility
         end
         blke = blke - blk3;
       end
-      
+
       % Step 4: Final feasibility check, compute result
       if (lb >= 0)
         infeas = -1;
-        x = export_vsdp(IF,K,midrad(full(x0),full(x0rad)));
+        x = export_vsdp(imported_fmt,K,midrad(full(x0),full(x0rad)));
       end
-      
+
     otherwise
       error('VSDP:VSDPINFEAS', '"choose" must be ''p'' or ''d''');
   end

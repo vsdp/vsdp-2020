@@ -1,28 +1,20 @@
-function [A,Arad,b,brad,c,crad,K,x,y,z,use_fmt] = import_vsdp(A,b,c,K,x,y,z)
-% IMPORT_VSDP  Imports different supported formats.
+function [A,b,c,K,x,y,z,imported_fmt] = import_vsdp(A,b,c,K,x,y,z)
+% IMPORT_VSDP  Import and verify problem data.
 %
-%   [A,Arad,b,brad,c,crad,K,x,y,z,IF] = IMPORT_VSDP(A,b,c,K,x,y,z)
+%   [A,b,c,K,x,y,z,imported_fmt] = IMPORT_VSDP(A,b,c,K)
 %   IMPORT_VSDP(...,x,y,z)
 %
 %   Input: problem data in SEDUMI, old VSDP, or new VSDP internal format.
 %
-% Output:
-% A/Arad: an nA3 x M,
-%     whereas nA3 = dimf+diml+dimq+dims3
-%     dimf: number of free variables: dimf = sum(K.f>0)
-%     diml: number of nonnegative variables: diml = sum(K.l>0)
-%     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
-%     dims3: sum of all sdp variables: dims3 = K.s'*K.s/2
-% b/brad: an M x 1 vector
-% c/crad: an nA3 x 1 vector,
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
-% x: an nA3 x 1 vector - a primal feasible (eps-optimal) solution, mu=2
-% y: an M x 1 vector - a dual feasible (eps-optimal) solution
-% z: an nA3 x 1 vector - a dual feasible (eps-optimal) solution (slack vars)
+%   The function returns:
+%
+%      'A,b,c,K,x,y,z'  Validated arguments in VSDP's block-diagonal format,
+%                       that is explained in 'mysdps.m'.
+%
+%      'imported_fmt'   The recognized imported format.  One of
+%                              []: empty means default format.
+%                        'VSDP01': vsdp-2006 format.
+%                        'SEDUMI': SeDuMi format.
 %
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
@@ -43,11 +35,11 @@ if (nargin < 7)
 end
 
 % default input format
-use_fmt = [];  % if empty: default internal format
+imported_fmt = [];  % if empty: default internal format
 
 % import old vsdp format
 if iscell(A)  % (A,b,c,K,x,y,z) -> (blk,A,C,b,Xt,yt,Zt)
-  use_fmt = 'VSDP01';
+  imported_fmt = 'VSDP01';
   tmp = K;  % b
   [K,A,c,x,z] = vsdp12vsdp(A,b,c,x,z);  % (blk,A,C,Xt,Zt)
   b = tmp;
@@ -58,8 +50,11 @@ Ivec = [];
 
 
 % prepare cone structure
-f = 0;  l = 0;  q = [];  s = [];
-fields = isfield(K,{'f','l','q','s'});
+f = 0;
+l = 0;
+q = [];
+s = [];
+fields = isfield(K, {'f','l','q','s'});
 if fields(1)
   f = sum(K.f);
 end
@@ -67,110 +62,81 @@ if fields(2)
   l = sum(K.l);
 end
 if fields(3)
-  q = reshape(K.q(K.q>0),[],1);
+  q = K.q(K.q > 0);
 end
 if fields(4)
-  s = reshape(K.s(K.s>0),[],1);
+  s = K.s(K.s > 0);
 end
-K = struct('f',f,'l',l,'q',q,'s',s);
+K = struct('f', f, 'l', l, 'q', q(:), 's', s(:));
 % appropriate dimensions
-dim3 = f + l + sum(q) + sum(s.*(s+1))/2;
+dim3 = f + l + sum(q) + (sum(s .* (s + 1)) / 2);
 
 
 % prepare interval input for b
-if isnumeric(b)
-  b = b(:);  brad = sparse(size(b,1),1);
-elseif isa(b,'intval') || all(isfield(b,{'mid','rad'}))
-  brad = b.rad(:);  b = b.mid(:);
-else
+if (~isnumeric(b) && ~isa(b, 'intval'))
   error('VSDP:IMPORT_VSDP','cannot import dual objective "b"');
 end
-% check size of b
-m = size(b,1);
-if size(brad,1)~=m
-  error('VSDP:IMPORT_VSDP','rad(b) has not the same dimension as mid(b)');
-end
-
+b = b(:);
+m = length(b);
 
 % prepare interval input for A
-if isnumeric(A)
-  Arad = 0;
-elseif isa(A,'intval') || all(isfield(A,{'mid','rad'}))
-  Arad = A.rad;  A = A.mid;
-else
+if (~isnumeric(A) && ~isa(A, 'intval'))
   error('VSDP:IMPORT_VSDP','cannot import coefficient matrix "A"');
 end
 % compact vectorized format
 if (any(size(A) - [dim3, m]) && any(size(A) - [m, dim3]))
-  use_fmt = 'SEDUMI';
+  imported_fmt = 'SEDUMI';
   [A,Ivec] = vsvec(A,K,1,0,Ivec);
-end
-if ~any(find(Arad,1))
-  Arad = sparse(dim3,m);
-elseif (any(size(Arad) - [dim3, m]) && any(size(Arad) - [m, dim3]))
-  Arad = vsvec(Arad,K,1,0,Ivec);
 end
 % transposed format
 if (size(A,1) == m)
   A = A';
 end
-if (size(Arad,1) == m)
-  Arad = Arad';
-end
 % check size of A
-if any(size(A)~=[dim3 m] | size(Arad)~=[dim3 m])
+if any(size(A) ~= [dim3, m])
   error('VSDP:IMPORT_VSDP','wrong dimension of coefficient matrix "A"');
 end
 
-
 % prepare interval input for c
-if isnumeric(c)
-  c = c(:);  crad = 0;
-elseif isa(c,'intval') || all(isfield(c,{'mid','rad'}))
-  crad = c.rad(:);  c = c.mid(:);
-else
+if (~isnumeric(c) && ~isa(c, 'intval'))
   error('VSDP:IMPORT_VSDP','cannot import primal objective "c"');
 end
+c = c(:);
 % compact vectorized format
-if size(c,1)~=dim3
+if (length(c) ~= dim3)
   [c,Ivec] = vsvec(c,K,1,0,Ivec);
 end
-if size(crad,1)~=dim3 && any(find(crad,1))
-  crad = vsvec(crad,K,1,0,Ivec);
-elseif size(crad,1)~=dim3
-  crad = sparse(dim3,1);
-end
-
 
 % prepare x
-if ~isempty(x)
-  if ~isnumeric(x)
+if (~isempty(x))
+  if (~isnumeric(x))
     error('VSDP:IMPORT_VSDP','primal solution vector "x" has to be numeric');
   end
   x = x(:);
   % compact vectorized format, mu=2
-  if size(x,1)~=dim3
+  if (length(x) ~= dim3)
     [x,Ivec] = vsvec(x,K,1,0,Ivec);  % Ivec can only be used with mu=1
     x = sscale(x,K,2);
   end
 end
 
-
 % prepare y
-if ~isnumeric(y) || all(length(y)~=[0 m])
-  error('VSDP:IMPORT_VSDP','cannot import dual solution vector "y"');
+if (~isempty(y))
+  y = y(:);
+  if (~isnumeric(y) || (length(y) ~= m))
+    error('VSDP:IMPORT_VSDP','cannot import dual solution vector "y"');
+  end
 end
-y = y(:);
 
 
 % prepare z
-if ~isempty(z)
-  if ~isnumeric(z)
+if (~isempty(z))
+  if (~isnumeric(z))
     error('VSDP:IMPORT_VSDP','cannot import dual solution "z"');
   end
   z = z(:);
   % compact vectorized format
-  if size(z,1)~=dim3
+  if (size(z,1) ~= dim3)
     z = vsvec(z,K,1,0,Ivec);
   end
 end

@@ -33,7 +33,7 @@ function [fU,x,lb,info] = vsdpup(A,b,c,K,x,y0,z0,yu,opts)
 %         -yu(i) <= y(i) <= yu(i),  i = 1:m.
 %
 %      We recommend to use infinite bounds yu(i) instead of unreasonable large
-%      bounds yu(i).  This improves the quality of the lower bound in many 
+%      bounds yu(i).  This improves the quality of the lower bound in many
 %      cases, but may increase the computational time.
 %
 %   VSDPUP(A,b,c,K,x0,[],[],[],opts) optionally provide a structure for
@@ -63,7 +63,7 @@ end
 
 VSDP_OPTIONS = vsdpinit(opts);
 
-[A,Arad,b,brad,c,crad,K,x,y0,z0,IF] = import_vsdp(A,b,c,K,x,y0,z0);
+[A,b,c,K,x,y0,z0,imported_fmt] = import_vsdp(A,b,c,K,x,y0,z0);
 
 % Check if approximation are applicable
 if (any(isnan(x)))
@@ -118,13 +118,13 @@ if (isfinite(max(yu)))
   end
 
   % x <in> K:  now regard defect = |A*x-b|
-  defect = resmag(x',A,b',1,0,Arad,brad',0);
+  defect = resmag(x',mid(A),mid(b)',1,0,rad(A),rad(b)',0);
   % fU = sup(x'*c + defect*yu)
-  fU = prodsup(x',c,0,crad) + defect*yu;
+  fU = prodsup(x',mid(c),0,rad(c)) + defect*yu;
   x = NaN;
   lb = NaN;
   info.iter = 1;
-  
+
   setround(rnd); % reset rounding mode
   return;
 end
@@ -151,22 +151,18 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   setround(1);  % default rounding for verification part
 
   % Step 1: Compute rigorous enclosure for A*x = b
-  [x, I] = vuls([],[],struct('mid',A,'rad',Arad),...
-    struct('mid',b,'rad',brad),[],[],x,I);
-  if ~isstruct(x)
+  [x, I] = vuls([], [], A, b, [], [], x, I);
+  if (~isa(x, 'intval'))
     err_msg = 'could not find solution of primal equations';
     break;
-  else
-    xrad = sparse(x.rad);
-    x = full(x.mid);
   end
 
   % Step 2: Verified lower bounds on cone eigenvalues
-  
+  xrad = NaN;
   % Bound for linear variables
   if (K.l > 0)
     ind = (K.f + 1):(K.f + K.l);
-    xl = xrad(ind) - x(ind);  % -inf(xl)
+    xl = -inf(x(ind));
     % Treat all linear variables as one cone: if any element is negative,
     % all constraints close to zero will be perturbated.
     xl_max = max(xl);
@@ -180,8 +176,8 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   ind = K.f + K.l;
   for j = 1:length(K.q)
     ind = (ind(end) + 2):(ind(end) + K.q(j));
-    xj1 = xrad(ind(1)-1) - x(ind(1)-1); % -inf(xq(1))
-    xjn = abs(x(ind)) + xrad(ind);      % sup(abs(xq(2:end)))
+    xj1 = -inf(x(ind(1)-1)); % -inf(xq(1))
+    xjn = abs(sup(x(ind)));  % abs(sup(xq(2:end)))
     xjn = sqrtsup(xjn'*xjn);  % sup(||xq(2:end)||)
     lb(K.l+j) = -(xj1+xjn);   % inf(xq(1) - ||xq(2:end)||)
   end
@@ -191,10 +187,9 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
     ofs = K.l + length(K.q) + j; % FIXME: K.f?
     dind = cumsum(1:K.s(j));  % index for diagonal entries
     blk3 = dind(end);
-    vx = struct('mid',x(blke-blk3+1:blke) / 2,'rad',xrad(blke-blk3+1:blke) / 2);
-    vx.mid(dind) = 2 * vx.mid(dind);  % regard mu=2 for x
-    vx.rad = vx.rad + vx.rad.*sparse(dind,1,1,blk3,1);
-    [lmin,lb(ofs),pertS{j}] = bnd4sd(vx,1,VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
+    vx = x(blke-blk3+1:blke) / 2;
+    vx(dind) = 2 * vx(dind);  % regard mu=2 for x
+    [lmin,lb(ofs),pertS{j}] = bnd4sd(vx, VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
     if (lmin > 0)
       lb(ofs) = lmin;
     end
@@ -205,8 +200,8 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   % Step 3: Cone feasibility check, computing upper bound
   lbi = (lb < 0);
   if (~any(lbi))
-    fU = prodsup(x',c,xrad',crad);  % sup(x'*c)
-    x = export_vsdp(IF,K,midrad(full(x),full(xrad)));
+    fU = prodsup(mid(x)',mid(c),rad(x)',rad(c));  % sup(x'*c)
+    x = export_vsdp(imported_fmt,K,x);
     setround(rnd);  % reset rounding mode
     return; % SUCCESS
   end
