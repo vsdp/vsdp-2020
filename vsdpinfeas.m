@@ -1,4 +1,4 @@
-function [infeas,x,y] = vsdpinfeas(A,b,c,K,choose,x0,y0,~,opts)
+function [infeas,x,y] = vsdpinfeas(At,b,c,K,choose,x0,y0,~,opts)
 % VSDPINFEAS Infeasibility check for semidefinite-quadratic-linear programming.
 %
 %   [isinfeas,X,Y] = VSDPINFEAS(A,b,c,K,choose,x0,y0)
@@ -58,7 +58,7 @@ end
 
 VSDP_OPTIONS = vsdpinit(opts);
 
-[A,b,c,K,x0,y0,~,imported_fmt] = import_vsdp(A,b,c,K,x0,y0,[]);
+[At,b,c,K,x0,y0,~,imported_fmt] = import_vsdp(At,b,c,K,x0,y0,[]);
 
 % Save rounding mode
 rnd = getround();
@@ -81,49 +81,47 @@ for i = 1 % Allows break in switch statement
       % Step 1: Rigorous enclosure for z = -A*y
       if (K.f > 0)
         % Solve dual linear constraints rigorously
-        y0 = vuls([], [], A(1:K.f,:), zeros(K.f,1), [], [], y0, [], opts);
-        if ~isa(y0, 'intval')
+        y0 = vuls([], [], At(1:K.f,:), zeros(K.f,1), [], [], y0, [], opts);
+        if (~isintval (y0))
           break; % cannot verify infeasibility
         end
       end
       % default rounding mode for verification
       setround(1);
-      % z = -A*y  (with free variables)
-      [z,zrad] = resmidrad(0,0,mid(A),y0,0,0,rad(A),rad(y0));
-
+      
+      % Compute rigorosly `z = -A' * y0` with free variables.
+      z = -At * intval (y0);
+      
       % Step 2: Compute positive cost
-      alpha = prodsup(-mid(b)',mid(y0),rad(b)',rad(y0));
-      if (alpha >= 0)
+      if (inf_ (-b' * y0) >= 0)
         break; % cannot verify infeasibility
       end
-
-      % Step 3: Verified lower bounds on cone eigenvalues
-      dl = inf;
-      % Bound for linear variables
+      
+      % Step 3: Verified lower bounds for each cone.
+      dl = -inf;
+      
+      % LP cones
       if (K.l > 0)
-        ind = K.f+1:K.f+K.l;
-        dl = -max(zrad(ind) - z(ind));
+        dl = max (dl, inf_ (z(K.f + (1:K.l))));
       end
-      % Eigenvalue bound for second-order cone variables
+      
+      % Second-order cones
       ind = K.f + K.l;
       for j = 1:length(K.q)
-        ind = ind(end)+2:ind(end)+K.q(j);
-        zj1 = zrad(ind(1)-1) - z(ind(1)-1);  % -inf(zq(1))
-        zjn = abs(z(ind)) + zrad(ind);  % sup(abs(zq(2:end)))
-        zjn = sqrtsup(zjn'*zjn);  % sup(||zq(2:end)||)
-        dl = min(dl,-(zj1+zjn));  % inf(zq(1)-||zq(2:end)||)
+        ind = (ind(end) + 2):(ind(end) + K.q(j));
+        % dl = inf (z(1) - ||z(2:end)||)
+        dl = min (dl, inf_ (z(ind(1)-1) - norm (intval (z(ind)))));
       end
       if (dl < 0)
         break; % cannot verify infeasibility
       end
-      % Eigenvalue bound for semidefinite cone
+      
+      % SDP cones
       blke = K.f + K.l + sum(K.q) + sum(K.s.*(K.s+1))/2;
       for j = length(K.s):-1:1
         blks = blke - K.s(j)*(K.s(j)+1)/2 + 1;
-        lambdaMin = bnd4sd(midrad(z(blks:blke), zrad(blks:blke)), ...
-          VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
-        dl = min(dl, lambdaMin);
-        if (dl < 0)
+        lambda = veigsym (z(blks:blke));
+        if (any (lambda > 0))
           break; % cannot verify infeasibility
         end
         blke = blks - 1;
@@ -143,22 +141,20 @@ for i = 1 % Allows break in switch statement
       end
 
       % Step 1: Check c'*x > 0
-      [alpha, alpharad] = spdotK(c,x0,3);
       setround(1);  % default rounding mode for verification
-      alpharad = alpharad + rad(c)' * x0;
-      if (alpharad >= -alpha)
+      if (inf_ (c' * x0) >= 0)
         break; % cannot verify infeasibility
       end
 
       % Step 2: Inclusion for x such that A*x = 0
-      vx = vuls([], [], A, 0*b, [], [], x0, [], opts);
-      if ~isa(vx, 'intval')
+      vx = vuls([], [], At, zeros (size (b)), [], [], x0, [], opts);
+      if (~isintval (vx))
         break; % cannot verify infeasibility
-      elseif (prodsup(mid(vx)',mid(c),full(rad(vx))',rad(c)) >= 0)  % if c'*x < 0
-        A = cat(2,A,c);
+      elseif ((c' * vx) >= 0)
+        At = cat(2,At,c);
         % find inclusion such that c'*x = alpha
-        vx = vuls([], [], A, [b; alpha], [], [], x0, [], opts);
-        if ~isa(vx, 'intval')
+        vx = vuls([], [], At, [b; alpha], [], [], x0, [], opts);
+        if (~isintval (vx))
           break; % cannot verify infeasibility
         end
       end
@@ -167,24 +163,25 @@ for i = 1 % Allows break in switch statement
 
       % Step 3: Verified lower bounds on cone eigenvalues
       lb = inf;
-      % Bound for linear variables
+      
+      % LP cones
       if (K.l > 0)
         ind = K.f+1:K.f+K.l;
         lb = -max(x0rad(ind) - x0(ind));
       end
-      % Eigenvalue bound for second-order cone variables
+      
+      % Second-order cones
       ind = K.f + K.l;
       for j = 1:length(K.q)
-        ind = ind(end)+2:ind(end)+K.q(j);
-        xj1 = x0rad(ind(1)-1) - x0(ind(1)-1);  % -inf(xq(1))
-        xjn = abs(x0(ind)) + x0rad(ind);  % sup(abs(xq(2:end)))
-        xjn = sqrtsup(xjn'*xjn);  % sup(||xq(2:end)||)
-        lb = min(lb,-(xj1+xjn));  % inf(xq(1)-||xq(2:end)||)
+        ind = (ind(end) + 2):(ind(end) + K.q(j));
+        % dl = inf (z(1) - ||z(2:end)||)
+        lb = min (lb, inf_ (z(ind(1)-1) - norm (intval (z(ind)))));
       end
       if (lb < 0)
         break; % cannot verify infeasibility
       end
-      % Eigenvalue bound for semidefinite cone
+      
+      % SDP cones
       blke = K.f + K.l + sum(K.q) + sum(K.s.*(K.s+1))/2;
       for j = length(K.s):-1:1
         dind = cumsum(1:K.s(j));  % index for diagonal entries

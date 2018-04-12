@@ -1,7 +1,7 @@
-function [fL,y,dl,info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
-% VSDPLOW  Verified lower bound for semidefinite-quadratic-linear programming.
+function [fL,y,dl,info] = vsdplow(At,b,c,K,x0,y0,z0,xu,opts)
+% VSDPLOW  Verified lower bound for conic programming.
 %
-%   [fL,y,dl,info] = VSDPLOW(A,b,c,K,[],y0) Computes a verified lower bound of
+%   [fL,y,dl,info] = VSDPLOW(At,b,c,K,[],y0) Computes a verified lower bound of
 %      the primal optimal value and a rigorous enclosure of dual strict feasible
 %      (near optimal) solutions of a conic problem in the standard primal-dual
 %      form.  This form and the block-diagonal format (A,b,c,K) is explained in
@@ -17,7 +17,7 @@ function [fL,y,dl,info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
 %         'y'      Rigorous enclosure of dual strict feasible solutions.
 %
 %         'dl'     Verified lower bounds of eigenvalues or spectral values of
-%                  z = c-A'*y.
+%                  `z = c - A' * y`.
 %
 %         'info'   Struct containing further information.
 %           - iter  The number of iterations.
@@ -40,7 +40,7 @@ function [fL,y,dl,info] = vsdplow(A,b,c,K,x0,y,z0,xu,opts)
 
 % check input
 narginchk(6,9);
-if isempty(A) || isempty(b) || isempty(c) || isempty(K) || isempty(y)
+if isempty(At) || isempty(b) || isempty(c) || isempty(K) || isempty(y0)
   error('VSDP:VSDPLOW', 'non-empty input arguments are required');
 end
 if ((nargin < 7) || any(isnan(z0)))
@@ -55,13 +55,13 @@ end
 
 VSDP_OPTIONS = vsdpinit(opts);
 
-[A,b,c,K,x0,y,z0] = import_vsdp(A,b,c,K,x0,y,z0);
+[At,b,c,K,x0,y0,z0] = import_vsdp(At,b,c,K,x0,y0,z0);
 
 % Check if approximations are applicable
-if (any(isnan(y)))
+if (any (isnan (y0)))
   error('VSDP:VSDPLOW', 'approximate solution y contains NaN');
 end
-if (any(isnan(x0)))
+if (any (isnan (x0)))
   x0 = [];
 end
 
@@ -82,7 +82,7 @@ epsj = ones(nc,1);  % factor for perturbation
 ceps = sparse(dim3,1);        % perturbation for c
 pertS = cell(length(K.s),1);  % diagonal perturbations of semidefinite blocks
 
-% Extract free part
+% Extract bounds for free variables `xuf` from upper bounds `xu`.
 xuf = xu(1:K.f);
 xu(1:K.f) = [];
 
@@ -93,76 +93,70 @@ pertI = [ones(K.l+(~isempty(K.q)),1); K.q(1:end-1); cumsum(pertI)];
 pertI(1) = K.f + 1;
 pertI = cumsum(pertI);
 
-% save rounding mode
+% Save rounding mode.
 rnd = getround();
 setround(0);
 
-% Algorithm with finite or infinite primal bounds xu
+% Algorithm for both finite and infinite upper bounds `xu`.
 I = []; % index vector inside loop
 info.iter = 0;
-err_msg = '';
 while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   info.iter = info.iter + 1;
   setround(1);  % default for rigorous computation in steps 1-3
   
   % Step 1: Defect computation, free variables handling
-  if ((K.f > 0) && (isinf(max(xuf))))
+  
+  % If infinite upper bounds for free variables `xuf` are given.
+  if ((K.f > 0) && (isinf (max (xuf))))
     % Solve dual linear constraints rigorously
-    [y,I] = vuls([], [], A(1:K.f,:), c(1:K.f), [], [], y, I);
-    if (~isa(y, 'intval'))
-      err_msg = 'could not find solution of dual equations';
+    [y0,I] = vuls([], [], At(1:K.f,:), c(1:K.f), [], [], y0, I);
+    if (~isintval (y0))
+      warning ('VSDP:VSDPLOW', ...
+        'VSDPLOW: could not find solution of dual equations');
       break;
     end
   end
   
-  % Compute rigorous enclosure for z = c - A*y  (with free variables)
-  [z,zrad] = spdotK(mid(c),1,A,-mid(y),2);  % for point matrices
-  zrad = zrad + rad(c);  % regard radii of other parameters
-  if any(rad(y))
-    zrad = zrad + abs(A)*rad(y);
-  end
-  if ~isempty(find(rad(A),1))
-    zrad = zrad + rad(A)*(abs(mid(y))+rad(y));
-  end
+  % Compute rigorous enclosure for `z = c - A' * y`  (with free variables).
+  z = c - At * y0;
   
-  defect = 0;  % defect by free variables
-  if ((K.f > 0) && (isfinite(max(xuf))))  % given finite upper bounds
-    defect = xuf' * (abs(z(1:K.f)) + zrad(1:K.f));
+  % Compute defect by free variables, if finite upper bounds for free variables
+  % `xuf` are given.
+  defect = 0;
+  if ((K.f > 0) && (isfinite (max (xuf))))
+    defect = xuf' * (mag (z(1:K.f)));
   end
   
   % Step 2: Verified lower bounds on cone eigenvalues
   
-  % Bound for linear variables
+  % LP cones
   if (K.l > 0)
     ind = K.f+1:K.f+K.l;
-    zjn = zrad(ind) - z(ind);  % -inf(zl)
-    % interpret all lp vars as one cone:
-    %  if any element is negative all constraints close to zero will be
-    %  perturbated
-    zj1 = max(zjn);
-    if (zj1 > 0)  % there is a negative bound
-      ind = zjn > -zj1;
-      zj1 = max((-1e-13)*min(zjn),zj1);
-      zjn(ind) = min(zjn(ind)+zj1,1.05*zj1);
+    zl = inf_ (z(ind));
+    % If any element of the LP cone is negative all constraints close to zero
+    % will be  perturbated.
+    if (min (zl) < 0)
+      pert = min ((-1e-13) * max (zl), min (zl));  % TODO: reference?
+      ind = zl > -min (zl);
+      zl(ind) = min (zl(ind) + pert, 1.05 * pert);
     end
-    dl(1:K.l) = -zjn;
+    dl(1:K.l) = zl;
   end
-  % Eigenvalue bound for second-order cone variables
+  
+  % Second-order cones
   ind = K.f + K.l;
   for j = 1:length(K.q)
     ind = ind(end)+2:ind(end)+K.q(j);
-    zj1 = zrad(ind(1)-1) - z(ind(1)-1); % -inf(zq(1))
-    zjn = abs(z(ind)) + zrad(ind);      % sup(abs(zq(2:end)))
-    zjn = sqrtsup(zjn'*zjn);  % sup(||zq(2:end)||)
-    dl(K.l+j) = -(zj1+zjn);   % inf(zq(1)-||zq(2:end)||)
+    % dl = inf (z(1) - ||z(2:end)||)
+    dl(K.l+j) = inf_ (z(ind(1)-1) - norm (intval (z(ind))));
   end
-  % Eigenvalue bound for semidefinite cone
+  
+  % SDP cones
   blke = K.f + K.l + sum(K.q) + sum(K.s.*(K.s+1))/2;
   for j = length(K.s):-1:1
     ofs = K.l + length(K.q) + j;
     blks = blke - K.s(j)*(K.s(j)+1)/2 + 1;
-    [lmin,dl(ofs),pertS{j}] = bnd4sd(midrad(z(blks:blke), zrad(blks:blke)), ...
-      VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
+    [lmin,dl(ofs),pertS{j}] = veigsym (z(blks:blke)); % TODO
     if (lmin > 0)
       dl(ofs) = lmin;
     end
@@ -170,13 +164,23 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
     blke = blks - 1;
   end
   
-  % Step 3: Cone feasibility check, computing lower bound
-  dli = find(dl < 0);
-  if ~any(isinf(xu(dli)))
-    % inf(min(dl,0)*xu + b'*y - defect)
-    fL = -(sum(dl(dli)'*(-xu(dli))) + prodsup(-mid(b)',mid(y),rad(b)',rad(y)) + defect);
+  % Step 3: Cone feasibility check and lower bound computation:
+  %
+  % a) If the defect `d = c - A' * y` lies in each cone, then all lower bounds
+  %    `dl` on `d` are non-negative, `y` is dual feasible, and `inf_ (b' * y)`
+  %    is the rigorous lower bound `fL` on the primal objective value.
+  %
+  % b) If there is a cone violation `dl(dl < 0)` and there exist a finite
+  %    upper bound `xu(dl < 0)` on `x` for each violated constraint, then
+  %    a correction term has to be added to `fL`, which in case a) is zero.
+  %
+  % The correction term `defect` refers to the defect of the free variables.
+  %
+  if (all (dl >= 0) || ~any (isinf (xu(dl < 0))))
+    fL = inf_ (b' * y0 + dl(dl < 0)' * xu(dl < 0) - defect);
+    y = y0;
     setround(rnd);  % reset rounding mode
-    return; % SUCCESS
+    return;         % SUCCESS
   end
   
   % Step 4: Perturb problem
@@ -189,15 +193,17 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
       dim3,1);
   end
   if (~all(isfinite(ceps)))
-    err_msg = 'perturbation extended range';
+    warning ('VSDP:VSDPLOW', 'VSDPLOW: perturbation extended range');
     break;
   end
-  epsj(dli) = epsj(dli) * (1 + VSDP_OPTIONS.ALPHA); % update perturbation factor
+  % Update perturbation factors.
+  epsj(dl < 0) = epsj(dl < 0) * (1 + VSDP_OPTIONS.ALPHA);
   
   % Step 5: Solve perturbed problem
-  [~,x0,y,z0,info_solver] = mysdps(A,b,c+ceps,K,x0,y,z0);
-  if ((info_solver ~= 0) || isempty(y) || any(isnan(y)) || any(isinf(y)))
-    err_msg = 'conic solver could not find solution for perturbed problem';
+  [~,x0,y0,z0,info_solver] = mysdps(At,b,c+ceps,K,x0,y0,z0);
+  if ((info_solver ~= 0) || isempty(y0) || any(isnan(y0)) || any(isinf(y0)))
+    warning ('VSDP:VSDPLOW', ...
+      'VSDPLOW: conic solver could not find solution for perturbed problem');
     break;
   end
 end
@@ -205,11 +211,7 @@ end
 setround(rnd); % reset rounding mode
 
 if (info.iter == VSDP_OPTIONS.ITER_MAX)
-  err_msg = 'maximum number of iterations reached';
-end
-
-if (VSDP_OPTIONS.VERBOSE_OUTPUT)
-  disp(['VSDPLOW: ', err_msg]);
+  error ('VSDP:VSDPLOW', 'VSDPLOW: maximum number of iterations reached');
 end
 
 fL = -Inf;
