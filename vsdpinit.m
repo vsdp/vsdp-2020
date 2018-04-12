@@ -38,10 +38,11 @@ function opts = vsdpinit(opts,display)
 %       'SOLVER_OPTIONS'    Option structure for approximate solver that is
 %                           empty by default.
 %
-%       'VERBOSE_OUTPUT'    If false, VSDP is trying to minimize verbose
-%                           output of the supported solvers.  Otherwise the
-%                           default solver messages and VSDP messages are
-%                           printed.  Default is false.
+%       'VERBOSE_OUTPUT'    If false, VSDP does not display any warnings and
+%                           is trying to minimize verbose output of the
+%                           supported solvers.  Otherwise the default solver
+%                           messages and VSDP warnings are printed.
+%                           Default is true.
 %
 %      The persistent settings can be cleared by calling 'clear vsdpinit'.
 %
@@ -277,5 +278,5 @@ opts.VERIFY_FULL_LSS = false;
 opts.MIN_SDPBLK_SIZE = 2500;
 opts.ALLOW_TRIANGULAR = false;
 opts.SOLVER_OPTIONS = [];
-opts.VERBOSE_OUTPUT = false;
+opts.VERBOSE_OUTPUT = true;
 end
