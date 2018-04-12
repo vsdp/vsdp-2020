@@ -38,40 +38,7 @@ if isempty(IF)
     z = vsvec(z,K,1,0);
   end
 elseif strcmpi(IF,'VSDP01')
-  % export old vsdp format
-  % check supported cones
-  if isfield(K,'f') && any(K.f>0) || isfield(K,'l') && any(K.l>0) || ...
-      isfield(K,'q') && any(K.q>0)
-    error('VSDP:EXPORT_VSDP','old vsdp format supports only semidefinite cone');
-  end
-  % convert x
-  if ~isempty(x)
-    x = vsvec(x,K,2,0);  % to verify that internal VSDP format is given
-    blke = length(x);
-    for j = length(K.s):-1:1
-      nj = K.s(j);
-      blks = blke - nj*(nj+1)/2 + 1;
-      Xt{j}(triu(true(nj))) = 0.5 * x(blks:blke);  % mu==2
-      Xt{j} = reshape(Xt{j},nj,nj);
-      Xt{j} = Xt{j} + Xt{j}';
-      blke = blks - 1;
-    end
-    x = Xt;
-  end
-  % convert z
-  if ~isempty(z)
-    z = vsvec(z,K,1,0);  % to verify that internal VSDP format is given
-    blke = length(z);
-    for j = length(K.s):-1:1
-      nj = K.s(j);
-      blks = blke - nj*(nj+1)/2 + 1;
-      Zt{j}(triu(true(nj))) = z(blks:blke);
-      Xt{j} = reshape(Xt{j},nj,nj);
-      Zt{j} = Xt{j} + Xt{j}' - diag(sparse(diag(Xt{j})));
-      blke = blks - 1;
-    end
-    z = Zt;
-  end
+
 elseif strcmpi(IF,'SEDUMI')
   % export sedumi format
   Imat = [];  % index vector to improve speed of smat
