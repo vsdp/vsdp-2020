@@ -1,4 +1,4 @@
-# VSDP: A Matlab toolbox for verified semidefinite-quadratic-linear programming (Version 2012)
+# VSDP: Verified SemiDefinite-quadratic-linear Programming (Version 2018)
 
 VSDP is a software package that is designed for the computation of verified
 results in conic programming.  The current version of VSDP supports the
