@@ -1,14 +1,12 @@
-%% VSDP: A Matlab toolbox for verified semidefinite-quadratic-linear programming
-%
-% Version 2012
+%% demovsdp.m
 %
 % VSDP is a software package that is designed for the computation of verified
 % results in conic programming.  The current version of VSDP supports the
 % constraint cone consisting of the product of semidefinite cones, second-order
 % cones and the nonnegative orthant.  It provides functions for computing
 % rigorous error bounds of the true optimal value, verified enclosures of
-% ε-optimal  solutions, and verified certificates of infeasibility.  All
-% rounding errors due to floating point arithmetic are taken into account.
+% ε-optimal solutions, and verified certificates of infeasibility.  All rounding
+% errors due to floating point arithmetic are taken into account.
 %
 %%
 
@@ -17,21 +15,21 @@
 % The extraordinary success and extensive growth of conic programming,
 % especially of semidefinite programming, is due to the polynomial time
 % solvability by interior point methods and the large amount of practical
-% applications.  Sometimes conic programming solvers fail to find a
-% satisfactory approximation.  Occasionally, they state that the problem is
-% infeasible although it contains feasible solutions, or vice versa,
-% see <references.html#qs_field=Chaykin2007 [Chaykin2007]>.  Verified error
-% bounds, also called rigorous error bounds, means that, in the presence of
-% rounding errors due to floating point arithmetic, the computed bounds are
-% claimed to be valid with mathematical certainty.  In other words, all
-% rounding errors are taken into consideration.  The major task of VSDP is to
-% obtain a guaranteed accuracy by postprocessing the approximations produced
-% by conic solvers.  In our tests on 255 problems from different test libraries
-% it turned out that the computed error bounds and enclosures depend heavily on
-% the quality of the approximate solutions produced by the conic solvers.  In
-% particular, if the conic solver provides poor approximations, VSDP cannot
-% compute satisfactory bounds.  However, in this case the user is warned that
-% possibly something went wrong, or needs further attention.
+% applications.  Sometimes conic programming solvers fail to find a satisfactory
+% approximation.  Occasionally, they state that the problem is infeasible
+% although it contains feasible solutions, or vice versa, see
+% </references#Jansson2007a [Jansson2007a]>.  Verified error bounds, also called
+% rigorous error bounds, means that, in the presence of rounding errors due to
+% floating point arithmetic, the computed bounds are claimed to be valid with
+% mathematical certainty.  In other words, all rounding errors are taken into
+% consideration.  The major task of VSDP is to obtain a guaranteed accuracy by
+% postprocessing the approximations produced by conic solvers.  In our tests on
+% 255 problems from different test libraries it turned out that the computed
+% error bounds and enclosures depend heavily on the quality of the approximate
+% solutions produced by the conic solvers.  In particular, if the conic solver
+% provides poor approximations, VSDP cannot compute satisfactory bounds.
+% However, in this case the user is warned that possibly something went wrong,
+% or needs further attention.
 %
 % Computational errors fall into three classes:
 %
@@ -39,21 +37,21 @@
 % # Unavoidable errors like uncertainties in parameters, and
 % # Unintentional bugs and blunders in software and hardware.
 %
-% VSDP controls rounding errors rigorously.  Please contact us, if you discover
-% any unintentional bugs <mailto:jansson@tuhh.de jansson@tuhh.de>.  In the
-% latter case the version numbers of the used software together with an
-% appropriate M-file should be provided.  Any suggestions, comments, and
-% criticisms are welcome.  Many thanks in advance.
+% VSDP controls rounding errors rigorously.  Please contact <jansson@tuhh.de>,
+% if you discover any unintentional bugs.  In the latter case the version
+% numbers of the used software together with an appropriate M-file should be
+% provided.  Any suggestions, comments, and criticisms are welcome.  Many thanks
+% in advance.
 %
 % For theoretical details of the implemented algorithms in VSDP we refer to
-% <references.html#qs_field=Jansson2004 [Jansson2004]>,
-% <references.html#qs_field=Jansson2007 [Jansson2007]>,
-% <references.html#qs_field=Jansson2009 [Jansson2009]>, and
-% <references.html#qs_field=Chaykin2007 [Chaykin2007]>.
-% See <references.html#qs_field=Rump2010 [Rump2010]> for verified results for
+% </references#Jansson2004 [Jansson2004]>,
+% </references#Jansson2007 [Jansson2007]>,
+% </references#Jansson2009 [Jansson2009]>, and
+% </references#Jansson2007a [Jansson2007a]>.
+% See </references#Rump2010 [Rump2010]> for verified results for
 % other problems, such as nonlinear systems, eigenvalue problems or differential
 % equations.  The main differences to the first version of VSDP
-% (<references.html#qs_field=Jansson2006 [Jansson2006]>) are
+% </references#Jansson2006 [Jansson2006]> are
 %
 % # the possibility to solve additional linear and second order cone
 %   programming problems,
@@ -67,7 +65,7 @@
 % To run VSDP, the following requirements have to be fulfilled:
 %
 % * A recent version of <http://www.mathworks.com/products/matlab/> MATLAB or
-%   <http://www.octave.org/ GNU Octave> must be installed.
+%   <http://www.octave.org/ GNU Octave> has to be installed.
 % * The interval toolbox <http://www.ti3.tu-harburg.de/rump/intlab/ INTLAB> is
 %   required.
 % * At least one of the following approximate solvers has to be installed:
@@ -78,8 +76,8 @@
 %   (LP only) <http://lpsolve.sf.net/ LPSOLVE>, or
 %   (LP only) <https://www.mathworks.com/help/optim/ug/linprog.html LINPROG>.
 %
-% The most recent version of VSDP 2012 and this manual are available on
-% <https://github.com/siko1056/vsdp-2012-ng/ GitHub>.  Legacy versions of VSDP
+% The most recent version of VSDP and this manual are available on
+% <https://github.com/vsdp/ GitHub>.  Legacy versions of VSDP
 % are available from <http://www.ti3.tu-harburg.de/jansson/vsdp/>.
 %
 % Once you downloaded the zip file, extract its contents to the directory where
@@ -94,22 +92,18 @@
 %% The Conic Programming Problem
 %
 % Let $\mathbb{R}^{n}_{+}$ denote the nonnegative orthant, and let
-% $
-% \mathbb{L}^{n} := \{x \in \mathbb{R}^{n} \colon x_{1} \geq ||x_{2:n}||_{2}\},
-% $
+% $\mathbb{L}^{n} := \{x \in \mathbb{R}^{n} \colon x_{1} \geq ||x_{2:n}||_{2}\}$
 % be the Lorentz cone.  We denote by $\langle c, x \rangle := c^{T} x$ the
 % usual Euclidean inner product of vectors in $\mathbb{R}^{n}$.
 %
 % The set
 % $$
-% \label{sdpCone}
 % \mathbb{S}^{n}_{+} := \left\{ X \in \mathbb{R}^{n \times n} \colon
 % X = X^{T}, v^{T} X v \geq 0, \forall v \in \mathbb{R}^{n} \right\},
 % $$
 % denotes the cone of symmetric positive semidefinite $n \times n$ matrices.
 % For symmetric matrices $X$, $Y$ the inner product is given by
 % $$
-% \label{innerProdMatr}
 % \langle X,Y \rangle := \text{trace}(XY).
 % $$
 %
@@ -150,7 +144,6 @@
 %
 % Here, the linear operator
 % $$
-% \label{linOpAij}
 % \mathcal{A}_{j}^{s}(X_{j}^{s}) := (\langle A_{1,j}^{s}, X_{j}^{s} \rangle,
 % \ldots, \langle A_{m,j}^{s}, X_{j}^{s} \rangle)^{T},
 % $$
@@ -171,7 +164,9 @@
 %
 % The adjoint operator $(\mathcal{A}_{j}^{s})^{*}$ of the linear operator
 % $\mathcal{A}_{j}^{s}$ is
-% $$(\mathcal{A}_{j}^{s})^{*} y := \sum_{k=1}^{n_{s}} A_{k,j}^{s} y_{k}.$$
+% $$
+% (\mathcal{A}_{j}^{s})^{*} y := \sum_{k=1}^{n_{s}} A_{k,j}^{s} y_{k}.
+% $$
 %
 % The dual problem associated with the primal problem \eqref{stdPrim} is
 % $$
@@ -287,7 +282,7 @@
 % the interior of the cone $K = \mathbb{R}^{n_{l}}_{+}$, if $x_{i} > 0$ for
 % $i = 1,\ldots,n_{l}$.  For a vector $x \in \mathbb{R}^{n}$ let
 % $\lambda_{\min}(x) := x_{1} - ||x_{:}||_{2}$ denote the smallest eigenvalue
-% of $x$ (see <references.html#qs_field=Alizadeh2003 [Alizadeh2003]>).  Then
+% of $x$ (see </references#Alizadeh2003 [Alizadeh2003]>).  Then
 % for second order cone programming problems a vector
 % $x \in \mathbb{R}^{\bar{q}}$ is in the interior of the cone
 % $K = \mathbb{L}^{q_{1}} \times, \ldots, \times \mathbb{L}^{q_{n_{q}}}$,
@@ -311,8 +306,8 @@
 % General conic programs satisfy only the weak duality condition
 % $\hat{f}_{d} \leq \hat{f}_{p}$.  Strong duality requires additional
 % constraint qualifications, such as _Slater's constraint qualifications_ (see
-% <references.html#qs_field=Boyd1996 [Boyd1996]>,
-% <references.html#qs_field=NestNem [NestNem]>).
+% </references#Boyd1996 [Boyd1996]>,
+% </references#NestNem [NestNem]>).
 %
 % *Strong Duality Theorem*
 %
@@ -353,7 +348,7 @@
 %  you do? [...] The first defense is to adopt a skeptical attitude toward
 %  numerical results until you can verify them by independent methods."
 %
-% -- <references.html#qs_field=Meyer2001 [Meyer2001]>
+% -- </references#Meyer2001 [Meyer2001]>
 %
 % This section provides a step-by-step introduction to VSDP.  Basically, VSDP
 % consists of four main functions: |mysdps|, |vsdplow|, |vsdpup|, and
@@ -475,7 +470,7 @@ format infsup long
 % some significant digits of this interval vector are displayed.  The upper
 % and lower bounds of the interval |y| can be obtained by using the |sup| and
 % |inf| routines of INTLAB.  For more information about the |intval| data type
-% see <references.html#qs_field=Rump1999 [Rump1999]>.
+% see </references#Rump1999 [Rump1999]>.
 %
 % Next we compute an upper bound for the optimal value by using |vsdpup|:
 %
@@ -583,7 +578,7 @@ fU = vsdpup (A,b,c,K,xt,yt,zt)
 % $$
 %
 % Let us consider the total least squares problem taken from
-% <references.html#qs_field=ElGhaoui1997 [ElGhaoui1997]>:
+% </references#ElGhaoui1997 [ElGhaoui1997]>:
 % $$
 % \label{LSQexample}
 % \begin{array}{ll}
@@ -771,7 +766,7 @@ fL, fU
 % condensed format \eqref{vec}, \eqref{condensedX}, and \eqref{condensedA}.
 %
 % Let us consider the example
-% (see <references.html#qs_field=Borchers2009 [Borchers2009]>):
+% (see </references#Borchers2009 [Borchers2009]>):
 % $$
 % \begin{array}{lll}
 % \text{minimize}
@@ -868,7 +863,7 @@ objt
 % dual problem, and strong duality holds valid.
 %
 % Now we consider the following example
-% (see <references.html#qs_field=Jansson2006 [Jansson2006]>):
+% (see </references#Jansson2006 [Jansson2006]>):
 % $$
 % \label{SDPexample}
 % \begin{array}{ll}
@@ -993,14 +988,14 @@ objt, xt, yt, info  % zt:  hidden for brevity
 % this example.  The CSDP-solver gives similar results:
 %
 
-vsdpinit('csdp');
+vsdpinit('sdpt3'); %TODO: csdp
 [objt,xt,yt,zt,info] = mysdps(A,b,c,K);
 objt, xt, yt, info  % zt:  hidden for brevity
 
 %%
 % A good deal worse are the results that can be derived with older versions of
 % these solvers, including SDPT3 and SDPA
-% <references.html#qs_field=Jansson2006 [Jansson2006]>.
+% </references#Jansson2006 [Jansson2006]>.
 %
 % Reliable results can be obtained by the functions |vsdplow| and |vsdpup|.
 % Firstly, we consider |vsdplow| and the approximate solver SDPT3.
@@ -1068,7 +1063,7 @@ vsdpinit('sdpt3');
 % design variables such as bar volumes can be roughly bounded.  If such bounds
 % are available they can speed up the computation of guaranteed error bounds
 % for the optimal value substantially, see
-% <references.html#qs_field=Jansson2006 [Jansson2006]>.
+% </references#Jansson2006 [Jansson2006]>.
 %
 % For linear programming problems the upper bound for the variable $x^{l}$
 % is a vector $\bar{x}$ such that $x^{l} \leq \bar{x}$.  For second
@@ -1114,7 +1109,7 @@ fU = vsdpup(A, b, C, K, xt, yt, zt, yu)
 % function.
 %
 % We consider a slightly modified second order cone problem
-% (<references.html#qs_field=BenTal2001 [BenTal2001]>, Example 2.4.2)
+% (</references#BenTal2001 [BenTal2001]>, Example 2.4.2)
 %
 % $$
 % \begin{array}{ll}
@@ -1289,16 +1284,16 @@ fU = vsdpup (A,b,c,K,xt,yt,zt)
 %
 % Free variables occur often in practice.  Handling free variables in interior
 % point algorithms is a pending issue (see for example
-% <references.html#qs_field=Andersen2002 [Andersen2002]>,
-% <references.html#qs_field=Anjos2007 [Anjos2007]>, and
-% <references.html#qs_field=Meszaros1998 [Meszaros1998]>).  Frequently users
+% </references#Andersen2002 [Andersen2002]>,
+% </references#Anjos2007 [Anjos2007]>, and
+% </references#Meszaros1998 [Meszaros1998]>).  Frequently users
 % convert a problem with free variables into one with restricted variables by
 % representing the free variables as a difference of two nonnegative variables.
 % This approach increases the problem size and introduces ill-posedness, which
 % may lead to numerical difficulties.
 %
 % For an example we consider the test problem _nb_L1_ from the DIMACS test
-% library <references.html#qs_field=Pataki2002 [Pataki2002]>.  The problem
+% library </references#Pataki2002 [Pataki2002]>.  The problem
 % originates from side lobe minimization in antenna engineering.  This is a
 % second order cone programming problem with 915 equality constraints, 793 SOCP
 % blocks each of size 3, and 797 nonnegative variables.  Moreover, the problem
@@ -1318,7 +1313,7 @@ fU = vsdpup (A,b,c,K,xt,yt,zt)
 %
 %
 % SDPT3 solves the problem without warnings, although it is ill-posed according
-% to Renegar's definition <references.html#qs_field=Renegar1994 [Renegar1994]>.
+% to Renegar's definition </references#Renegar1994 [Renegar1994]>.
 %
 % Now we try to get rigorous bounds using the approximation of SDPT3.
 %
@@ -1375,8 +1370,8 @@ fU = vsdpup (A,b,c,K,xt,yt,zt)
 %
 % In Table <benchmark_dimacs_free_2012_12_12.html> we display rigorous bounds
 % for the optimal value of eight problems contained in the DIMACS test library
-% that have free variables (see <references.html#qs_field=Anjos2007 [Anjos2007]>
-% and <references.html#qs_field=Kobayashi2007 [Kobayashi2007]>).  These
+% that have free variables (see </references#Anjos2007 [Anjos2007]>
+% and </references#Kobayashi2007 [Kobayashi2007]>).  These
 % problems have been modified by reversing the substitution of the free
 % variables.  We have listed the results for the problems with free variables
 % and for the same problems when representing the free variables as the
@@ -1415,7 +1410,7 @@ fU = vsdpup (A,b,c,K,xt,yt,zt)
 % SEDUMI and SDPT3 were used.  The solvers have been called with their default
 % parameters.  Almost all of the problems that could not be solved with a
 % guaranteed accuracy about $10^{-7}$ are known to be ill-posed
-% (cf. <references.html#qs_field=Freund2003 [Freund2003]>).
+% (cf. </references#Freund2003 [Freund2003]>).
 %
 % We measure the difference between two numbers by the frequently used quantity
 % $$
@@ -1432,8 +1427,8 @@ fU = vsdpup (A,b,c,K,xt,yt,zt)
 %
 % In the following, we describe the numerical results for problems from the
 % SDPLIB suite of Borchers
-% <references.html#qs_field=Borchers1999 [Borchers1999]>.  In
-% <references.html#qs_field=Freund2007 [Freund2007]> it is shown that four
+% </references#Borchers1999 [Borchers1999]>.  In
+% </references#Freund2007 [Freund2007]> it is shown that four
 % problems are infeasible, and 32 problems are ill-posed.
 %
 % VSDP could compute rigorous bounds of the optimal values for all feasible
@@ -1490,7 +1485,7 @@ disp(print_csv_table_statistic(fullfile('doc', ...
 % from a variety of sources.
 %
 % For this test set Ordóñez and Freund
-% <references.html#qs_field=Freund2003 [Freund2003]> have shown that 71 % of
+% </references#Freund2003 [Freund2003]> have shown that 71 % of
 % the problems are ill-posed.  This statement is well reflected by our results:
 % for the ill-posed problems VSDP computed infinite lower or infinite upper
 % bounds.  This happens if the distance to the next dual infeasible or primal
@@ -1507,9 +1502,9 @@ disp(print_csv_table_statistic(fullfile('doc', ...
 
 %%
 % Here we would like to mention also the numerical results of the C++ software
-% package LURUPA <references.html#qs_field=Keil2006 [Keil2006]>,
-% <references.html#qs_field=Keil2009 [Keil2009]>.  In
-% <references.html#qs_field=Keil2008 [Keil2008]> comparisons with other
+% package LURUPA </references#Keil2006 [Keil2006]>,
+% </references#Keil2009 [Keil2009]>.  In
+% </references#Keil2008 [Keil2008]> comparisons with other
 % software packages for the computation of rigorous errors bounds are described.
 %
 % Detailed results can be found in Table <benchmark_netlib_lp_2012_12_12.html>.
@@ -1523,7 +1518,7 @@ disp(print_csv_table_statistic(fullfile('doc', ...
 % of semidefinte-quadratic-linear programs.  This library was assembled for
 % the purposes of the 7-th DIMACS Implementation Challenge.  There are about
 % 50 challenging problems that are divided into 12 groups.  For details see
-% <references.html#qs_field=Pataki2002 [Pataki2002]>.  In each group there are
+% </references#Pataki2002 [Pataki2002]>.  In each group there are
 % about 5 instances, from routinely solvable ones reaching to those at or
 % beyond the capabilities of current solvers.  Due to limited available memory
 % some problems of the DIMACS test library have been omitted in our test.
@@ -1556,9 +1551,9 @@ disp(print_csv_table_statistic(fullfile('doc', ...
 % leading edge of the new Airbus A380.  We performed tests on problems from
 % the test library collected by Kocvara.  This is a collection of 26 sparse
 % semidefinite programming problems.  More details on these problems can be
-% found in <references.html#qs_field=BenTal2000 [BenTal2000]>,
-% <references.html#qs_field=Kocvara2002 [Kocvara2002]>, and
-% <references.html#qs_field=Bendsoe1997 [Bendsoe1997]>.  For 24 problems out
+% found in </references#BenTal2000 [BenTal2000]>,
+% </references#Kocvara2002 [Kocvara2002]>, and
+% </references#Bendsoe1997 [Bendsoe1997]>.  For 24 problems out
 % of this collection VSDP could compute a rigorous primal and dual $ε$-optimal
 % solution.  Caused by the limited available memory and the great computational
 % times the largest problems _mater-5_, _mater-6_, _shmup5_, _trto5_, and
