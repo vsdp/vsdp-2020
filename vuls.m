@@ -36,6 +36,17 @@ function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
 %             J.lower: violated indices of  xl <= X ,
 %             J.upper: violated indices of  X <= xu .
 %
+%   Example:
+%
+%       A = [1 1 1 1];
+%       B = [0 1 0 infsup(0.9,1.1)];
+%       a = infsup(2.9,3.1);
+%       b = 2;
+%       xl = [0 1 0 0]';
+%       xu = [4 1 1 2]';
+%       x0 = [0 1 0 1]';
+%       [X, J, I] = vuls(A,a,B,b,xl,xu,x0);
+%
 %   See also vsdpinfeas, vsdplow, vsdpup.
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
