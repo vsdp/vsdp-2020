@@ -1,5 +1,7 @@
 # VSDP: Verified SemiDefinite-quadratic-linear Programming (Version 2018)
 
+> This is the latest version of VSDP.
+
 VSDP is a software package that is designed for the computation of verified
 results in conic programming.  It supports the constraint cone consisting of the
 product of semidefinite cones, second-order cones and the nonnegative orthant.
