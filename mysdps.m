@@ -1,16 +1,17 @@
-function [obj,x,y,z,info] = mysdps(A,b,c,K,varargin)
-% MYSDPS  Interface to several conic solvers for VSDP.
+function [obj,x,y,z,info] = mysdps(P,varargin)
+% MYSDPS  Interface to several approximate conic solvers for VSDP.
 %
+%   [obj,x,y,z,info] = MYSDPS(P)
 %   [obj,x,y,z,info] = MYSDPS(A,b,c,K)
 %      Uses a preselected solver to get an approximate solution of a conic
-%      problem in the standard primal-dual form:
+%      problem `P = (A,b,c,K)` in the standard primal-dual form:
 %
-%         (P)  min  c'*x          (D)  max  b'*y
-%              s.t. A*x = b            s.t. z := c - A'*y
-%                   x in K                  z in K*
+%         (primal)  min  c'*x          (dual)  max  b'*y
+%                   s.t. A*x = b               s.t. z := c - A'*y
+%                        x in K                     z in K^*
 %
 %      where K is a cartesian product of the cones of free variables (K.f),
-%      LP (K.l), SOCP (K.q), and SDP (K.s).  K* is the dual cone.  For a
+%      LP (K.l), SOCP (K.q), and SDP (K.s).  K^* is the dual cone.  For a
 %      theoretical introduction into verified conic programming see
 %      [Jansson2009].
 %
@@ -67,7 +68,7 @@ function [obj,x,y,z,info] = mysdps(A,b,c,K,varargin)
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
 % Check input
-narginchk(4,8);
+narginchk(1,8);
 if (nargin < 8)
   opts = [];
 end
@@ -75,12 +76,14 @@ end
 VSDP_OPTIONS = vsdpinit(opts);
 OPTIONS = VSDP_OPTIONS.SOLVER_OPTIONS;
 
-[A,b,c,K,x0,y0,z0,imported_fmt] = import_vsdp(A,b,c,K,varargin{1:nargin-4});
+if (~isa (P, 'vsdp'))
+  P = vsdp(P, varargin{:});
+end
 
 % In case of interval data solve midpoint problem
-A = mid(A);
-b = mid(b);
-c = mid(c);
+A = mid(P.A);
+b = mid(P.b);
+c = mid(P.c);
 
 % initialization of default output
 obj = [inf, -inf];
