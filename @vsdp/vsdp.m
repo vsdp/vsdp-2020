@@ -11,6 +11,10 @@ classdef vsdp < handle
     z
   end
   
+  properties (Access = private)
+    Ivec = []; % Index vector to speed-up svec.  Used for `At` and `X`.
+  end
+  
   methods(Static)
     obj = fromVSDP2006Fmt (blk, A, C, b, X0, y0, Z0)
     [blk, A, C, b, X0, y0, Z0] = toVSDP2006Fmt (obj)
@@ -47,7 +51,7 @@ classdef vsdp < handle
       %
       %   The class constructor accepts conic problem data in SeDuMi and
       %   VSDP 2006/2012 format.
-      %      
+      %
       % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
       
       % check input
@@ -73,56 +77,67 @@ classdef vsdp < handle
         return;
       end
       
-      % Prepare cone structure and determine condensed cone dimension.
-      obj.n = 0;
+      % Prepare cone structure.
       obj.K.f = 0;
       obj.K.l = 0;
       obj.K.q = [];
       obj.K.s = [];
       if (isfield (K, 'f'))
         obj.K.f = sum(K.f);
-        obj.n = obj.n + obj.K.f;
       end
       if (isfield (K, 'l'))
         obj.K.l = sum(K.l);
-        obj.n = obj.n + obj.K.l;
       end
       if (isfield (K, 'q'))
         obj.K.q = K.q(K.q > 0);
-        obj.n = obj.n + sum (obj.K.q);
       end
       if (isfield (K, 's'))
         obj.K.s = K.s(K.s > 0);
-        obj.n = obj.n + (sum(obj.K.s .* (obj.K.s + 1)) / 2);
       end
       
-      % prepare interval input for b
+      % Determine condensed cone dimension.
+      obj.n = obj.K.f + obj.K.l + sum(obj.K.q) ...
+        + (sum(obj.K.s .* (obj.K.s + 1)) / 2);
+      
+      % Prepare vector `b`.
       if (~isfloat (b) && ~isa (b, 'intval'))
-        error ('VSDP:VSDP','cannot import dual objective "b"');
+        error ('VSDP:VSDP:wrongTypeB', ...
+          'VSDP: Vector `b` has wrong data type.');
       end
       obj.b = b(:);
-      m = length(b);
+      obj.m = length(obj.b);
       
-      % prepare interval input for A
-      if (~isfloat (At) && ~isa(At, 'intval'))
-        error('VSDP:IMPORT_VSDP','cannot import coefficient matrix "A"');
+      % Check type of matrix `At`.
+      if (~isfloat (At) && ~isa (At, 'intval'))
+        error ('VSDP:VSDP:wrongTypeAt', ...
+          'VSDP: Matrix `At` has wrong data type.');
       end
-      % index vector to speed-up svec
-      Ivec = [];
-      % compact vectorized format
-      if (any(size(At) - [n, m]) && any(size(At) - [m, n]))
-        imported_fmt = 'SEDUMI';
-        [At,Ivec] = vsvec(At,K.s,1,0,Ivec);
+      
+      % Check if any dimension of matrix `At` matches the number of constraints,
+      % that is the length of vector `b`.
+      if (~any(size(At) == obj.m))
+        error ('VSDP:VSDP:badDimesionAt', ...
+          'VSDP: No dimension of `At` matches the length of vector `b`.');
       end
-      % transposed format
-      if (size(At,1) == m)
-        At = At';
+      obj.At = At;
+      
+      % Ensure transposed format for `At` (n x m).
+      if (size (obj.At, 2) ~= obj.m)
+        obj.At = obj.At';
       end
+      
+      % Ensure compact vectorized format.
+      if (size (obj.At, 1) > obj.n)
+        At = obj.svec(1,false);
+      elseif (size (obj.At, 1) ~= obj.n)
+        error ('VSDP:VSDP:badDimesionAt', ...
+          'VSDP: `Bad cone dimension `n of a `At` matches the length of vector `b`.');
+      end
+      
       % check size of A
       if any(size(At) ~= [n, m])
         error('VSDP:IMPORT_VSDP','wrong dimension of coefficient matrix "A"');
       end
-      obj.At = At;
       
       % prepare interval input for c
       if (~isfloat(c) && ~isa(c, 'intval'))
@@ -171,6 +186,28 @@ classdef vsdp < handle
       end
       obj.z = z;
       
+    end
+    
+    function varargout = size (obj, dim)
+      %SIZE Size of a table.
+      if (nargin == 1)
+        if (nargout < 2)
+          varargout = {[obj.m, obj.n]};
+        elseif (nargout == 2)
+          varargout = {obj.m, obj.n};
+        else
+          varargout(1:2) = {obj.m, obj.n};
+          varargout(3:nargout) = {1};
+        end
+      else
+        if (dim == 1)
+          varargout = {obj.m};
+        elseif (dim == 2)
+          varargout = {obj.n};
+        else
+          varargout = {1};
+        end
+      end
     end
   end
 end
