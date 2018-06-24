@@ -41,18 +41,12 @@ function svec (obj, mu, isSymmetric)
 %     dims3: sum of all sdp variables: dims3 = sum_i(K.s(i)*(K.s(i)+1)/2)
 %
 
-% check input parameter
-if nargin<2 || ~isstruct(K)
-  error('VSDP:VSVEC','not enough input parameters\n');
-end
-if nargin<3 || isempty(mu)
+narginchk(2, 3);
+if ((nargin < 2) || isempty(mu))
   mu = 1;
 end
-if nargin<4 || isempty(isSymmetric)
-  isSymmetric = 1;  % assume symmetric case
-end
-if nargin<5
-  I = [];
+if ((nargin < 3)|| isempty(isSymmetric))
+  isSymmetric = true;
 end
 
 % get problem data dimensions

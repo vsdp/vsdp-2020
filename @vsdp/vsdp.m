@@ -11,11 +11,18 @@ classdef vsdp < handle
     z
   end
   
-  properties (Access = private)
-    Ivec = []; % Index vector to speed-up svec.  Used for `At` and `X`.
+  % (Un-)Vectorization of `obj.At`, `obj.C`, `obj.X`, and `obj.Z`.
+  properties (Access = protected)
+    svec_idx = []; % Index vector to speed-up vectorization.
+    smat_idx = []; % Index vector to speed-up unvectorization.
+  end
+  methods (Access = protected)
+    svec (obj, mu, isSymmetric);
+    smat (obj, mu, isSymmetric);
   end
   
-  methods(Static)
+  % VSDP constructor methods
+  methods (Static)
     obj = fromVSDP2006Fmt (blk, A, C, b, X0, y0, Z0)
     [blk, A, C, b, X0, y0, Z0] = toVSDP2006Fmt (obj)
     [vA, I] = vsvec (A, K, mu, sflag, I)

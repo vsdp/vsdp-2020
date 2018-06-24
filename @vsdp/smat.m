@@ -1,8 +1,7 @@
-function smat (obj, mu, sflag,I)
-% VSMAT  SMAT operator for VSDP.
+function smat (obj, mu, isSymmetric)
+% SMAT  Inverse operator of symmetric vectorization (svec).
 %
-%    A = VSMAT(vA,K,mu,sflag)
-%    [A, I] = VSMAT(vA,K,mu,sflag,I)
+%   obj.smat(mu, isSymmetric)
 %
 % Description:
 % For symmetric matrices X and Y it applies:
@@ -48,58 +47,33 @@ function smat (obj, mu, sflag,I)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-% check input
-if nargin<2
-  error('VSDP:VSMAT','Not enough input parameter');
-end
-if nargin<3 || isempty(mu)
+narginchk(2, 3);
+if ((nargin < 2) || isempty(mu))
   mu = 1;
 end
-if nargin<4 || isempty(sflag)
-  sflag = 1;  % assume symmetric case
-end
-if nargin<5
-  I = [];
+if ((nargin < 3)|| isempty(isSymmetric))
+  isSymmetric = true;
 end
 
-% get problem data dimensions
-nos = 0;  % number of variables that are not in SDP-cone
-fields = isfield(K,{'f','l','q','s'});
-if fields(1)
-  nos = sum(K.f);
-end
-if fields(2)
-  nos = nos + sum(K.l);
-end
-if fields(3)
-  nos = nos + sum(K.q);
-end
-if fields(4)
-  K.s = K.s(K.s>0);
-  dim = nos + sum(K.s.*K.s);
-  dim3 = nos + sum(K.s.*(K.s+1))/2;
-else
-  dim = nos;
-  dim3 = nos;
-end
+% Get problem data dimensions:
+% a) The number of variables that are not in SDP-cone.
+nos = sum(obj.K.f) + sum(obj.K.l) + sum(obj.K.q);
+% b) The number of variables in SDP-cones.
+dim = nos + sum(obj.K.s .* obj.K.s);
+% c) The number of condensed variables in SDP-cones.
+dim3 = nos + sum(obj.K.s .* (obj.K.s + 1)) / 2;
 
-
-% column or row-wise
-[isize,idim] = max(size(vA));
-if isize>3 && all(isize~=[dim3 dim])
-  error('VSDP:VSMAT','Cone dimension does not fit to size of input');
-elseif isize < 3 || isize==dim
+if (size(obj.At, 1) == dim)
   % nothing to do
-  A = vA;
   return;
 end
 
 
 % mat-transformation index vector
 ns = length(K.s);
-if length(I)~=dim || (sflag==1 && ~isnumeric(I)) || (sflag~=1 && ~islogical(I))
+if length(I)~=dim || (isSymmetric==1 && ~isnumeric(I)) || (isSymmetric~=1 && ~islogical(I))
   I = cell(ns+1,1);  % cell to hold index vectors for every sdp block
-  if sflag==1  % symmetric output
+  if isSymmetric==1  % symmetric output
     blks = nos + 1;
     I{1} = (1:nos)';
     for k = 2:ns+1
@@ -125,16 +99,11 @@ if mu~=1
   vA = sscale(vA,K,mu);
 end
 
-switch 2*(sflag==1)+idim
-  case 1  % sflag==0 && idim==1
-    A(I,:) = vA;
-  case 2  % sflag==0 && idim==2
-    A(:,I) = vA;
-  case 3  % sflag==1  && idim==1
-    A = vA';       % faster than A = vA(I,:)
-    A = A(:,I)';
-  otherwise  % sflag==1 && idim==2
-    A = vA(:,I);
+if (isSymmetric)
+  A = vA'; % TODO: really faster than A = vA(I,:)?
+  A = A(:,I)';
+else
+  A(I,:) = vA;
 end
 
 end
