@@ -1,7 +1,7 @@
-function vA = svec (obj, A, K, mu, isSymmetric)
-% VSVEC: svec operator.
+function svec (obj, mu, isSymmetric)
+% SVEC  Symmetric vectorization operator.
 %
-%   vA = vsvec(obj,A,K,mu,isSymmetric)
+%   obj.svec(mu, isSymmetric)
 %
 %   For the trace inner product of symmetric matrices X and Y holds:
 %
