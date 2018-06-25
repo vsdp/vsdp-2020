@@ -1,42 +1,47 @@
-function [A,b,c,K,pd] = from_mps_fmt(problem)
-% MPS2VSDP  Reads and converts problem from MPS format to VSDP 2012 format.
+function [obj, pd] = from_mps_file(problem)
+% FROM_MPS_FILE  Import LP problem data from MPS file.
 %
-%   [A,b,c,K,pd] = mps2vsdp(problem)
+%   [obj, pd] = vsdp.FROM_MPS_FILE ('C:\path\to\problem.mps');
 %
-%      problem: can be the filename of a text file in MPS format or a problem
-%               structure as created by the read_mps function [see VSDP/read_mps]
+%   The output is identical to from_lp_solve_fmt.
 %
-% Output:
-% A: matrix of linear equations
-% b, c: - coefficients of primal/dual objective functions
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
-% pd: a scalar with one of 'p' or 'd'. If 'p' problem was not dualized.
-%     If 'd' problem was dualized and optimal value must be negated.
+%   For further references on the MPS-format, see:
+%
+%      [1] http://plato.asu.edu/ftp/mps_format.txt
+%      [2] http://lpsolve.sourceforge.net/5.5/mps-format.htm
+%
+%   See also from_lp_solve_fmt.
 %
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-% check input
-if ischar(problem)
-  problem = read_mps(problem);
-elseif isempty(problem) || ~all(isfield(problem,{'A','rowtypes'}))
-  error('VSDP:MPS2VSDP','insufficient input data');
+narginchk(1, 1);
+if (exist (problem, 'file') ~= 2)
+  error ('VSDP:FROM_MPS_FILE:file_not_exists', ...
+    'from_mps_file: Input MPS-file does not exist.');
+end
+problem = read_mps (problem);
+if (isempty (problem) || ~all (isfield (problem, {'A', 'rowtypes'})))
+  error ('VSDP:FROM_MPS_FILE:import_error', ...
+    'insufficient input data');
 end
 
+% The MPS file format distinguishes the following row types:
+%
+%   'N'        objective / no restriction
+%   'E'  '=='  equality
+%   'L'  '<='  less than or equal
+%   'G'  '>='  greater than or equal
 
-% read A and c
-idx = problem.rowtypes~='N';
-c = -sum(problem.A(~idx,:),1)';  % (-) because of maximization
+% read A and c.
+idx = (problem.rowtypes ~= 'N');
+c = -sum (problem.A(~idx,:), 1)';  % (-) because of maximization
 A = problem.A(idx,:);
 
 
 % read e
 e = problem.rowtypes(idx);
-e = (e=='G') - (e=='L');
+e = (e == 'G') - (e == 'L');  % Create +1 for `>` and -1 for `<`.
 
 
 % read b
@@ -77,10 +82,7 @@ else
   ub = inf(size(A,2),1);
 end
 
-
-% transform LP format to VSDP format
-[A,b,c,K,pd] = lp2vsdp(A,b,c,e,lb,ub);
-
+[obj, pd] = vsdp.from_lp_solve_fmt (A, b, c, e, lb, ub);
 end
 
 function problem = read_mps(filename)

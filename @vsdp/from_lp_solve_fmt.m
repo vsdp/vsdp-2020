@@ -1,28 +1,34 @@
 function [obj, pd] = from_lp_solve_fmt (A, b, c, e, lb, ub)
 % FROM_LP_SOLVE_FMT  Import LP problem data from LP_SOLVE format.
 %
-%   obj = vsdp.from_lp_solve_fmt (A, b, c, e, lb, ub)
+%   [obj, pd] = vsdp.FROM_LP_SOLVE_FMT (A, b, c, e, lb, ub);
 %
-%      The LP_SOLVE problem format is:
+%   The LP_SOLVE problem format is:
 %
 %         max  c'*x
 %         s.t. A*x <e> b,
 %              lb <= x <= ub.
 %
-%       The problem data is:
+%   The problem data is:
 %
-%          'A'  double(m,n)  linear constraint matrix
-%          'b'  double(m,1)  right-hand side vector
-%          'c'  double(n,1)  primal objective function vector
-%          'e'  double(m,1)  sense of the inequalities:
-%               -1 - less than
-%                0 - equality
-%                1 - greater than
-%          'lb' double(n,1)  vector of lower bounds
-%          'ub' double(n,1)  vector of upper bounds
+%       'A'  double(m,n)  linear constraint matrix
+%       'b'  double(m,1)  right-hand side vector
+%       'c'  double(n,1)  primal objective function vector
+%       'e'  double(m,1)  sense of the inequalities:
+%            -1 - less or equal than
+%             0 - equality
+%             1 - greater or equal than
+%       'lb' double(n,1)  vector of lower bounds
+%       'ub' double(n,1)  vector of upper bounds
 %
-%      Note, that if the problem gets dualized the optimal value must be
-%      negated to get the right sign.
+%   For more information on the LP_SOLVE format, see:
+%
+%     http://lpsolve.sourceforge.net/5.5/MATLAB.htm
+%
+%   Note, that if the problem gets dualized, e.g. if `pd == 'd'`, the optimal
+%   value must be negated to get the right sign.
+%
+%   See also from_mps_file.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
