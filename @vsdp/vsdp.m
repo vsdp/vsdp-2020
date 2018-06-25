@@ -1,31 +1,52 @@
 classdef vsdp < handle
+  
   properties
-    n   % Condensed cone dimension `K.f + K.l + K.`
-    m   % Number of constraints
-    At  % Transposed constraint matrix `n x m`
-    b
-    c
-    K
-    x
-    y
-    z
+    % Condensed cone dimension, e.g.
+    % `n = K.f + K.l + sum(K.q) + (sum(K.s .* (K.s + 1)) / 2)`.
+    n
+    % Uncondensed cone dimension, e.g.
+    % `N = K.f + K.l + sum(K.q) + sum(K.s .* K.s)`.
+    N
+    m   % Number of constraints.
+    At  % Transposed condensed constraint matrix `n x m`.
+    b   % Right-hand side vector, or dual objective vector.
+    c   % Primal objective vector.
+    K   % Cone structure, `K.f`, `K.l`, `K.q`, `K.s`.
+    x0  % Approximate primal solution.
+    y0  % Approximate dual solution.
+    z0  % Approximate primal solution.
+  end
+  
+  properties (Dependent)
+    A  % Condensed constraint matrix `m x n`.
+  end
+  methods
+    function A = get.A (obj)
+      A = obj.At';
+    end
   end
   
   % (Un-)Vectorization of `obj.At`, `obj.C`, `obj.X`, and `obj.Z`.
   properties (Access = protected)
-    svec_idx = []; % Index vector to speed-up vectorization.
-    smat_idx = []; % Index vector to speed-up unvectorization.
+    % Store index vectors to speed-up operations.
+    svec_idx = struct('lower', [], 'upper', []);
+    smat_idx = struct('lower', [], 'upper', []);
   end
   methods (Access = protected)
     svec (obj, mu, isSymmetric);
     smat (obj, mu, isSymmetric);
   end
   
-  % VSDP constructor methods
+  % Static constructor methods for VSDP objects.
   methods (Static)
-    obj = fromVSDP2006Fmt (blk, A, C, b, X0, y0, Z0)
-    [blk, A, C, b, X0, y0, Z0] = toVSDP2006Fmt (obj)
-    [vA, I] = vsvec (A, K, mu, sflag, I)
+    [obj, pd] = from_lp_solve_fmt (A, b, c, e, lb, ub);
+    [obj, pd] = from_mps_file(problem);
+    obj = from_VSDP_2006_fmt (blk, A, C, b, X0, y0, Z0);
+  end
+  
+  % Export methods.
+  methods
+    [blk, A, C, b, X0, y0, Z0] = to_VSDP_2006_fmt (obj)
   end
   
   methods
@@ -135,7 +156,7 @@ classdef vsdp < handle
       
       % Ensure compact vectorized format.
       if (size (obj.At, 1) > obj.n)
-        At = obj.svec(1,false);
+        At = obj.svec(At,1,false);
       elseif (size (obj.At, 1) ~= obj.n)
         error ('VSDP:VSDP:badDimesionAt', ...
           'VSDP: `Bad cone dimension `n of a `At` matches the length of vector `b`.');
