@@ -1,7 +1,7 @@
-function obj = from_VSDP_2006_fmt (blk, A, C, b, X0, y0, Z0)
+function obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0)
 % FROM_VSDP_2006_FMT  Import SDP problem data from VSDP 2006 format.
 %
-%   obj = vsdp.from_VSDP_2006_fmt (blk, A, C, b, X0, y0, Z0)
+%   obj = vsdp.FROM_VSDP_2006_FMT (blk, A, C, b, X0, y0, Z0)
 %
 %      The VSDP 2006 block-diagonal structure format is:
 %
@@ -28,7 +28,7 @@ function obj = from_VSDP_2006_fmt (blk, A, C, b, X0, y0, Z0)
 %         'y0' double(m,1)
 %         'Z0'   cell(n,1)
 %
-%   See also @vsdp/to_VSDP_2006_fmt.
+%   See also to_vsdp_2006_fmt.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

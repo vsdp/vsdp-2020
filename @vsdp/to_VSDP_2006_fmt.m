@@ -1,11 +1,11 @@
-function [blk, A, C, b, X0, y0, Z0] = to_VSDP_2006_fmt (obj)
-% TOVSDP2006FMT  Convert conic problem data to VSDP 2006 format.
+function [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj)
+% TO_VSDP_2006_FMT  Export conic problem data to VSDP 2006 format.
 %
-%   [blk, A, C, b, X0, y0, Z0] = toVSDP2006Fmt (obj)
+%   [blk, A, C, b, X0, y0, Z0] = obj.toVSDP2006Fmt();
 %
 %      `obj` is a vsdp class object.
 %
-%   See also @vsdp/fromVSDP2006Fmt.
+%   See also from_vsdp_2006_fmt.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
