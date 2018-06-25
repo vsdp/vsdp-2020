@@ -1,4 +1,4 @@
-function [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)
+function [A,b,c,K,x,y,z] = from_sdpam_fmt(bLOCKsTRUCT,c,F,x0,X0,Y0)
 % SDPAM2VSDP  Convert problem data from SDPAM to VSDP 2012 format.
 %
 %    [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)

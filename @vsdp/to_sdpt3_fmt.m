@@ -1,4 +1,4 @@
-function [blk,At,ct,xt,zt] = vsdp2sdpt3(K,A,c,x0,z0,opts)
+function [blk,At,ct,xt,zt] = to_sdpt3_fmt(K,A,c,x0,z0,opts)
 % VSDP2SDPT3  Convert problem data from VSDP 2012 to SDPT3 format.
 %
 %   [blk,At,ct,xt,zt] = VSDP2SDPT3(K,A,c,x0,z0,opts)

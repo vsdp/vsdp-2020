@@ -1,4 +1,4 @@
-function [K,A,c,x,z] = sdpt2vsdp(blk,A,c,x,z)
+function [K,A,c,x,z] = from_sdpt3_fmt(blk,A,c,x,z)
 % SDPT2VSDP  Convert data in SDPT3 input format to VSDP 2012 format.
 %
 %   [K,A,c,x,z] = sdpt2vsdp(blk,At,c,x,z)

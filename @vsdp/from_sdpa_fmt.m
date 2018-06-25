@@ -1,4 +1,4 @@
-function [A,b,c,K] = sdpa2vsdp(filename,blksize)
+function [A,b,c,K] = from_sdpa_fmt(filename,blksize)
 % SDPA2VSDP  Read data from a SDPA file and converts them to VSDP
 %
 %   [A,b,c,K] = sdpa2vsdp(sparse-problem-data.dat-s)

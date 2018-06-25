@@ -1,4 +1,4 @@
-function [A,c,x,z] = vsdp2sedumi(A,c,x,z,K,opts)
+function [A,c,x,z] = to_sedumi_fmt(A,c,x,z,K,opts)
 % VSDP2SEDUMI  Convert problem data from VSDP 2012 format to SeDuMi format.
 %
 %   [A,c,x,z] = vsdp2sedumi(A,c,x,z,K,opts)

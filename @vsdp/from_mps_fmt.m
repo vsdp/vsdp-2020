@@ -1,4 +1,4 @@
-function [A,b,c,K,pd] = mps2vsdp(problem)
+function [A,b,c,K,pd] = from_mps_fmt(problem)
 % MPS2VSDP  Reads and converts problem from MPS format to VSDP 2012 format.
 %
 %   [A,b,c,K,pd] = mps2vsdp(problem)

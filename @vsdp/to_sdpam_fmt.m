@@ -1,4 +1,4 @@
-function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
+function [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = to_sdpam_fmt(A,b,c,K,x,y,z)
 % VSDP2SDPAM  Convert problem data from VSDP 2012 to SDPAM format.
 %
 %   [mDIM,nBLOCK,bLOCKsTRUCT,c,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x,y,z)
