@@ -11,12 +11,21 @@ function [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj)
 
 % check supported cones
 if (any (obj.K.f > 0) || any (obj.K.l > 0) || any (obj.K.q > 0))
-  error ('VSDP:TOVSDP2006FMT', ...
-    'toVSDP2006Fmt: The VSDP 2006 format supports only SDP cones.');
+  error ('VSDP:TO_VSDP_2006_FMT:unsupported_cones', ...
+    'to_vsdp_2006_fmt: The VSDP 2006 format supports only SDP cones.');
 end
-% convert x
-if ~isempty(x)
-  x = vsvec(x,K,2,0);  % to verify that internal VSDP format is given
+
+% Default return values.
+blk = [];
+A = [];
+C = [];
+b = obj.b;    % Identical in both versions.
+X0 = [];
+y0 = obj.y0;  % Identical in both versions.
+Z0 = [];
+
+% Export x0.
+if (~isempty (obj.x0))
   blke = length(x);
   for j = length(K.s):-1:1
     nj = K.s(j);
@@ -29,7 +38,7 @@ if ~isempty(x)
   X0 = Xt;
 end
 
-if ((nargout > 6) && ~isempty(z))
+if (~isempty (obj.z0))
   blke = length(z);
   for j = length(K.s):-1:1
     nj = K.s(j);
@@ -40,8 +49,6 @@ if ((nargout > 6) && ~isempty(z))
     blke = blks - 1;
   end
   Z0 = Zt;
-else
-  Z0 = [];
 end
 
 end

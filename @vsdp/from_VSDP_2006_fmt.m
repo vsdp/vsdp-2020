@@ -3,30 +3,30 @@ function obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0)
 %
 %   obj = vsdp.FROM_VSDP_2006_FMT (blk, A, C, b, X0, y0, Z0)
 %
-%      The VSDP 2006 block-diagonal structure format is:
+%   The VSDP 2006 block-diagonal structure format is:
 %
-%         min  sum(j=1:n| <  C{j}, X{j}>)
-%         s.t. sum(j=1:n| <A{i,j}, X{j}>) = b(i)  for i = 1:m
-%              X{j} must be positive semidefinite for j = 1:n
+%      min  sum(j=1:n| <  C{j}, X{j}>)
+%      s.t. sum(j=1:n| <A{i,j}, X{j}>) = b(i)  for i = 1:m
+%           X{j} must be positive semidefinite for j = 1:n
 %
-%      The problem data of the block-diagonal structure:
+%   The problem data of the block-diagonal structure:
 %
-%         'blk'  cell(n,2)
-%         'A'    cell(m,n)
-%         'C'    cell(n,1)
-%         'b'  double(m,1)
+%      'blk'  cell(n,2)
+%      'A'    cell(m,n)
+%      'C'    cell(n,1)
+%      'b'  double(m,1)  Identical to current format.
 %
-%      The j-th block C{j} and the blocks A{i,j}, for i = 1:m, are real
-%      symmetric matrices of common size s_j, and blk(j,:) = {'s'; s_j}.
+%   The j-th block C{j} and the blocks A{i,j}, for i = 1:m, are real symmetric
+%   matrices of common size s_j, and blk(j,:) = {'s'; s_j}.
 %
-%      The blocks C{j} and A{i,j} must be stored as individual matrices in
-%      dense or sparse format.
+%   The blocks C{j} and A{i,j} must be stored as individual matrices in dense
+%   or sparse format.
 %
-%      The optional initial guess format is:
+%   The optional initial guess format is:
 %
-%         'X0'   cell(n,1)
-%         'y0' double(m,1)
-%         'Z0'   cell(n,1)
+%      'X0'   cell(n,1)
+%      'y0' double(m,1)  Identical to current format.
+%      'Z0'   cell(n,1)
 %
 %   See also to_vsdp_2006_fmt.
 
@@ -53,7 +53,7 @@ if (iscell (A) && ~isempty (A{1}))
     At{i} = reshape (cat (2, A{:,i}), [], m);
     A(:,i) = [];
   end
-  [At, Ivec] = vsdp.vsvec (cat (1, At{:}), K, 1, 1);
+  [At, Ivec] = vsdp.svec (cat (1, At{:}), K, 1, 1);
 end
 
 % Translate primal objective matrix cell `C` to vector `c`.
