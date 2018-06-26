@@ -32,21 +32,21 @@ classdef vsdp < handle
     svec_idx = struct('lower', [], 'upper', []);
     smat_idx = struct('lower', [], 'upper', []);
   end
-  methods (Access = protected)
-    svec (obj, mu, isSymmetric);
-    smat (obj, mu, isSymmetric);
-  end
   
   % Static constructor methods for VSDP objects.
   methods (Static)
     [obj, pd] = from_lp_solve_fmt (A, b, c, e, lb, ub);
-    [obj, pd] = from_mps_file(problem);
-    obj = from_VSDP_2006_fmt (blk, A, C, b, X0, y0, Z0);
+    [obj, pd] = from_mps_file (fname);
+    obj = from_sdpa_file (fname, blksize);
+    obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0);
+    obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
   end
   
-  % Export methods.
+  % Public methods.
   methods
-    [blk, A, C, b, X0, y0, Z0] = to_VSDP_2006_fmt (obj)
+    A = svec (obj, A, mu, isSymmetric);
+    A = smat (obj, A, mu, isSymmetric);
+    [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj);
   end
   
   methods
@@ -122,6 +122,10 @@ classdef vsdp < handle
       if (isfield (K, 's'))
         obj.K.s = K.s(K.s > 0);
       end
+      
+      % Determine uncondensed cone dimension.
+      obj.N = obj.K.f + obj.K.l + sum(obj.K.q) ...
+        + sum(obj.K.s .* obj.K.s);
       
       % Determine condensed cone dimension.
       obj.n = obj.K.f + obj.K.l + sum(obj.K.q) ...
