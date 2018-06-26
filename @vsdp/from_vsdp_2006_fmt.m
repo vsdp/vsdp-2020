@@ -28,61 +28,71 @@ function obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0)
 %      'y0' double(m,1)  Identical to current format.
 %      'Z0'   cell(n,1)
 %
+%   Example:
+%
+%       blk(1,:) = {'s'; 2};
+%       A{1,1} = [0 1; 1 0];
+%       A{2,1} = [1 1; 1 1];
+%         C{1} = [1 0; 0 1];
+%            b = [1; 2.0001];
+%
 %   See also to_vsdp_2006_fmt.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 narginchk (4, 7);
 
-% Translate cone structure `blk` to `K`.
 if (~iscell (blk) || isempty (blk{1,2}))
-  error ('VSDP:FROM_VSDP_2006_FMT', ...
+  error ('VSDP:FROM_VSDP_2006_FMT:no_cone_structure', ...
     'from_VSDP_2006_fmt: bad cone structure `blk`');
-else
-  K.s = cat (1, blk{:,2});
 end
-
-% index vector to speed up svec
-Ivec = [];
+% Translate cone structure `blk` to `K`.
+K.s = cat (1, blk{:,2});
 
 % Translate constraint matrix cells `A` to vectorized transposed matrix `At`.
 if (iscell (A) && ~isempty (A{1}))
-  [m, n] = size(A);
-  At = cell(n,1);
-  for i = n:-1:1
-    At{i} = reshape (cat (2, A{:,i}), [], m);
-    A(:,i) = [];
+  % Vectorize all cells of transposed 'A'.
+  A = cellfun (@(x) x(:), A', 'UniformOutput', false);
+  for i = 1:size(A, 1)
+    % Concatenate all vectorized objective and constraint matrices horizontally
+    % into the first cell, e.g. for each block i
+    %
+    %                [ |        |  ]
+    %       A{i,1} = [ A1, ..., Am ]
+    %                [ |        |  ]
+    %
+    A{i,1} = horzcat (A{i,:});
   end
-  [At, Ivec] = vsdp.svec (cat (1, At{:}), K, 1, 1);
+  A = vertcat (A{:,1});
+else
+  A = [];
 end
 
 % Translate primal objective matrix cell `C` to vector `c`.
 if (iscell (C) && ~isempty (C{1}))
   C = cellfun (@(x) x(:), C, 'UniformOutput', false);
-  [c, Ivec] = vsdp.vsvec (cat (1, C{:}), K, 1, 1, Ivec);  % mu = 1
+  c = vertcat (C{:});
+else
+  c = [];
 end
 
 % Translate primal solution matrix cell `X0` to vector `x0`.
 if ((nargin >= 5) && iscell (X0) && ~isempty (X0{1}))
   X0 = cellfun (@(x) x(:), X0, 'UniformOutput', false);
-  [x0, Ivec] = vsdp.vsvec (cat (1, X0{:}), K, 2, 1, Ivec);  % mu = 2
+  x0 = vertcat (X0{:});
 else
   x0 = [];
-end
-
-if (nargin < 6)
-  y0 = [];
 end
 
 % Translate slack variable matrix cell `Z0` to vector `z0`.
 if ((nargin == 7) && iscell (Z0) && ~isempty (Z0{1}))
   Z0 = cellfun (@(x) x(:), Z0, 'UniformOutput', false);
-  z0 = vsdp.vsvec (cat (1, Z0{:}), K, 1, 1, Ivec);  % mu = 1
+  z0 = vertcat (Z0{:});
 else
   z0 = [];
 end
 
 % Recursive call to default VSDP constructor.
-obj = vsdp (At, b, c, K, x0, y0, z0);
+obj = vsdp (A, b, c, K, x0, y0, z0);
 
 end

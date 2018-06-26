@@ -45,7 +45,8 @@ function obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0)
 
 narginchk(3, 6);
 if (isempty (bLOCKsTRUCT))
-  error('VSDP:SDPAM2VSDP','"bLOCKsTRUCT" has to be set');
+  error ('VSDP:FROM_SDPAM_FMT:no_block_structure', ...
+    'from_sdpam_fmt: ''bLOCKsTRUCT'' has to be set.');
 end
 
 % Default values.
