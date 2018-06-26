@@ -1,76 +1,55 @@
-function [A,b,c,K] = from_sdpa_fmt(filename,blksize)
-% SDPA2VSDP  Read data from a SDPA file and converts them to VSDP
+function obj = from_sdpa_file (fname, blksize)
+% FROM_SDPA_FILE  Import conic problem from a SDPA file.
 %
-%   [A,b,c,K] = sdpa2vsdp(sparse-problem-data.dat-s)
-%   [A,b,c,K] = sdpa2vsdp(dense-problem-data.dat)
-%   [x,y,INFO] = sdpa2vsdp(optimization-result.out)
-%   [x0,y0,z0,K] = sdpa2vsdp(sparse-initial-data.ini-s,blksize)
-%   [x0,y0,z0,K] = sdpa2vsdp(dense-initial-data.ini,blksize)
+%   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\sparse-problem-data.dat-s');
+%   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\dense-problem-data.dat');
+%   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\sparse-initial-data.ini-s', blksize);
+%   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\dense-initial-data.ini',    blksize);
 %
 %      filename: string with the path + filname to the problem
 %
-% Output:
-% A: a nA3 x M Matrix,
-%     whereas nA3 = dimf+diml+dimq+dims3
-%     dimf: number of free variables: dimf = sum(K.f>0)
-%     diml: number of nonnegative variables: diml = sum(K.l>0)
-%     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
-%     dims3: sum of all sdp variables: dims3 = sum_i(K.s(i)*(K.s(i)+1)/2)
-% b: a M x 1 vector
-% c: a nC x 1 vector,
-%     whereas nC = dimf+diml+dimq+dims
-%     dimf, diml, dimq are just the same as for nA3
-%     dims = sum_i(K.s(i)^2)
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
 %
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-% open file and import data
-if nargin~=1 || ~ischar(filename) || length(filename)<4
-  error('VSDP:SDPA2VSDP','input argument must be a filename with extension');
+narginchk(1, 2);
+if (exist (fname, 'file') ~= 2)
+  error ('VSDP:FROM_SDPA_FILE:file_not_exists', ...
+    'from_sdpa_file: Input file does not exist.');
 end
 
-% type of sdpa-data
-extLIST = {'at-s','.dat','.out','ni-s','.ini'};
-dtype = find(strncmpi(filename(end-3:end),extLIST,4),1);
-if isempty(dtype)
-  error('VSDP:SDPA2VSDP','extension "%s" is not supported',filename(end-3:end));
+fid = fopen (fname, 'r');
+if (fid == -1)
+  error ('VSDP:FROM_SDPA_FILE:cannot_open_file', ...
+    'from_sdpa_file: Cannot open %s', fname);
 end
 
-% open file
-fid = fopen(filename,'r');
-if fid==-1
-  error('VSDP:SDPA2VSDP','Cannot open %s',filename);
-end
-
-switch dtype
-  case 1  % '.dat-s'  sparse problem data
+[~,~,fext] = fileparts (fname);
+switch (fext)
+  case '.dat-s'  % Sparse problem data
     
-    % skip comments
+    % Skip comment lines
     str = fgetl(fid);
-    while str(1)=='*' || str(1)=='"'
+    while ((str(1) == '*') || (str(1) == '"'))
       str = fgetl(fid);
     end
     
-    m = sscanf(str,'%d',1);  % number of decision variables
-    nblocks = fscanf(fid,'%d',1);  % number of blocks
-    blksize = fscanf(fid,'%*[^0-9+-]%d',nblocks);  % size of each block
+    m = sscanf (str, '%d', 1);  % number of decision variables
+    nblocks = fscanf (fid, '%d', 1);  % number of blocks
+    blksize = fscanf (fid, '%*[^0-9+-]%d', nblocks);  % size of each block
     
-    % right hand side vector (b)
-    b = -fscanf(fid,'%*[^0-9+-]%lf',m);
+    % Right-hand side vector.
+    b = -fscanf(fid, '%*[^0-9+-]%lf', m);
     
     % read data of A and c
-    [data,cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
-    fclose(fid);
-    if cnt==0 || mod(cnt,5)~=0
-      error('VSDP:SDPA2VSDP','Could not read SDPA data');
+    [data, cnt] = fscanf(fid, '%*[^0-9+-]%d %d %d %d %lf', [5, inf]);
+    fclose (fid);
+    if ((cnt == 0) || (mod(cnt,5) ~= 0))
+      error ('VSDP:FROM_SDPA_FILE:data_import_failed', ...
+        'from_sdpa_file: Could not read SDPA data');
     end
-    [col,blk,i,j,data] = deal(data(1,:), data(2,:), data(3,:), data(4,:), -data(5,:));
+    [col, blk, i, j, data] = deal (data(1,:), data(2,:), data(3,:), ...
+      data(4,:), -data(5,:));
     
     % any i>j ?
     idx = find(i>j);
@@ -101,7 +80,7 @@ switch dtype
     A = sparse(i(j),col(j),data(j),dim3,m);
     c = sparse(i(~j),1,data(~j),dim3,1);
     
-  case 2  % '.dat'  dense problem data
+  case '.dat'  % Dense problem data
     
     % skip comments
     str = fgetl(fid);
@@ -157,11 +136,7 @@ switch dtype
       A = -A;
     end
     
-  case 3  % '.out'  solver output
-    
-    error('output data not yet supported');
-    
-  case 4  % '.ini-s'  sparse initial data
+  case '.ini-s'  % Sparse initial data.
     
     % cone information from blksize
     if nargin<2 || isempty(blksize)
@@ -210,7 +185,7 @@ switch dtype
     data = data .* (1 + (i<j));  % mu=2, for x0
     c = sparse(blk(~col),1,data(~col),dim3,1);  % x0
     
-  case 5  % '.ini'  dense initial data
+  case '.ini'  % Dense initial data
     
     % cone information from blksize
     if (nargin<2 || isempty(blksize))
@@ -258,6 +233,12 @@ switch dtype
       c = [c(idx); c(idxs)];
       A = [A(idx,:); A(idxs,:)];
     end
+    
+  otherwise
+    error ('VSDP:FROM_SDPA_FILE:unsupported_file_extension', ...
+      'from_sdpa_file: Unsupported file extension ''%s''.', fext);
 end
+
+obj = vsdp (A, b, c, K, x, y, z);
 
 end
