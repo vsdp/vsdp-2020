@@ -1,116 +1,113 @@
-function [A,b,c,K,x,y,z] = from_sdpam_fmt(bLOCKsTRUCT,c,F,x0,X0,Y0)
-% SDPAM2VSDP  Convert problem data from SDPAM to VSDP 2012 format.
+function obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0)
+% FROM_SDPAM_FMT  Import conic problem from SDPA-M format.
 %
-%    [A,b,c,K,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,c,F,x0,X0,Y0)
+%   obj = vsdp.FROM_SDPAM_FMT (bLOCKsTRUCT, c, F, x0, X0, Y0);
 %
-% Input:
-% mDIM: scalar - number of primal variables
-% nBLOCK: scalar - number of blocks of F
-% bLOCKsTRUCT: scalar - represents the block structure of F
-% c: vector - coefficient vector
-% F: cell array of coefficient matrices
-% x0: vector for initial solution
-% X0,Y0: cell arrays of initial points
+%   The primal SDPA-M format is:
 %
-% Output:
-% A: a nA3 x M Matrix,
-%     whereas nA = dimf+diml+dimq+dims3
-%     dimf: number of free variables: dimf = sum(K.f>0)
-%     diml: number of nonnegative variables: diml = sum(K.l>0)
-%     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
-%     dims3: sum of all sdp variables: dims3 = sum_i(K.s(i)*(K.s(i)+1)/2)
-% b: M x 1 vector - right hand side of linear constraints
-% c: nA3 x 1 vector - primal objective function
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
-% x: a nA3 x 1 vector - approx. primal optimal solution  - svec(mu=2)
-% y: a M x 1 vector - approx. dual optimal solution
-% z: a nA3 x 1 vector - approx. dual optimal solution (slack vars)
+%      min  c' * x
+%      s.t. X = sum(i=1:m| F(i) * x(i)) - F(0)
+%           X positive semidefinite
 %
+%   The problem data is:
+%
+%      'mDIM'   double(1,1)  Number of primal variables.
+%      'nBLOCK' double(1,1)  Number of SDP blocks in 'F'.
+%
+%      'bLOCKsTRUCT'  double(nBLOCK,1)  Block structure of 'F'.
+%          bLOCKsTRUCT(i) > 0: symmetric matrix
+%          bLOCKsTRUCT(i) < 0: diagonal  matrix
+%      'c'   double(mDIM,1)     Objective function vector.
+%      'F'   cell(nBLOCK,mDIM)  Constraint matrices.
+%      'x0'  double(mDIM,1)     Approximation of initial solution 'x'.
+%      'X0'  cell(nBLOCK,mDIM)  Approximation of initial solution 'X'.
+%      'Y0'  cell(nBLOCK,mDIM)  Approximation of initial solution 'Y'.
+%
+%   Example 1 from [1] with a single 2x2 SDP block and three constraints:
+%
+%      mDIM = 3;
+%      nBLOCK = 1;
+%      bLOCKsTRUCT = [2];
+%      c = [48, -8, 20];
+%      F = cell(nBLOCK, mDIM+1);
+%      F{1,1} = [-11,  0 ;  0, 23];
+%      F{1,2} = [ 10,  4 ;  4,  0];
+%      F{1,3} = [  0,  0 ;  0, -8];
+%      F{1,4} = [  0, -8 ; -8,  2];
+%
+%   For more information on the SDPA-M format, see:
+%
+%     [1] https://sourceforge.net/projects/sdpa/files/sdpa-m/sdpamManual.pdf
+%
+%   See also from_sdpa_file.
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-% prepare data
-if nargin<1 || isempty(bLOCKsTRUCT)
+narginchk(3, 6);
+if (isempty (bLOCKsTRUCT))
   error('VSDP:SDPAM2VSDP','"bLOCKsTRUCT" has to be set');
 end
 
-% initial output
-A = [];  b = [];  x = [];  y = [];  z = [];
+% Default values.
+At = [];
+b = -c(:);  % This is true for the VSDP format.
+c = [];
+x = [];
+y = [];
+z = [];
 
-% indices of diagonal blocks - linear part
-indl = find(bLOCKsTRUCT<2);
+idx_lp  = (bLOCKsTRUCT < 2); % Indices of diagonal (LP) and 1x1 blocks.
+idx_sdp = ~idx_lp;           % Indices of semidefinite blocks.
 
-% indices of semidefinite blocks
-inds = find(bLOCKsTRUCT>1);
+K.l = sum (abs (bLOCKsTRUCT(idx_lp)));
+K.s = bLOCKsTRUCT(idx_sdp);
 
-% index vector to speed up svec
-Ivec = [];
-
-K = struct('l',sum(abs(bLOCKsTRUCT(indl))),'s',reshape(bLOCKsTRUCT(inds),[],1));
-
-
-% convert c to b
-if nargin>1
-  b = -c;
-end
-
-
-% convert F to c & A
-if nargin>2 && ~isempty(F)
-  % vectorize linear part, sort blocks
-  F = [ cellfun(@(x) x(linspace(1,numel(x),length(x))),F(indl,:),...
-    'UniformOutput',false); F(inds,:) ];
+if (~isempty (F))
+  % Vectorize all cells.
+  F = cellfun (@(x) x(:), F, 'UniformOutput', false);
+  % Put diagonal (LP) blocks to top.
+  F = [F(idx_lp,:); F(idx_sdp,:)];
   
-  % concat
-  mdim = size(F,2);
-  for i = 1:size(F,1)
-    F{i,1} = reshape(cat(2,F{i,:}),[],mdim);
+  for i = 1:size(F, 1) % == nBLOCK
+    % Concatenate all vectorized objective and constraint matrices
+    % horizontally into the first cell, e.g. for each block i
+    %
+    %                [ |   |        |  ]
+    %       F{i,1} = [ C , A1, ..., Am ]
+    %                [ |   |        |  ]
+    %
+    F{i,1} = horzcat (F{i,:});
   end
-  F = -cat(1,F{:,1});  % [c A] in SeDuMi format
+  % Finally concatenate all first vectorized blocks vertically and drop the
+  % rest of F.
+  F = -vertcat (F{:,1});  % F = [c, At]
   
-  % compact VSDP format
-  [F,Ivec] = vsvec(F,K,1,1);
-  
-  % split into c and A
+  % Split F into c and A.
   c = F(:,1);
-  A = F(:,2:end);
-  clear F;
-else
-  c = [];
+  At = F(:,2:end);
 end
 
-
-% write y
-if nargin>4
+% Convert x0 to y.
+if (nargin > 3)
   y = x0;
 end
 
-
-% convert X0 to z
-if nargin>3 && ~isempty(X0) && nargout>6
-  % vectorize + sort blocks
-  X0 = [ cellfun(@(x) reshape(x(linspace(1,numel(x),length(x))),[],1),...
-    X0(indl),'UniformOutput',false) ; ...
-    cellfun(@(x) x(:),X0(inds),'UniformOutput',false) ];
-  
-  % concat + svec
-  [z,Ivec] = vsvec(cat(1,X0{:}),K,1,1,Ivec);
+% Convert X0 to z.
+if ((nargin > 4) && (~isempty (X0)))
+  % Vectorize all cells.
+  X0 = cellfun (@(x) x(:), X0, 'UniformOutput', false);
+  % Put diagonal (LP) blocks to top and concatenate.
+  z = vertcat([X0(idx_lp); X0(idx_sdp)]);
 end
 
-
-% convert Y0 to x
-if nargin>5 && ~isempty(Y0) && nargout>4
-  % vectorize + sort blocks
-  Y0 = [ cellfun(@(x) reshape(x(linspace(1,numel(x),length(x))),[],1),...
-    Y0(indl),'UniformOutput',false) ; ...
-    cellfun(@(x) x(:),Y0(inds),'UniformOutput',false) ];
-  
-  % concat + svec
-  x = vsvec(cat(1,Y0{:}),K,2,1,Ivec);  % mu=2
+% Convert Y0 to x.
+if ((nargin > 5) && (~isempty (Y0)))
+  % Vectorize all cells.
+  Y0 = cellfun (@(x) x(:), Y0, 'UniformOutput', false);
+  % Put diagonal (LP) blocks to top and concatenate.
+  x = vertcat([Y0(idx_lp); Y0(idx_sdp)]);
 end
+
+obj = vsdp (At, b, c, K, x, y, z);
 
 end
