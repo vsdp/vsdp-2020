@@ -1,4 +1,4 @@
-function [obj, pd] = from_mps_file(problem)
+function [obj, pd] = from_mps_file (fname)
 % FROM_MPS_FILE  Import LP problem data from MPS file.
 %
 %   [obj, pd] = vsdp.FROM_MPS_FILE ('C:\path\to\problem.mps');
@@ -16,11 +16,11 @@ function [obj, pd] = from_mps_file(problem)
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 narginchk(1, 1);
-if (exist (problem, 'file') ~= 2)
+if (exist (fname, 'file') ~= 2)
   error ('VSDP:FROM_MPS_FILE:file_not_exists', ...
     'from_mps_file: Input MPS-file does not exist.');
 end
-problem = read_mps (problem);
+problem = read_mps (fname);
 if (isempty (problem) || ~all (isfield (problem, {'A', 'rowtypes'})))
   error ('VSDP:FROM_MPS_FILE:import_error', ...
     'insufficient input data');
