@@ -6,7 +6,7 @@ function obj = from_sdpa_file (fname, blksize)
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\sparse-initial-data.ini-s', blksize);
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\dense-initial-data.ini',    blksize);
 %
-%      filename: string with the path + filname to the problem
+%      fname: string with the path + filname to the problem
 %
 %
 
