@@ -35,6 +35,7 @@ function obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0)
 %       A{2,1} = [1 1; 1 1];
 %         C{1} = [1 0; 0 1];
 %            b = [1; 2.0001];
+%       obj = vsdp.FROM_VSDP_2006_FMT (blk, A, C, b);
 %
 %   See also to_vsdp_2006_fmt.
 
@@ -42,57 +43,29 @@ function obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0)
 
 narginchk (4, 7);
 
+% Translate cone structure.
 if (~iscell (blk) || isempty (blk{1,2}))
   error ('VSDP:FROM_VSDP_2006_FMT:no_cone_structure', ...
     'from_VSDP_2006_fmt: bad cone structure `blk`');
 end
-% Translate cone structure `blk` to `K`.
-K.s = cat (1, blk{:,2});
+K.s = horzcat (blk{:,2});
 
-% Translate constraint matrix cells `A` to vectorized transposed matrix `At`.
-if (iscell (A) && ~isempty (A{1}))
-  % Vectorize all cells of transposed 'A'.
-  A = cellfun (@(x) x(:), A', 'UniformOutput', false);
-  for i = 1:size(A, 1)
-    % Concatenate all vectorized objective and constraint matrices horizontally
-    % into the first cell, e.g. for each block i
-    %
-    %                [ |        |  ]
-    %       A{i,1} = [ A1, ..., Am ]
-    %                [ |        |  ]
-    %
-    A{i,1} = horzcat (A{i,:});
-  end
-  A = vertcat (A{:,1});
-else
-  A = [];
+% Treat optional parameter of solution guess.
+if (nargin < 5)
+  X0 = {};
+end
+if (nargin < 6)
+  y0 = [];
+end
+if (nargin < 7)
+  Z0 = {};
 end
 
-% Translate primal objective matrix cell `C` to vector `c`.
-if (iscell (C) && ~isempty (C{1}))
-  C = cellfun (@(x) x(:), C, 'UniformOutput', false);
-  c = vertcat (C{:});
-else
-  c = [];
-end
-
-% Translate primal solution matrix cell `X0` to vector `x0`.
-if ((nargin >= 5) && iscell (X0) && ~isempty (X0{1}))
-  X0 = cellfun (@(x) x(:), X0, 'UniformOutput', false);
-  x0 = vertcat (X0{:});
-else
-  x0 = [];
-end
-
-% Translate slack variable matrix cell `Z0` to vector `z0`.
-if ((nargin == 7) && iscell (Z0) && ~isempty (Z0{1}))
-  Z0 = cellfun (@(x) x(:), Z0, 'UniformOutput', false);
-  z0 = vertcat (Z0{:});
-else
-  z0 = [];
-end
-
-% Recursive call to default VSDP constructor.
-obj = vsdp (A, b, c, K, x0, y0, z0);
+% Need to transpose the input matrix 'A', number of constraints 'm' must be the
+% second dimension.  Vectors 'b' and 'y0' have the same format in both VSDP
+% versions.  The VSDP constructor cares for the condensed semidefinite
+% variables.
+obj = vsdp (vsdp.cell2mat (A'), b, vsdp.cell2mat (C), K, ...
+  vsdp.cell2mat (X0), y0, vsdp.cell2mat (Z0));
 
 end

@@ -34,6 +34,7 @@ function obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0)
 %      F{1,2} = [ 10,  4 ;  4,  0];
 %      F{1,3} = [  0,  0 ;  0, -8];
 %      F{1,4} = [  0, -8 ; -8,  2];
+%      obj = vsdp.FROM_SDPAM_FMT (bLOCKsTRUCT, c, F);
 %
 %   For more information on the SDPA-M format, see:
 %
@@ -48,14 +49,16 @@ if (isempty (bLOCKsTRUCT))
   error ('VSDP:FROM_SDPAM_FMT:no_block_structure', ...
     'from_sdpam_fmt: ''bLOCKsTRUCT'' has to be set.');
 end
-
-% Default values.
-At = [];
-b = -c(:);  % This is true for the VSDP format.
-c = [];
-x = [];
-y = [];
-z = [];
+if (size (F, 1) ~= length (bLOCKsTRUCT))
+  error ('VSDP:FROM_SDPAM_FMT:bad_cone_dimension', ...
+    ['from_sdpam_fmt: According to ''bLOCKsTRUCT'' the ''size(F,1)'' ', ...
+    'must be ''%d'' but is ''%d''.'], length (bLOCKsTRUCT), size (F, 1));
+end
+if (size (F, 2) ~= (length (c) + 1))
+  error ('VSDP:FROM_SDPAM_FMT:bad_cone_dimension', ...
+    ['from_sdpam_fmt: According to ''c'' the ''size(F,2)'' ', ...
+    'must be ''%d'' but is ''%d''.'], length (c) + 1, size (F, 2));
+end
 
 idx_lp  = (bLOCKsTRUCT < 2); % Indices of diagonal (LP) and 1x1 blocks.
 idx_sdp = ~idx_lp;           % Indices of semidefinite blocks.
@@ -63,52 +66,38 @@ idx_sdp = ~idx_lp;           % Indices of semidefinite blocks.
 K.l = sum (abs (bLOCKsTRUCT(idx_lp)));
 K.s = bLOCKsTRUCT(idx_sdp);
 
-if (~isempty (F))
-  % Vectorize all cells.
-  F = cellfun (@(x) x(:), F, 'UniformOutput', false);
-  % Put diagonal (LP) blocks to top.
-  F = [F(idx_lp,:); F(idx_sdp,:)];
-  
-  for i = 1:size(F, 1) % == nBLOCK
-    % Concatenate all vectorized objective and constraint matrices
-    % horizontally into the first cell, e.g. for each block i
-    %
-    %                [ |   |        |  ]
-    %       F{i,1} = [ C , A1, ..., Am ]
-    %                [ |   |        |  ]
-    %
-    F{i,1} = horzcat (F{i,:});
-  end
-  % Finally concatenate all first vectorized blocks vertically and drop the
-  % rest of F.
-  F = -vertcat (F{:,1});  % F = [c, At]
-  
-  % Split F into c and A.
-  c = F(:,1);
-  At = F(:,2:end);
-end
+b = -c(:);  % This is true for the VSDP format.  Here 'c' is the input!
 
-% Convert x0 to y.
+% Put diagonal (LP) blocks to top and vectorize cells to matrix.
+F = [F(idx_lp,:); F(idx_sdp,:)];
+F = -vsdp.cell2mat (F);  % F = [c, At]
+
+% Split F into c and A.
+At = F(:,2:end);
+c = F(:,1);       % Creates new 'c'!
+
+% Treat optional paramter.
 if (nargin > 3)
   y = x0;
+else
+  y = [];
 end
 
-% Convert X0 to z.
-if ((nargin > 4) && (~isempty (X0)))
-  % Vectorize all cells.
-  X0 = cellfun (@(x) x(:), X0, 'UniformOutput', false);
+if (nargin > 4)
   % Put diagonal (LP) blocks to top and concatenate.
-  z = vertcat([X0(idx_lp); X0(idx_sdp)]);
+  z = vsdp.cell2mat ([X0(idx_lp); X0(idx_sdp)]);
+else
+  z = [];
 end
 
-% Convert Y0 to x.
-if ((nargin > 5) && (~isempty (Y0)))
-  % Vectorize all cells.
-  Y0 = cellfun (@(x) x(:), Y0, 'UniformOutput', false);
+if (nargin > 5)
   % Put diagonal (LP) blocks to top and concatenate.
   x = vertcat([Y0(idx_lp); Y0(idx_sdp)]);
+else
+  x = [];
 end
 
+% The VSDP constructor cares for the condensed semidefinite variables.
 obj = vsdp (At, b, c, K, x, y, z);
 
 end
