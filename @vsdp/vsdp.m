@@ -40,6 +40,7 @@ classdef vsdp < handle
     obj = from_sdpa_file (fname, blksize);
     obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0);
     obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
+    x = cell2mat (X)
   end
   
   % Public methods.
