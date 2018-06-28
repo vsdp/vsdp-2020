@@ -39,6 +39,7 @@ classdef vsdp < handle
     [obj, pd] = from_mps_file (fname);
     obj = from_sdpa_file (fname, blksize);
     obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0);
+    obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
     obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
     x = cell2mat (X)
   end
@@ -111,26 +112,42 @@ classdef vsdp < handle
       obj.K.l = 0;
       obj.K.q = [];
       obj.K.s = [];
+      obj.K.f_idx = [];
+      obj.K.l_idx = [];
+      obj.K.q_idx = [];
+      obj.K.s_idx = [];
       if (isfield (K, 'f'))
         obj.K.f = sum(K.f);
+        obj.K.f_idx = 1:obj.K.f;
       end
       if (isfield (K, 'l'))
         obj.K.l = sum(K.l);
+        obj.K.l_idx = obj.K.f + (1:obj.K.l);
       end
       if (isfield (K, 'q'))
         obj.K.q = K.q(K.q > 0);
+        % Compute index starts and ends with offset.
+        K.q_idx = obj.K.f + obj.K.l + ...
+          [cumsum([1, K.q(1:end-1)]); cumsum(K.q)];
+        % Create index ranges in cells.
+        K.q_idx = cellfun (@(x) x(1):x(2), num2cell (K.q_idx, 1), ...
+          'UniformOutput', false);
       end
+      condensed = @(x) x .* (x + 1) / 2;
       if (isfield (K, 's'))
         obj.K.s = K.s(K.s > 0);
+        % Compute index starts and ends with offset.
+        K.s_idx = condensed (K.s);
+        K.s_idx = obj.K.f + obj.K.l + sum(obj.K.q) + ...
+          [cumsum([1, K.s_idx(1:end-1)]); cumsum(K.s_idx)];
+        % Create index ranges in cells.
+        K.s_idx = cellfun (@(x) x(1):x(2), num2cell (K.s_idx, 1), ...
+          'UniformOutput', false);
       end
       
-      % Determine uncondensed cone dimension.
-      obj.N = obj.K.f + obj.K.l + sum(obj.K.q) ...
-        + sum(obj.K.s .* obj.K.s);
-      
-      % Determine condensed cone dimension.
-      obj.n = obj.K.f + obj.K.l + sum(obj.K.q) ...
-        + (sum(obj.K.s .* (obj.K.s + 1)) / 2);
+      % Determine (un-)condensed cone dimension.
+      obj.N = obj.K.f + obj.K.l + sum(obj.K.q) + sum (obj.K.s .* obj.K.s);
+      obj.n = obj.K.f + obj.K.l + sum(obj.K.q) + sum (condensed (obj.K.s));
       
       % Prepare vector `b`.
       if (~isfloat (b) && ~isa (b, 'intval'))
