@@ -33,8 +33,8 @@ classdef vsdp < handle
     smat_idx = struct('lower', [], 'upper', []);
   end
   
-  % Static constructor methods for VSDP objects.
   methods (Static)
+    % Static constructor methods for VSDP objects.
     [obj, pd] = from_lp_solve_fmt (A, b, c, e, lb, ub);
     [obj, pd] = from_mps_file (fname);
     obj = from_sdpa_file (fname, blksize);
@@ -42,6 +42,7 @@ classdef vsdp < handle
     obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
     obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
     x = cell2mat (X)
+    obj = validate (At, b, c, K, x0, y0, z0);
   end
   
   % Public methods.
@@ -49,10 +50,13 @@ classdef vsdp < handle
     A = svec (obj, A, mu, isSymmetric);
     A = smat (obj, A, mu, isSymmetric);
     [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj);
+    
+    % Default class methods
+    varargout = size (obj, dim);
   end
   
   methods
-    function obj = vsdp (At, b, c, K, x, y, z)
+    function obj = vsdp (At, b, c, K, x0, y0, z0)
       % VSDP  Conic problem data class.
       %
       %      A conic problem in primal and dual standard form is:
@@ -77,187 +81,36 @@ classdef vsdp < handle
       %      and can be interval quantities.
       %
       %   obj = VSDP (A, b, c, K)
-      %   obj = VSDP (    ...   , x, y, z)
+      %   obj = VSDP (    ...   , x0, y0, z0)
       %
-      %   The class constructor accepts conic problem data in SeDuMi and
+      %   The class constructor accepts conic problem data in
       %   VSDP 2006/2012 format.
       %
       % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
       
-      % check input
       narginchk (4, 7);
       
       if (isempty(At) || isempty(b) || isempty(c) || isempty(K))
         error ('VSDP:VSDP', 'VSDP: empty input parameter');
       end
       if (nargin < 5)
-        x = [];
+        x0 = [];
       end
       if (nargin < 6)
-        y = [];
+        y0 = [];
       end
       if (nargin < 7)
-        z = [];
+        z0 = [];
       end
-      
+     
       % If first parameter is of type cell, we assume, that the VSDP 2006 input
       % format was used  ==>  Perform a recursive call to import that format.
       if (iscell (At))
-        obj = vsdp.fromVSDP2006Fmt (At, b, c, K, x, y, z);
+        obj = vsdp.fromVSDP2006Fmt (At, b, c, K, x0, y0, z0);
         return;
       end
       
-      % Prepare cone structure.
-      obj.K.f = 0;
-      obj.K.l = 0;
-      obj.K.q = [];
-      obj.K.s = [];
-      obj.K.f_idx = [];
-      obj.K.l_idx = [];
-      obj.K.q_idx = [];
-      obj.K.s_idx = [];
-      if (isfield (K, 'f'))
-        obj.K.f = sum(K.f);
-        obj.K.f_idx = 1:obj.K.f;
-      end
-      if (isfield (K, 'l'))
-        obj.K.l = sum(K.l);
-        obj.K.l_idx = obj.K.f + (1:obj.K.l);
-      end
-      if (isfield (K, 'q'))
-        obj.K.q = K.q(K.q > 0);
-        % Compute index starts and ends with offset.
-        K.q_idx = obj.K.f + obj.K.l + ...
-          [cumsum([1, K.q(1:end-1)]); cumsum(K.q)];
-        % Create index ranges in cells.
-        K.q_idx = cellfun (@(x) x(1):x(2), num2cell (K.q_idx, 1), ...
-          'UniformOutput', false);
-      end
-      condensed = @(x) x .* (x + 1) / 2;
-      if (isfield (K, 's'))
-        obj.K.s = K.s(K.s > 0);
-        % Compute index starts and ends with offset.
-        K.s_idx = condensed (K.s);
-        K.s_idx = obj.K.f + obj.K.l + sum(obj.K.q) + ...
-          [cumsum([1, K.s_idx(1:end-1)]); cumsum(K.s_idx)];
-        % Create index ranges in cells.
-        K.s_idx = cellfun (@(x) x(1):x(2), num2cell (K.s_idx, 1), ...
-          'UniformOutput', false);
-      end
-      
-      % Determine (un-)condensed cone dimension.
-      obj.N = obj.K.f + obj.K.l + sum(obj.K.q) + sum (obj.K.s .* obj.K.s);
-      obj.n = obj.K.f + obj.K.l + sum(obj.K.q) + sum (condensed (obj.K.s));
-      
-      % Prepare vector `b`.
-      if (~isfloat (b) && ~isa (b, 'intval'))
-        error ('VSDP:VSDP:wrongTypeB', ...
-          'VSDP: Vector `b` has wrong data type.');
-      end
-      obj.b = b(:);
-      obj.m = length(obj.b);
-      
-      % Check type of matrix `At`.
-      if (~isfloat (At) && ~isa (At, 'intval'))
-        error ('VSDP:VSDP:wrongTypeAt', ...
-          'VSDP: Matrix `At` has wrong data type.');
-      end
-      
-      % Check if any dimension of matrix `At` matches the number of constraints,
-      % that is the length of vector `b`.
-      if (~any(size(At) == obj.m))
-        error ('VSDP:VSDP:badDimesionAt', ...
-          'VSDP: No dimension of `At` matches the length of vector `b`.');
-      end
-      obj.At = At;
-      
-      % Ensure transposed format for `At` (n x m).
-      if (size (obj.At, 2) ~= obj.m)
-        obj.At = obj.At';
-      end
-      
-      % Ensure compact vectorized format.
-      if (size (obj.At, 1) > obj.n)
-        At = obj.svec(At,1,false);
-      elseif (size (obj.At, 1) ~= obj.n)
-        error ('VSDP:VSDP:badDimesionAt', ...
-          'VSDP: `Bad cone dimension `n of a `At` matches the length of vector `b`.');
-      end
-      
-      % check size of A
-      if any(size(At) ~= [n, m])
-        error('VSDP:IMPORT_VSDP','wrong dimension of coefficient matrix "A"');
-      end
-      
-      % prepare interval input for c
-      if (~isfloat(c) && ~isa(c, 'intval'))
-        error('VSDP:IMPORT_VSDP','cannot import primal objective "c"');
-      end
-      c = c(:);
-      % compact vectorized format
-      if (length(c) ~= n)
-        [c,Ivec] = vsvec(c,K,1,0,Ivec);
-      end
-      obj.c = c;
-      
-      % prepare x
-      if (~isempty(x))
-        if (~isfloat(x))
-          error('VSDP:IMPORT_VSDP','primal solution vector "x" has to be numeric');
-        end
-        x = x(:);
-        % compact vectorized format, mu=2
-        if (length(x) ~= n)
-          [x,Ivec] = vsvec(x,K,1,0,Ivec);  % Ivec can only be used with mu=1
-          x = sscale(x,K,2);
-        end
-      end
-      obj.x = x;
-      
-      % prepare y
-      if (~isempty(y))
-        y = y(:);
-        if (~isfloat(y) || (length(y) ~= m))
-          error('VSDP:IMPORT_VSDP','cannot import dual solution vector "y"');
-        end
-      end
-      obj.y = y;
-      
-      % prepare z
-      if (~isempty(z))
-        if (~isfloat(z))
-          error('VSDP:IMPORT_VSDP','cannot import dual solution "z"');
-        end
-        z = z(:);
-        % compact vectorized format
-        if (size(z,1) ~= n)
-          z = vsvec(z,K,1,0,Ivec);
-        end
-      end
-      obj.z = z;
-      
-    end
-    
-    function varargout = size (obj, dim)
-      %SIZE Size of a table.
-      if (nargin == 1)
-        if (nargout < 2)
-          varargout = {[obj.m, obj.n]};
-        elseif (nargout == 2)
-          varargout = {obj.m, obj.n};
-        else
-          varargout(1:2) = {obj.m, obj.n};
-          varargout(3:nargout) = {1};
-        end
-      else
-        if (dim == 1)
-          varargout = {obj.m};
-        elseif (dim == 2)
-          varargout = {obj.n};
-        else
-          varargout = {1};
-        end
-      end
+      obj = validate (At, b, c, K, x0, y0, z0);
     end
   end
 end
