@@ -16,17 +16,17 @@ function A = svec (obj, A, mu, isSymmetric)
 %        <X,Y> := trace(X*Y) = svec(X,K,sqrt(2))' * svec(Y,K,sqrt(2))
 %                            = svec(X,K,1)'       * svec(Y,K,2).
 %
-%      Don't use mu = sqrt(2) for verified computations.  For better
-%      comprehension, assume a 3x3 double matrix `A`:
+%      Don't use 'mu = sqrt(2)' for verified computations.  For better
+%      comprehension, assume a symmetric 3x3 matrix `A`:
 %
 %                                 [a]
 %                                 [b]
-%                                 [c]                    [a   ]
-%            [a b c]              [b]                    [b*mu]
-%        A = [b d e]  ==>  A(:) = [d]  ==>  svec(A,mu) = [c*mu]
-%            [c e f]              [e]                    [d   ]
-%                                 [c]                    [e*mu]
-%                                 [e]                    [f   ]
+%                                 [c]                            [a   ]
+%            [a b c]              [b]                            [b*mu]
+%        A = [b d e]  ==>  A(:) = [d]  ==>  vsdp.SVEC(A(:),mu) = [c*mu]
+%            [c e f]              [e]                            [d   ]
+%                                 [c]                            [e*mu]
+%                                 [e]                            [f   ]
 %                                 [f]
 %
 %      Only non-redundant coefficients are stored and the off-diagonal elements

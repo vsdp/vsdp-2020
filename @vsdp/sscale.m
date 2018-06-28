@@ -1,33 +1,34 @@
-function vA = sscale(vA,K,mu)
-% SSCALE  Scale operator to scale the off-diagonal elements of sdp blocks.
+function A = sscale(obj, A, mu)
+% SSCALE  Scale off-diagonal elements of SDP blocks by 'mu' in 'A'.
 %
-%   vA = sscale(vA,K,mu)
+%    A = obj.sscale (A, mu);
+%
+% In general this function performs the actual scaling part of the SVEC and SMAT
+% operations in VSDP.  It is not recommended to use 'mu = sqrt(2)' for verified
+% computations.
+%
+% For better comprehension of SVEC, SMAT, and SSCALE, assume a symmetric 3x3
+% matrix 'A':
+%
+%                            [a]
+%                            [b]
+%                            [c]                                [a   ]
+%       [a b c]              [b]                                [b*mu]
+%   A = [b d e]  ==>  A(:) = [d]  -->  vsdp.SVEC(A(:),mu)  -->  [c*mu] = a
+%       [c e f]              [e]  <--  vsdp.SMAT(a, 1/mu)  <--  [d   ]
+%                            [c]                                [e*mu]
+%                            [e]                                [f   ]
+%                            [f]
 %
 % For a symmetric matrix X it applies:
 %   vx = vscale(X(:),K,mu)  =>  vx = vX(:), where vX = mu*X + (1-mu)*I
 % The same holds valid for matrices in the SDPT3 format. (-> see svec)
 %
-% Input:
-% vA: an nA x M, M x nA, nA3 x M, or M x nA3 matrix, alternatively,
-%     whereas nA = dimf+diml+dimq+dims,  nA3 = dimf+diml+dimq+dims3
-%     dimf: number of free variables: dimf = sum_i(K.f(i)>0)
-%     diml: number of nonnegative variables: diml = sum_i(K.l(i)>0)
-%     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
-%     dims: sum of all sdp variables: dims = sum_i(K.s(i)^2)
-%     dims3: sum of sdp variables: dims = sum_i(K.s(i)*(K.s(i)+1)/2)
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
 % mu: scaling factor for off-diagonal elements
 %     for performance reasons and reversibilty mu=0 is not allowed
 %
-% Output:
-% vA: matrix of same dimension as input vA
-%
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 % check input
 if nargin~=3 || ~isstruct(K)
