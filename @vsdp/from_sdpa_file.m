@@ -239,6 +239,6 @@ switch (fext)
       'from_sdpa_file: Unsupported file extension ''%s''.', fext);
 end
 
-obj = vsdp (A, b, c, K, x, y, z);
+obj = vsdp (A, b, c, K);
 
 end
