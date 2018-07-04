@@ -1,24 +1,24 @@
-function obj = validate (At, b, c, K, x0, y0, z0)
+function obj = validate (obj)
 % VALIDATE  Validate the VSDP 2012/18 input format.
 %
 %
-%
+%   See also vsdp.vsdp.
 
-narginchk (4, 7);
+narginchk (1, 1);
 
 % The cone structure constains all relevant metadata for the actual data,
 % especially the vectorized cone sizes 'N' (uncondensed size) and 'n' condensed
-% size).
-[obj.K, obj.N, obj.n] = validate_cone (K);
+% size.
+[obj.K, obj.N, obj.n] = vsdp.validate_cone (obj.K);
 
 % Prepare vector `b`.
-if (~isfloat (b) && ~isintval (b))
-  error ('VSDP:validate:wrongTypeB', ...
-    'validate: Vector `b` has wrong data type.');
+if (~isfloat (obj.b) && ~isintval (obj.b))
+  error ('VSDP:validate:badTypeB', ...
+    'validate: Vector ''b'' must be numeric or an interval.');
 end
-b = b(:);
+obj.b = obj.b(:);
 
-obj.m = length(b);
+obj.m = length (obj.b);
 if ((obj.m == obj.n) && (obj.n == obj.N))
   warning ('VSDP:validate:sizeAmbiguity', ...
     ['validate: The number of constraints ''m'' equals the number of ', ...
@@ -26,116 +26,91 @@ if ((obj.m == obj.n) && (obj.n == obj.N))
     'a transposed n-times-m constraint matrix!']);
 end
 
-% Check type of matrix `At`.
-if (~isfloat (At) && ~isintval (At))
-  error ('VSDP:validate:wrongTypeAt', ...
-    'validate: Matrix ''At'' has wrong data type.');
+if (~isfloat (obj.At) && ~isintval (obj.At))
+  error ('VSDP:validate:badTypeAt', ...
+    'validate: Constraint matrix ''At'' must be numeric or an interval.');
 end
 
 % Check if any dimension of matrix ''At'' matches the number of constraints,
 % that is the length of vector ''b''.
-if (~any(size(At) == obj.m))
+if (~any (size (obj.At) == obj.m))
   error ('VSDP:validate:badConstraintDimesionAt', ...
     'validate: No dimension of ''At'' matches the length of vector ''b''.');
 end
 % Ensure transposed format for ''At'' (n x m).
-if (size (At, 2) ~= obj.m)
-  At = At';
+if (size (obj.At, 2) ~= obj.m)
+  obj.At = obj.At';
 end
 % Ensure valid cone dimension.
-if (size (At, 1) == obj.N)
-  At = svec (K, At, 1, false);  % No symmetry assumed => false.
-elseif (size (At, 1) ~= n)
+if ((obj.n < obj.N) && (size (obj.At, 1) == obj.N))
+  obj.At = vsdp.svec (K, At, 1, false);  % No symmetry assumed => false.
+elseif (size (obj.At, 1) ~= obj.n)
   error ('VSDP:validate:badConeDimesionAt', ...
-    'validate: `Bad cone dimension `n of a `At` matches the length of vector `b`.');
+    ['validate: ''size(At,1)'' must be %d ', ...
+    '(or %d in condensed format) but is %d.'], obj.N, obj.n, size (obj.At, 1));
 end
 
 % prepare interval input for c
-if (~isfloat(c) && ~isa(c, 'intval'))
-  error('VSDP:IMPORT_VSDP','cannot import primal objective "c"');
+if (~isfloat (obj.c) && ~isa (obj.c, 'intval'))
+  error ('VSDP:validate:badTypeC', ...
+    'validate: Primal objective vector ''c'' must be numeric or an interval.');
 end
-c = c(:);
-% compact vectorized format
-if (length(c) ~= n)
+obj.c = obj.c(:);
+% Ensure valid cone dimension.
+if ((obj.n < obj.N) && (length (obj.c) == obj.N))
   [c,Ivec] = vsvec(c,K,1,0,Ivec);
+elseif (length (obj.c) ~= obj.n)
+  error ('VSDP:validate:badLengthC', ...
+    ['validate: Length of primal objective vector ''c'' must be %d ', ...
+    '(or %d in condensed format) but is %d.'], obj.N, obj.n, length (obj.c));
 end
-obj.c = c;
 
-% prepare x
-if (~isempty(x0))
-  if (~isfloat(x0))
-    error('VSDP:IMPORT_VSDP','primal solution vector "x" has to be numeric');
+if (~isempty (obj.x))
+  if (~isfloat (obj.x))
+    error ('VSDP:validate:badTypeX', ...
+      'validate: Primal approximate solution vector ''x'' must be numeric.');
   end
-  x0 = x0(:);
-  % compact vectorized format, mu=2
-  if (length(x0) ~= n)
+  obj.x = obj.x(:);
+  % Condense SDP cones if necessary.
+  if ((obj.n < obj.N) && (length (obj.x) == obj.N))
     [x0,Ivec] = vsvec(x0,K,1,0,Ivec);  % Ivec can only be used with mu=1
     x0 = sscale(x0,K,2);
+  elseif (length (obj.x) ~= obj.n)
+    error ('VSDP:validate:badLengthX', ...
+      ['validate: Length of primal solution vector ''x'' must be %d ', ...
+      '(or %d in condensed format) but is %d.'], obj.N, obj.n, length (obj.x));
   end
 end
-obj.x = x0;
 
 % prepare y
-if (~isempty(y0))
-  y0 = y0(:);
-  if (~isfloat(y0) || (length(y0) ~= m))
-    error('VSDP:IMPORT_VSDP','cannot import dual solution vector "y"');
+if (~isempty (obj.y))
+  if (~isfloat (obj.y))
+    error ('VSDP:validate:badTypeY', ...
+      'validate: Dual approximate solution vector ''y'' must be numeric.');
+  end
+  obj.y = obj.y(:);
+  if (length (obj.y) ~= obj.m)
+    error ('VSDP:validate:badLengthY', ...
+      ['validate: Length of dual solution vector ''y'' must be %d ', ...
+      'but is %d.'], obj.m, length (obj.y));
   end
 end
-obj.y = y0;
 
-% prepare z
-if (~isempty(z0))
-  if (~isfloat(z0))
-    error('VSDP:IMPORT_VSDP','cannot import dual solution "z"');
+if (~isempty (obj.z))
+  if (~isfloat (obj.z))
+    error ('VSDP:validate:badTypeZ', ...
+      'validate: Primal approximate solution vector ''z'' must be numeric.');
   end
-  z0 = z0(:);
-  % compact vectorized format
-  if (size(z0,1) ~= n)
-    z0 = vsvec(z0,K,1,0,Ivec);
+  obj.z = obj.z(:);
+  % Condense SDP cones if necessary.
+  if ((obj.n < obj.N) && (length (obj.z) == obj.N))
+    [z0,Ivec] = vsvec(z0,K,1,0,Ivec);  % Ivec can only be used with mu=1
+    z0 = sscale(z0,K,2);
+  elseif (length (obj.z) ~= obj.n)
+    error ('VSDP:validate:badLengthZ', ...
+      ['validate: Length of primal solution vector ''z'' must be %d ', ...
+      '(or %d in condensed format) but is %d.'], obj.N, obj.n, length (obj.z));
   end
 end
-obj.z = z0;
-end
 
-function [K, N, n] = validate_cone (K_in)
-K.f = 0;
-K.l = 0;
-K.q = [];
-K.s = [];
-K.f_idx = [];
-K.l_idx = [];
-K.q_idx = [];
-K.s_idx = [];
-
-if (isfield (K_in, 'f'))
-  K.f = sum(K_in.f);
-  K.f_idx = 1:K.f;
-end
-if (isfield (K_in, 'l'))
-  K.l = sum(K_in.l);
-  K.l_idx = K.f + (1:K.l);
-end
-if (isfield (K_in, 'q'))
-  K.q = K_in.q(K_in.q > 0);
-  % Compute index starts and ends with offset.
-  K.q_idx = K.f + K.l + [cumsum([1, K.q(1:end-1)]); cumsum(K.q)];
-  % Create index ranges in cells.
-  K.q_idx = cellfun (@(x) x(1):x(2), num2cell (K.q_idx, 1), ...
-    'UniformOutput', false);
-end
-if (isfield (K_in, 's'))
-  K.s = K_in.s(K_in.s > 0);
-  % Compute index starts and ends with offset.
-  K.s_idx = K.s .* (K.s + 1) / 2;
-  K.s_idx = K.f + K.l + sum(K.q) + ...
-    [cumsum([1, K.s_idx(1:end-1)]); cumsum(K.s_idx)];
-  % Create index ranges in cells.
-  K.s_idx = cellfun (@(x) x(1):x(2), num2cell (K.s_idx, 1), ...
-    'UniformOutput', false);
-end
-
-% Determine (un-)condensed cone dimension.
-N = K.f + K.l + sum(K.q) + sum (K.s .* K.s);
-n = K.f + K.l + sum(K.q) + (sum (K.s .* (K.s + 1)) / 2);
 end

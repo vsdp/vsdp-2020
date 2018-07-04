@@ -12,18 +12,9 @@ classdef vsdp < handle
     b   % Right-hand side vector, or dual objective vector.
     c   % Primal objective vector.
     K   % Cone structure, `K.f`, `K.l`, `K.q`, `K.s`.
-    x0  % Approximate primal solution.
-    y0  % Approximate dual solution.
-    z0  % Approximate primal solution.
-  end
-  
-  properties (Dependent)
-    A  % Condensed constraint matrix `m x n`.
-  end
-  methods
-    function A = get.A (obj)
-      A = obj.At';
-    end
+    x = [];   % Approximate primal solution.
+    y = [];   % Approximate dual solution.
+    z = [];   % Approximate primal solution.
   end
   
   % (Un-)Vectorization of `obj.At`, `obj.C`, `obj.X`, and `obj.Z`.
@@ -42,11 +33,12 @@ classdef vsdp < handle
     obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
     obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
     x = cell2mat (X)
-    obj = validate (At, b, c, K, x0, y0, z0);
+    [K, N, n] = validate_cone (K);
   end
   
   % Public methods.
   methods
+    obj = validate (obj);
     A = svec (obj, A, mu, isSymmetric);
     A = smat (obj, A, mu, isSymmetric);
     [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj);
@@ -56,7 +48,7 @@ classdef vsdp < handle
   end
   
   methods
-    function obj = vsdp (At, b, c, K, x0, y0, z0)
+    function obj = vsdp (varargin)
       % VSDP  Conic problem data class.
       %
       %      A conic problem in primal and dual standard form is:
@@ -68,7 +60,8 @@ classdef vsdp < handle
       %      where K is a cartesian product of the cones of free variables
       %      (K.f), LP (K.l), SOCP (K.q), and SDP (K.s).  K^* is the dual cone.
       %      For a theoretical introduction into verified conic programming see
-      %      [Jansson2009].
+      %
+      %         https://vsdp.github.io/references#Jansson2009
       %
       %      The problem data of the block-diagonal structure:
       %
@@ -80,37 +73,67 @@ classdef vsdp < handle
       %      The parameters A, b, and c may be stored in dense or sparse format
       %      and can be interval quantities.
       %
-      %   obj = VSDP (A, b, c, K)
-      %   obj = VSDP (    ...   , x0, y0, z0)
+      %      The VSDP constructor can be called directly
       %
-      %   The class constructor accepts conic problem data in
-      %   VSDP 2006/2012 format.
+      %         obj = VSDP (obj)
+      %         obj = VSDP (At,  b,  c, K)              % 2012 Format
+      %         obj = VSDP (    ...      , x0, y0, z0)  % 2012 Format
+      %         obj = VSDP (blk, At, C, b, X0, y0, Z0)  % 2006 Format
       %
+      %      or the problem data can be imported by calling one of the methods:
+      %
+      %         obj = VSDP.from_lp_solve_fmt  (...)
+      %         obj = VSDP.from_sdpam_fmt     (...)
+      %         obj = VSDP.from_sdpt3_fmt     (...)
+      %         obj = VSDP.from_vsdp_2006_fmt (...)
+      %         obj = VSDP.from_mps_file      (...)
+      %         obj = VSDP.from_sdpa_file     (...)
+      %
+      %   Example:
+      %
+      %
+      %
+      %   See also  VSDP.from_lp_solve_fmt, VSDP.from_sdpam_fmt,
+      %             VSDP.from_sdpt3_fmt,    VSDP.from_vsdp_2006_fmt,
+      %             VSDP.from_mps_file,     VSDP.from_sdpa_file.
+      
       % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
       
-      narginchk (4, 7);
+      narginchk (1, 7);
       
-      if (isempty(At) || isempty(b) || isempty(c) || isempty(K))
-        error ('VSDP:VSDP', 'VSDP: empty input parameter');
-      end
-      if (nargin < 5)
-        x0 = [];
-      end
-      if (nargin < 6)
-        y0 = [];
-      end
-      if (nargin < 7)
-        z0 = [];
-      end
-     
-      % If first parameter is of type cell, we assume, that the VSDP 2006 input
-      % format was used  ==>  Perform a recursive call to import that format.
-      if (iscell (At))
-        obj = vsdp.fromVSDP2006Fmt (At, b, c, K, x0, y0, z0);
-        return;
+      switch (nargin)
+        case 1
+          obj = varargin{1};
+          if (~isa (obj, 'vsdp'))
+            error ('VSDP:vsdp:noVsdpObj', ...
+              ['vsdp: When called with a single argument, ', ...
+              '''obj'' must be a VSDP object.']);
+          end
+        case {4, 5, 6, 7}
+          % If first parameter is of type cell, we assume, that the VSDP 2006
+          % input format was used  ==>  call static VSDP constructor.
+          if (iscell (varargin{1}))
+            obj = vsdp.fromVSDP2006Fmt (varargin{:});
+            return;
+          end
+          [obj.At, obj.b, obj.c, obj.K] = varargin{1:4};
+          % Treat optional parameter of solution guess.
+          if (nargin >= 5)
+            obj.x = varargin{5};
+          end
+          if (nargin >= 6)
+            obj.y = varargin{6};
+          end
+          if (nargin == 7)
+            obj.z = varargin{7};
+          end
+        otherwise
+          error ('VSDP:vsdp:badNumberOfArguments', ...
+            ['vsdp: Bad number of arguments, ', ...
+            '''help vsdp.vsdp'' for more information.']);
       end
       
-      obj = validate (At, b, c, K, x0, y0, z0);
+      obj = obj.validate ();
     end
   end
 end
