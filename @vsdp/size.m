@@ -1,5 +1,8 @@
 function varargout = size (obj, dim)
 % SIZE  Size of VSDP instance.
+
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+
 if (nargin == 1)
   if (nargout < 2)
     varargout = {[obj.m, obj.n]};

@@ -4,6 +4,8 @@ function obj = validate (obj)
 %
 %   See also vsdp.vsdp.
 
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+
 narginchk (1, 1);
 
 % The cone structure constains all relevant metadata for the actual data,
