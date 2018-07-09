@@ -1,15 +1,20 @@
-function A = svec (obj, A, mu, isSymmetric)
-% SVEC  Symmetric vectorization operator for VSDP objects (internal function).
+function A = svec (obj, A, mu, param)
+% SVEC  Symmetric vectorization operator.
 %
-%   A = obj.svec(A, mu, isSymmetric)
+%   A = vsdp.svec( [], A)
+%   A = vsdp.svec(  K, A)
+%   A = vsdp.svec(obj, A)
+%   A = vsdp.svec(  ... , mu, opt)
 %
-%      'A'            Quadratic matrix to vectorize.
-%      'mu'           Scaling factor for off-diagonal elements.
-%      'isSymmetric'  Symmetry assumption for 'A'.
-%         - false  Assume matrices have no symmetry and both triangular parts
-%                  have to be taken into account.
-%         - true   Assume matrices are symmetric and only regard the upper
-%                  triangular part.
+%      'K' or 'obj'  Cone structure or VSDP object.
+%      'A'           Quadratic matrix to vectorize.
+%
+%      'mu'     (default = 1) Scaling factor for off-diagonal elements.
+%      'param'  Additional parameters for 'A'.
+%         - 'unsymmetric' (default)  Assume matrices have no symmetry and both
+%                         triangular parts  have to be taken into account.
+%         - 'symmetric'   Assume matrices are symmetric and only regard the
+%                         upper triangular part.
 %
 %      For the trace inner product of symmetric matrices X and Y holds:
 %
@@ -17,31 +22,50 @@ function A = svec (obj, A, mu, isSymmetric)
 %                            = svec(X,K,1)'       * svec(Y,K,2).
 %
 %      Don't use 'mu = sqrt(2)' for verified computations.  For better
-%      comprehension, assume a symmetric 3x3 matrix `A`:
+%      comprehension, assume a symmetric 3x3 matrix 'A':
 %
 %                                 [a]
-%                                 [b]
-%                                 [c]                            [a   ]
+%                                 [B]
+%                                 [C]                            [a   ]
 %            [a b c]              [b]                            [b*mu]
-%        A = [b d e]  ==>  A(:) = [d]  ==>  vsdp.SVEC(A(:),mu) = [c*mu]
-%            [c e f]              [e]                            [d   ]
+%        A = [B d e]  ==>  A(:) = [d]  ==>  vsdp.SVEC(A(:),mu) = [c*mu]
+%            [C E f]              [E]                            [d   ]
 %                                 [c]                            [e*mu]
 %                                 [e]                            [f   ]
 %                                 [f]
 %
 %      Only non-redundant coefficients are stored and the off-diagonal elements
-%      are scaled by factor `mu`.
+%      are scaled by factor 'mu'.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 
-narginchk(2, 3);
-if ((nargin < 2) || isempty(mu))
+narginchk(2, 4);
+
+% Check optional parameter
+if (nargin < 3)
   mu = 1;
+else
+  if (~isscalar (mu) || ~isnumeric (mu))
+    error ('VSDP:svec:badMu', ...
+      'svec: ''mu'' must be a positive scalar.');
+  end
+  mu = double (mu);
 end
-if ((nargin < 3) || isempty(isSymmetric))
-  isSymmetric = true;
+if (nargin < 4)
+  isSymmetric = false;
+else
+  param = validatestring (param, {'symmetric', 'unsymmetric'});
+  isSymmetric = strcmp (param, 'symmetric');
+end
+
+% Determine how to vectorize the input:
+% a) square double matrix A
+if (isempty (obj) && ismatrix (A) && isfloat (A) && all (size (A) == size (A')))
+  [~, midx] = vsdp.index(size (A, 1));
+  A = A(midx(:,1) | midx(:,3));
+  return;
 end
 
 % There is nothing to do, if the stored matrix has already the length of the
@@ -91,3 +115,28 @@ end
 if (mu ~= 1)
   A = sscale (vA, K, mu);
 end
+
+
+
+for j = 1 : l
+  %Multiplication of lower and upper part
+  Aj = A{j};
+  Ajl= mult * tril(Aj,-1);
+  Aju = Ajl';
+  Aj = Ajl + Aju + diag(diag(Aj));
+  if isintval(Aj)
+    vA = intval(vA);
+  end
+  blocksize = size(Aj,1);
+  blocklength = blocksize*(blocksize+1)/2;
+  vAende = vAende + blocklength;
+  Index =  repmat((1:blocksize),blocksize,1);
+  Jndex = Index';
+  vA(vAstart:vAende,1) = Aj(Index<=Jndex);
+  %     vA(vAstart:vAende,1) = Aj(find(tril(ones(blocksize))));
+  vAstart = vAstart + blocklength;
+end
+
+end
+
+
