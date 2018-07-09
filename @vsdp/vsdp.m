@@ -38,6 +38,7 @@ classdef vsdp < handle
   
   % Public methods.
   methods
+    info (obj);
     obj = validate (obj);
     A = svec (obj, A, mu, isSymmetric);
     A = smat (obj, A, mu, isSymmetric);
@@ -45,6 +46,7 @@ classdef vsdp < handle
     
     % Default class methods
     varargout = size (obj, dim);
+    disp (obj);
   end
   
   methods
@@ -53,9 +55,9 @@ classdef vsdp < handle
       %
       %      A conic problem in primal and dual standard form is:
       %
-      %         (P)  min  c'*x          (D)  max  b'*y
-      %              s.t. A*x = b            s.t. z := c - A'*y
-      %                   x in K                  z in K^*
+      %         (P)  min   c'*x          (D)  max  b'*y
+      %              s.t. At'*x = b           s.t. z := c - At*y
+      %                       x in K               z in K^*
       %
       %      where K is a cartesian product of the cones of free variables
       %      (K.f), LP (K.l), SOCP (K.q), and SDP (K.s).  K^* is the dual cone.
@@ -65,7 +67,7 @@ classdef vsdp < handle
       %
       %      The problem data of the block-diagonal structure:
       %
-      %         'At' double(n,m)  Store transposed A, because m <<= n.
+      %         'At' double(n,m)  Store transposed A, usually m <<= n.
       %         'b'  double(m,1)
       %         'c'  double(n,1)
       %         'K'  struct {'f','l','q','s'}
