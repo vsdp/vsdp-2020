@@ -30,9 +30,12 @@ classdef vsdp < handle
     [obj, pd] = from_mps_file (fname);
     obj = from_sdpa_file (fname, blksize);
     obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0);
-    obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
+    obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0);
     obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
-    x = cell2mat (X)
+    x = cell2mat (X);
+    A = svec (K, A, mu, isSymmetric);
+    A = smat (K, A, mu, isSymmetric);
+    [vidx, midx, lidx] = sindex (dim);
     [K, N, n] = validate_cone (K);
   end
   
@@ -40,8 +43,6 @@ classdef vsdp < handle
   methods
     info (obj);
     obj = validate (obj);
-    A = svec (obj, A, mu, isSymmetric);
-    A = smat (obj, A, mu, isSymmetric);
     [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj);
     
     % Default class methods
