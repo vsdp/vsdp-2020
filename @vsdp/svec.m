@@ -24,15 +24,15 @@ function A = svec (obj, A, mu, param)
 %      Don't use 'mu = sqrt(2)' for verified computations.  For better
 %      comprehension, assume a symmetric 3x3 matrix 'A':
 %
-%                                 [a]
-%                                 [B]
-%                                 [C]                            [a   ]
-%            [a b c]              [b]                            [b*mu]
-%        A = [B d e]  ==>  A(:) = [d]  ==>  vsdp.SVEC(A(:),mu) = [c*mu]
-%            [C E f]              [E]                            [d   ]
-%                                 [c]                            [e*mu]
-%                                 [e]                            [f   ]
-%                                 [f]
+%                            [a]
+%                            [b]
+%                            [c]                                [a   ]
+%       [a b c]              [b]                                [b*mu]
+%   A = [b d e]  ==>  A(:) = [d]  -->  vsdp.SVEC(A(:),mu)  -->  [c*mu] = a
+%       [c e f]              [e]  <--  vsdp.SMAT(a, 1/mu)  <--  [d   ]
+%                            [c]                                [e*mu]
+%                            [e]                                [f   ]
+%                            [f]
 %
 %      Only non-redundant coefficients are stored and the off-diagonal elements
 %      are scaled by factor 'mu'.
@@ -63,8 +63,16 @@ end
 % Determine how to vectorize the input:
 % a) square double matrix A
 if (isempty (obj) && ismatrix (A) && isfloat (A) && all (size (A) == size (A')))
-  [~, midx] = vsdp.index(size (A, 1));
-  A = A(midx(:,1) | midx(:,3));
+  if (~isSymmetric)
+    [~, midx, lidx] = vsdp.sindex(size (A, 1));
+    A(midx(:,2)) = (A(midx(:,2)) + A(lidx)) / 2;
+  else
+    [~, midx] = vsdp.sindex(size (A, 1));
+  end
+  % Scale off diagonal elements.
+  A(midx(:,2)) = A(midx(:,2)) * mu;
+  % Drop lower triangular elements.
+  A = A(midx(:,1) | midx(:,2));
   return;
 end
 

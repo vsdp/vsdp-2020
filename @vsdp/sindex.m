@@ -5,30 +5,33 @@ function [vidx, midx, lidx] = sindex(d)
 %   quadratic 4x4 (d = 4) matrix 'A' with Fortran indices 'idx' and a
 %   svec-vectorized Matrix 'a':
 %
-%          [a b d g]            [ 1 5  9 13]
-%          [B c e h]            [ 2 6 10 14]
-%      A = [D E f i]      idx = [ 3 7 11 15]
-%          [G H I j]            [ 4 8 12 16]
+%             [a b d g]            [ 1  5  9 13]
+%             [B c e h]            [ 2  6 10 14]
+%         A = [D E f i]      idx = [ 3  7 11 15]
+%             [G H I j]            [ 4  8 12 16]
 %
 %      Avec = [a b c d e f g h i j]'
 %
-%   Usually the goal of symmetric vectorization (svec) is to store only the
-%   upper triangular part in 'Avec', because the entries B,D,G,... are redundant
-%   in the symmetric case.
+%   The goal of symmetric vectorization (svec) is to store only the upper
+%   triangular part in 'Avec', because the entries B,D,G,... are redundant in
+%   the symmetric case.
 %
 %   To extract the upper part, one has to determine the indices in 'idx', in
 %   this example 'Avec == A([1, 5:6, 9:11, 13:16])'.  For reasons of memory
 %   efficiency, this function uses logical indexing rather than index vectors,
 %   as the order is given natrually by the Fortran indices.
 %
-%   By computing the logical index matrices '[vidx, midx, lidx] = sindex(4)',
+%   By computing the logical index matrices
+%
+%      [vidx, midx, lidx] = vsdp.sindex(4);
+%
 %   the expression
 %
-%      Avec(vidx(:,1)) == A(midx(:,1)) == [a c f j]
+%      Avec(vidx(:,1)) == A(midx(:,1)) == [a c f j]'
 %
 %   extracts main diagonal and
 %
-%      Avec(vidx(:,2)) == A(midx(:,2)) == [b d e g h i]
+%      Avec(vidx(:,2)) == A(midx(:,2)) == [b d e g h i]'
 %
 %   the triangular upper matrix elements.  Ocasionally, it is important to
 %   extract the lower triangular part of 'A' as well.  But the Fortran index
@@ -36,10 +39,10 @@ function [vidx, midx, lidx] = sindex(d)
 %   same order of the elements as in 'A(midx(:,2))', use the index vector
 %   'lidx' for the lower triangular part:
 %
-%      A(lidx) == [B D E G H I]
+%      A(lidx) == [B D E G H I]'
 %
 %   NOTE: in general one should avoid to compute 'midx' and 'lidx', as it is an
-%   expensive operation and working in a vectorized representation of 'A' is
+%   expensive operation.  Working on a vectorized representation of 'A' is
 %   more favorable.
 %
 %   Example:
@@ -48,7 +51,6 @@ function [vidx, midx, lidx] = sindex(d)
 %           21, 22, 23, 24; ...
 %           31, 32, 33, 34; ...
 %           41, 42, 43, 44];
-%      A = A(:);
 %      [~,midx,lidx] = vsdp.sindex(4);
 %      disp ( A(midx(:,1))' )  % Diagonal elements of A
 %      disp ( A(midx(:,2))' )  % Upper triangular part of A
@@ -89,7 +91,7 @@ end
 
 end
 
-function [vidx, midx, lidx] = idx(dim)
+function [vidx, midx, lidx] = idx (dim)
 % IDX  Performs the index computation for a single matrix.
 %
 
@@ -109,7 +111,7 @@ if (nargout == 3)
   lidx = reshape (1:dim^2, dim, dim);
   lidx = tril (lidx, -1)';
   lidx(lidx == 0) = [];
+  lidx = lidx(:);
 end
 
 end
-
