@@ -1,5 +1,19 @@
-function [vidx, midx, lidx] = sindex(d)
-%INDEX  Compute indices of symmetric matrix.
+function [vidx, midx, lidx] = sindex (d)
+%INDEX  Compute indices for symmetric matrices of dimensions 'd'.
+%
+%   [vidx, midx, lidx] = sindex (d);
+%
+%      'd'  scalar or vector containing the matrix dimensions.
+%
+%      'vidx(:,1)'  Indices of the diagonal entries for the symmetric vectorized
+%                   (svec) matrices.
+%      'vidx(:,2)'  Indices of the upper tridiagonal entries for the symmetric
+%                   vectorized (svec) matrices.
+%      'midx(:,1)'  Indices of the diagonal entries for the full d*d matrices.
+%      'midx(:,2)'  Indices of the upper tridiagonal entries for the full d*d
+%                   matrices.
+%      'lidx'       Indices of the lower tridiagonal entries for the full d*d
+%                   matrices in the order of 'midx(:,2)'.
 %
 %   For a better comprehension of this function, consider the following
 %   quadratic 4x4 (d = 4) matrix 'A' with Fortran indices 'idx' and a
@@ -56,7 +70,7 @@ function [vidx, midx, lidx] = sindex(d)
 %      disp ( A(midx(:,2))' )  % Upper triangular part of A
 %      disp ( A(lidx)' )       % Lower triangular part of A
 %
-%   See also vsdp.svec, vsdp.smat, vsdp.sscale.
+%   See also vsdp.svec, vsdp.smat.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
