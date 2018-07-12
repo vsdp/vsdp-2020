@@ -100,7 +100,11 @@ if (nargout > 1)
   midx = vertcat (idxs{:,2});
 end
 if (nargout == 3)
-  lidx = vertcat (idxs{:,3}); % TODO
+  offset = cumsum ([0, d(1:end-1).^2]);
+  for i = 1:length(offset)
+    idxs{i,3} = idxs{i,3} + offset(i);
+  end
+  lidx = vertcat (idxs{:,3});
 end
 
 end
@@ -114,7 +118,7 @@ vidx(cumsum(1:dim),1) = true;
 vidx(:,2) = ~(vidx(:,1));
 
 if (nargout >= 2)
-  midx = false(dim^2, 3);
+  midx = false(dim^2, 2);
   d = diag (true (dim, 1));
   midx(:,1) = d(:);
   d = triu (true (dim), 1);
