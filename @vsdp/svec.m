@@ -34,7 +34,7 @@ function A = svec (obj, A, mu, param)
 %                              [B]
 %                              [D]                                   [a   ]
 %         [a b d]              [b]                                   [b*mu]
-%     A = [B c e]  ==>  A(:) = [c]  -->  vsdp.SVEC([],A(:), mu) -->  [c*mu] = a
+%     A = [B c e]  ==>  A(:) = [c]  -->  vsdp.svec([],A(:), mu) -->  [c*mu] = a
 %         [D E f]              [E]  <--  vsdp.smat([],a,  1/mu) <--  [d   ]
 %                              [d]                                   [e*mu]
 %                              [e]                                   [f   ]

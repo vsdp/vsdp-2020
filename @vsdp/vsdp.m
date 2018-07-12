@@ -34,7 +34,7 @@ classdef vsdp < handle
     obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
     x = cell2mat (X);
     A = svec (K, A, mu, isSymmetric);
-    A = smat (K, A, mu, isSymmetric);
+    A = smat (K, A, mu);
     [vidx, midx, lidx] = sindex (dim);
     [K, N, n] = validate_cone (K);
   end
