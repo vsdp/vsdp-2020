@@ -75,9 +75,9 @@ function [vidx, midx, lidx] = sindex (d)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-if (isempty (d) || ~isnumeric (d) || ~isvector (d))
-  error ('VSDP:index:badD', ...
-    'index: ''d'' must be a numeric vector or scalar.');
+if (isempty (d) || ~isnumeric (d) || ~isvector (d) || any (d <= 0))
+  error ('VSDP:sindex:badD', ...
+    'sindex: ''d'' must be a numeric vector or scalar of positive values.');
 end
 d = d(:);
 
@@ -127,7 +127,7 @@ if (nargout >= 2)
 end
 
 if (nargout == 3)
-  % The following three lines of code are very tricky and should be explained.
+  % The following few lines of code are very tricky and should be explained.
   % Functionally, the code is equivalent to:
   %
   %    lidx = reshape (1:N^2, N, N);
@@ -154,8 +154,10 @@ if (nargout == 3)
   %
   
   lidx = N * ones (N * (N - 1) / 2, 1);
-  lidx(cumsum ([1, 1:(N-2)])) = [2, (1:-N:(1-N*(N-3)))];
-  lidx = cumsum (lidx);
+  if (~isempty (lidx))  % catch N == 1
+    lidx(cumsum ([1, 1:(N-2)])) = [2, (1:-N:(1-N*(N-3)))];
+    lidx = cumsum (lidx);
+  end
 end
 
 end

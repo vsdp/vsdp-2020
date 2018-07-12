@@ -54,4 +54,9 @@ verifyEqual (testCase, v, vv)
 verifyEqual (testCase, m, mm)
 verifyEqual (testCase, l, ll)
 
+% Test for bad input.
+verifyError(testCase, @() vsdp.sindex (-1),       'VSDP:sindex:badD');
+verifyError(testCase, @() vsdp.sindex ([1 2 -1]), 'VSDP:sindex:badD');
+verifyError(testCase, @() vsdp.sindex ([1 0 12]), 'VSDP:sindex:badD');
+
 end
