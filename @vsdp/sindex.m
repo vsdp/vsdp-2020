@@ -110,27 +110,52 @@ end
 
 end
 
-function [vidx, midx, lidx] = idx (dim)
+function [vidx, midx, lidx] = idx (N)
 % IDX  Performs the index computation for a single matrix.
 %
 
-vidx = false(dim * (dim + 1) / 2, 2);
-vidx(cumsum(1:dim),1) = true;
+vidx = false(N * (N + 1) / 2, 2);
+vidx(cumsum(1:N),1) = true;
 vidx(:,2) = ~(vidx(:,1));
 
 if (nargout >= 2)
-  midx = false(dim^2, 2);
-  d = diag (true (dim, 1));
+  midx = false(N^2, 2);
+  d = diag (true (N, 1));
   midx(:,1) = d(:);
-  d = triu (true (dim), 1);
+  d = triu (true (N), 1);
   midx(:,2) = d(:);
 end
 
 if (nargout == 3)
-  lidx = reshape (1:dim^2, dim, dim);
-  lidx = tril (lidx, -1)';
-  lidx(lidx == 0) = [];
-  lidx = lidx(:);
+  % The following three lines of code are very tricky and should be explained.
+  % Functionally, the code is equivalent to:
+  %
+  %    lidx = reshape (1:N^2, N, N);
+  %    lidx = tril (lidx, -1)';
+  %    lidx(lidx == 0) = [];
+  %    lidx = lidx(:);
+  %
+  % But is by factor 2 slower and requires much more memory.  Assume the
+  % following NxN matrix of indices in logical order I and Fortran order J for
+  % N = 5:
+  %
+  %          [ 1            ]         [ 1            ]
+  %          [ 2  3         ]         [ 2  7         ]
+  %      I = [ 4  5  6      ]     J = [ 3  8 13      ]
+  %          [ 7  8  9 10   ]         [ 4  9 14 19   ]
+  %          [11 12 13 14 15]         [ 5 10 15 20 25]
+  %
+  % The desired vector 'lidx' is:
+  %
+  %   Position:       1 2     4           7            == cumsum ([1, 1:(N-2)]))
+  %   lidx =        [ 2 3 8   4   9 14    5    10 15 20]
+  %
+  %        = cumsum([ 2 1 N (1-N) N  N (1-N-N)  N  N  N])
+  %
+  
+  lidx = N * ones (N * (N - 1) / 2, 1);
+  lidx(cumsum ([1, 1:(N-2)])) = [2, (1:-N:(1-N*(N-3)))];
+  lidx = cumsum (lidx);
 end
 
 end
