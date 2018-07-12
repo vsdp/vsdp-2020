@@ -22,5 +22,5 @@ testVSDP_sindex (testCase);
 end
 
 function testSVEC(testCase)
-%testVSDP_svec (testCase);
+testVSDP_svec (testCase);
 end

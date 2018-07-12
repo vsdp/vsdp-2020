@@ -16,10 +16,10 @@ function A = svec (obj, A, mu, param)
 %
 %      'mu'     (default = sqrt(2)) Scaling factor for off-diagonal elements.
 %      'param'  Additional parameters for 'A'.
-%         - 'unsymmetric' (default)  Assume matrices have no symmetry and both
+%         - 'symmetric'   (default)  Assume matrices have no symmetry and both
 %                         triangular offdiagonal parts  have to be taken into
 %                         account.
-%         - 'symmetric'   Assume matrices are symmetric and only regard the
+%         - 'unsymmetric' Assume matrices are symmetric and only regard the
 %                         upper triangular part.
 %
 %   For the trace inner product of symmetric matrices X and Y holds:
@@ -32,18 +32,18 @@ function A = svec (obj, A, mu, param)
 %
 %                              [a]
 %                              [B]
-%                              [D]                                 [a   ]
-%         [a b d]              [b]                                 [b*mu]
-%     A = [B c e]  ==>  A(:) = [c]  -->  vsdp.SVEC(A(:), mu)  -->  [c*mu] = a
-%         [D E f]              [E]  <--  vsdp.smat(a,  1/mu)  <--  [d   ]
-%                              [d]                                 [e*mu]
-%                              [e]                                 [f   ]
+%                              [D]                                   [a   ]
+%         [a b d]              [b]                                   [b*mu]
+%     A = [B c e]  ==>  A(:) = [c]  -->  vsdp.SVEC([],A(:), mu) -->  [c*mu] = a
+%         [D E f]              [E]  <--  vsdp.smat([],a,  1/mu) <--  [d   ]
+%                              [d]                                   [e*mu]
+%                              [e]                                   [f   ]
 %                              [f]
 %
 %   Only non-redundant coefficients (non-capital letters) are stored and the
 %   off-diagonal elements are scaled by factor 'mu'.
 %
-%   See also vsdp.sindex, vsdp.smat.
+%   See also vsdp.sindex, vsdp.smat, vsdp.sscale.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
@@ -67,7 +67,7 @@ else
   mu = double (mu);
 end
 if (nargin < 4)
-  isSymmetric = false;
+  isSymmetric = true;
 else
   param = validatestring (param, {'symmetric', 'unsymmetric'});
   isSymmetric = strcmp (param, 'symmetric');
@@ -77,35 +77,42 @@ end
 % a) square double/sparse/intval matrix A
 if (isempty (obj))
   A = A(:);
-  K.s = length (A);
+  N = length (A);
+  K.s = sqrt (N);
+  n = K.s * (K.s + 1) / 2;
   if (K.s ~= round (K.s))
     error ('VSDP:svec:badA', ...
       'svec: With empty first parameter ''A'' must be a square matrix.');
   end
 elseif (isa (obj, 'vsdp'))
   [K, N, n] = deal (obj.K, obj.N, obj.n);
-else
-  [K, N, n] = validate_cone (obj)
+else  % Otherwise 'obj == K' should be a valid cone structure.
+  [K, N, n] = vsdp.validate_cone (obj);
 end
 
-% There is nothing to do, if the matrix has already the length of the condensed
-% semidefinite cones 'n' or if there are no semidefinite cones at all.
+% There is nothing to do, if there are no semidefinite cones at all or if the
+% the matrix has already the length of the condensed semidefinite cones 'n'.
 if (~isfield (K, 's') || (size(A, 1) == n))
   return;
+end
+
+if (size (A, 1) ~= N)
+  error ('VSDP:svec:badA', ...
+    ['svec: ''size(A,1)'' must be %d (or %d in condensed format) ', ...
+    'but is %d.'], N, n, size (A, 1));
 end
 
 if (~isSymmetric)
   [~, midx, lidx] = vsdp.sindex (K.s);
   % Compute average of lower and upper off diagonal elements and store them in
   % the upper part.
-  A(midx(:,2)) = (A(midx(:,2)) + A(lidx)) / 2;
+  A(midx(:,2),:) = (A(midx(:,2),:) + A(lidx,:)) / 2;
 else
   [~, midx] = vsdp.sindex (K.s);
 end
 % Scale off diagonal elements.
-A(midx(:,2)) = A(midx(:,2)) * mu;
+A(midx(:,2),:) = A(midx(:,2),:) * mu;
 % Drop lower triangular elements.
-A = A(midx(:,1) | midx(:,2));
-return;
+A = A((midx(:,1) | midx(:,2)),:);
 
 end
