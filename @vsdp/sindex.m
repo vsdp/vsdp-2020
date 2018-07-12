@@ -79,6 +79,7 @@ if (isempty (d) || ~isnumeric (d) || ~isvector (d))
   error ('VSDP:index:badD', ...
     'index: ''d'' must be a numeric vector or scalar.');
 end
+d = d(:);
 
 idxs = cell(length(d), max (1, nargout));
 switch (nargout)
@@ -100,7 +101,7 @@ if (nargout > 1)
   midx = vertcat (idxs{:,2});
 end
 if (nargout == 3)
-  offset = cumsum ([0, d(1:end-1).^2]);
+  offset = cumsum ([0; d(1:end-1).^2]);
   for i = 1:length(offset)
     idxs{i,3} = idxs{i,3} + offset(i);
   end
