@@ -65,6 +65,14 @@ for i = 1:length(fun)
   verifyEqual (testCase, vsdp.svec ([], f(B(:)), 2, 'unsym'), f(B_svec_2))
   verifyEqual (testCase, vsdp.svec (K,  f(C)   , 1, 'unsym'), f(C_svec_1_unsym))
   verifyEqual (testCase, vsdp.svec (K,  f(D)   , 1, 'unsym'), f(D_svec_1_unsym))
+  
+  % Test rescaling.
+  warning ('off', 'VSDP:svec:justScale');
+  verifyEqual (testCase, vsdp.svec ([], f(B_svec_1),   1), f(B_svec_1))
+  verifyEqual (testCase, vsdp.svec ([], f(B_svec_2),   1), f(B_svec_2))
+  verifyEqual (testCase, vsdp.svec ([], f(B_svec_1),   2), f(B_svec_2))
+  verifyEqual (testCase, vsdp.svec ([], f(B_svec_2), 1/2), f(B_svec_1))
+  warning ('on', 'VSDP:svec:justScale');
 end
 
 % SMAT

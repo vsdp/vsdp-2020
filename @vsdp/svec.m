@@ -76,8 +76,17 @@ end
 % Determine how to vectorize the input:
 % a) square double/sparse/intval matrix A
 if (isempty (obj))
-  A = A(:);
-  K.s = sqrt (length (A));
+  if (isvector (A))
+    % Assume A was already svec-vecorized.
+    K.s = sqrt(0.25 + 2*length (A)) - 0.5;  % because n = K.s*(K.s+1)/2
+    % If this is not the case, assume A = A(:).
+    if (K.s ~= round (K.s))
+      K.s = sqrt (length (A));
+    end
+  else  % Assume Matrix input.
+    A = A(:);
+    K.s = sqrt (length (A));
+  end
   try
     [K, N, n] = vsdp.validate_cone (K);
   catch ME
@@ -104,6 +113,9 @@ end
 % diagonal elements by 'mu'.
 if (size (A, 1) == n)
   if (mu ~= 1)
+    warning ('VSDP:svec:justScale', ...
+      ['svec: Input ''A'' is already condensed vectorized, just scale ', ...
+      'off-diagonal elements.']);
     vidx = vsdp.sindex (K);
     A(vidx(:,2),:) = A(vidx(:,2),:) * mu;
   end
