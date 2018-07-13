@@ -48,6 +48,11 @@ if (isfield (K_in, 's'))
   end
 end
 
+if (any ([K.f; K.l; K.q; K.s] ~= round([K.f; K.l; K.q; K.s])))
+  error ('VSDP:validate_cone:needPositiveIntegers', ...
+    'validate_cone: All cone dimensions must be positive intergers.');
+end
+
 % Determine (un-)condensed cone dimension.
 N = K.f + K.l + sum(K.q) + sum (K.s .* K.s);
 n = K.f + K.l + sum(K.q) + (sum (K.s .* (K.s + 1)) / 2);
