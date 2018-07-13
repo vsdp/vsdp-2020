@@ -1,9 +1,9 @@
-function [vidx, midx, lidx] = sindex (d)
-%INDEX  Compute indices for symmetric matrices of dimensions 'd'.
+function [vidx, midx, lidx] = sindex (K)
+%INDEX  Compute indices for symmetric matrices of a cone structure 'K'.
 %
-%   [vidx, midx, lidx] = sindex (d);
+%   [vidx, midx, lidx] = sindex (K);
 %
-%      'd'  scalar or vector containing the matrix dimensions.
+%      'K'  Cone structure, see 'help vsdp.validate_cone' for details.
 %
 %      'vidx(:,1)'  Indices of the diagonal entries for the symmetric vectorized
 %                   (svec) matrices.
@@ -75,33 +75,31 @@ function [vidx, midx, lidx] = sindex (d)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-if (isempty (d) || ~isnumeric (d) || ~isvector (d) || any (d <= 0))
-  error ('VSDP:sindex:badD', ...
-    'sindex: ''d'' must be a numeric vector or scalar of positive values.');
-end
-d = d(:);
+K = vsdp.validate_cone (K);
 
-idxs = cell(length(d), max (1, nargout));
+idxs = cell(length(K.s), max (1, nargout));
 switch (nargout)
   case {0, 1}
-    for i = 1:length(d)
-      idxs{i} = idx (d(i));
+    for i = 1:length(K.s)
+      idxs{i} = idx (K.s(i));
     end
   case 2
-    for i = 1:length(d)
-      [idxs{i,1}, idxs{i,2}] = idx (d(i));
+    for i = 1:length(K.s)
+      [idxs{i,1}, idxs{i,2}] = idx (K.s(i));
     end
   case 3
-    for i = 1:length(d)
-      [idxs{i,1}, idxs{i,2}, idxs{i,3}] = idx (d(i));
+    for i = 1:length(K.s)
+      [idxs{i,1}, idxs{i,2}, idxs{i,3}] = idx (K.s(i));
     end
 end
-vidx = vertcat (idxs{:,1});
+offset = K.f + K.l + sum (K.q);
+oidx = false (offset, 2);
+vidx = [oidx; vertcat(idxs{:,1})];
 if (nargout > 1)
-  midx = vertcat (idxs{:,2});
+  midx = [oidx; vertcat(idxs{:,2})];
 end
 if (nargout == 3)
-  offset = cumsum ([0; d(1:end-1).^2]);
+  offset = cumsum ([0; K.s(1:end-1).^2]) + offset;
   for i = 1:length(offset)
     idxs{i,3} = idxs{i,3} + offset(i);
   end

@@ -30,33 +30,41 @@ midx{4} = logical ([ ...
 lidx{4} = [2 3 7 4 8 12]';
 
 for i = 1:4
-  [v, m, l] = vsdp.sindex (i);
+  K.s = i;
+  [v, m, l] = vsdp.sindex (K);
   verifyEqual (testCase, v, vidx{i})
   verifyEqual (testCase, m, midx{i})
   verifyEqual (testCase, l, lidx{i})
 end
 
 % Combined dimension test.
-d = [2 2 4 1 3 3 4 2];
-vv = vidx(d);
+K.s = [2 2 4 1 3 3 4 2];
+vv = vidx(K.s);
 vv = cell2mat(vv(:));
-mm = midx(d);
+mm = midx(K.s);
 mm = cell2mat(mm(:));
-ll = lidx(d);
-offset = cumsum ([0, d(1:end-1).^2]);
+ll = lidx(K.s);
+offset = cumsum ([0, K.s(1:end-1).^2]);
 for i = 1:length(offset)
   ll{i} = ll{i} + offset(i);
 end
 ll = cell2mat(ll(:));
 
-[v, m, l] = vsdp.sindex (d);
+[v, m, l] = vsdp.sindex (K);
 verifyEqual (testCase, v, vv)
 verifyEqual (testCase, m, mm)
 verifyEqual (testCase, l, ll)
 
-% Test for bad input.
-verifyError(testCase, @() vsdp.sindex (-1),       'VSDP:sindex:badD');
-verifyError(testCase, @() vsdp.sindex ([1 2 -1]), 'VSDP:sindex:badD');
-verifyError(testCase, @() vsdp.sindex ([1 0 12]), 'VSDP:sindex:badD');
+% Mixed cone test.
+K.f = 2;
+K.l = 3;
+K.q = [2 3 4];
+offset = K.f + K.l + sum (K.q);
+oidx = false (offset, 2);
+
+[v, m, l] = vsdp.sindex (K);
+verifyEqual (testCase, v, [oidx; vv])
+verifyEqual (testCase, m, [oidx; mm])
+verifyEqual (testCase, l, ll + offset)
 
 end
