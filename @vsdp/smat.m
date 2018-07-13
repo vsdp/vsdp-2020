@@ -1,5 +1,5 @@
 function A = smat (obj, a, mu)
-% SMAT  Inverse operator of symmetric vectorization (vsdp.smat).
+% SMAT  Inverse operator of symmetric vectorization (vsdp.svec).
 %
 %   A = vsdp.smat( [], a)
 %   A = vsdp.smat(  K, a)
@@ -10,26 +10,26 @@ function A = smat (obj, a, mu)
 %
 %      'K' or 'obj'  Cone structure or VSDP object.  For details, see
 %                    'help vsdp.validate_cone'
-%      'a'           smat-vectorized matrices.
+%      'a'           vsdp.svec-vectorized matrices.
 %
 %   and optional arguments:
 %
 %      'mu'     (default = 1/sqrt(2)) Scaling factor for off-diagonal elements.
 %
 %   For a better comprehension, assume a symmetric 3x3 matrix 'A' and see the
-%   documentation of 'help vsdp.smat':
+%   documentation of 'help vsdp.svec':
 %
 %                              [a]
 %                              [B]
 %                              [D]                                   [a   ]
 %         [a b d]              [b]                                   [b*mu]
-%     A = [B c e]  ==>  A(:) = [c]  -->  vsdp.smat([],A(:), mu) -->  [c*mu] = a
+%     A = [B c e]  ==>  A(:) = [c]  -->  vsdp.svec([],A(:), mu) -->  [c*mu] = a
 %         [D E f]              [E]  <--  vsdp.smat([],a,  1/mu) <--  [d   ]
 %                              [d]                                   [e*mu]
 %                              [e]                                   [f   ]
 %                              [f]
 %
-%   See also vsdp.sindex, vsdp.smat, vsdp.sscale.
+%   See also vsdp.sindex, vsdp.svec.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)

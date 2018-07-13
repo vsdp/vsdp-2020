@@ -16,16 +16,15 @@ function A = svec (obj, A, mu, param)
 %
 %      'mu'     (default = sqrt(2)) Scaling factor for off-diagonal elements.
 %      'param'  Additional parameters for 'A'.
-%         - 'symmetric'   (default)  Assume matrices have no symmetry and both
-%                         triangular offdiagonal parts  have to be taken into
-%                         account.
-%         - 'unsymmetric' Assume matrices are symmetric and only regard the
-%                         upper triangular part.
+%         - 'symmetric'   (default)  Assume matrices are symmetric and only
+%                         regard the upper triangular part.
+%         - 'unsymmetric' Assume matrices have no symmetry and both triangular
+%                         off-diagonal parts have to be taken into account.
 %
 %   For the trace inner product of symmetric matrices X and Y holds:
 %
-%        <X,Y> := trace(X*Y) = svec(K,X,sqrt(2))' * svec(K,Y,sqrt(2))
-%                            = svec(K,X,1)'       * svec(K,Y,2).
+%        <X,Y> := trace(X*Y) = vsdp.svec(K,X  )' * vsdp.svec(K,Y  )
+%                            = vsdp.svec(K,X,1)' * vsdp.svec(K,Y,2).
 %
 %   Don't use the default 'mu = sqrt(2)' for verified computations.  For a
 %   better comprehension, assume a symmetric 3x3 matrix 'A':
@@ -43,7 +42,7 @@ function A = svec (obj, A, mu, param)
 %   Only non-redundant coefficients (non-capital letters) are stored and the
 %   off-diagonal elements are scaled by factor 'mu'.
 %
-%   See also vsdp.sindex, vsdp.smat, vsdp.sscale.
+%   See also vsdp.sindex, vsdp.smat.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)

@@ -1,23 +1,23 @@
 function [vidx, midx, lidx] = sindex (K)
-%INDEX  Compute indices for symmetric matrices of a cone structure 'K'.
+% SINDEX  Compute indices for symmetric matrices of a cone structure 'K'.
 %
-%   [vidx, midx, lidx] = sindex (K);
+%   [vidx, midx, lidx] = vsdp.sindex (K);
 %
 %      'K'  Cone structure, see 'help vsdp.validate_cone' for details.
 %
 %      'vidx(:,1)'  Indices of the diagonal entries for the symmetric vectorized
-%                   (svec) matrices.
+%                   (vsdp.svec) matrices.
 %      'vidx(:,2)'  Indices of the upper tridiagonal entries for the symmetric
-%                   vectorized (svec) matrices.
-%      'midx(:,1)'  Indices of the diagonal entries for the full d*d matrices.
-%      'midx(:,2)'  Indices of the upper tridiagonal entries for the full d*d
+%                   vectorized (vsdp.svec) matrices.
+%      'midx(:,1)'  Indices of the diagonal entries for the full matrices.
+%      'midx(:,2)'  Indices of the upper tridiagonal entries for the full
 %                   matrices.
-%      'lidx'       Indices of the lower tridiagonal entries for the full d*d
-%                   matrices in the order of 'midx(:,2)'.
+%      'lidx'       Indices of the lower tridiagonal entries for the full
+%                   matrices in the order given by 'midx(:,2)'.
 %
 %   For a better comprehension of this function, consider the following
 %   quadratic 4x4 (K.s = 4) matrix 'A' with Fortran indices 'idx' and a
-%   svec-vectorized Matrix 'a':
+%   vsdp.svec-vectorized Matrix 'Avec':
 %
 %             [a b d g]            [ 1  5  9 13]
 %             [B c e h]            [ 2  6 10 14]
@@ -26,7 +26,7 @@ function [vidx, midx, lidx] = sindex (K)
 %
 %      Avec = [a b c d e f g h i j]'
 %
-%   The goal of symmetric vectorization (svec) is to store only the upper
+%   The goal of symmetric vectorization (vsdp.svec) is to store only the upper
 %   triangular part in 'Avec', because the entries B,D,G,... are redundant in
 %   the symmetric case.
 %
@@ -35,23 +35,22 @@ function [vidx, midx, lidx] = sindex (K)
 %   efficiency, this function uses logical indexing rather than index vectors,
 %   as the order is given natrually by the Fortran indices.
 %
-%   By computing the logical index matrices
+%   By computing the index matrices and vector
 %
 %      [vidx, midx, lidx] = vsdp.sindex(K);   % with K.s = 4
 %
-%   the expression
+%   the main diagonal is indexed by:
 %
 %      Avec(vidx(:,1)) == A(midx(:,1)) == [a c f j]'
 %
-%   extracts main diagonal and
+%   and the triangular upper matrix elements are indexed by:
 %
 %      Avec(vidx(:,2)) == A(midx(:,2)) == [b d e g h i]'
 %
-%   the triangular upper matrix elements.  Ocasionally, it is important to
-%   extract the lower triangular part of 'A' as well.  But the Fortran index
-%   order by logical indexing would yield [B D G E H I].  To obtain the
-%   same order of the elements as in 'A(midx(:,2))', use the index vector
-%   'lidx' for the lower triangular part:
+%   Ocasionally, it is important to extract the lower triangular part of 'A' as
+%   well.  But the Fortran index order by logical indexing would yield
+%   [B D G E H I].  To obtain the same order of the elements as in
+%   'A(midx(:,2))', use the index vector 'lidx' for the lower triangular part:
 %
 %      A(lidx) == [B D E G H I]'
 %
