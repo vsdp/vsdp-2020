@@ -1,7 +1,25 @@
 function [K, N, n] = validate_cone (K_in)
 % VALIDATE_CONE  Ensure a given VSDP cone strucuture to be valid.
 %
+%   A valid cone structure has the fields in the given order:
 %
+%     'f' Number of free variables.
+%     'l' Number of linear variables.
+%     'q' Dimensions of second-order cones.
+%     's' Dimensions of semidefinite cones.
+%
+%   Example:
+%
+%     A conic program with 4 linear variables, two semidefinite variables of
+%     dimension 2x2 and 3x3, respectively, is as follows:
+%
+%       K.l = 4;
+%       K.s = [2; 3];
+%
+%   See also vsdp.vsdp.
+%
+
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 narginchk(1, 1);
 
