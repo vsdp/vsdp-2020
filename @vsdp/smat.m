@@ -54,13 +54,21 @@ end
 % Determine how to vectorize the input:
 % a) square double/sparse/intval matrix A
 if (isempty (obj))
-  n = length (a);
-  K.s = sqrt(0.25 + 2*n) - 0.5;  % because n = K.s*(K.s+1)/2
-  N = K.s^2;
-  if (~isvector (a) || (K.s ~= round (K.s)))
-    error ('VSDP:smat:badA', ...
-      ['smat: With empty first parameter ''a'' must be ', ...
-      'a svec-vectorized quantity.']);
+  err_msg = ['smat: With empty first parameter ''A'' must be ', ...
+    'a svec-vectorized matrix.'];
+  if (~isvector (a))
+    error ('VSDP:smat:badA', err_msg);
+  end
+  K.s = sqrt(0.25 + 2*length (a)) - 0.5;  % because n = K.s*(K.s+1)/2
+  try
+    [K, N, n] = vsdp.validate_cone (K);
+  catch ME
+    switch (ME.identifier)
+      case 'VSDP:validate_cone:needPositiveIntegers'
+        error ('VSDP:smat:badA', err_msg);
+      otherwise
+        rethrow (ME);
+    end
   end
 elseif (isa (obj, 'vsdp'))
   [K, N, n] = deal (obj.K, obj.N, obj.n);
@@ -69,8 +77,9 @@ else  % Otherwise 'obj == K' should be a valid cone structure.
 end
 
 % There is nothing to do, if there are no semidefinite cones at all or if the
-% the matrix has already the length of the condensed semidefinite cones 'n'.
-if (~isfield (K, 's') || (size(a, 1) == N))
+% the matrix has already the length of the uncondensed semidefinite cones 'N'.
+if (isempty (K.s) || (size(a, 1) == N))
+  A = a;
   return;
 end
 
@@ -89,10 +98,19 @@ if (isintval (a))
   A = intval(A);
 end
 
-[vidx, midx] = vsdp.sindex (K.s);
+% Just copy non-semidefinite cone parts.
+offset = K.f + K.l + sum (K.q);
+A(1:offset,:) = a(1:offset,:);
+
+[vidx, midx, lidx] = vsdp.sindex (K);
 % Scale off diagonal elements.
 A(midx(:,1),:) = a(vidx(:,1),:);
 A(midx(:,2),:) = a(vidx(:,2),:) * mu;
-A(midx(:,2),:) = a(vidx(:,2),:) * mu;
+A(lidx,:)      = a(vidx(:,2),:) * mu;
+
+% If a was a single svec matrix vector, reshape it to matrix.
+if (isempty (obj))
+  A = reshape (A, K.s, K.s);
+end
 
 end

@@ -21,6 +21,6 @@ function testSINDEX(testCase)
 testVSDP_sindex (testCase);
 end
 
-function testSVEC(testCase)
-testVSDP_svec (testCase);
+function testSVEC_SMAT(testCase)
+testVSDP_svec_smat (testCase);
 end
