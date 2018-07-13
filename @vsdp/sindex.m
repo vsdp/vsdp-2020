@@ -16,7 +16,7 @@ function [vidx, midx, lidx] = sindex (K)
 %                   matrices in the order of 'midx(:,2)'.
 %
 %   For a better comprehension of this function, consider the following
-%   quadratic 4x4 (d = 4) matrix 'A' with Fortran indices 'idx' and a
+%   quadratic 4x4 (K.s = 4) matrix 'A' with Fortran indices 'idx' and a
 %   svec-vectorized Matrix 'a':
 %
 %             [a b d g]            [ 1  5  9 13]
@@ -37,7 +37,7 @@ function [vidx, midx, lidx] = sindex (K)
 %
 %   By computing the logical index matrices
 %
-%      [vidx, midx, lidx] = vsdp.sindex(4);
+%      [vidx, midx, lidx] = vsdp.sindex(K);   % with K.s = 4
 %
 %   the expression
 %
@@ -65,7 +65,8 @@ function [vidx, midx, lidx] = sindex (K)
 %           21, 22, 23, 24; ...
 %           31, 32, 33, 34; ...
 %           41, 42, 43, 44];
-%      [~,midx,lidx] = vsdp.sindex(4);
+%      K.s = 4;
+%      [~,midx,lidx] = vsdp.sindex(K);
 %      disp ( A(midx(:,1))' )  % Diagonal elements of A
 %      disp ( A(midx(:,2))' )  % Upper triangular part of A
 %      disp ( A(lidx)' )       % Lower triangular part of A
