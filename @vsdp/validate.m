@@ -43,28 +43,25 @@ end
 if (size (obj.At, 2) ~= obj.m)
   obj.At = obj.At';
 end
-% Ensure valid cone dimension.
-if ((obj.n < obj.N) && (size (obj.At, 1) == obj.N))
-  obj.At = vsdp.svec (K, At, 1, false);  % No symmetry assumed => false.
-elseif (size (obj.At, 1) ~= obj.n)
-  error ('VSDP:validate:badConeDimesionAt', ...
-    ['validate: ''size(At,1)'' must be %d ', ...
-    '(or %d in condensed format) but is %d.'], obj.N, obj.n, size (obj.At, 1));
+% Ensure vectorzied condensed cone dimension.
+try
+  obj.At = vsdp.svec (obj, obj.At, 1, 'unsymmetric');
+catch ME
+  error ('VSDP:validate:badAt', ...
+    'validate: Cannot vectorize ''At''.');
 end
 
-% prepare interval input for c
+% Prepare 'c'.
 if (~isfloat (obj.c) && ~isa (obj.c, 'intval'))
   error ('VSDP:validate:badTypeC', ...
     'validate: Primal objective vector ''c'' must be numeric or an interval.');
 end
-obj.c = obj.c(:);
-% Ensure valid cone dimension.
-if ((obj.n < obj.N) && (length (obj.c) == obj.N))
-  [c,Ivec] = vsvec(c,K,1,0,Ivec);
-elseif (length (obj.c) ~= obj.n)
-  error ('VSDP:validate:badLengthC', ...
-    ['validate: Length of primal objective vector ''c'' must be %d ', ...
-    '(or %d in condensed format) but is %d.'], obj.N, obj.n, length (obj.c));
+% Ensure vectorzied condensed cone dimension.
+try
+  obj.c = vsdp.svec (obj, obj.c(:), 1, 'unsymmetric');
+catch ME
+  error ('VSDP:validate:badAt', ...
+    'validate: Cannot vectorize ''c''.');
 end
 
 if (~isempty (obj.x))
@@ -72,15 +69,12 @@ if (~isempty (obj.x))
     error ('VSDP:validate:badTypeX', ...
       'validate: Primal approximate solution vector ''x'' must be numeric.');
   end
-  obj.x = obj.x(:);
-  % Condense SDP cones if necessary.
-  if ((obj.n < obj.N) && (length (obj.x) == obj.N))
-    [x0,Ivec] = vsvec(x0,K,1,0,Ivec);  % Ivec can only be used with mu=1
-    x0 = sscale(x0,K,2);
-  elseif (length (obj.x) ~= obj.n)
-    error ('VSDP:validate:badLengthX', ...
-      ['validate: Length of primal solution vector ''x'' must be %d ', ...
-      '(or %d in condensed format) but is %d.'], obj.N, obj.n, length (obj.x));
+  % Ensure vectorzied condensed cone dimension.
+  try
+    obj.x = vsdp.svec (obj, obj.x(:), 2, 'unsymmetric');
+  catch ME
+    error ('VSDP:validate:badAt', ...
+      'validate: Cannot vectorize ''c''.');
   end
 end
 
@@ -103,15 +97,12 @@ if (~isempty (obj.z))
     error ('VSDP:validate:badTypeZ', ...
       'validate: Primal approximate solution vector ''z'' must be numeric.');
   end
-  obj.z = obj.z(:);
-  % Condense SDP cones if necessary.
-  if ((obj.n < obj.N) && (length (obj.z) == obj.N))
-    [z0,Ivec] = vsvec(z0,K,1,0,Ivec);  % Ivec can only be used with mu=1
-    z0 = sscale(z0,K,2);
-  elseif (length (obj.z) ~= obj.n)
-    error ('VSDP:validate:badLengthZ', ...
-      ['validate: Length of primal solution vector ''z'' must be %d ', ...
-      '(or %d in condensed format) but is %d.'], obj.N, obj.n, length (obj.z));
+  % Ensure vectorzied condensed cone dimension.
+  try
+    obj.z = vsdp.svec (obj, obj.z(:), 2, 'unsymmetric');
+  catch ME
+    error ('VSDP:validate:badAt', ...
+      'validate: Cannot vectorize ''z0''.');
   end
 end
 
