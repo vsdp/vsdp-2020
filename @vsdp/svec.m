@@ -77,12 +77,17 @@ end
 % a) square double/sparse/intval matrix A
 if (isempty (obj))
   A = A(:);
-  N = length (A);
-  K.s = sqrt (N);
-  n = K.s * (K.s + 1) / 2;
-  if (K.s ~= round (K.s))
-    error ('VSDP:svec:badA', ...
-      'svec: With empty first parameter ''A'' must be a square matrix.');
+  K.s = sqrt (length (A));
+  try
+    [K, N, n] = vsdp.validate_cone (K);
+  catch ME
+    switch (ME.identifier)
+      case 'VSDP:validate_cone:needPositiveIntegers'
+        error ('VSDP:svec:badA', ...
+          'svec: With empty first parameter ''A'' must be a square matrix.');
+      otherwise
+        rethrow (ME);
+    end
   end
 elseif (isa (obj, 'vsdp'))
   [K, N, n] = deal (obj.K, obj.N, obj.n);
@@ -90,12 +95,23 @@ else  % Otherwise 'obj == K' should be a valid cone structure.
   [K, N, n] = vsdp.validate_cone (obj);
 end
 
-% There is nothing to do, if there are no semidefinite cones at all or if the
-% the matrix has already the length of the condensed semidefinite cones 'n'.
-if (~isfield (K, 's') || (size(A, 1) == n))
+% There is nothing to do, if there are no semidefinite cones at all.
+if (isempty (K.s))
   return;
 end
 
+% If the matrix has already the condensed cone length 'n', just scale the off
+% diagonal elements by 'mu'.
+if (size (A, 1) == n)
+  if (mu ~= 1)
+    vidx = vsdp.sindex (K);
+    A(vidx(:,2),:) = A(vidx(:,2),:) * mu;
+  end
+  return;
+end
+
+% Otherwise scale the upper triangular matrix under consideration of the
+% symmetry and drop the lower triangular elements.
 if (size (A, 1) ~= N)
   error ('VSDP:svec:badA', ...
     ['svec: ''size(A,1)'' must be %d (or %d in condensed format) ', ...
@@ -103,15 +119,17 @@ if (size (A, 1) ~= N)
 end
 
 if (~isSymmetric)
-  [~, midx, lidx] = vsdp.sindex (K.s);
+  [~, midx, lidx] = vsdp.sindex (K);
   % Compute average of lower and upper off diagonal elements and store them in
   % the upper part.
   A(midx(:,2),:) = (A(midx(:,2),:) + A(lidx,:)) / 2;
 else
-  [~, midx] = vsdp.sindex (K.s);
+  [~, midx] = vsdp.sindex (K);
 end
 % Scale off diagonal elements.
-A(midx(:,2),:) = A(midx(:,2),:) * mu;
+if (mu ~= 1)
+  A(midx(:,2),:) = A(midx(:,2),:) * mu;
+end
 % Drop lower triangular elements.
 A = A((midx(:,1) | midx(:,2)),:);
 
