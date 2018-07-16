@@ -15,6 +15,7 @@ classdef vsdp < handle
     x = [];   % Approximate primal solution.
     y = [];   % Approximate dual solution.
     z = [];   % Approximate primal solution.
+    options = vsdp_options ();
   end
   
   % (Un-)Vectorization of `obj.At`, `obj.C`, `obj.X`, and `obj.Z`.
