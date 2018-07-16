@@ -12,9 +12,9 @@ classdef vsdp < handle
     b   % Right-hand side vector, or dual objective vector.
     c   % Primal objective vector.
     K   % Cone structure, `K.f`, `K.l`, `K.q`, `K.s`.
-    x = [];   % Approximate primal solution.
-    y = [];   % Approximate dual solution.
-    z = [];   % Approximate primal solution.
+    x = [];   % Approximate primal solution or initial guess.
+    y = [];   % Approximate dual   solution or initial guess.
+    z = [];   % Approximate primal solution or initial guess.
     options = vsdp_options ();
   end
   
