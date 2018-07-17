@@ -3,6 +3,7 @@ function info (obj)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
+fprintf ('\n\n');
 fprintf ('  VSDP Conic programming problem\n');
 fprintf ('  ------------------------------\n\n');
 

@@ -68,20 +68,23 @@ info = -1;
 % call solver for problem
 switch (obj.options.SOLVER)
   case 'sedumi'
-    % Setup
+    % Prepare data for solver.
     if (~obj.options.VERBOSE_OUTPUT)
       OPTIONS.fid = 0;
+    else
+      OPTIONS = [];
     end
-    [A,c] = vsdp2sedumi(A,c,[],[],K,opts);
+    A = vsdp.smat (obj, A, 1);
+    c = vsdp.smat (obj, c, 1);
     
-    % Call solver
-    [x,y,INFO] = sedumi(A,b,c,K,OPTIONS);
+    % Call solver.
+    [x, y, INFO] = sedumi (A, b, c, obj.K, OPTIONS);
     
-    % Transform results to VSDP format
-    if (~isempty(x) && ~isempty(y))
-      z = c - A*y;
-      objt = [c'*x, b'*y];
-    end
+    % Store results.
+    obj.x = vsdp.svec (obj, x, 2);
+    obj.y = y;
+    obj.z = vsdp.svec (obj, c - A*y, 2);
+
     info = INFO.pinf + 2*INFO.dinf;
     
   case 'sdpt3'
@@ -91,11 +94,17 @@ switch (obj.options.SOLVER)
       else
         OPTIONS.printyes = 0;   % default: 1
       end
+    else
+      OPTIONS = []
     end
-    [blk,A,c,x0,z0] = vsdp2sdpt3 (K, A, c, x0, z0, opts);
+    A = mat2cell (vsdp.svec (obj, A, sqrt(2)), obj.K.dims, obj.m);
+    c = mat2cell (c, obj.K.dims, 1);
+    for i = 1:length(obj.K.s)
+      c{i} = vsdp.smat ([], c{i});
+    end
     
     % Call solver
-    [objt, x, y, z, INFO] = sqlp (blk, A, c, b, OPTIONS, x0, y0, z0);
+    [objt, x, y, z, INFO] = sqlp (obj.K.blk, A, c, b, OPTIONS, x0, y0, z0);
     
     % Transform results to VSDP format
     [~,~,~,x,z] = sdpt2vsdp(blk,[],[],x,z);

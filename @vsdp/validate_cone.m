@@ -32,6 +32,8 @@ K.f = 0;
 K.l = 0;
 K.q = [];
 K.s = [];
+K.blk = {};
+K.dims = [];
 K.idx.f = [];
 K.idx.l = [];
 K.idx.q = [];
@@ -39,19 +41,25 @@ K.idx.s = [];
 
 if (isfield (K_in, 'f'))
   K.f = sum (K_in.f(K_in.f > 0));
+  K.dims = K.f(K.f > 0);
   if (K.f > 0)
     K.idx.f = [1, K.f];
+    K.blk(end+1, :) = {'f', K.f};
   end
 end
 if (isfield (K_in, 'l'))
   K.l = sum (K_in.l(K_in.l > 0));
+  K.dims = [K.dims; K.l(K.l > 0)];
   if (K.l > 0)
     K.idx.l = K.f + [1, K.l];
+    K.blk(end+1, :) = {'l', K.l};
   end
 end
 if (isfield (K_in, 'q'))
   K.q = K_in.q(K_in.q > 0);
   K.q = K.q(:);
+  K.dims = [K.dims; K.q];
+  K.blk = [K.blk; [repmat({'q'}, length(K.q), 1), num2cell(K.q)]];
   if (~isempty (K.q))
     K.idx.q = K.f + K.l + [cumsum([1; K.q(1:end-1)]); cumsum(K.q)];
   end
@@ -59,6 +67,8 @@ end
 if (isfield (K_in, 's'))
   K.s = K_in.s(K_in.s > 0);
   K.s = K.s(:);
+  K.dims = [K.dims; K.s .* (K.s + 1) / 2];
+  K.blk = [K.blk; [repmat({'s'}, length(K.s), 1), num2cell(K.s)]];
   if (~isempty (K.s))
     K.idx.s = K.s .* (K.s + 1) / 2;
     K.idx.s = K.f + K.l + sum(K.q) + ...

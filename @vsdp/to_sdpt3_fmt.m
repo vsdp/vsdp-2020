@@ -1,26 +1,8 @@
-function [blk,At,ct,xt,zt] = to_sdpt3_fmt(K,A,c,x0,z0,opts)
-% VSDP2SDPT3  Convert problem data from VSDP 2012 to SDPT3 format.
+function [blk, At, b, c] = to_sdpt3_fmt (obj)
+% TO_SDPT3_FMT  Convert problem data to SDPT3 format.
 %
 %   [blk,At,ct,xt,zt] = VSDP2SDPT3(K,A,c,x0,z0,opts)
 %
-% Input: except for K all input parameter are optional
-% K: a structure with following fields
-%     - K.f stores the number of free variables
-%     - K.l is the number of nonnegative components
-%     - K.q lists the lengths of socp blocks
-%     - K.s lists the dimensions of semidefinite blocks
-% A:  a nA3 x M Matrix,
-%     whereas nA = dimf+diml+dimq+dims
-%     dimf: number of free variables: dimf = sum(K.f>0)
-%     diml: number of nonnegative variables: diml = sum(K.l>0)
-%     dimq: sum of all socp variables: dimq = sum_i(K.q(i))
-%     dims3: sum of sdp variables: dims3 = sum_i(K.s(i)*(K.s(i)+1)/2)
-% c: nC x 1 vector - primal objective function
-% x0: a nC x 1 vector - approx. primal optimal solution
-% z0: a nC x 1 vector - approx. dual optimal solution (slack vars)
-% opts: structure for additional parameter settings, explained in vsdpinit.
-%
-% Output:
 % blk: a cell array describing the block diagonal structure of problem data
 % At: a cell array with At{1} = A(1:dimf,:), At{2} = A(dimf+1:dimf+diml,:)
 %     and the same for socp cone, and At{i} = [svec(Ai1) ... svec(Aim)]
@@ -32,58 +14,8 @@ function [blk,At,ct,xt,zt] = to_sdpt3_fmt(K,A,c,x0,z0,opts)
 % Is: index vector which describes the reorganization of the sdp blocks to
 %     group small sdp blocks
 %
-%
-% Note that the right hand side of the linear constraints (b) and the
-% dual optimal solution vector (y) have the same format in VSDP and SDPT3.
-%
-% This is a private conversion function. The dimension of the input
-% parameter is not checked. This has to be done in the calling function.
-%
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
-
-% check input
-if nargin<1 || ~isstruct(K)
-  error('VSDP:VSDP2SDPT3','not enough input parameter');
-elseif nargin<2
-  A = [];  c = [];  x0 = [];  z0 = [];  opts = [];
-elseif nargin<3
-  c = [];  x0 = [];  z0 = [];  opts = [];
-elseif nargin<4
-  x0 = [];  z0 = [];  opts = [];
-elseif nargin<5
-  z0 = []; opts = [];
-elseif nargin<6
-  opts = [];
-end
-
-% preparation
-
-% get problem data dimensions
-fields = isfield(K,{'f','l','q','s'});
-if fields(1)
-  K.f = sum(K.f);
-else
-  K.f = 0;
-end
-if fields(2)
-  K.l = sum(K.l);
-else
-  K.l = 0;
-end
-if fields(3)
-  K.q = reshape(K.q(K.q>0),[],1);
-else
-  K.q = [];
-end
-if fields(4)
-  K.s = reshape(K.s(K.s>0),[],1);
-else
-  K.s = 0;
-end
-dim = K.f + K.l + sum(K.q) + sum(K.s.*K.s);
-dim3 = K.f + K.l + sum(K.q) + sum(K.s.*(K.s+1))/2;
-n = (K.f>0) + (K.l>0) + length(K.q) + length(K.s);
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 % convert to appropriate format
 if length(A)~=dim3
