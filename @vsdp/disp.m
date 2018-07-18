@@ -62,8 +62,8 @@ fprintf ('     [%c]  Approximate solution:\n\n', state{appr_sol + 1});
 if (~appr_sol)
   fprintf ('            [x,y,z] = %s.solve();\n\n', inputname(1));
 else
-  fprintf ('            c''*x = %f\n', obj.c' * obj.x);
-  fprintf ('            b''*y = %f\n', obj.b' * obj.y);
+  fprintf ('               c''*x = %.15e\n',   obj.c' * obj.x);
+  fprintf ('               b''*y = %.15e\n\n', obj.b' * obj.y);
 end
 
 rig_lb = false;
