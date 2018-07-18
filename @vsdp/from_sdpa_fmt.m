@@ -1,7 +1,7 @@
-function obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0)
-% FROM_SDPAM_FMT  Import conic problem from SDPA-M format.
+function obj = from_sdpa_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0)
+% FROM_SDPA_FMT  Import conic problem from SDPA-M format.
 %
-%   obj = vsdp.FROM_SDPAM_FMT (bLOCKsTRUCT, c, F, x0, X0, Y0);
+%   obj = vsdp.FROM_SDPA_FMT (bLOCKsTRUCT, c, F, x0, X0, Y0);
 %
 %   The primal SDPA-M format is:
 %
@@ -25,16 +25,17 @@ function obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0)
 %
 %   Example 1 from [1] with a single 2x2 SDP block and three constraints:
 %
-%      mDIM = 3;
+%      m = 3;
+%      mDIM = m + 1;
 %      nBLOCK = 1;
 %      bLOCKsTRUCT = [2];
 %      c = [48, -8, 20];
-%      F = cell(nBLOCK, mDIM+1);
+%      F = cell(nBLOCK, mDIM);
 %      F{1,1} = [-11,  0 ;  0, 23];
 %      F{1,2} = [ 10,  4 ;  4,  0];
 %      F{1,3} = [  0,  0 ;  0, -8];
 %      F{1,4} = [  0, -8 ; -8,  2];
-%      obj = vsdp.FROM_SDPAM_FMT (bLOCKsTRUCT, c, F);
+%      obj = vsdp.FROM_SDPA_FMT (bLOCKsTRUCT, c, F);
 %
 %   For more information on the SDPA-M format, see:
 %
