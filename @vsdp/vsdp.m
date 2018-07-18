@@ -2,19 +2,25 @@ classdef vsdp < handle
   
   properties
     % Condensed cone dimension, e.g.
-    % `n = K.f + K.l + sum(K.q) + (sum(K.s .* (K.s + 1)) / 2)`.
+    % 'n = K.f + K.l + sum(K.q) + (sum(K.s .* (K.s + 1)) / 2)'.
     n
     % Uncondensed cone dimension, e.g.
-    % `N = K.f + K.l + sum(K.q) + sum(K.s .* K.s)`.
+    % 'N = K.f + K.l + sum(K.q) + sum(K.s .* K.s)'.
     N
     m   % Number of constraints.
-    At  % Transposed condensed constraint matrix `n x m`.
+    At  % Transposed condensed constraint matrix 'n x m'.
     b   % Right-hand side vector, or dual objective vector.
     c   % Primal objective vector.
-    K   % Cone structure, `K.f`, `K.l`, `K.q`, `K.s`.
-    x = [];   % Approximate primal solution or initial guess.
-    y = [];   % Approximate dual   solution or initial guess.
-    z = [];   % Approximate primal solution or initial guess.
+    K   % Cone structure, 'K.f', 'K.l', 'K.q', 'K.s'.
+    x = [];   % Approximate primal solution or initial guess 'x0'.
+    y = [];   % Approximate dual   solution or initial guess 'y0'.
+    z = [];   % Approximate primal solution or initial guess 'z0'.
+    %TODO     'info'   Termination-code with
+    %                   0: indication of optimality (normal termination),
+    %                   1: indication of primal infeasibility,
+    %                   2: indication of dual infeasibility,
+    %                   3: indication of both primal and dual infeasibilities,
+    %                  -1: otherwise.
     options = vsdp_options ();
   end
   
@@ -30,25 +36,30 @@ classdef vsdp < handle
     [obj, pd] = from_lp_solve_fmt (A, b, c, e, lb, ub);
     [obj, pd] = from_mps_file (fname);
     obj = from_sdpa_file (fname, blksize);
-    obj = from_sdpam_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0);
+    obj = from_sdpa_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0);
     obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0);
     obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
     x = cell2mat (X);
-    A = svec (K, A, mu, isSymmetric);
-    A = smat (K, A, mu);
-    [vidx, midx, lidx] = sindex (dim);
+    A = svec (obj, A, mu, param);
+    A = smat (obj, a, mu);
+    [vidx, midx, lidx] = sindex (K);
     [K, N, n] = validate_cone (K);
   end
   
-  % Public methods.
-  methods
+  methods (Access = public)
     info (obj);
     obj = validate (obj);
+    obj = solve (obj, solver);
     [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj);
     
     % Default class methods
     varargout = size (obj, dim);
     disp (obj);
+  end
+  
+  methods (Access = private)
+    obj = solve_sdpt3  (obj);
+    obj = solve_sedumi (obj);
   end
   
   methods
