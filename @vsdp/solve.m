@@ -1,155 +1,49 @@
-function [objt,x,y,z,info] = solve (obj)
+function obj = solve (obj, solver)
 % SOLVE  Approximately solve the given conic problem instance.
 %
 %   See 'help vsdp.vsdp' for a description of the conic problem instance.
 %
-%      The function returns:
+%   See 'help vsdp_options.SOLVER' for a list of supported solvers.
 %
-%         'objt'   Primal and dual objective value [c'*x, b'*y].
-%
-%         'x,y,z'  An approximate optimal solution or a primal or dual
-%                  infeasibility certificate.
-%
-%         'info'   Termination-code with
-%                   0: indication of optimality (normal termination),
-%                   1: indication of primal infeasibility,
-%                   2: indication of dual infeasibility,
-%                   3: indication of both primal and dual infeasibilities,
-%                  -1: otherwise.
-%
-%   To control, whether an initial guess (x0,y0,z0) should be used, make use
-%   of the 'obj.options.USE_STARTING_POINT' option.
+%   To use an initial guess (x0,y0,z0) type:
+%   
+%      obj.x = x0;
+%      obj.y = y0;
+%      obj.z = z0;
+%      obj.options.USE_STARTING_POINT = true;
 %
 %   Example:
 %
 %       A1 = [0 1;
 %             1 0];
-%       b1 = 1;
 %       A2 = [1 1;
 %             1 1];
-%       b2 = 2.0001;
-%       C = [1 0;
-%            0 1];
+%       C =  [1 0;
+%             0 1];
 %       K.s = 2;
-%
-%       % Vectorize data
-%       A = [A1(:),A2(:)];
-%       b = [b1; b2];
-%       c = C(:);
-%       [obj,x,y,z,info] = mysdps(A,b,c,K);
+%       At = [A1(:),  A2(:)];  % Vectorize data
+%       c  = C(:);
+%       b  = [1; 2.0001];
+%       obj = vsdp(At, b, c, K).solve()
+%       
 %
 %   See also vsdpinit, vsdpup, vsdplow, vsdpinfeas.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-if (~isa (obj, 'vsdp'))
-  error ('VSDP:solve:badInput', ...
-    'solve: The input is not a valid VSDP object.');
+narginchk (1, 2);
+if (nargin == 2)
+  obj.options.SOLVER = solver;
 end
 
-% In case of interval data solve midpoint problem.
-A = mid (obj.At);
-b = mid (obj.b);
-c = mid (obj.c);
-
-% Shoul initial solution guess be taken into account?
-if (obj.options.USE_STARTING_POINT)
-  [x0, y0, z0] = deal (obj.x0, obj.y0, obj.z0);
-else
-  [x0, y0, z0] = deal ([], [], []);
-end
-
-% Initialization of default output values.
-objt = [inf, -inf];
-y = [];
-z = [];
-info = -1;
-
-% call solver for problem
+% Dispatch to solver.
 switch (obj.options.SOLVER)
-  case 'sedumi'
-    % Prepare data for solver.
-    if (~obj.options.VERBOSE_OUTPUT)
-      OPTIONS.fid = 0;
-    else
-      OPTIONS = [];
-    end
-    A = vsdp.smat (obj, A, 1);
-    c = vsdp.smat (obj, c, 1);
-    
-    % Call solver.
-    [x, y, INFO] = sedumi (A, b, c, obj.K, OPTIONS);
-    
-    % Store results.
-    obj.x = vsdp.svec (obj, x, 2);
-    obj.y = y;
-    obj.z = vsdp.svec (obj, c - A*y, 2);
-
-    info = INFO.pinf + 2*INFO.dinf;
-    
   case 'sdpt3'
-    if (~obj.options.VERBOSE_OUTPUT)
-      if (exist('sqlpmain.m','file') == 2) % if SDPT3-4.0
-        OPTIONS.printlevel = 0; % default: 3
-      else
-        OPTIONS.printyes = 0;   % default: 1
-      end
-    else
-      OPTIONS = []
-    end
-    A = mat2cell (vsdp.svec (obj, A, sqrt(2)), obj.K.dims, obj.m);
-    c = mat2cell (c, obj.K.dims, 1);
-    for i = 1:length(obj.K.s)
-      c{i} = vsdp.smat ([], c{i});
-    end
-    
-    % Call solver
-    [objt, x, y, z, INFO] = sqlp (obj.K.blk, A, c, b, OPTIONS, x0, y0, z0);
-    
-    % Transform results to VSDP format
-    [~,~,~,x,z] = sdpt2vsdp(blk,[],[],x,z);
-    % save info codes
-    if isstruct(INFO)
-      info = INFO.termcode;  % SDPT3-4.0 output
-    else
-      info = INFO(1);  % SDPT3-3.x output
-    end
-    
+    obj = obj.solve_sdpt3 ();
+  case 'sedumi'
+    obj = obj.solve_sedumi ();
   case 'sdpa'
-    % Check cones
-    if ((K.f > 0) || (sum(K.q) > 0))
-      error('VSDP:MYSDPS', ...
-        'SOCP (K.q) and free variables (K.f) are not supported by SDPAM');
-    end
-    
-    % Setup
-    if (~obj.options.USE_STARTING_POINT || isempty(x0) || isempty(y0) ...
-        || isempty(z0))
-      x0 = [];
-      y0 = [];
-      z0 = [];
-    end
-    if (~obj.options.VERBOSE_OUTPUT)
-      OPTIONS.print = 'no';
-    end
-    [mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0] = vsdp2sdpam(A,b,c,K,x0,y0,z0);
-    
-    % Call solver
-    if (exist('mexsdpa','file') == 3)
-      [~,x,X,Y,~] = sdpam(mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0,OPTIONS);
-    elseif (exist('callSDPA','file') == 2)
-      [x,X,Y] = callSDPA(mDIM,nBLOCK,bLOCKsTRUCT,ct,F,x0,X0,Y0,OPTIONS);
-    else
-      error('VSDP:MYSDPS', 'You need to compile the SDPA MEX-interface.');
-    end
-    
-    % Transform results to VSDP format
-    [~,~,~,~,x,y,z] = sdpam2vsdp(bLOCKsTRUCT,[],[],x,X,Y);
-    if (~isempty(x) && ~isempty(y))
-      objt = [c'*x, b'*y];
-      info = 0;
-    end
-    
+    obj = obj.solve_sdpa ();
   case 'csdp'
     % Check cones
     if (sum(K.q) > 0)
