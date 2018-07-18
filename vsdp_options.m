@@ -94,31 +94,11 @@ classdef vsdp_options < handle
       
       narginchk (0, 1);
       
-      % Check whether path already exists, add path if necessary.
-      vsdp_path = fullfile (fileparts (which ('vsdp_options')));
-      if (isempty (strfind (path, vsdp_path)))
-        addpath (vsdp_path);
-        if (exist ('OCTAVE_VERSION', 'builtin'))
-          addpath (fullfile (vsdp_path, 'octave'));
-        end
-        path (path);  % Refresh path
-      end
-      
       % Check for default solver by explicitly setting it again.
       if (nargin == 1)
         obj.SOLVER = varargin{1};
       else
         obj.SOLVER = obj.SOLVER;
-      end
-      
-      % Check for INTLAB
-      if (exist ('startintlab.m', 'file') ~= 2)
-        error ('VSDP:vsdp_options:INTLAB', ...
-          '%s.  %s\n\n\t%s\n\n%s.\n\n', ...
-          'Interval toolbox "INTLAB" not found', ...
-          'Get a recent version from', ...
-          'http://www.ti3.tuhh.de/rump/intlab', ...
-          'and run "startintlab" from the root directory');
       end
     end
     
