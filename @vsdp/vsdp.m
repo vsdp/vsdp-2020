@@ -37,13 +37,6 @@ classdef vsdp < handle
     smat_idx = struct('lower', [], 'upper', []);
   end
   
-  methods
-    function set.At (obj, At)
-      obj.At = At;
-      obj.validate ();
-    end
-  end
-  
   methods (Static)
     % Static constructor methods for VSDP objects.
     [obj, pd] = from_lp_solve_fmt (A, b, c, e, lb, ub);
