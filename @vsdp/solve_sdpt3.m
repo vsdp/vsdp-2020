@@ -30,7 +30,6 @@ if (~isempty (obj.options.SOLVER_OPTIONS))
 else
   OPTIONS = [];
 end
-
 if (~obj.options.VERBOSE_OUTPUT)
   if (exist ('sqlpmain.m', 'file') == 2) % if SDPT3-4.0
     OPTIONS.printlevel = 0; % default: 3
