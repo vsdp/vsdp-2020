@@ -14,13 +14,21 @@ if (exist ('OCTAVE_VERSION', 'builtin'))
   addpath (fullfile (pwd (), '..', 'octave'));
 end
 
-tests = functiontests(localfunctions);
+tests = functiontests (localfunctions);
 end
 
-function testSINDEX(testCase)
+function testSINDEX (testCase)
 testVSDP_sindex (testCase);
 end
 
-function testSVEC_SMAT(testCase)
+function testSVEC_SMAT (testCase)
 testVSDP_svec_smat (testCase);
+end
+
+function testLP (testCase)
+testVSDP_LP (testCase);
+end
+
+function testSOCP (testCase)
+testVSDP_SOCP (testCase);
 end

@@ -44,9 +44,14 @@ c = mat2cell (c, obj.K.dims, 1);
 for i = 1:length(obj.K.s)
   c{i} = vsdp.smat ([], c{i}, 1);
 end
+blk = obj.K.blk;
+% SDPT3 terminology is "unconstrained" instead of "free" variables.
+if (blk{1,1} == 'f')
+  blk{1,1} = 'u';
+end
 
 % Call solver.
-[~, x, y, z, INFO] = sqlp (obj.K.blk, A, c, b, OPTIONS, x0, y0, z0);
+[~, x, y, z, INFO] = sqlp (blk, A, c, b, OPTIONS, x0, y0, z0);
 
 % Store results.
 obj.x = vsdp.svec (obj, vsdp.cell2mat (x(:)), 2);

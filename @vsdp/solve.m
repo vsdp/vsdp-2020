@@ -45,13 +45,13 @@ switch (obj.options.SOLVER)
   case 'sdpa'
     obj = obj.solve_sdpa ();
   case 'csdp'
-    obj = solve_csdp ();
+    obj = obj.solve_csdp ();
   case 'lp_solve'
-    obj = solve_lp_solve ();
+    obj = obj.solve_lp_solve ();
   case 'linprog'
-    obj = solve_linprog ();
+    obj = obj.solve_linprog ();
   case 'glpk'
-    obj = solve_glpk ();
+    obj = obj.solve_glpk ();
   otherwise
     error ('VSDP:solve:unsupportedCones', ...
       'solve: The solver %s could not be detected.', obj.options.SOLVER);
