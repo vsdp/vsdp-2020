@@ -40,7 +40,7 @@ c = vsdp.smat (obj, c, 1);
 % Store results.
 obj.x = vsdp.svec (obj, x, 2);
 obj.y = y;
-obj.z = vsdp.svec (obj, c - A*y, 2);
+obj.z = vsdp.svec (obj, c - A*y, 1);
 
 info = info.pinf + 2*info.dinf;
 

@@ -32,3 +32,7 @@ end
 function testSOCP (testCase)
 testVSDP_SOCP (testCase);
 end
+
+function testSDP (testCase)
+testVSDP_SDP (testCase);
+end

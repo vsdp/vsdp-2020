@@ -1,10 +1,10 @@
 function testVSDP_SOCP (testCase)
 % Original problem in https://vsdp.github.io/references#ElGhaoui1997 (page
 % 1052).
-LP_VSDP_2012_P13 (testCase);  % K.q = [5; 5]
+SOCP_VSDP_2012_P13 (testCase);  % K.q = [5; 5]
 end
 
-function LP_VSDP_2012_P13 (testCase)
+function SOCP_VSDP_2012_P13 (testCase)
 use_solvers = {'sedumi', 'sdpt3'};
 
 A = [ ...
