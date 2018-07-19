@@ -1,13 +1,18 @@
 classdef vsdp < handle
   
-  properties
-    % Condensed cone dimension, e.g.
+  properties (GetAccess = public, SetAccess = protected)
+    % Condensed cone dimension.
+    %
     % 'n = K.f + K.l + sum(K.q) + (sum(K.s .* (K.s + 1)) / 2)'.
     n
-    % Uncondensed cone dimension, e.g.
+    % Uncondensed cone dimension.
+    %
     % 'N = K.f + K.l + sum(K.q) + sum(K.s .* K.s)'.
     N
-    m   % Number of constraints.
+    m % Number of constraints.
+  end
+  
+  properties (GetAccess = public, SetAccess = public)
     At  % Transposed condensed constraint matrix 'n x m'.
     b   % Right-hand side vector, or dual objective vector.
     c   % Primal objective vector.
@@ -21,6 +26,7 @@ classdef vsdp < handle
     %                   2: indication of dual infeasibility,
     %                   3: indication of both primal and dual infeasibilities,
     %                  -1: otherwise.
+    solution = [];
     options = vsdp_options ();
   end
   
@@ -29,6 +35,13 @@ classdef vsdp < handle
     % Store index vectors to speed-up operations.
     svec_idx = struct('lower', [], 'upper', []);
     smat_idx = struct('lower', [], 'upper', []);
+  end
+  
+  methods
+    function set.At (obj, At)
+      obj.At = At;
+      obj.validate ();
+    end
   end
   
   methods (Static)
@@ -57,9 +70,14 @@ classdef vsdp < handle
     disp (obj);
   end
   
-  methods (Access = private)
-    obj = solve_sdpt3  (obj);
-    obj = solve_sedumi (obj);
+  methods (Access = protected)
+    obj = solve_csdp     (obj);
+    obj = solve_glpk     (obj);
+    obj = solve_linprog  (obj);
+    obj = solve_lp_solve (obj);
+    obj = solve_sdpa     (obj);
+    obj = solve_sdpt3    (obj);
+    obj = solve_sedumi   (obj);
   end
   
   methods
