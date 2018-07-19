@@ -60,7 +60,7 @@ end
 try
   obj.c = vsdp.svec (obj, obj.c(:), 1, 'unsymmetric');
 catch ME
-  error ('VSDP:validate:badAt', ...
+  error ('VSDP:validate:badC', ...
     'validate: Cannot vectorize ''c''.');
 end
 
@@ -73,8 +73,8 @@ if (~isempty (obj.x))
   try
     obj.x = vsdp.svec (obj, obj.x(:), 2, 'unsymmetric');
   catch ME
-    error ('VSDP:validate:badAt', ...
-      'validate: Cannot vectorize ''c''.');
+    error ('VSDP:validate:badX', ...
+      'validate: Cannot vectorize ''x''.');
   end
 end
 
@@ -99,10 +99,10 @@ if (~isempty (obj.z))
   end
   % Ensure vectorzied condensed cone dimension.
   try
-    obj.z = vsdp.svec (obj, obj.z(:), 2, 'unsymmetric');
+    obj.z = vsdp.svec (obj, obj.z(:), 1, 'unsymmetric');
   catch ME
-    error ('VSDP:validate:badAt', ...
-      'validate: Cannot vectorize ''z0''.');
+    error ('VSDP:validate:badZ', ...
+      'validate: Cannot vectorize ''z''.');
   end
 end
 
