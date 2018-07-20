@@ -119,7 +119,7 @@ classdef vsdp < handle
       %
       %
       %
-      %   See also  VSDP.from_lp_solve_fmt, VSDP.from_sdpam_fmt,
+      %   See also  VSDP.from_lp_solve_fmt, VSDP.from_sdpa_fmt,
       %             VSDP.from_sdpt3_fmt,    VSDP.from_vsdp_2006_fmt,
       %             VSDP.from_mps_file,     VSDP.from_sdpa_file.
       
