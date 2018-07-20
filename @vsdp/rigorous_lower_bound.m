@@ -1,4 +1,4 @@
-function [fL,y,dl,info] = vsdplow(At,b,c,K,x0,y0,z0,xu,opts)
+function [fL,y,dl,info] = rigorous_lower_bound (obj, xbnd)
 % VSDPLOW  Verified lower bound for conic programming.
 %
 %   [fL,y,dl,info] = VSDPLOW(At,b,c,K,[],y0) Computes a verified lower bound of
@@ -36,62 +36,34 @@ function [fL,y,dl,info] = vsdplow(At,b,c,K,x0,y0,z0,xu,opts)
 %
 %   See also mysdps, vsdpinit, vsdpup, vsdpinfeas.
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-% check input
-narginchk(6,9);
-if isempty(At) || isempty(b) || isempty(c) || isempty(K) || isempty(y0)
-  error('VSDP:VSDPLOW', 'non-empty input arguments are required');
-end
-if ((nargin < 7) || any(isnan(z0)))
-  z0 = [];
-end
-if (nargin < 8)
-  xu = [];
-end
-if (nargin < 9)
-  opts = [];
+% Check, if primal upper bounds are given, otherwise use default upper bounds.
+if isempty(xbnd)
+  xbnd = inf (size (obj.K.blk, 1), 1);
+else
+  xbnd = xbnd(:);
+  if (length (xbnd) ~= size (obj.K.blk, 1))
+    error ('VSDP:rigorous_lower_bound:badXBND', ...
+      ['rigorous_lower_bound: The length of the upper bound vector ', ...
+      '''xbnd'' must be %d, but is %d.'], size (obj.K.blk, 1), length (xbnd));
+  end
 end
 
-VSDP_OPTIONS = vsdpinit(opts);
 
-[At,b,c,K,x0,y0,z0] = import_vsdp(At,b,c,K,x0,y0,z0);
-
-% Check if approximations are applicable
-if (any (isnan (y0)))
-  error('VSDP:VSDPLOW', 'approximate solution y contains NaN');
-end
-if (any (isnan (x0)))
-  x0 = [];
-end
-
-% Get problem dimensions
-dim3 = length(c);
 nc = K.l + length(K.q) + length(K.s);  % number of cone constraints
-
-% Check primal upper bound
-xu = xu(:);
-if isempty(xu)
-  xu = inf(K.f + nc,1);
-elseif (length(xu) ~= (K.f + nc))
-  error('VSDP:VSDPLOW', 'upper bound vector has wrong dimension');
-end
-
 dl = -inf(nc,1);    % dual lower bounds / trace bounds
 epsj = ones(nc,1);  % factor for perturbation
-ceps = sparse(dim3,1);        % perturbation for c
+ceps = sparse(obj.n,1);        % perturbation for c
 pertS = cell(length(K.s),1);  % diagonal perturbations of semidefinite blocks
 
 % Extract bounds for free variables `xuf` from upper bounds `xu`.
-xuf = xu(1:K.f);
-xu(1:K.f) = [];
+xuf = xbnd(1:K.f);
+xbnd(1:K.f) = [];
 
 % Index vector for perturbation entries
-pertI = ones(sum(K.s),1);
-pertI(cumsum(K.s(1:end-1))+1) = 1 - K.s(1:end-1);
-pertI = [ones(K.l+(~isempty(K.q)),1); K.q(1:end-1); cumsum(pertI)];
-pertI(1) = K.f + 1;
-pertI = cumsum(pertI);
+vidx = vsdp.sindex (obj.K);
+pertI = find (vidx(:,1));
 
 % Save rounding mode.
 rnd = getround();
@@ -100,7 +72,7 @@ setround(0);
 % Algorithm for both finite and infinite upper bounds `xu`.
 I = []; % index vector inside loop
 info.iter = 0;
-while (info.iter <= VSDP_OPTIONS.ITER_MAX)
+while (info.iter <= obj.options.ITER_MAX)
   info.iter = info.iter + 1;
   setround(1);  % default for rigorous computation in steps 1-3
   
@@ -131,24 +103,23 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   
   % LP cones
   if (K.l > 0)
-    ind = K.f+1:K.f+K.l;
-    zl = inf_ (z(ind));
+    idx = K.f+1:K.f+K.l;
+    zl = inf_ (z(idx));
     % If any element of the LP cone is negative all constraints close to zero
     % will be  perturbated.
     if (min (zl) < 0)
       pert = min ((-1e-13) * max (zl), min (zl));  % TODO: reference?
-      ind = zl > -min (zl);
-      zl(ind) = min (zl(ind) + pert, 1.05 * pert);
+      idx = zl > -min (zl);
+      zl(idx) = min (zl(idx) + pert, 1.05 * pert);
     end
     dl(1:K.l) = zl;
   end
   
   % Second-order cones
-  ind = K.f + K.l;
-  for j = 1:length(K.q)
-    ind = ind(end)+2:ind(end)+K.q(j);
+  for j = 1:length(obj.K.q)
+    idx = obj.K.idx.q(j,:);
     % dl = inf (z(1) - ||z(2:end)||)
-    dl(K.l+j) = inf_ (z(ind(1)-1) - norm (intval (z(ind))));
+    dl(K.l+j) = inf_ (z(idx(1)) - norm (intval (z((idx(1)+1):idx(end)))));
   end
   
   % SDP cones
@@ -166,8 +137,8 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   
   % Step 3: Cone feasibility check and lower bound computation:
   %
-  % a) If the defect `d = c - A' * y` lies in each cone, then all lower bounds
-  %    `dl` on `d` are non-negative, `y` is dual feasible, and `inf_ (b' * y)`
+  % a) If the defect 'd = c - A' * y' lies in each cone, then all lower bounds
+  %    'dl' on 'd' are non-negative, `y` is dual feasible, and `inf_ (b' * y)`
   %    is the rigorous lower bound `fL` on the primal objective value.
   %
   % b) If there is a cone violation `dl(dl < 0)` and there exist a finite
@@ -176,8 +147,8 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   %
   % The correction term `defect` refers to the defect of the free variables.
   %
-  if (all (dl >= 0) || ~any (isinf (xu(dl < 0))))
-    fL = inf_ (b' * y0 + dl(dl < 0)' * xu(dl < 0) - defect);
+  if (all (dl >= 0) || ~any (isinf (xbnd(dl < 0))))
+    fL = inf_ (b' * y0 + dl(dl < 0)' * xbnd(dl < 0) - defect);
     y = y0;
     setround(rnd);  % reset rounding mode
     return;         % SUCCESS
@@ -185,19 +156,19 @@ while (info.iter <= VSDP_OPTIONS.ITER_MAX)
   
   % Step 4: Perturb problem
   setround(0);  % no code for rigorous computations
-  ind = 1:K.l+length(K.q);
-  if isempty(ind)
-    ceps = ceps + sparse(pertI,1,cat(1,pertS{:}),dim3,1);
+  idx = 1:K.l+length(K.q);
+  if isempty(idx)
+    ceps = ceps + sparse(pertI,1,cat(1,pertS{:}),obj.n,1);
   else
-    ceps = ceps + sparse(pertI,1,cat(1,epsj(ind).*min(dl(ind),0),pertS{:}), ...
-      dim3,1);
+    ceps = ceps + sparse(pertI,1,cat(1,epsj(idx).*min(dl(idx),0),pertS{:}), ...
+      obj.n,1);
   end
   if (~all(isfinite(ceps)))
     warning ('VSDP:VSDPLOW', 'VSDPLOW: perturbation extended range');
     break;
   end
   % Update perturbation factors.
-  epsj(dl < 0) = epsj(dl < 0) * (1 + VSDP_OPTIONS.ALPHA);
+  epsj(dl < 0) = epsj(dl < 0) * (1 + obj.options.ALPHA);
   
   % Step 5: Solve perturbed problem
   [~,x0,y0,z0,info_solver] = mysdps(At,b,c+ceps,K,x0,y0,z0);
