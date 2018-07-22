@@ -57,10 +57,6 @@ epsj = ones(nc,1);  % factor for perturbation
 ceps = sparse(obj.n,1);        % perturbation for c
 pertS = cell(length(K.s),1);  % diagonal perturbations of semidefinite blocks
 
-% Extract bounds for free variables `xuf` from upper bounds `xu`.
-xuf = xbnd(1:K.f);
-xbnd(1:K.f) = [];
-
 % Index vector for perturbation entries
 vidx = vsdp.sindex (obj.K);
 pertI = find (vidx(:,1));
@@ -78,8 +74,8 @@ while (info.iter <= obj.options.ITER_MAX)
   
   % Step 1: Defect computation, free variables handling
   
-  % If infinite upper bounds for free variables `xuf` are given.
-  if ((K.f > 0) && (isinf (max (xuf))))
+  % If infinite upper bounds for free variables are given.
+  if ((K.f > 0) && (isinf (max (xbnd(1:K.f)))))
     % Solve dual linear constraints rigorously
     [y0,I] = vuls([], [], At(1:K.f,:), c(1:K.f), [], [], y0, I);
     if (~isintval (y0))
@@ -93,10 +89,10 @@ while (info.iter <= obj.options.ITER_MAX)
   z = c - At * y0;
   
   % Compute defect by free variables, if finite upper bounds for free variables
-  % `xuf` are given.
+  % are given.
   defect = 0;
-  if ((K.f > 0) && (isfinite (max (xuf))))
-    defect = xuf' * (mag (z(1:K.f)));
+  if ((K.f > 0) && (isfinite (max (xbnd(1:K.f)))))
+    defect = xbnd(1:K.f)' * (mag (z(1:K.f)));
   end
   
   % Step 2: Verified lower bounds on cone eigenvalues
@@ -106,8 +102,8 @@ while (info.iter <= obj.options.ITER_MAX)
     idx = K.f+1:K.f+K.l;
     zl = inf_ (z(idx));
     % If any element of the LP cone is negative all constraints close to zero
-    % will be  perturbated.
-    if (min (zl) < 0)
+    % will be perturbed.
+    if (any (zl) < 0)
       pert = min ((-1e-13) * max (zl), min (zl));  % TODO: reference?
       idx = zl > -min (zl);
       zl(idx) = min (zl(idx) + pert, 1.05 * pert);
@@ -123,21 +119,18 @@ while (info.iter <= obj.options.ITER_MAX)
   end
   
   % SDP cones
-  blke = K.f + K.l + sum(K.q) + sum(K.s.*(K.s+1))/2;
-  for j = length(K.s):-1:1
-    ofs = K.l + length(K.q) + j;
-    blks = blke - K.s(j)*(K.s(j)+1)/2 + 1;
-    [lmin,dl(ofs),pertS{j}] = veigsym (z(blks:blke)); % TODO
+    for j = 1:length(obj.K.s)
+    idx = obj.K.idx.s(j,:);
+    [lmin,dl(ofs),pertS{j}] = veigsym (z(idx(1):idx(end)); % TODO
     if (lmin > 0)
       dl(ofs) = lmin;
     end
     pertS{j} = epsj(ofs) * pertS{j}(:);
-    blke = blks - 1;
   end
   
   % Step 3: Cone feasibility check and lower bound computation:
   %
-  % a) If the defect 'd = c - A' * y' lies in each cone, then all lower bounds
+  % a) If the defect  d = c - A' * y  lies in each cone, then all lower bounds
   %    'dl' on 'd' are non-negative, `y` is dual feasible, and `inf_ (b' * y)`
   %    is the rigorous lower bound `fL` on the primal objective value.
   %
