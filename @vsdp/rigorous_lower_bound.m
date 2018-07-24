@@ -77,22 +77,28 @@ while (info.iter <= obj.options.ITER_MAX)
   % If infinite upper bounds for free variables are given.
   if ((K.f > 0) && (isinf (max (xbnd(1:K.f)))))
     % Solve dual linear constraints rigorously
-    [y0,I] = vuls([], [], At(1:K.f,:), c(1:K.f), [], [], y0, I);
-    if (~isintval (y0))
+    [y,I] = vuls([], [], At(1:K.f,:), c(1:K.f), [], [], y, I);
+    if (~isintval (y))
       warning ('VSDP:VSDPLOW', ...
         'VSDPLOW: could not find solution of dual equations');
       break;
     end
+    % Compute rigorous enclosure for `z = c - A' * y`  (with free variables).
+    d = c - At * y;
+    defect = xbnd(1:K.f)' * (mag (d(1:K.f)));
+  else
+    d = c - At * y;
+    defect = 0;
   end
   
-  % Compute rigorous enclosure for `z = c - A' * y`  (with free variables).
-  z = c - At * y0;
+  
+  d = c - At * y;
   
   % Compute defect by free variables, if finite upper bounds for free variables
   % are given.
   defect = 0;
   if ((K.f > 0) && (isfinite (max (xbnd(1:K.f)))))
-    defect = xbnd(1:K.f)' * (mag (z(1:K.f)));
+    
   end
   
   % Step 2: Verified lower bounds on cone eigenvalues
@@ -100,7 +106,7 @@ while (info.iter <= obj.options.ITER_MAX)
   % LP cones
   if (K.l > 0)
     idx = K.f+1:K.f+K.l;
-    zl = inf_ (z(idx));
+    zl = inf_ (d(idx));
     % If any element of the LP cone is negative all constraints close to zero
     % will be perturbed.
     if (any (zl) < 0)
@@ -115,13 +121,13 @@ while (info.iter <= obj.options.ITER_MAX)
   for j = 1:length(obj.K.q)
     idx = obj.K.idx.q(j,:);
     % dl = inf (z(1) - ||z(2:end)||)
-    dl(K.l+j) = inf_ (z(idx(1)) - norm (intval (z((idx(1)+1):idx(end)))));
+    dl(K.l+j) = inf_ (d(idx(1)) - norm (intval (d((idx(1)+1):idx(end)))));
   end
   
   % SDP cones
-    for j = 1:length(obj.K.s)
+  for j = 1:length(obj.K.s)
     idx = obj.K.idx.s(j,:);
-    [lmin,dl(ofs),pertS{j}] = veigsym (z(idx(1):idx(end)); % TODO
+    [lmin,dl(ofs),pertS{j}] = veigsym (d(idx(1):idx(end)); % TODO
     if (lmin > 0)
       dl(ofs) = lmin;
     end
@@ -141,8 +147,8 @@ while (info.iter <= obj.options.ITER_MAX)
   % The correction term `defect` refers to the defect of the free variables.
   %
   if (all (dl >= 0) || ~any (isinf (xbnd(dl < 0))))
-    fL = inf_ (b' * y0 + dl(dl < 0)' * xbnd(dl < 0) - defect);
-    y = y0;
+    fL = inf_ (b' * y + dl(dl < 0)' * xbnd(dl < 0) - defect);
+    y = y;
     setround(rnd);  % reset rounding mode
     return;         % SUCCESS
   end
@@ -164,8 +170,8 @@ while (info.iter <= obj.options.ITER_MAX)
   epsj(dl < 0) = epsj(dl < 0) * (1 + obj.options.ALPHA);
   
   % Step 5: Solve perturbed problem
-  [~,x0,y0,z0,info_solver] = mysdps(At,b,c+ceps,K,x0,y0,z0);
-  if ((info_solver ~= 0) || isempty(y0) || any(isnan(y0)) || any(isinf(y0)))
+  [~,x0,y,z0,info_solver] = mysdps(At,b,c+ceps,K,x0,y,z0);
+  if ((info_solver ~= 0) || isempty(y) || any(isnan(y)) || any(isinf(y)))
     warning ('VSDP:VSDPLOW', ...
       'VSDPLOW: conic solver could not find solution for perturbed problem');
     break;
