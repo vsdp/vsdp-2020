@@ -1,9 +1,23 @@
-function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
-% VULS  Verification for underdetermined linear systems.
+function [X, I, J] = vuls(A,b,xl,xu,x0,I,opts)
+% VULS  Verification for underdetermined linear interval systems.
 %
-%         A * x <= a,
-%         B * x == b,
-%         xl <= x <= xu.
+%   Let the linear interval system
+%
+%           [A]*x == [b],
+%         xl <= x <= xu,
+%
+%   with interval matrix [A] (m x n) where m < n, interval vector b (m x 1) and
+%   bounds for xl and xu (n x 1
+%   vectors).
+%
+%   The aim of this function is to compute an interval vector x ? IRn containing the solution set
+(12)
+ ?(A, b) := {x ? Rn : Ax = b for some A ? A, b ? b}.
+If all A ? A are nonsingular, then the solution set is bounded and satisfies, by
+definition, the property
+(13)
+ for all A ? A, for all b ? b ? x ? x : Ax = b.
+
 %
 %   The input A (m*n matrix), a (m-vector), B (p*n or n*p matrix), and b
 %   (p-vector) can be real or interval quantities; the simple bounds xl and xu
@@ -38,9 +52,7 @@ function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
 %
 %   Example:
 %
-%       A = [1 1 1 1];
-%       B = [0 1 0 infsup(0.9,1.1)];
-%       a = infsup(2.9,3.1);
+%       A = [0 1 0 infsup(0.9,1.1)];
 %       b = 2;
 %       xl = [0 1 0 0]';
 %       xu = [4 1 1 2]';
@@ -53,10 +65,6 @@ function [X, I, J] = vuls(A,a,B,b,xl,xu,x0,I,opts)
 
 narginchk (7, 9);
 
-a = a(:);
-if (~(isfloat (a) || isintval (a)) || ~isreal (a))
-  error('VSDP:VULS', 'VULS: bad vector `a`.');
-end
 b = b(:);
 if (~(isfloat (b) || isintval (b)) || ~isreal (b))
   error('VSDP:VULS', 'VULS: bad vector `b`.');
@@ -163,13 +171,5 @@ if (~isempty (B))
     return;
   end
 end
-
-% Compute inequality violations.
-if (~isempty (a))
-  J.ineqlin = find (~(full (A) * X <= a));
-end
-J.lower = find (~(xl <= X));
-J.upper = find (~(X <= xu));
-
 
 end
