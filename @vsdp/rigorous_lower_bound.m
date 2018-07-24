@@ -66,79 +66,75 @@ rnd = getround();
 setround(0);
 
 % Algorithm for both finite and infinite upper bounds `xu`.
-I = []; % index vector inside loop
 info.iter = 0;
 while (info.iter <= obj.options.ITER_MAX)
   info.iter = info.iter + 1;
-  setround(1);  % default for rigorous computation in steps 1-3
   
-  % Step 1: Defect computation, free variables handling
-  
-  % If infinite upper bounds for free variables are given.
-  if ((K.f > 0) && (isinf (max (xbnd(1:K.f)))))
-    % Solve dual linear constraints rigorously
-    [y,I] = vuls([], [], At(1:K.f,:), c(1:K.f), [], [], y, I);
-    if (~isintval (y))
-      warning ('VSDP:VSDPLOW', ...
-        'VSDPLOW: could not find solution of dual equations');
-      break;
+  % If infinite upper bounds for free variables are given.  Ensure, that
+  % the approximate dual solution 'y' solves the free variable part, see
+  %
+  %   https://vsdp.github.io/references.html#Anjos2007
+  %
+  % for details.
+  if ((obj.K.f > 0) && (isinf (max (xbnd(1:obj.K.f)))))
+    % Compute rigorous enclosure for underdetermined linear interval system of
+    % dimension (K.f x m):
+    %
+    %    At.f * y = c.f
+    %
+    y = verifylss (obj.At(1:obj.K.f,:), obj.c(1:obj.K.f));
+    if (~isintval (y) || any (isnan (y)))
+      error ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
+        ['rigorous_lower_bound: Could not find a verified solution of the ', ...
+        'linear  system of free variables.']);
     end
-    % Compute rigorous enclosure for `z = c - A' * y`  (with free variables).
-    d = c - At * y;
-    defect = xbnd(1:K.f)' * (mag (d(1:K.f)));
-  else
-    d = c - At * y;
-    defect = 0;
   end
   
-  
-  d = c - At * y;
-  
-  % Compute defect by free variables, if finite upper bounds for free variables
-  % are given.
-  defect = 0;
-  if ((K.f > 0) && (isfinite (max (xbnd(1:K.f)))))
-    
-  end
+  % Step 1: Compute rigorous enclosure [d] for  c - At*y.
+  d = obj.c - obj.At * intval (y);
   
   % Step 2: Verified lower bounds on cone eigenvalues
-  
-  % LP cones
-  if (K.l > 0)
-    idx = K.f+1:K.f+K.l;
-    zl = inf_ (d(idx));
-    % If any element of the LP cone is negative all constraints close to zero
-    % will be perturbed.
-    if (any (zl) < 0)
-      pert = min ((-1e-13) * max (zl), min (zl));  % TODO: reference?
-      idx = zl > -min (zl);
-      zl(idx) = min (zl(idx) + pert, 1.05 * pert);
-    end
-    dl(1:K.l) = zl;
+  %
+  %   a) LP cones
+  %
+  idx = obj.K.idx.l;
+  dl.l = inf_ (d(idx));
+  % If any LP lower bound is negative: perturb all constraints close to
+  % zero inside the LP cone using a heuristic.
+  if (any (dl.l) < 0)
+    pval = [min(dl.l), max(dl.l) * (-1e-13)];
+    pval = abs (min (pval));
+    % Take the minimum of absolute and relative pertubation.
+    dl.l(dl.l < pval) = min (dl.l(dl.l < pval) + pval, 1.05 * pval);
   end
   
-  % Second-order cones
-  for j = 1:length(obj.K.q)
+  %
+  %   b) Second-order cones
+  %
+  dl.q = cell (obj.K.q, 1);
+  for j = 1:length(dl.q)
     idx = obj.K.idx.q(j,:);
     % dl = inf (z(1) - ||z(2:end)||)
-    dl(K.l+j) = inf_ (d(idx(1)) - norm (intval (d((idx(1)+1):idx(end)))));
+    dl.q{j} = inf_ (d(idx(1)) - norm (intval (d((idx(1)+1):idx(end)))));
   end
   
-  % SDP cones
-  for j = 1:length(obj.K.s)
+  %
+  %   c) SDP cones
+  %
+  dl.s = cell (obj.K.s, 1);
+  for j = 1:length(dl.s)
     idx = obj.K.idx.s(j,:);
-    [lmin,dl(ofs),pertS{j}] = veigsym (d(idx(1):idx(end)); % TODO
-    if (lmin > 0)
-      dl(ofs) = lmin;
+    dl.s{j} = veigsym (d(idx(1):idx(end)));
+    if (min (dl.s{j}) < 0)
+      pertS{j} = epsj(ofs) * pertS{j}(:);
     end
-    pertS{j} = epsj(ofs) * pertS{j}(:);
   end
   
   % Step 3: Cone feasibility check and lower bound computation:
   %
   % a) If the defect  d = c - A' * y  lies in each cone, then all lower bounds
-  %    'dl' on 'd' are non-negative, `y` is dual feasible, and `inf_ (b' * y)`
-  %    is the rigorous lower bound `fL` on the primal objective value.
+  %    'dl' on 'd' are non-negative, 'y' is dual feasible, and  inf_ (b' * y)
+  %    is the rigorous lower bound 'fL' on the primal objective value.
   %
   % b) If there is a cone violation `dl(dl < 0)` and there exist a finite
   %    upper bound `xu(dl < 0)` on `x` for each violated constraint, then
@@ -147,14 +143,11 @@ while (info.iter <= obj.options.ITER_MAX)
   % The correction term `defect` refers to the defect of the free variables.
   %
   if (all (dl >= 0) || ~any (isinf (xbnd(dl < 0))))
-    fL = inf_ (b' * y + dl(dl < 0)' * xbnd(dl < 0) - defect);
-    y = y;
-    setround(rnd);  % reset rounding mode
+    fL = inf_ (b' * y + dl(dl < 0)' * xbnd(dl < 0) - xbnd(1:K.f)' * (mag (d(1:K.f))));
     return;         % SUCCESS
   end
   
   % Step 4: Perturb problem
-  setround(0);  % no code for rigorous computations
   idx = 1:K.l+length(K.q);
   if isempty(idx)
     ceps = ceps + sparse(pertI,1,cat(1,pertS{:}),obj.n,1);
