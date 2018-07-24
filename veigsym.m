@@ -1,4 +1,4 @@
-function lambda = veigsym(A)
+function lambda = veigsym (A)
 % VEIGSYM  Verified enclosure for all eigenvalues of a symmetric matrix.
 %
 %   lambda = VEIGSYM(A) a verified enclosure for all eigenvalues of matrix 'A'
@@ -16,7 +16,7 @@ function lambda = veigsym(A)
 %
 %   See also vsdplow, vsdpup, vsdpinfeas.
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 if ~min(min( mid(A) == mid(A)'))
   error('VSDP:VEIGSYM', 'matrix must be symmetric')
@@ -24,7 +24,7 @@ end
 
 % Main routine using Weyl's Perturbation Theorem
 % see Lecture Notes on Optimization with Result Verification
-[V,D] = eig(full(mid(A)));
+[V, D] = eig (full (mid (A)));
 E = A - V * intval(D) * V';
 r = abss(norm(E,inf));
 lambda = midrad(diag(D),r);
