@@ -50,6 +50,7 @@ classdef vsdp < handle
     A = smat (obj, a, mu);
     [vidx, midx, lidx] = sindex (K);
     [K, N, n] = validate_cone (K);
+    [x, I] = vuls (A, b, x0, I);
   end
   
   methods (Access = public)
