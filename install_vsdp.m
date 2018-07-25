@@ -9,7 +9,6 @@ function install_vsdp ()
 % Check whether path already exists, add path if necessary.
 vsdp_path = fullfile (fileparts (which ('install_vsdp')));
 addpath (vsdp_path);
-addpath (fullfile (vsdp_path, 'solver'));
 addpath (fullfile (vsdp_path, 'test'));
 if (exist ('OCTAVE_VERSION', 'builtin'))
   addpath (fullfile (vsdp_path, 'octave'));
