@@ -28,7 +28,6 @@ for i = 1:length(use_solvers)
     'AbsTol', 1e-4, 'RelTol', eps ());
   verifyEqual (testCase, full (obj.y), y_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
-  disp(use_solvers{i})
   verifyEqual (testCase, full (obj.z), z_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
 end
