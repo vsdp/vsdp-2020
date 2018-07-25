@@ -1,29 +1,48 @@
-function [X, I, J] = vuls(A,b,xl,xu,x0,I,opts)
+function [x, I] = vuls (obj, A, b, x0)
 % VULS  Verification for underdetermined linear interval systems.
 %
-%   Let the linear interval system
+%   Let a linear systems of equations with inexact input data
 %
-%           [A]*x == [b],
-%         xl <= x <= xu,
+%      [A] * x = [b]
 %
-%   with interval matrix [A] (m x n) where m < n, interval vector b (m x 1) and
-%   bounds for xl and xu (n x 1
-%   vectors).
+%   with an interval matrix A (n x n) and an interval right-hand side b
+%   (n x 1).  The aim of this function is to compute an interval vector [x]
+%   (n x 1) containing the solution set
 %
-%   The aim of this function is to compute an interval vector x ? IRn containing the solution set
-(12)
- ?(A, b) := {x ? Rn : Ax = b for some A ? A, b ? b}.
-If all A ? A are nonsingular, then the solution set is bounded and satisfies, by
-definition, the property
-(13)
- for all A ? A, for all b ? b ? x ? x : Ax = b.
+%      SolSet([A],[b]) := { x in R^n : Ax = b  for some  A in [A], b in [b] }.
+%
+%   If all A in [A] are nonsingular, then the solution set is bounded and
+%   satisfies, by definition, the property (i)
+%
+%      for all A in [A], for all b in [b] exists some x in [x] : Ax = b.
+%
+%   For the computation of enclosures in the case of large linear systems, we
+%   refer to <https://vsdp.github.io/references.html#Rump2013a>.
+%
+%   The computation of rigorous lower and upper bounds for the optimal value
+%   requires considering a modified problem.  There, a nonsquare interval
+%   matrix [A] (m x n) with m < n and a right-hand side [b] (m x 1) are given,
+%   and the goal is to compute an interval vector [x] such that property (i) is
+%   fulfilled.
+%
+%   Since m < n (in most cases m is much smaller than n), the solution set
+%   SolSet([A],[b]) is in general unbounded, whereas property (i) requires
+%   finding only an enclosure of a part of the solution set.
+%
+%   Obviously, there are many possibilities for computing such a part of the
+%   solution set.  We need to compute such an enclosure [x] with respect to a
+%   given vector x0 and an index set I as subset of {1:n}, and proceed as
+%   follows:
+%
+%     1. Find a basis index set I (m x 1), such that A(:,I) is regular.
+%     2. Set [b] := [b] - [A(:,~I)] * x0(~I), where ~I := {1:n} \ I.
+%     3. set [A] := [A(:,I)].
+%     4. Compute an enclosure [x] of the solution set with square interval
+%        matrix and right-hand side such that  SolSet([A],[b]) in [x]  by using
+%        an algorithm for square linear interval systems.
 
-%
-%   The input A (m*n matrix), a (m-vector), B (p*n or n*p matrix), and b
-%   (p-vector) can be real or interval quantities; the simple bounds xl and xu
-%   must be real, but may be infinite; the approximate solution x0 must be real.
-%   The optional input vector I must contain p indices out of {1,...,n} such
-%   that the submatrix B(:,I) is nonsingular; if opts.VERIFY_FULL_LSS is true
+
+%   if opts.VERIFY_FULL_LSS is true
 %   the full non-symmetric lss enclosure algorithm will be applied.
 %
 %   The output is:
@@ -63,113 +82,77 @@ definition, the property
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-narginchk (7, 9);
+narginchk (4, 4);
+
+if (~isempty (obj) && ~isa (obj, 'vsdp'))
+  error ('VSDP:vuls:badObj', ...
+    'vuls: The first argument must be empty or a VSDP object.');
+end
 
 b = b(:);
 if (~(isfloat (b) || isintval (b)) || ~isreal (b))
-  error('VSDP:VULS', 'VULS: bad vector `b`.');
+  error ('VSDP:vuls:badB', ...
+    'vuls: data type of right-hand side vector ''b'' unsupported.');
 end
-xl = xl(:);
-if (~isfloat (xl) || ~isreal (xl))
-  error ('VSDP:VULS', 'VULS: bad lower bound `xl`.');
-end
-xu = xu(:);
-if (~isfloat (xu) || ~isreal (xu))
-  error ('VSDP:VULS', 'VULS: bad upper bound `xu`.');
-end
+m = length (b);
+
 x0 = x0(:);
 if (~isfloat (x0) || ~isreal (x0))
-  error ('VSDP:VULS', 'VULS: bad initial solution set `x0`.');
+  error ('VSDP:vuls:badX0', ...
+    'vuls: data type of initial solution ''x0'' unsupported.');
 end
-
 n = length (x0);
-m = length (a);
-p = length (b);
 
-if (~(isfloat (A) || isintval (A)) || ~isreal (A) || (any (size(A) ~= [m, n])))
-  error('VSDP:VULS', 'VULS: bad matrix `A`.');
+if (~(isfloat (A) || isintval (A)) || ~isreal (A))
+  error ('VSDP:vuls:badA', ...
+    'vuls: data type of matrix ''A'' unsupported.');
+end
+if (any (size (A) ~= [m, n]))
+  error ('VSDP:vuls:badA', ...
+    'vuls: ''A'' must be a %d x %d matrix, but is a %d x %d matrix.', ...
+    m, n, size (A,1), size (A,2));
 end
 
-if (~(isfloat (B) || isintval (B)) || ~isreal (B) || (any (size(B) ~= [p, n])))
-  error('VSDP:VULS', 'VULS: bad matrix `B`.');
-end
 
-
-% Check index and opts parameter
-if ((nargin < 8) || (length(I) ~= p))
-  I = [];
-end
-if (nargin < 9)
-  opts = [];
-end
-
-VSDP_OPTIONS = vsdpinit(opts);
-
-% Default output.
-X = nan(n,1);
-J.ineqlin = [];
-J.lower = [];
-J.upper = [];
-
-
-% Check bounds `xl`, `xu` for sanity.
-if (length (xl) ~= n)
-  warning ('VSDP:VULS', 'VULS: using infinite bounds `xl`.');
-  xl = -inf(n,1);
-end
-if (length (xu) ~= n)
-  warning ('VSDP:VULS', 'using infinite bounds `xu`.');
-  xu = inf(n,1);
-end
-if (any (xu < xl))
-  error ('VSDP:VULS', 'simple bounds are infeasible: `xu >= xl` is violated.');
-end
-% Projection of `x0` into the interior of [xl, xu]
-x0 = max (xl, x0);
-x0 = min (xu, x0);
-
-% Compute a verified enclosure `X` for `B * x = b`.
-if (~isempty (B))
-  % Determine basis by using an LU-decomposition.
-  if (isempty (I))
-    % Bias towards greater `x0`.
-    [~, I] = sort (abs (x0), 'descend');
-    if (issparse (B))
-      % Use UMFPACK with threshold.
-      [~,~,row_perm,~] = lu (mid (B(I,:)), [0.95 0.75], 'vector');
-    else
-      [~,~,row_perm] = lu (mid (B(I,:)), 'vector');
-    end
-    % Sort indices for faster access.
-    I = sort (I(row_perm(1:p)));
-  end
-  % Solve underdetermined interval system 
-  if (n ~= p)
-    % Subtract from right-hand side `b` the non-basis part.
-    b = b - B(~I,:)' * x0(~I);
-    % Reduce `B` to it's basis.
-    B = B(I,:)';
+% Step 1: Determine basis index set 'I'.
+if (isempty (obj.cache.vuls.I))
+  % Bias towards greater entries in 'x0'.
+  [~,I] = sort (abs (x0), 'descend');
+  % Reorder the columns in 'A' and transpose.
+  At = mid (A(:,I))';
+  % Now the LU-decomposition will perform a "row"-pivoting 'p', which
+  % essentially becomes a "column"-pivoting that is wanted.
+  if (issparse (At))
+    % Use UMFPACK with threshold.
+    [~,~,p,~] = lu (At, [0.95 0.75], 'vector');
   else
-    B = B';
+    [~,~,p] = lu (At, 'vector');
   end
+  % Sort indices for faster access.
+  I = sort (I(p(1:m)));
+  obj.cache.vuls.I = I;
+else
+  I = obj.cache.vuls.I;
+end
 
-  if (VSDP_OPTIONS.VERIFY_FULL_LSS)
-    b = full (b);
-    B = full (B);
-  else
-    % Use normal equations, e.g. solve `(B'*B) * x == (B'*b)`.
-    b = B'*b;
-    B = B'*B;
-  end
-  
-  % Found an inclusion using INTLAB.
-  XI = verifylss (B, b);
-  if ((~any (isnan (XI))) && (~isempty (XI)))
-    X = intval(x0);
-    X(I) = XI;
-  else
-    return;
-  end
+% Steps 2+3: Prepare square nonsingular interval system.
+if (m < n)
+  % Subtract from right-hand side the non-basis part.
+  b = b - A(:,~I) * x0(~I);
+  % Reduce matrix to nonsingular basis.
+  A = A(:,I);
+end
+
+% Step 4: Compute an enclosure of the solution set.
+xI = verifylss (A, b);
+if ((~any (isnan (xI))) && (~isempty (xI)))
+  % The idea is not to replace the entire approximate solution x0 by the
+  % verified enclosure xI.  The approximate solution is "extended" to contain
+  % the solution set.
+  x = intval(x0);
+  x(I) = xI;
+else
+  x = nan(n,1);
 end
 
 end
