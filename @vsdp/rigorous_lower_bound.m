@@ -39,7 +39,7 @@ function [fL,y,dl,info] = rigorous_lower_bound (obj, xbnd)
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 % Check, if primal upper bounds are given, otherwise use default upper bounds.
-if isempty(xbnd)
+if ((nargin < 2) || isempty (xbnd))
   xbnd = inf (size (obj.K.blk, 1), 1);
 else
   xbnd = xbnd(:);
@@ -51,15 +51,24 @@ else
 end
 
 
-nc = K.l + length(K.q) + length(K.s);  % number of cone constraints
-dl = -inf(nc,1);    % dual lower bounds / trace bounds
-epsj = ones(nc,1);  % factor for perturbation
-ceps = sparse(obj.n,1);        % perturbation for c
-pertS = cell(length(K.s),1);  % diagonal perturbations of semidefinite blocks
+nbnd = obj.K.l + length(obj.K.q) + length(obj.K.s);  % Number of bounds.
+epsj = ones(nbnd,1);  % factor for perturbation
+ce   = sparse(obj.n,1);        % perturbation for c
+pertS = cell(length(obj.K.s),1);  % diagonal perturbations of semidefinite blocks
 
-% Index vector for perturbation entries
+% Index vector for perturbation.  In case of semidefinite programs, only
+% the diagonal elements have to be perturbed.  Those are easily obtained:
 vidx = vsdp.sindex (obj.K);
-pertI = find (vidx(:,1));
+vidx = vidx(:,1); % Get only diagonal entries of SDP cones.
+if (obj.K.l > 0)
+  % In case of linear cones, each variable has to be pertubed.
+  idx = obj.K.idx.l;
+  vidx(idx(1):idx(end)) = true;
+end
+if (~isempty (obj.K.idx.q))
+  % In case of second-order cones, only the first element is pertubed.
+  vidx(obj.K.idx.q(:,1)) = true;
+end
 
 % Save rounding mode.
 rnd = getround();
@@ -95,32 +104,19 @@ while (info.iter <= obj.options.ITER_MAX)
   
   % Step 2: Verified lower bounds on cone eigenvalues
   %
-  %   a) LP cones
-  %
+  % Free variables
+  dl.f = mag (d(1:K.f));
+  
+  % LP cones
   idx = obj.K.idx.l;
-  dl.l = inf_ (d(idx));
-  % If any LP lower bound is negative: perturb all constraints close to
-  % zero inside the LP cone using a heuristic.
-  if (any (dl.l) < 0)
-    pval = [min(dl.l), max(dl.l) * (-1e-13)];
-    pval = abs (min (pval));
-    % Take the minimum of absolute and relative pertubation.
-    dl.l(dl.l < pval) = min (dl.l(dl.l < pval) + pval, 1.05 * pval);
-  end
+  dl.l = inf_ (d(idx(1):idx(end)));
   
-  %
-  %   b) Second-order cones
-  %
-  dl.q = cell (obj.K.q, 1);
-  for j = 1:length(dl.q)
-    idx = obj.K.idx.q(j,:);
-    % dl = inf (z(1) - ||z(2:end)||)
-    dl.q{j} = inf_ (d(idx(1)) - norm (intval (d((idx(1)+1):idx(end)))));
-  end
+  % Second-order cones
+  idx = obj.K.idx.q;
+  % dl = inf (d(1) - ||d(2:end)||)
+  dl.q = inf_ (d(idx(:,1)) - norm (d((idx(:,1)+1):idx(:,end))));
   
-  %
-  %   c) SDP cones
-  %
+  % SDP cones
   dl.s = cell (obj.K.s, 1);
   for j = 1:length(dl.s)
     idx = obj.K.idx.s(j,:);
@@ -129,6 +125,9 @@ while (info.iter <= obj.options.ITER_MAX)
       pertS{j} = epsj(ofs) * pertS{j}(:);
     end
   end
+  
+  % Concatenate all lower bounds to a single vector.
+  dl_ = [dl.f; dl.l; dl.q; dl.s];
   
   % Step 3: Cone feasibility check and lower bound computation:
   %
@@ -142,13 +141,20 @@ while (info.iter <= obj.options.ITER_MAX)
   %
   % The correction term `defect` refers to the defect of the free variables.
   %
-  if (all (dl >= 0) || ~any (isinf (xbnd(dl < 0))))
-    fL = inf_ (b' * y + dl(dl < 0)' * xbnd(dl < 0) - xbnd(1:K.f)' * (mag (d(1:K.f))));
-    return;         % SUCCESS
+  if (all (dl_ >= 0) || ~any (isinf (xbnd(dl_ < 0))))
+    fL = inf_ (b' * y + dl_(dl_ < 0)' * xbnd(dl_ < 0));
+    return;  % SUCCESS
   end
   
-  % Step 4: Perturb problem
+  % Step 4: Perturb midpoint problem.
+  %
+  % The perturbed midpoint problem has the form
+  %
+  %    P(e) = (mid([A]), mid([b]), mid([c]) + ce)
   idx = 1:K.l+length(K.q);
+  
+  epsj(dl_ < 0) = epsj(dl_ < 0) * (1 + obj.options.ALPHA);
+  
   if isempty(idx)
     ceps = ceps + sparse(pertI,1,cat(1,pertS{:}),obj.n,1);
   else
@@ -160,7 +166,7 @@ while (info.iter <= obj.options.ITER_MAX)
     break;
   end
   % Update perturbation factors.
-  epsj(dl < 0) = epsj(dl < 0) * (1 + obj.options.ALPHA);
+  
   
   % Step 5: Solve perturbed problem
   [~,x0,y,z0,info_solver] = mysdps(At,b,c+ceps,K,x0,y,z0);
