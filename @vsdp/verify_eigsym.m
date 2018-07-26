@@ -12,13 +12,15 @@ function E = verify_eigsym (A)
 %
 %   Example:
 %
-%       A = [1 2 3;
-%            2 1 4;
-%            3 4 5];
-%       A = midrad  (A, 0.01*ones(3));
+%       % Matrix A has eigenvalues {0, 3, 6}.
+%       A = [ 3 -2  2;
+%            -2  4  0;
+%             2  0  2];
+%       A = midrad (A, 0.01*ones(3));
 %       E = vsdp.verify_eigsym (A);
 %
 %   See also vsdplow, vsdpup, vsdpinfeas.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
