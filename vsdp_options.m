@@ -6,6 +6,11 @@ classdef vsdp_options < handle
     % Default: 0.5.
     ALPHA = 0.5;
     
+    % Cache intermediate values where possible.
+    %
+    % Default: true.
+    CACHE = true;
+    
     % Use algorithm for stronger complete eigenvalue enclosure.
     %
     % Default: true.
@@ -66,6 +71,7 @@ classdef vsdp_options < handle
       %   obj = VSDP_OPTIONS()  Returns an opitons object with the fields:
       %
       %       obj.ALPHA               = 0.5
+      %       obj.CACHE               = true
       %       obj.FULL_EIGS_ENCLOSURE = false
       %       obj.ITER_MAX            = 10
       %       obj.SDP_ASSUME_SYMMETRY = false
