@@ -1,4 +1,4 @@
-function [x, I] = vuls (obj, A, b, x0)
+function x = vuls (obj, A, b, x0)
 % VULS  Verification for underdetermined linear interval systems.
 %
 %   Let a linear systems of equations with inexact input data
@@ -73,8 +73,6 @@ function [x, I] = vuls (obj, A, b, x0)
 %
 %       A = [0 1 0 infsup(0.9,1.1)];
 %       b = 2;
-%       xl = [0 1 0 0]';
-%       xu = [4 1 1 2]';
 %       x0 = [0 1 0 1]';
 %       [X, J, I] = vuls(A,a,B,b,xl,xu,x0);
 %
@@ -103,6 +101,11 @@ if (~isfloat (x0) || ~isreal (x0))
 end
 n = length (x0);
 
+if (m >= n)
+  warning ('VSDP:vuls:notUnderdetermined', ...
+    'vuls: The system is not underdetermined m >= n.');
+end
+
 if (~(isfloat (A) || isintval (A)) || ~isreal (A))
   error ('VSDP:vuls:badA', ...
     'vuls: data type of matrix ''A'' unsupported.');
@@ -115,7 +118,12 @@ end
 
 
 % Step 1: Determine basis index set 'I'.
-if (isempty (obj.cache.vuls.I))
+if (isempty (obj))
+  I = [];
+else
+  I = obj.cache('I');
+end
+if (isempty (I))
   % Bias towards greater entries in 'x0'.
   [~,I] = sort (abs (x0), 'descend');
   % Reorder the columns in 'A' and transpose.
@@ -130,18 +138,17 @@ if (isempty (obj.cache.vuls.I))
   end
   % Sort indices for faster access.
   I = sort (I(p(1:m)));
-  obj.cache.vuls.I = I;
-else
-  I = obj.cache.vuls.I;
+  if (~isempty (obj))
+    obj.cache(I);
+  end
 end
 
 % Steps 2+3: Prepare square nonsingular interval system.
-if (m < n)
-  % Subtract from right-hand side the non-basis part.
-  b = b - A(:,~I) * x0(~I);
-  % Reduce matrix to nonsingular basis.
-  A = A(:,I);
-end
+%
+% Subtract from right-hand side the non-basis part.
+b = b - A(:,~I) * x0(~I);
+% Reduce matrix to nonsingular basis.
+A = A(:,I);
 
 % Step 4: Compute an enclosure of the solution set.
 xI = verifylss (A, b);
