@@ -10,6 +10,7 @@ classdef vsdp < handle
     % 'N = K.f + K.l + sum(K.q) + sum(K.s .* K.s)'.
     N
     m % Number of constraints.
+    cache_memory % Memory for caching expensive computation results.
   end
   
   properties (GetAccess = public, SetAccess = public)
@@ -30,34 +31,30 @@ classdef vsdp < handle
     options = vsdp_options ();
   end
   
-  % (Un-)Vectorization of `obj.At`, `obj.C`, `obj.X`, and `obj.Z`.
-  properties (Access = protected)
-    % Store index vectors to speed-up operations.
-    svec_idx = struct('lower', [], 'upper', []);
-    smat_idx = struct('lower', [], 'upper', []);
-  end
-  
   methods (Static)
     % Static constructor methods for VSDP objects.
-    [obj, pd] = from_lp_solve_fmt (A, b, c, e, lb, ub);
-    [obj, pd] = from_mps_file (fname);
-    obj = from_sdpa_file (fname, blksize);
-    obj = from_sdpa_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0);
-    obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0);
-    obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0);
+    obj = from_mps_file     (fname);
+    obj = from_sdpa_file    (fname, blksize);
+    obj = from_sdpa_fmt     (bLOCKsTRUCT, c, F, x0, X0, Y0);
+    obj = from_sdpt3_fmt    (blk, At, b, c, x0, y0, z0);
+    obj = from_2006_fmt     (blk, A,  C, b, X0, y0, Z0);
+    obj = from_lp_solve_fmt (     A,  b, c,  e, lb, ub);
+    
+    % Other static methods.
     x = cell2mat (X);
     A = svec (obj, A, mu, param);
     A = smat (obj, a, mu);
+    x = vuls (A, b, x0, I);
     [vidx, midx, lidx] = sindex (K);
     [K, N, n] = validate_cone (K);
-    [x, I] = vuls (A, b, x0, I);
   end
   
   methods (Access = public)
     info (obj);
-    obj = validate (obj);
+    val = cache (obj, val)
     obj = solve (obj, solver);
-    [blk, A, C, b, X0, y0, Z0] = to_vsdp_2006_fmt (obj);
+    obj = validate (obj);
+    [blk, A, C, b, X0, y0, Z0] = to_2006_fmt (obj);
     
     % Default class methods
     varargout = size (obj, dim);
@@ -109,20 +106,20 @@ classdef vsdp < handle
       %
       %      or the problem data can be imported by calling one of the methods:
       %
-      %         obj = VSDP.from_lp_solve_fmt  (...)
-      %         obj = VSDP.from_sdpam_fmt     (...)
-      %         obj = VSDP.from_sdpt3_fmt     (...)
-      %         obj = VSDP.from_vsdp_2006_fmt (...)
-      %         obj = VSDP.from_mps_file      (...)
-      %         obj = VSDP.from_sdpa_file     (...)
+      %         obj = VSDP.from_mps_file     (...)
+      %         obj = VSDP.from_sdpa_file    (...)
+      %         obj = VSDP.from_sdpa_fmt     (...)
+      %         obj = VSDP.from_sdpt3_fmt    (...)
+      %         obj = VSDP.from_2006_fmt     (...)
+      %         obj = VSDP.from_lp_solve_fmt (...)
       %
       %   Example:
       %
       %
       %
       %   See also  VSDP.from_lp_solve_fmt, VSDP.from_sdpa_fmt,
-      %             VSDP.from_sdpt3_fmt,    VSDP.from_vsdp_2006_fmt,
-      %             VSDP.from_mps_file,     VSDP.from_sdpa_file.
+      %             VSDP.from_sdpt3_fmt,    VSDP.from_sdpa_file,
+      %             VSDP.from_mps_file,     VSDP.from_2006_fmt.
       
       % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
       
