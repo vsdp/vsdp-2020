@@ -12,9 +12,9 @@ function x = verify_uls (obj, A, b, x0)
 %      SolSet([A],[b]) := { x in R^n : Ax = b  for some  A in [A], b in [b] }.
 %
 %   If all A in [A] are nonsingular, then the solution set is bounded and
-%   satisfies, by definition, the property (i)
+%   satisfies, by definition, the property
 %
-%      for all A in [A], for all b in [b] exists some x in [x] : Ax = b.
+%   (i)  for all A in [A], for all b in [b] exists some x in [x] : Ax = b.
 %
 %   For the computation of enclosures in the case of large linear systems, we
 %   refer to <https://vsdp.github.io/references.html#Rump2013a>.
@@ -40,45 +40,22 @@ function x = verify_uls (obj, A, b, x0)
 %     4. Compute an enclosure [x] of the solution set with square interval
 %        matrix and right-hand side such that  SolSet([A],[b]) in [x]  by using
 %        an algorithm for square linear interval systems.
-
-
-%   if opts.VERIFY_FULL_LSS is true
-%   the full non-symmetric lss enclosure algorithm will be applied.
 %
-%   The output is:
+%   For more theoretical background, see:
 %
-%      X   a box (n-interval vector), containing for every real
-%          input (A,a,B,b)  within the interval input data a  solution
-%          x of the above system, provided J is empty. Especially,
-%          existence of solutions is verified, and moreover
-%          X is computed close to x0 in a specified manner; for details see
-%          [Jansson2004].
-%
-%      I   index vector such that the p*p submatrix B(:,I) (or in the
-%          transposed case: B(I,:)) is nonsingular.
-%
-%          X := nan(n,1), I = [], J = [];
-%          if existence of solutions cannot be proved, and verified finite
-%          bounds cannot be computed. This is the case, if
-%          (i) B has no full rank, or (ii) the linear interval solver
-%          VERIFYLSS cannot compute rigorous bounds, or (iii) the box
-%          of simple bounds [xl,xu] has no appropriate interior. Otherwise,
-%          J returns the vector of indices of violated inequalities
-%          for X:
-%             J.ineqlin:  violated row indices of A * X <= b,
-%             J.lower: violated indices of  xl <= X ,
-%             J.upper: violated indices of  X <= xu .
+%     [1] https://vsdp.github.io/references.html#Jansson2004
+%     [2] https://vsdp.github.io/references.html#Jansson2007a
 %
 %   Example:
 %
-%       A = [0 1 0 infsup(0.9,1.1)];
-%       b = 2;
+%       A  = [0 1 0 infsup(0.9,1.1)];
+%       b  = 2;
 %       x0 = [0 1 0 1]';
-%       [X, J, I] = vsdp.verify_uls([],A,b,x0);
+%       x  = vsdp.verify_uls([], A, b, x0);
 %
 %   See also vsdpinfeas, vsdplow, vsdpup.
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 narginchk (4, 4);
 
@@ -143,10 +120,16 @@ if (isempty (I))
   end
 end
 
+% In the following the entries x0(I) shall be replaced by a verified
+% enclosure.  Therefore, set them explicitly to zero, such that the
+% reduction of the right-hand side 'b' can happen in a straight forward
+% way.
+x0(I) = 0;
+
 % Steps 2+3: Prepare square nonsingular interval system.
 %
 % Subtract from right-hand side the non-basis part.
-b = b - A(:,~I) * x0(~I);
+b = b - A * x0;
 % Reduce matrix to nonsingular basis.
 A = A(:,I);
 
