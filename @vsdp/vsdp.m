@@ -44,7 +44,8 @@ classdef vsdp < handle
     x = cell2mat (X);
     A = svec (obj, A, mu, param);
     A = smat (obj, a, mu);
-    x = vuls (A, b, x0, I);
+    E = verify_eigsym (A);
+    x = verify_uls (obj, A, b, x0);
     [vidx, midx, lidx] = sindex (K);
     [K, N, n] = validate_cone (K);
   end

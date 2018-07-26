@@ -1,8 +1,8 @@
-function lambda = veigsym (A)
+function E = verify_eigsym (A)
 % VEIGSYM  Verified enclosure for all eigenvalues of a symmetric matrix.
 %
-%   lambda = VEIGSYM(A) a verified enclosure for all eigenvalues of matrix 'A'
-%      in form of an interval vector 'lambda' is computed.  The matrix 'A' must
+%   E = VEIGSYM(A) a verified enclosure for all eigenvalues of matrix 'A'
+%      in form of an interval vector 'E' is computed.  The matrix 'A' must
 %      be a full or sparse symmetric matrix.  'A' is allowed to be a real or
 %      interval quantity.
 %
@@ -11,8 +11,8 @@ function lambda = veigsym (A)
 %       A = [1 2 3;
 %            2 1 4;
 %            3 4 5];
-%       A = midrad(A, 0.01*ones(3));
-%       lambda = veigsym(A);
+%       A = midrad  (A, 0.01*ones(3));
+%       E = veigsym (A);
 %
 %   See also vsdplow, vsdpup, vsdpinfeas.
 
@@ -27,6 +27,6 @@ end
 [V, D] = eig (full (mid (A)));
 E = A - V * intval(D) * V';
 r = abss(norm(E,inf));
-lambda = midrad(diag(D),r);
+E = midrad(diag(D),r);
 
 end

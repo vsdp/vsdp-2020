@@ -1,5 +1,5 @@
-function x = vuls (obj, A, b, x0)
-% VULS  Verification for underdetermined linear interval systems.
+function x = verify_uls (obj, A, b, x0)
+% VERIFY_ULS  Verification for underdetermined linear interval systems.
 %
 %   Let a linear systems of equations with inexact input data
 %
@@ -74,7 +74,7 @@ function x = vuls (obj, A, b, x0)
 %       A = [0 1 0 infsup(0.9,1.1)];
 %       b = 2;
 %       x0 = [0 1 0 1]';
-%       [X, J, I] = vuls(A,a,B,b,xl,xu,x0);
+%       [X, J, I] = vsdp.verify_uls([],A,b,x0);
 %
 %   See also vsdpinfeas, vsdplow, vsdpup.
 
