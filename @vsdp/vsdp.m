@@ -10,25 +10,13 @@ classdef vsdp < handle
     % 'N = K.f + K.l + sum(K.q) + sum(K.s .* K.s)'.
     N
     m % Number of constraints.
-    cache_memory % Memory for caching expensive computation results.
-  end
-  
-  properties (GetAccess = public, SetAccess = public)
     At  % Transposed condensed constraint matrix 'n x m'.
     b   % Right-hand side vector, or dual objective vector.
     c   % Primal objective vector.
     K   % Cone structure, 'K.f', 'K.l', 'K.q', 'K.s'.
-    x = [];   % Approximate primal solution or initial guess 'x0'.
-    y = [];   % Approximate dual   solution or initial guess 'y0'.
-    z = [];   % Approximate primal solution or initial guess 'z0'.
-    %TODO     'info'   Termination-code with
-    %                   0: indication of optimality (normal termination),
-    %                   1: indication of primal infeasibility,
-    %                   2: indication of dual infeasibility,
-    %                   3: indication of both primal and dual infeasibilities,
-    %                  -1: otherwise.
-    solution = [];
-    options = vsdp_options ();
+    cache_memory % Memory for caching expensive computation results.
+    solution     % Approximate solution or initial guess.
+    options      % Options for this problem instance.
   end
   
   methods (Static)
@@ -52,6 +40,7 @@ classdef vsdp < handle
   
   methods (Access = public)
     info (obj);
+    obj = add_solution (obj, varargin);
     val = cache (obj, val)
     obj = solve (obj, solver);
     obj = validate (obj);
@@ -93,17 +82,17 @@ classdef vsdp < handle
       %         'At' double(n,m)  Store transposed A, usually m <<= n.
       %         'b'  double(m,1)
       %         'c'  double(n,1)
-      %         'K'  struct {'f','l','q','s'}
+      %         'K'  struct{'f','l','q','s'}
       %
       %      The parameters A, b, and c may be stored in dense or sparse format
       %      and can be interval quantities.
       %
       %      The VSDP constructor can be called directly
       %
-      %         obj = VSDP (obj)
-      %         obj = VSDP (At,  b,  c, K)              % 2012 Format
-      %         obj = VSDP (    ...      , x0, y0, z0)  % 2012 Format
-      %         obj = VSDP (blk, At, C, b, X0, y0, Z0)  % 2006 Format
+      %         obj2 = VSDP (obj1)                       % Copy Problem data.
+      %         obj  = VSDP (At,  b,  c, K)              % 2012 Format
+      %         obj  = VSDP (    ...      , x0, y0, z0)  % 2012 Format
+      %         obj  = VSDP (blk, At, C, b, X0, y0, Z0)  % 2006 Format
       %
       %      or the problem data can be imported by calling one of the methods:
       %
@@ -134,7 +123,11 @@ classdef vsdp < handle
               ['vsdp: When called with a single argument, ', ...
               '''obj'' must be a VSDP object.']);
           end
-        case {4, 5, 6, 7}
+          % Make a "clean" copy, only with the underlying data.
+          [K.f, K.l, K.q, K.s] = deal (obj.K.f, obj.K.l, obj.K.q, obj.K.s);
+          data = {obj.At, obj.b, obj.c, K};
+          obj = vsdp (data{:});
+        case 4
           % If first parameter is of type cell, we assume, that the VSDP 2006
           % input format was used  ==>  call static VSDP constructor.
           if (iscell (varargin{1}))
@@ -142,23 +135,19 @@ classdef vsdp < handle
             return;
           end
           [obj.At, obj.b, obj.c, obj.K] = varargin{1:4};
-          % Treat optional parameter of solution guess.
-          if (nargin >= 5)
-            obj.x = varargin{5};
-          end
-          if (nargin >= 6)
-            obj.y = varargin{6};
-          end
-          if (nargin == 7)
-            obj.z = varargin{7};
-          end
+          obj.options = vsdp_options ();
+          obj.solution = [];
+          obj = obj.validate ();
+        case {5, 6, 7}
+          % First create VSDP problem instance.
+          obj = vsdp (varargin{1:4});
+          % Then add initial solution guess.
+          obj.add_solution (varargin{5:end});
         otherwise
           error ('VSDP:vsdp:badNumberOfArguments', ...
-            ['vsdp: Bad number of arguments, ', ...
+            ['vsdp: Bad number of arguments, type ', ...
             '''help vsdp.vsdp'' for more information.']);
       end
-      
-      obj = obj.validate ();
     end
   end
 end

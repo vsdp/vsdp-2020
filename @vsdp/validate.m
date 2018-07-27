@@ -64,46 +64,4 @@ catch ME
     'validate: Cannot vectorize ''c''.');
 end
 
-if (~isempty (obj.x))
-  if (~isfloat (obj.x))
-    error ('VSDP:validate:badTypeX', ...
-      'validate: Primal approximate solution vector ''x'' must be numeric.');
-  end
-  % Ensure vectorzied condensed cone dimension.
-  try
-    obj.x = vsdp.svec (obj, obj.x(:), 2, 'unsymmetric');
-  catch ME
-    error ('VSDP:validate:badX', ...
-      'validate: Cannot vectorize ''x''.');
-  end
-end
-
-% prepare y
-if (~isempty (obj.y))
-  if (~isfloat (obj.y))
-    error ('VSDP:validate:badTypeY', ...
-      'validate: Dual approximate solution vector ''y'' must be numeric.');
-  end
-  obj.y = obj.y(:);
-  if (length (obj.y) ~= obj.m)
-    error ('VSDP:validate:badLengthY', ...
-      ['validate: Length of dual solution vector ''y'' must be %d ', ...
-      'but is %d.'], obj.m, length (obj.y));
-  end
-end
-
-if (~isempty (obj.z))
-  if (~isfloat (obj.z))
-    error ('VSDP:validate:badTypeZ', ...
-      'validate: Primal approximate solution vector ''z'' must be numeric.');
-  end
-  % Ensure vectorzied condensed cone dimension.
-  try
-    obj.z = vsdp.svec (obj, obj.z(:), 1, 'unsymmetric');
-  catch ME
-    error ('VSDP:validate:badZ', ...
-      'validate: Cannot vectorize ''z''.');
-  end
-end
-
 end

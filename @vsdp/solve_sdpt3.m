@@ -17,13 +17,13 @@ b = mid (obj.b);
 c = mid (obj.c);
 
 % Should initial solution guess be taken into account?
-if (obj.options.USE_STARTING_POINT)
-  [x0, y0, z0] = deal (obj.x, obj.y, obj.z);
+if ((obj.options.USE_STARTING_POINT) && (~isempty (obj.solution)))
+  [x0, y0, z0] = deal (obj.solution.x, obj.solution.y, obj.solution.z);
 else
   [x0, y0, z0] = deal ([], [], []);
 end
 % Clear previous solutions or initial points.
-[obj.x, obj.y, obj.z] = deal ([], [], []);
+obj.solution = [];
 
 if (~isempty (obj.options.SOLVER_OPTIONS))
   OPTIONS = obj.options.SOLVER_OPTIONS;
@@ -54,13 +54,14 @@ end
 [~, x, y, z, INFO] = sqlp (blk, A, c, b, OPTIONS, x0, y0, z0);
 
 % Store results.
-obj.x = vsdp.svec (obj, vsdp.cell2mat (x(:)), 2);
-obj.y = y;
-obj.z = vsdp.svec (obj, vsdp.cell2mat (z(:)), 1);
+x = vsdp.svec (obj, vsdp.cell2mat (x(:)), 2);
+z = vsdp.svec (obj, vsdp.cell2mat (z(:)), 1);
+f_objective = [obj.c'*x; obj.b'*y];
 if (isstruct (INFO))
   info = INFO.termcode;  % SDPT3-4.0 output
 else
   info = INFO(1);  % SDPT3-3.x output
 end
+obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info)
 
 end

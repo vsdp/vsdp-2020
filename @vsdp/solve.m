@@ -7,9 +7,7 @@ function obj = solve (obj, solver)
 %
 %   To use an initial guess (x0,y0,z0) type:
 %
-%      obj.x = x0;
-%      obj.y = y0;
-%      obj.z = z0;
+%      obj.add_solution (x0, y0, z0);
 %      obj.options.USE_STARTING_POINT = true;
 %
 %   Example:

@@ -57,13 +57,11 @@ end
 fprintf ('\n  State:\n\n');
 state = {' ', 'x'};
 
-appr_sol = (~isempty (obj.x) && ~isempty (obj.y) && ~isempty (obj.z));
-fprintf ('     [%c]  Approximate solution:\n\n', state{appr_sol + 1});
-if (~appr_sol)
+if (isempty (obj.solution))
+  fprintf ('     [ ]  Approximate solution:\n\n');
   fprintf ('            [x,y,z] = %s.solve();\n\n', inputname(1));
 else
-  fprintf ('               c''*x = %.15e\n',   obj.c' * obj.x);
-  fprintf ('               b''*y = %.15e\n\n', obj.b' * obj.y);
+  disp (obj.solution)
 end
 
 rig_lb = false;

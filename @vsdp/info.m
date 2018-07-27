@@ -12,9 +12,9 @@ fprintf (['    m = %', dig1,'d  [Number of constraints]\n'], obj.m);
 fprintf (['    N = %', dig1,'d  [Uncondensed cone dimension]\n'], obj.N);
 fprintf (['    n = %', dig1,'d  [  Condensed cone dimension]\n'], obj.n);
 
-[At, b, c, x, y, z] = deal (obj.At, obj.b, obj.c, obj.x, obj.y, obj.z);
-S = whos ('At', 'b', 'c', 'x', 'y', 'z');
-clear ('At', 'b', 'c', 'x', 'y', 'z');
+[At, b, c] = deal (obj.At, obj.b, obj.c);
+S = whos ('At', 'b', 'c');
+clear ('At', 'b', 'c');
 
 fprintf ('\n\n  Parameter details:\n\n');
 % Display details about variables.
@@ -27,7 +27,7 @@ sizes = as_dim (sizes);
 classes = char ({S.class}');
 sparsity = {' ', 'sparse'};
 sparsity = char (sparsity(1 + [S.sparse]')');
-byte_size = repmat ({'Bytes'}, 6, 1);
+byte_size = repmat ({'Bytes'}, length (S), 1);
 bytes = [S.bytes]';
 byte_size(bytes > 1024^2) = {'MB'};
 bytes(bytes > 1024^2) = bytes(bytes > 1024^2) ./ 1024^2;
@@ -40,6 +40,10 @@ disp ([space, space, space, names, ...
   space, sizes, space, space, sparsity, space, classes, ...
   space, space, bytes, space, byte_size]);
 
+if (~isempty (obj.solution))
+fprintf ('\n\n  Solution details:\n\n');
+obj.solution.mem_info ();
+end
 
 fprintf (['\n\n  Cone structure of ''K''', ...
   '  [dimensions, condensed dims., index ranges]:\n\n']);
