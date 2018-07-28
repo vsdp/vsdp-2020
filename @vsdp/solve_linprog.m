@@ -59,8 +59,9 @@ elapsed_time = toc;
 % Store solution.
 if (isfield (lambda, 'eqlin'))
   y = -lambda.eqlin;
-  z = c - A*obj.y;
+  z = c - A'*y;
 end
+f_objective = [obj.c'*x; obj.b'*y];
 switch (flag)
   case 1
     info = 0; % normal termination

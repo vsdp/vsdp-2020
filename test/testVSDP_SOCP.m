@@ -25,10 +25,12 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve ();
+  obj.solve (obj.options.SOLVER);
+  y = obj.solution.y;
+  verifyEqual (testCase, obj.solution.info, 0);
   verifyEqual (testCase, ...
-    round (obj.y(1), 7) >= round (norm (q - P*obj.y(3:5)), 7), true);
+    round (y(1), 7) >= round (norm (q - P*y(3:5)), 7), true);
   verifyEqual (testCase, ...
-    round (obj.y(2), 7) >= round (norm ([1; obj.y(3:5)]), 7), true);
+    round (y(2), 7) >= round (norm ([1; y(3:5)]), 7), true);
 end
 end

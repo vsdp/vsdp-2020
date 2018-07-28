@@ -5,7 +5,7 @@ SDP_VSDP_2012_P15 (testCase);  % K.s = [2; 3; 2]
 end
 
 function SDP_VSDP_2012_P15 (testCase)
-use_solvers = {'sedumi', 'sdpt3'};
+use_solvers = {'sedumi', 'sdpt3', 'sdpa', 'csdp'};
 
 A = [3, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0;
   0, 0, 0, 0, 3, 0, 1, 0, 4, 0, 1, 0, 5, 0, 0, 0, 1];
@@ -23,12 +23,13 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve ();
-  verifyEqual (testCase, full (obj.x), x_sol, ...
+  obj.solve (obj.options.SOLVER);
+  verifyEqual (testCase, full (obj.solution.info), 0);
+  verifyEqual (testCase, full (obj.solution.x), x_sol, ...
     'AbsTol', 1e-4, 'RelTol', eps ());
-  verifyEqual (testCase, full (obj.y), y_sol, ...
+  verifyEqual (testCase, full (obj.solution.y), y_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
-  verifyEqual (testCase, full (obj.z), z_sol, ...
+  verifyEqual (testCase, full (obj.solution.z), z_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
 end
 end

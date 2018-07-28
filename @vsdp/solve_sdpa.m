@@ -82,7 +82,20 @@ x = vsdp.svec (obj, vsdp.cell2mat (Y), 2);
 z = vsdp.svec (obj, vsdp.cell2mat (X), 1);
 f_objective = [obj.c'*x; obj.b'*y];
 if (isstruct (INFO))
-  info = INFO.phase.value;
+  switch(INFO.phasevalue)
+    case {'pdOPT', 'pFEAS', 'dFEAS', 'pdFEAS'}
+      % In the latter three cases, the problem remained feasible, but reached
+      % the maximal iteration count.
+      info = 0;
+    case {'pINF_dFEAS', 'pUNBD'}
+      info = 1; % Primal infeasible.
+    case {'pFEAS_dINF', 'dUNBD'}
+      info = 2; % Dual infeasible.
+    case 'pdINF'
+      info = 3; % Primal and dual infeasible.
+    otherwise
+      info = -1;
+  end
 else
   info = INFO;
 end

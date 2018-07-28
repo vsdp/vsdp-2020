@@ -25,10 +25,11 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve ();
-  verifyEqual (testCase, full (obj.x), x_sol, ...
+  obj.solve (obj.options.SOLVER);
+  verifyEqual (testCase, full (obj.solution.info), 0);
+  verifyEqual (testCase, full (obj.solution.x), x_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
-  verifyEqual (testCase, full (obj.y), y_sol, ...
+  verifyEqual (testCase, full (obj.solution.y), y_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
 end
 end
@@ -56,10 +57,11 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve ();
-  verifyEqual (testCase, full (obj.x), x_sol, ...
+  obj.solve (obj.options.SOLVER);
+  verifyEqual (testCase, full (obj.solution.info), 0);
+  verifyEqual (testCase, full (obj.solution.x), x_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
-  verifyEqual (testCase, full (obj.y), y_sol, ...
+  verifyEqual (testCase, full (obj.solution.y), y_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
 end
 end

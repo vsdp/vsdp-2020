@@ -39,7 +39,8 @@ elapsed_time = toc;
 
 % Store solution.
 y = -y;
-z = c - A*obj.y;
+z = c - A'*y;
+f_objective = [obj.c'*x; obj.b'*y];
 switch (stat)
   case 0
     info = 0; % normal termination
