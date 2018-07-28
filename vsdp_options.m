@@ -38,9 +38,11 @@ classdef vsdp_options < handle
     
     % Approximate solver to use.
     %
-    % Select one of the supported solvers:
-    %   'sdpt3' (default), 'sedumi', 'sdpa', 'csdp', 'sdplr', 'lp_solve',
-    %   'linprog', or 'glpk'.
+    % For a complete list of available solvers for your conic problem 'obj' run
+    %
+    %   obj.solve()
+    %
+    % Default: 'sdpt3'.
     SOLVER = 'sdpt3';
     
     % Option structure for approximate solver.
@@ -57,11 +59,6 @@ classdef vsdp_options < handle
     %
     % Default: true.
     VERBOSE_OUTPUT = true;
-    
-    % Apply the full non-symmetric matrix LSS enclosure is applied.
-    %
-    % Default: false.
-    VERIFY_FULL_LSS = false;
   end
   
   methods
@@ -80,11 +77,10 @@ classdef vsdp_options < handle
       %       obj.SOLVER_OPTIONS      = []
       %       obj.USE_STARTING_POINT  = false
       %       obj.VERBOSE_OUTPUT      = true
-      %       obj.VERIFY_FULL_LSS     = false
       %
       %   obj = VSDP_OPTIONS('solver')  Optionally, pass the name of the
-      %      approximate solver to use.  Type 'help vsdp_options.SOLVER' for a
-      %      list of supported solvers.
+      %      approximate solver to use.  Type 'help vsdp_options.SOLVER' for
+      %      more information.
       %
       %   Example:
       %
@@ -165,49 +161,7 @@ classdef vsdp_options < handle
         error ('VSDP:vsdp_options:SOLVER', ...
           'vsdp_options: SOLVER must be a string (char array).');
       end
-      defaultSolver = 'sdpt3';
-      defaultSolverAvailable = (exist ('sqlp', 'file') == 2);
-      str = lower (str);
-      switch (str)
-        case defaultSolver
-          setSolver = defaultSolverAvailable;
-        case 'sedumi'
-          setSolver = (exist ('sedumi', 'file') == 2);
-        case 'sdpa'
-          setSolver = ((exist ('sdpam', 'file') == 2) ...
-            && ((exist ('mexsdpa', 'file') == 3) ...
-            || (exist ('callSDPA', 'file') == 2)));
-        case 'csdp'
-          setSolver = (exist ('csdp', 'file') == 2);
-        case 'sdplr'
-          setSolver = (exist ('sdplr', 'file') == 2);
-        case 'lp_solve'
-          setSolver = (exist ('lp_solve', 'file') == 2);
-        case 'linprog'
-          setSolver = (exist ('linprog', 'file') == 2);
-        case 'glpk'
-          setSolver = (exist ('glpk', 'file') == 2);
-        otherwise
-          error ('VSDP:vsdp_options:SOLVER', ...
-            'vsdp_options: Solver ''%s'' is not supported.', str);
-      end
-      if (setSolver)
-        obj.SOLVER = str;
-      elseif (~strcmp(obj.SOLVER, defaultSolver))
-        % If another solver was successully set in the past keep it.
-        warning ('VSDP:vsdp_options:SOLVER', ...
-          ['vsdp_options: Solver ''%s'' is not available.  ', ...
-          'Keep solver: ''%s''.'], str, obj.SOLVER);
-      elseif (defaultSolverAvailable)
-        warning ('VSDP:vsdp_options:SOLVER', ...
-          ['vsdp_options: Solver ''%s'' is not available.  ', ...
-          'Use default solver: ''%s''.'], str, defaultSolver);
-        obj.SOLVER = defaultSolver;
-      else
-        error ('VSDP:vsdp_options:SOLVER', ...
-          ['vsdp_options: Solver ''%s'' and the default solver ''%s'' ', ...
-          'are not available.'], str, defaultSolver);
-      end
+      obj.SOLVER = str;
     end
     
     function set.SOLVER_OPTIONS (obj, str)
@@ -244,16 +198,6 @@ classdef vsdp_options < handle
       %TODO: At the end add all warning IDs
       warning (state{bool + 1}, 'VSDP:vsdp_options:SOLVER')
     end
-    
-    function set.VERIFY_FULL_LSS (obj, bool)
-      try
-        validateattributes (bool, {'logical'}, {'scalar'});
-      catch
-        error ('VSDP:vsdp_options:VERIFY_FULL_LSS', ...
-          'vsdp_options: VERIFY_FULL_LSS must be a logical scalar');
-      end
-      obj.VERIFY_FULL_LSS = bool;
-    end
-    
+       
   end
 end
