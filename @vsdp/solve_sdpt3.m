@@ -43,9 +43,9 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[At, b, c] = obj.get_perturbed_midpoint_problem ();
+[A, b, c] = obj.get_perturbed_midpoint_problem ();
 warning ('off', 'VSDP:svec:justScale');
-A = mat2cell (vsdp.svec (obj, At, sqrt(2)), obj.K.dims, obj.m);
+A = mat2cell (vsdp.svec (obj, A, sqrt(2)), obj.K.dims, obj.m);
 warning ('on', 'VSDP:svec:justScale');
 c = mat2cell (c, obj.K.dims, 1);
 for i = 1:length(obj.K.s)

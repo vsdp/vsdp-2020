@@ -39,7 +39,7 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[At, b, c] = obj.get_perturbed_midpoint_problem ();
+[A, b, c] = obj.get_perturbed_midpoint_problem ();
 A = vsdp.smat (obj, A, 1);
 c = vsdp.smat (obj, c, 1);
 

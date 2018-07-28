@@ -76,4 +76,3 @@ end
 obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
 
 end
-

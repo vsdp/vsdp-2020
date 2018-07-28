@@ -77,8 +77,8 @@ end
 elapsed_time = toc;
 
 % Store solution.
-x = vsdp.svec (obj, vsdp.cell2mat (Y), 2);
 y = x(1:end-1);
+x = vsdp.svec (obj, vsdp.cell2mat (Y), 2);
 z = vsdp.svec (obj, vsdp.cell2mat (X), 1);
 f_objective = [obj.c'*x; obj.b'*y];
 if (isstruct (INFO))

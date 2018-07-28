@@ -20,8 +20,8 @@ end
 % Check cones.
 if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
   error ('VSDP:solve:unsupportedCones', ...
-    ['solve_linprog: Second-order cones (K.q) and semidefinite cones (K.s) ', ...
-    'are not supported by LINPROG.']);
+    ['solve_linprog: Second-order cones (K.q) and semidefinite cones ', ...
+    '(K.s) are not supported by LINPROG.']);
 end
 
 % Should initial solution guess be taken into account?

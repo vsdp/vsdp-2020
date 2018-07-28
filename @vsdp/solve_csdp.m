@@ -44,7 +44,7 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[At, b, c] = obj.get_perturbed_midpoint_problem ();
+[A, b, c] = obj.get_perturbed_midpoint_problem ();
 [b, c, x0, y0, z0] = deal (full (b), full (c), full (x0), full (y0), full (z0));
 
 % Convert to SeDuMi-Format (same as CSDP format).
