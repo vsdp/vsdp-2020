@@ -15,8 +15,9 @@ classdef vsdp < handle
     c   % Primal objective vector.
     K   % Cone structure, 'K.f', 'K.l', 'K.q', 'K.s'.
     cache_memory % Memory for caching expensive computation results.
-    solution     % Approximate solution or initial guess.
     options      % Options for this problem instance.
+    pertubation  % Pertubation parameter.
+    solution     % Approximate solution or initial guess.
   end
   
   methods (Static)
@@ -128,6 +129,8 @@ classdef vsdp < handle
           end
           [obj.At, obj.b, obj.c, obj.K] = varargin{1:4};
           obj.options = vsdp_options ();
+          obj.pertubation.b = [];
+          obj.pertubation.c = [];
           obj.solution = [];
           obj = obj.validate ();
         case {5, 6, 7}
@@ -139,6 +142,18 @@ classdef vsdp < handle
           error ('VSDP:vsdp:badNumberOfArguments', ...
             ['vsdp: Bad number of arguments, type ', ...
             '''help vsdp.vsdp'' for more information.']);
+      end
+    end
+  end
+  
+  methods (Access = protected)
+    function [At, b, c] = get_perturbed_midpoint_problem (obj)
+      [At, b, c] = deal (mid (obj.At), mid (obj.b), mid (obj.c));
+      if (~isempty (obj.pertubation.b))
+        b = b + obj.pertubation.b;
+      end
+      if (~isempty (obj.pertubation.c))
+        c = c + obj.pertubation.c;
       end
     end
   end
