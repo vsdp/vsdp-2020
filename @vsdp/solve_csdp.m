@@ -65,12 +65,24 @@ if (~isempty (x0) && ~isempty(y0) && ~isempty (z0))
   args = [args, {x0, y0, z0}];
 end
 
+% If using Windows, switch to the 'csdp.exe' directory.
+if (ispc ())
+  p = fileparts (which ('csdp.exe'));
+  p = cd (p);
+end
+
 % Call solver.
 tic;
 [x, y, z, INFO] = csdp (args{:});
 elapsed_time = toc;
 
+if (ispc ())
+  cd (p);
+end
+
 % Store solution.
+x = vsdp.svec (obj, x, 2);
+z = vsdp.svec (obj, z, 1);
 f_objective = [obj.c'*x; obj.b'*y];
 if (any (INFO == [0, 1, 2]))
   info = INFO;
