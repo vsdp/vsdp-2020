@@ -75,27 +75,27 @@ classdef vsdp_approx_solution < handle
         end
       end
       if (nargin > 3)
-        validateattributes (varargin{4}, {'double'}, {'vector'});
-        f_objective = varargin{4};
+        validateattributes (varargin{1}, {'double'}, {'vector'});
+        f_objective = varargin{1};
         obj.f_objective = f_objective(:);
       else
         obj.f_objective = nan (2, 1);
       end
       if (nargin > 4)
-        validateattributes (varargin{5}, {'char'}, {'vector'});
-        obj.solver = varargin{5};
+        validateattributes (varargin{2}, {'char'}, {'vector'});
+        obj.solver = varargin{2};
       else
         obj.solver = 'none';
       end
       if (nargin > 5)
-        validateattributes (varargin{6}, {'double'}, {'scalar'});
-        obj.info = varargin{6};
+        validateattributes (varargin{3}, {'double'}, {'scalar'});
+        obj.info = varargin{3};
       else
         obj.info = -1;  % Unknown
       end
       if (nargin > 6)
-        validateattributes (varargin{7}, {'double'}, {'scalar'});
-        obj.elapsed_time = varargin{7};
+        validateattributes (varargin{4}, {'double'}, {'scalar'});
+        obj.elapsed_time = varargin{4};
       else
         obj.elapsed_time = nan();
       end
