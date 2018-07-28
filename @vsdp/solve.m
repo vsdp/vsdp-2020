@@ -1,14 +1,13 @@
 function obj = solve (obj, solver)
-% SOLVE  Approximately solve the given conic problem instance.
+% SOLVE  Guided approximate solution the given conic problem instance.
+%
+%   obj.SOLVE()  Let the user choose interactively the solver to be used.  A
+%                valid decision is saved in 'obj.options.SOLVER'.
+%   obj.SOLVE('solver')  Solve the problem instance with 'solver'.  This call is
+%                        identical to the call 'obj.solve_solver()'.  The
+%                        decision is not saved in 'obj.options.SOLVER'.
 %
 %   See 'help vsdp.vsdp' for a description of the conic problem instance.
-%
-%   See 'help vsdp_options.SOLVER' for a list of supported solvers.
-%
-%   To use an initial guess (x0,y0,z0) type:
-%
-%      obj.add_solution (x0, y0, z0);
-%      obj.options.USE_STARTING_POINT = true;
 %
 %   Example:
 %
@@ -19,40 +18,64 @@ function obj = solve (obj, solver)
 %       C =  [1 0;
 %             0 1];
 %       K.s = 2;
-%       At = [A1(:),  A2(:)];  % Vectorize data
+%       At = [A1(:), A2(:)];  % Vectorize data
 %       c  = C(:);
 %       b  = [1; 2.0001];
-%       obj = vsdp(At, b, c, K).solve()
+%       obj = vsdp(At, b, c, K).solve()  % Interactive solver choice
+%       obj = vsdp(At, b, c, K).solve('sdpt3')
+%       obj = vsdp(At, b, c, K).solve_sdpt3()
 %
-%
-%   See also vsdpinit, vsdpup, vsdplow, vsdpinfeas.
+%   See also vsdp.vsdp.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 narginchk (1, 2);
-if (nargin == 2)
+
+% Generate a list of by VSDP supported solvers.
+supported_solvers = methods (obj);
+supported_solvers = supported_solvers(strncmp (supported_solvers, 'solve_', 6));
+supported_solvers = cellfun (@(x) x(7:end), supported_solvers, ...
+  'UniformOutput', false);  % Strip 'solve_' prefix.
+
+supported_solvers_str = ['''', strjoin(supported_solvers, ''', '''), ''''];
+
+if (nargin == 1)  % Interactive mode.
+  initial_value = find (strcmp (obj.options.SOLVER, supported_solvers));
+  idx = -1;
+  % Prompt the user to choose between the supported solvers.
+  % If 'obj.options.SOLVER' was set properly, the option is surrounded by braces
+  % and chosen when just hitting enter.
+  while ((idx < 1) || (idx > length (supported_solvers)))
+    fprintf ('\n');
+    for i = 1:length (supported_solvers)
+      if (i == initial_value)
+        fprintf ('  [%2d] %s\n', i, supported_solvers{i});
+      else
+        fprintf ('   %2d  %s\n', i, supported_solvers{i});
+      end
+    end
+    fprintf ('\n');
+    str = input (sprintf ('Choose one of the above solvers [1-%d]: ', ...
+      length (supported_solvers)), 's');
+    if (isempty (str))
+      idx = initial_value;
+    else
+      idx = str2double (str);
+    end
+  end
+  solver = supported_solvers{idx};
   obj.options.SOLVER = solver;
+else  % Non-interactive mode.
+  try
+    solver = validatestring (solver, supported_solvers);
+  catch
+    error ('VSDP:solve:unsupportedSolver', ...
+      ['The solver ''%s'' is not supported by VSDP.  ', ...
+      'Choose one of:\n\n    %s'], solver, supported_solvers_str);
+  end
 end
 
 % Dispatch to solver.
-switch (obj.options.SOLVER)
-  case 'sdpt3'
-    obj = obj.solve_sdpt3 ();
-  case 'sedumi'
-    obj = obj.solve_sedumi ();
-  case 'sdpa'
-    obj = obj.solve_sdpa ();
-  case 'csdp'
-    obj = obj.solve_csdp ();
-  case 'lp_solve'
-    obj = obj.solve_lp_solve ();
-  case 'linprog'
-    obj = obj.solve_linprog ();
-  case 'glpk'
-    obj = obj.solve_glpk ();
-  otherwise
-    error ('VSDP:solve:unsupportedCones', ...
-      'solve: The solver %s could not be detected.', obj.options.SOLVER);
-end
+obj = eval (['obj.solve_', solver, '()']);
 
 end

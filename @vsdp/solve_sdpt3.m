@@ -11,6 +11,14 @@ function obj = solve_sdpt3 (obj)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
+% Check solver availability.
+if  (exist ('sqlp', 'file') ~= 2)
+  error ('VSDP:solve_sdpt3:notAvailable', ...
+    ['solve_sdpt3: SDPT3 does not seem to be ready.  ', ...
+    'Did you run ''install_sdpt3()'' inside the solver directory?\n\n', ...
+    'To select another solver, run:  %s.solve()'], inputname(1));
+end
+
 % Should initial solution guess be taken into account?
 if ((obj.options.USE_STARTING_POINT) && (~isempty (obj.solution)))
   [x0, y0, z0] = deal (obj.solution.x, obj.solution.y, obj.solution.z);
@@ -35,7 +43,7 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[At, b, c] = deal (mid (obj.At), mid (obj.b), mid (obj.c));
+[At, b, c] = obj.get_perturbed_midpoint_problem ();
 warning ('off', 'VSDP:svec:justScale');
 A = mat2cell (vsdp.svec (obj, At, sqrt(2)), obj.K.dims, obj.m);
 warning ('on', 'VSDP:svec:justScale');
