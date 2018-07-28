@@ -38,29 +38,6 @@ classdef vsdp < handle
     [K, N, n] = validate_cone (K);
   end
   
-  methods (Access = public)
-    info (obj);
-    obj = add_solution (obj, varargin);
-    val = cache (obj, val)
-    obj = solve (obj, solver);
-    obj = validate (obj);
-    [blk, A, C, b, X0, y0, Z0] = to_2006_fmt (obj);
-    
-    % Default class methods
-    varargout = size (obj, dim);
-    disp (obj);
-  end
-  
-  methods (Access = protected)
-    obj = solve_csdp     (obj);
-    obj = solve_glpk     (obj);
-    obj = solve_linprog  (obj);
-    obj = solve_lp_solve (obj);
-    obj = solve_sdpa     (obj);
-    obj = solve_sdpt3    (obj);
-    obj = solve_sedumi   (obj);
-  end
-  
   methods
     function obj = vsdp (varargin)
       % VSDP  Conic problem data class.
@@ -103,9 +80,24 @@ classdef vsdp < handle
       %         obj = VSDP.from_2006_fmt     (...)
       %         obj = VSDP.from_lp_solve_fmt (...)
       %
+      %   To use an initial guess (x0,y0,z0) type:
+      %
+      %      obj.add_solution (x0, y0, z0);
+      %      obj.options.USE_STARTING_POINT = true;
+      %
       %   Example:
       %
-      %
+      %       A1 = [0 1;
+      %             1 0];
+      %       A2 = [1 1;
+      %             1 1];
+      %       C =  [1 0;
+      %             0 1];
+      %       K.s = 2;
+      %       At = [A1(:), A2(:)];  % Vectorize data
+      %       c  = C(:);
+      %       b  = [1; 2.0001];
+      %       obj = vsdp(At, b, c, K).solve()
       %
       %   See also  VSDP.from_lp_solve_fmt, VSDP.from_sdpa_fmt,
       %             VSDP.from_sdpt3_fmt,    VSDP.from_sdpa_file,
