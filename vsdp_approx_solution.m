@@ -6,6 +6,7 @@ classdef vsdp_approx_solution < handle
     z   % Approximate primal solution or initial guess 'z0'.
     % (Optional) Primal and dual objective values for the provided solutions.
     f_objective
+    solver  % (Optional) Solver used to compute this solution.
     % (Optional) Solver termination-code of this solution.
     %
     %  -1: Unknown
@@ -15,17 +16,18 @@ classdef vsdp_approx_solution < handle
     %   3: Primal and dual infeasibile
     %
     info
-    solver  % (Optional) Solver used to compute this solution.
+    elapsed_time  % (Optional) Time elapsed in seconds to compute the solution.
   end
   
   methods
-    function obj = vsdp_approx_solution (x, y, z, f_objective, solver, info)
+    function obj = vsdp_approx_solution (x, y, z, varargin)
       % VSDP_APPROX_SOLUTION  Container class for VSDP solutions.
       %
-      %   sol = vsdp_approx_solution(x,y,z)  Create an solution object for an
+      %   sol = vsdp_approx_solution(x,y,z)  Create a solution object for an
       %       approximation or initial guess.
       %
-      %   ___ = vsdp_approx_solution( ... , f_objective, solver, info)
+      %   ___ = vsdp_approx_solution( ... , f_objective, solver, info, ...
+      %                                     elapsed_time)
       %       Optionally, add the primal and dual objective values
       %       'f_objective', the 'solver' used to compute this solution and the
       %       solver termination code 'info'.
@@ -45,7 +47,7 @@ classdef vsdp_approx_solution < handle
       
       % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
       
-      narginchk (3, 6);
+      narginchk (3, 7);
       
       if (~isempty (x))
         validateattributes (x, {'double'}, {'vector'});
@@ -72,23 +74,30 @@ classdef vsdp_approx_solution < handle
             'must be the same.']);
         end
       end
-      if (nargin > 4)
-        validateattributes (f_objective, {'double'}, {'vector'});
+      if (nargin > 3)
+        validateattributes (varargin{4}, {'double'}, {'vector'});
+        f_objective = varargin{4};
         obj.f_objective = f_objective(:);
       else
         obj.f_objective = nan (2, 1);
       end
       if (nargin > 4)
-        validateattributes (solver, {'char'}, {'vector'});
-        obj.solver = solver;
+        validateattributes (varargin{5}, {'char'}, {'vector'});
+        obj.solver = varargin{5};
       else
         obj.solver = 'none';
       end
       if (nargin > 5)
-        validateattributes (info, {'double'}, {'scalar'});
-        obj.info = info;
+        validateattributes (varargin{6}, {'double'}, {'scalar'});
+        obj.info = varargin{6};
       else
         obj.info = -1;  % Unknown
+      end
+      if (nargin > 6)
+        validateattributes (varargin{7}, {'double'}, {'scalar'});
+        obj.elapsed_time = varargin{7};
+      else
+        obj.elapsed_time = nan();
       end
     end
     
