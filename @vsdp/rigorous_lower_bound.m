@@ -39,19 +39,18 @@ function [fL,y,dl,info] = rigorous_lower_bound (obj, xbnd)
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 % Check, if primal upper bounds are given, otherwise use default upper bounds.
+nbnd = obj.K.l + length(obj.K.q) + length(obj.K.s);  % Number of bounds.
 if ((nargin < 2) || isempty (xbnd))
-  xbnd = inf (size (obj.K.blk, 1), 1);
+  xbnd = inf (nbnd, 1);
 else
   xbnd = xbnd(:);
-  if (length (xbnd) ~= size (obj.K.blk, 1))
+  if (length (xbnd) ~= nbnd)
     error ('VSDP:rigorous_lower_bound:badXBND', ...
       ['rigorous_lower_bound: The length of the upper bound vector ', ...
       '''xbnd'' must be %d, but is %d.'], size (obj.K.blk, 1), length (xbnd));
   end
 end
 
-
-nbnd = obj.K.l + length(obj.K.q) + length(obj.K.s);  % Number of bounds.
 epsj = ones(nbnd,1);  % factor for perturbation
 ce   = sparse(obj.n,1);        % perturbation for c
 pertS = cell(length(obj.K.s),1);  % diagonal perturbations of semidefinite blocks
@@ -105,7 +104,7 @@ while (info.iter <= obj.options.ITER_MAX)
   % Step 2: Verified lower bounds on cone eigenvalues
   %
   % Free variables
-  dl.f = mag (d(1:K.f));
+  dl.f = mag (d(1:obj.K.f));
   
   % LP cones
   idx = obj.K.idx.l;
