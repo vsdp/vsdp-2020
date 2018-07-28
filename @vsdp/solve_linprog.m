@@ -10,44 +10,57 @@ function obj = solve_linprog (obj)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
+% Check solver availability.
+if (exist ('linprog', 'file') ~= 2)
+  error ('VSDP:solve_linprog:notAvailable', ...
+    ['solve_linprog: LINPROG does not seem to be ready.\n\n', ...
+    'To select another solver, run:  %s.solve()'], inputname(1));
+end
+
 % Check cones.
 if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
   error ('VSDP:solve:unsupportedCones', ...
-    ['solve: Second-order cones (K.q) and semidefinite cones (K.s) ', ...
-    'are not supported by ''%s'''], obj.options.SOLVER);
+    ['solve_linprog: Second-order cones (K.q) and semidefinite cones (K.s) ', ...
+    'are not supported by LINPROG.']);
 end
 
+% Should initial solution guess be taken into account?
+if ((obj.options.USE_STARTING_POINT) && (~isempty (obj.solution)))
+  x0 = full (obj.solution.x);
+else
+  x0 = [];
+end
+
+% Should special solver options be taken into account?
 options = optimoptions ('linprog', 'Algorithm', 'interior-point-legacy');
+if (~isempty (obj.options.SOLVER_OPTIONS))
+  options = optimoptions (options, obj.options.SOLVER_OPTIONS);
+end
+
+% Adapt output verbosity.
 if (~obj.options.VERBOSE_OUTPUT)
   options = optimoptions (options, 'Display', 'off');
 end
 
-% In case of interval data solve midpoint problem.
-A = mid (obj.At);
-b = full (mid (obj.b));
-c = full (mid (obj.c));
+% Prepare data for solver.
+[A, b, c] = obj.get_perturbed_midpoint_problem ();
+[A, b, c] = deal (A', full (b), full (c));
 lbound = [ ...
   -inf(obj.K.f, 1); ...
   zeros(obj.K.l, 1)];       % lower bound
 ubound = inf(length(c),1);  % upper bound
 
-% Should initial solution guess be taken into account?
-if (obj.options.USE_STARTING_POINT)
-  x0 = obj.x;
-else
-  x0 = [];
-end
+% Call solver.
+tic;
+[x, ~, flag, ~, lambda] = linprog ...
+  (c, [], [], A, b, lbound, ubound, x0, options);
+elapsed_time = toc;
 
-% Call solver
-[obj.x, ~, flag, ~, lambda] = linprog ...
-  (c, [], [], A', b, lbound, ubound, x0, options);
-
-% Transform results to VSDP format
+% Store solution.
 if (isfield (lambda, 'eqlin'))
-  obj.y = -lambda.eqlin;
-  obj.z = c - A*obj.y;
+  y = -lambda.eqlin;
+  z = c - A*obj.y;
 end
-
 switch (flag)
   case 1
     info = 0; % normal termination
@@ -60,4 +73,7 @@ switch (flag)
   otherwise
     info = -1; % an error occured
 end
+
+obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
+
 end

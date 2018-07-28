@@ -10,6 +10,13 @@ function obj = solve_lp_solve (obj)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
+% Check solver availability.
+if (exist ('lp_solve', 'file') ~= 2)
+  error ('VSDP:solve_lp_solve:notAvailable', ...
+    ['solve_lp_solve: LP_SOLVE does not seem to be ready.\n\n', ...
+    'To select another solver, run:  %s.solve()'], inputname(1));
+end
+
 % Check cones.
 if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
   error ('VSDP:solve_lp_solve:unsupportedCones', ...
@@ -17,22 +24,22 @@ if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
     '(K.s) are not supported by LP_SOLVE']);
 end
 
-% In case of interval data solve midpoint problem.
-A = mid (obj.At);
-b = full (mid (obj.b));
-c = full (mid (obj.c));
+% Prepare data for solver.
+[A, b, c] = obj.get_perturbed_midpoint_problem ();
+[A, b, c] = deal (A', full (b), full (c));
 lbound = [ ...
   -inf(obj.K.f, 1); ...
   zeros(obj.K.l, 1)];           % lower bounds
 vtypes = zeros (length (b), 1); % variable types: 0 == equality
 
 % Call solver.
-[~, obj.x, obj.y, stat] = lp_solve (-c, A', b, vtypes, lbound);
+tic;
+[~, x, y, stat] = lp_solve (-c, A, b, vtypes, lbound);
+elapsed_time = toc;
 
 % Store solution.
-obj.y = -obj.y;
-obj.z = c - A*obj.y;
-
+y = -y;
+z = c - A*obj.y;
 switch (stat)
   case 0
     info = 0; % normal termination
@@ -43,4 +50,7 @@ switch (stat)
   otherwise
     info = -1; % an error occured
 end
+
+obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
+
 end
