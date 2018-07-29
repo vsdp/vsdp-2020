@@ -3,8 +3,8 @@ classdef vsdp_options < handle
   properties
     % Growing factor for problem perturbation.
     %
-    % Default: 0.5.
-    ALPHA = 0.5;
+    % Default: 1.5.
+    ALPHA = 1.5;
     
     % Cache intermediate values where possible.
     %

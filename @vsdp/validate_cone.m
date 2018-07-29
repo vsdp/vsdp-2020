@@ -34,10 +34,10 @@ K.q = [];
 K.s = [];
 K.blk = {};
 K.dims = [];
-K.idx.f = [];
-K.idx.l = [];
-K.idx.q = [];
-K.idx.s = [];
+K.idx.f = [0, -1];
+K.idx.l = [0, -1];
+K.idx.q = [0, -1];
+K.idx.s = [0, -1];
 
 if (isfield (K_in, 'f'))
   K.f = sum (K_in.f(K_in.f > 0));

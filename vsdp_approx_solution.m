@@ -129,8 +129,9 @@ classdef vsdp_approx_solution < handle
       % DISP  Visualize the solution.
       if (~all (isnan (obj.f_objective)))
         if (~strcmp (obj.solver, 'none'))
-          str = sprintf ('          %s by ''%s'' (code %d)\n', ...
-            obj.info_text (obj.info), obj.solver, obj.info);
+          str = sprintf ( ...
+            '          %s after %.1f seconds by ''%s'' (code %d)\n', ...
+            obj.info_text (obj.info), obj.elapsed_time ,obj.solver, obj.info);
         else
           str = '';
         end

@@ -94,9 +94,13 @@ switch (nargout)
 end
 offset = K.f + K.l + sum (K.q);
 oidx = false (offset, 2);
-vidx = [oidx; vertcat(idxs{:,1})];
+if (sum (K.s) > 0)  % Preserve logical data type in case of empty arrays [].
+  vidx = [oidx; vertcat(idxs{:,1})];
+end
 if (nargout > 1)
-  midx = [oidx; vertcat(idxs{:,2})];
+  if (sum (K.s) > 0)  % Preserve logical data type in case of empty arrays [].
+    midx = [oidx; vertcat(idxs{:,2})];
+  end
 end
 if (nargout == 3)
   offset = cumsum ([0; K.s(1:end-1).^2]) + offset;

@@ -134,7 +134,7 @@ b = b - A * x0;
 A = A(:,I);
 
 % Step 4: Compute an enclosure of the solution set.
-xI = verifylss (A, b);
+xI = verifylss (A, b, 'normal');
 if ((~any (isnan (xI))) && (~isempty (xI)))
   % The idea is not to replace the entire approximate solution x0 by the
   % verified enclosure xI.  The approximate solution is "extended" to contain
