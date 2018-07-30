@@ -153,7 +153,7 @@ classdef vsdp < handle
         b = b + obj.pertubation.b;
       end
       if (~isempty (obj.pertubation.c))
-        c = c + obj.pertubation.c;
+        c = c - obj.pertubation.c;
       end
     end
   end

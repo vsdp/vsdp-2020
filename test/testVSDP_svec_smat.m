@@ -81,7 +81,8 @@ for i = 1:length(fun)
   verifyEqual (testCase, vsdp.smat ([], f(A_svec_1_sym), 1  ), f(A_sym))
   % Skip these test for intervals 'fun{3}', due to sqrt(2).
   if (i ~= 3)
-    verifyEqual (testCase, vsdp.smat ([], f(B_svec_sqrt2)   ), f(B))
+    verifyEqual (testCase, vsdp.smat ([], f(B_svec_sqrt2)   ), f(B), ...
+      'AbsTol', 8*eps ())
   end
   verifyEqual (testCase, vsdp.smat ([], f(B_svec_1),     1  ), f(B))
   verifyEqual (testCase, vsdp.smat ([], f(B_svec_2),     1/2), f(B))

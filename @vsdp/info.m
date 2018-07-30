@@ -41,8 +41,8 @@ disp ([space, space, space, names, ...
   space, space, bytes, space, byte_size]);
 
 if (~isempty (obj.solution))
-fprintf ('\n\n  Solution details:\n\n');
-obj.solution.mem_info ();
+  fprintf ('\n\n  Solution details:\n\n');
+  obj.solution.mem_info ();
 end
 
 fprintf (['\n\n  Cone structure of ''K''', ...
@@ -53,7 +53,19 @@ ctype = [ ...
   repmat('l', obj.K.l > 0, 1);
   repmat('q', sum(obj.K.q > 0), 1);
   repmat('s', sum(obj.K.s > 0), 1)];
-idxs = [obj.K.idx.f; obj.K.idx.l; obj.K.idx.q; obj.K.idx.s];
+idxs = [];
+if (obj.K.f > 0)
+  idxs = obj.K.idx.f;
+end
+if (obj.K.l > 0)
+  idxs = [idxs; obj.K.idx.l];
+end
+if (~isempty (obj.K.q))
+  idxs = [idxs; obj.K.idx.q];
+end
+if (~isempty (obj.K.s))
+  idxs = [idxs; obj.K.idx.s];
+end
 % Uncondensed cone dimensions.
 dims = [obj.K.f(obj.K.f > 0), ones(sum (obj.K.f > 0), 1);
   obj.K.l(obj.K.l > 0), ones(sum (obj.K.l > 0), 1);
@@ -77,7 +89,7 @@ cstrs = sprintf(['K.%c(%', num2str(digits (max (length (obj.K.q), ...
 cstrs = strsplit (cstrs, '\n');
 cstrs = char (cstrs(1:end-1)');
 
-space = repmat (' ', size (idxs, 1), 1);
+space = repmat (' ', size (cnums, 1), 1);
 
 outstr = [space, space, space, space, cstrs, ...
   space, space, as_dim(dims), ...

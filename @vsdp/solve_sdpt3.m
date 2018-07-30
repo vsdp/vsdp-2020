@@ -44,14 +44,14 @@ end
 
 % Prepare data for solver.
 [A, b, c] = obj.get_perturbed_midpoint_problem ();
+blk = obj.K.blk;
 warning ('off', 'VSDP:svec:justScale');
 A = mat2cell (vsdp.svec (obj, A, sqrt(2)), obj.K.dims, obj.m);
 warning ('on', 'VSDP:svec:justScale');
 c = mat2cell (c, obj.K.dims, 1);
-for i = 1:length(obj.K.s)
+for i = find ([blk{:,1}] == 's', 1):size(blk, 1)
   c{i} = vsdp.smat ([], c{i}, 1);
 end
-blk = obj.K.blk;
 % In SDPT3 terminology "unconstrained" are "free" variables.
 if (blk{1,1} == 'f')
   blk{1,1} = 'u';

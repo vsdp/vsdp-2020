@@ -141,6 +141,8 @@ end
 if (mu ~= 1)
   A(midx(:,2),:) = A(midx(:,2),:) * mu;
 end
+% Preserve non-semidefinite entries.
+midx(1:(K.f + K.l + sum (K.q))) = true;
 % Drop lower triangular elements.
 A = A((midx(:,1) | midx(:,2)),:);
 

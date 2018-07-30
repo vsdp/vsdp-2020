@@ -77,7 +77,7 @@ classdef vsdp_approx_solution < handle
       if (nargin > 3)
         validateattributes (varargin{1}, {'double'}, {'vector'});
         f_objective = varargin{1};
-        obj.f_objective = f_objective(:);
+        obj.f_objective = full (f_objective(:));
       else
         obj.f_objective = nan (2, 1);
       end
