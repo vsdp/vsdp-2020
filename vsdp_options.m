@@ -50,10 +50,10 @@ classdef vsdp_options < handle
     % Default: [].
     SOLVER_OPTIONS = [];
     
-    % Use initial starting point (x0, y0, z0) if given.
+    % Use initial guess (x0, y0, z0) if given.
     %
     % Default: false.
-    USE_STARTING_POINT = false;
+    USE_INITIAL_GUESS = false;
     
     % Do not display VSDP warnings and minimize solver output.
     %
@@ -75,7 +75,7 @@ classdef vsdp_options < handle
       %       obj.SDP_MIN_BLK_SIZE    = 2500
       %       obj.SOLVER              = 'sdpt3'
       %       obj.SOLVER_OPTIONS      = []
-      %       obj.USE_STARTING_POINT  = false
+      %       obj.USE_INITIAL_GUESS  = false
       %       obj.VERBOSE_OUTPUT      = true
       %
       %   obj = VSDP_OPTIONS('solver')  Optionally, pass the name of the
@@ -90,7 +90,7 @@ classdef vsdp_options < handle
       %       obj = vsdp_options()
       %       obj.SOLVER = 'sdpt3';
       %
-      %   See also vsdp.vsdp.
+      %   See also vsdp.
       
       % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
       
@@ -174,14 +174,14 @@ classdef vsdp_options < handle
       obj.SOLVER_OPTIONS = str;
     end
     
-    function set.USE_STARTING_POINT (obj, bool)
+    function set.USE_INITIAL_GUESS (obj, bool)
       try
         validateattributes (bool, {'logical'}, {'scalar'});
       catch
         error ('VSDP:vsdp_options:SOLVER_OPTIONS', ...
-          'vsdp_options: USE_STARTING_POINT must be a logical scalar.');
+          'vsdp_options: USE_INITIAL_GUESS must be a logical scalar.');
       end
-      obj.USE_STARTING_POINT = bool;
+      obj.USE_INITIAL_GUESS = bool;
     end
     
     function set.VERBOSE_OUTPUT (obj, bool)
