@@ -70,6 +70,17 @@ if (~isempty (obj.K.q))
   % In case of second-order cones, only the first element is pertubed.
   vidx(obj.K.idx.q(:,1)) = true;
 end
+% And another index vector for semidefinite block perturbation.  This one maps a
+% single epsilon(j) to the diagonal of the SDP block j.
+%
+%                 [1  ]   [epsilon_1]
+%    sdp_matrix = [  1] * [epsilon_2],  for  obj.K.s = [1, 2]
+%                 [  1]
+n = sum (obj.K.s);
+cols = zeros (n, 1);
+cols(cumsum ([1; obj.K.s(1:end-1)])) = 1;
+sdp_matrix = sparse (1:n, cumsum (cols), 1);
+
 
 % If the problem was not approximately solved before, do it now.
 if (isempty (obj.solutions('Approximate solution')))
@@ -168,7 +179,8 @@ while (iter <= obj.options.ITER_MAX)
     error ('VSDP:rigorous_lower_bound:infinitePertubation', ...
       'rigorous_lower_bound: Perturbation exceeds finite range.');
   end
-  c_epsilon(vidx) = epsilon;
+  c_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q))); ...
+    sdp_matrix * epsilon((end - length (obj.K.s) + 1):end)];
   
   % Display short pertubation statistic.
   if (obj.options.VERBOSE_OUTPUT)
@@ -198,7 +210,7 @@ while (iter <= obj.options.ITER_MAX)
       'for perturbed problem']);
   end
   % Store last successful solver info and new dual solution.
-  solver_info = sol.sol_info;
+  solver_info = sol.solver_info;
   y = sol.y;
   iter = iter + 1;
 end
