@@ -68,7 +68,14 @@ c = -c;
 F = [ ...
   mat2cell(-b,  obj.K.dims, 1), ...
   mat2cell(-At, obj.K.dims, ones(1, obj.m))];
-F = cellfun(@(x) vsdp.smat([], x, 1), F, 'UniformOutput', false);
+if (obj.K.l > 0)
+  F(1,:) = cellfun(@(x) sparse (diag (x)), F(1,:), ...
+    'UniformOutput', false);
+  F(2:end,:) = cellfun(@(x) vsdp.smat([], x, 1), F(2:end,:), ...
+    'UniformOutput', false);
+else
+  F = cellfun(@(x) vsdp.smat([], x, 1), F, 'UniformOutput', false);
+end
 [nBLOCK, mDIM] = size (F);
 bLOCKsTRUCT = [-obj.K.l(obj.K.l > 0), obj.K.s'];
 
