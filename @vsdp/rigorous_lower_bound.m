@@ -1,46 +1,42 @@
 function obj = rigorous_lower_bound (obj, xbnd)
-% VSDPLOW  Verified lower bound for conic programming.
+% RIGOROUS_LOWER_BOUND  Rigorous lower bound for conic programming.
 %
-%   [fL,y,dl,info] = VSDPLOW(At,b,c,K,[],y0) Computes a verified lower bound of
-%      the primal optimal value and a rigorous enclosure of dual strict feasible
-%      (near optimal) solutions of a conic problem in the standard primal-dual
-%      form.  This form and the block-diagonal format (A,b,c,K) is explained in
-%      'mysdps.m'.
+%   obj.rigorous_lower_bound()  Compute a rigorous lower bound of the primal
+%      optimal value  c'*x  and a rigorous enclosure of a dual strict feasible
+%      (near optimal) solution of a VSDP object 'obj'.
 %
-%         'y0'     A dual feasible (eps-optimal) solution of the same dimension
-%                  as input b.  This solution can be computed using 'mysdps'.
+%   obj.rigorous_lower_bound(xbnd)  Optionally a priori known finite upper
+%      bounds on the primal optimal solution 'x' can be provided to speed up
+%      the computation time.  It is recommend to prefer infinite or no bounds
+%      at all instead of unreasonable large bounds.  This improves the quality
+%      of the lower bound in many cases, but may increase the computational
+%      time.
 %
-%      The output is:
+%      The individual upper bounds 'xbnd(j)' depends on the cone:
 %
-%         'fL'     Verified lower bound of the primal optimal value.
+%      - For each free and linear (LP) variable a scalar, such that
 %
-%         'y'      Rigorous enclosure of dual strict feasible solutions.
+%                               x(j) <= xbnd(j) <= inf  j = 1:(K.f + K.l).
 %
-%         'dl'     Verified lower bounds of eigenvalues or spectral values of
-%                  `z = c - A' * y`.
+%      - For each second order cone (SOCP) variable a scalar, such that
 %
-%         'info'   Struct containing further information.
-%           - iter  The number of iterations.
+%          x(j,1) - norm(x(j,2:end)) <= xbnd(j) <= inf  j = 1:length(K.q).
 %
-%   VSDPLOW(A,b,c,K,x0,y0,z0) optionally provide the other approximate
-%      solutions of 'mysdps' (x0 and z0).
+%      - For each semidefinite (SDP) matrix variable X(j) a scalar, such that
 %
-%   VSDPLOW(A,b,c,K,[],y0,[],xu) optionally provide known finite upper bounds
-%      of the eigenvalues or spectral values of the primal optimal solution x.
-%      We recommend to use infinite bounds xu(j) instead of unreasonable large
-%      bounds xu(j).  This improves the quality of the lower bound in many
-%      cases, but may increase the computational time.
+%                     max(eig(X(j))) <= xbnd(j) <= inf  j = 1:length(K.s).
 %
-%   VSDPLOW(A,b,c,K,[],y0,[],[],opts) optionally provide a structure for
-%      additional parameter settings, explained in vsdpinit.
+%      Thus 'n = K.f + K.l + length(K.q) + length (K.s)' is the total number of
+%      required bounds, which may be infinite.
 %
-%   See also mysdps, vsdpinit, vsdpup, vsdpinfeas.
+%   See also vsdp, vsdp.rigorous_upper_bound.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 % Check, if primal upper bounds are given, otherwise use default upper bounds.
-num_of_bounds = obj.K.f + obj.K.l + length(obj.K.q) + length(obj.K.s);
-if ((nargin < 2) || isempty (xbnd))
+num_of_bounds = obj.K.f + obj.K.l + length (obj.K.q) + length (obj.K.s);
+if (nargin < 2)
   xbnd = inf (num_of_bounds, 1);
 else
   xbnd = xbnd(:);
@@ -50,6 +46,15 @@ else
       '''xbnd'' must be %d, but is %d.'], num_of_bounds, length (xbnd));
   end
 end
+
+% If the problem was not approximately solved before, do it now.
+if (isempty (obj.solutions('Approximate solution')))
+  warning ('VSDP:rigorous_lower_bound:noApproximateSolution', ...
+    ['rigorous_lower_bound: The conic problem has no approximate ', ...
+    'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
+  obj.solve (obj.options.SOLVER, 'Approximate solution');
+end
+y = intval (obj.solutions('Approximate solution').y);
 
 % Bound and pertubation parameter.  alpha = obj.options.ALPHA
 %
@@ -81,17 +86,7 @@ cols = zeros (n, 1);
 cols(cumsum ([1; obj.K.s(1:end-1)])) = 1;
 sdp_matrix = sparse (1:n, cumsum (cols), 1);
 
-
-% If the problem was not approximately solved before, do it now.
-if (isempty (obj.solutions('Approximate solution')))
-  warning ('VSDP:rigorous_lower_bound:noApproximateSolution', ...
-    ['rigorous_lower_bound: The conic problem has no approximate ', ...
-    'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-  obj.solve (obj.options.SOLVER, 'Approximate solution');
-end
-y = intval (obj.solutions('Approximate solution').y);
-
-% Algorithm for both finite and infinite upper bounds `xu`.
+% Algorithm for both finite and infinite upper bounds 'xbnd'.
 rlb = tic;
 iter = 0;
 while (iter <= obj.options.ITER_MAX)
@@ -111,7 +106,7 @@ while (iter <= obj.options.ITER_MAX)
       obj.c(1:obj.K.f), obj.solution.y);
     if (~isintval (y) || any (isnan (y)))
       error ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
-        ['rigorous_lower_bound: Could not find a verified solution of the ', ...
+        ['rigorous_lower_bound: Could not find a rigorous solution of the ', ...
         'linear  system of free variables.']);
     end
   end
@@ -119,7 +114,7 @@ while (iter <= obj.options.ITER_MAX)
   % Step 1: Compute rigorous enclosure [d] for  c - At*y.
   d = vsdp_indexable (obj.c - obj.At * y, obj);
   
-  % Step 2: Verified lower bounds on cone eigenvalues
+  % Step 2: Rigorous lower bounds on cone eigenvalues
   %
   % Free variables: if infinite upper bounds for free variables are given, we
   %                 ensured above, that the solution is contained, thus we

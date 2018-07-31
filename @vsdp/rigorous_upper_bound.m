@@ -1,136 +1,95 @@
-function [fU,x,lb,info] = vsdpup(A,b,c,K,x0,y0,z0,yu,opts)
-% VSDPUP  Verified upper bound for semidefinite-quadratic-linear programming.
+function obj = rigorous_upper_bound (obj, ybnd)
+% RIGOROUS_UPPER_BOUND  Rigorous upper bound for conic programming.
 %
-%   [fU,x,lb,info] = VSDPUP(A,b,c,K,x0) Computes a verified upper bound of the
-%      dual optimal value and a rigorous enclosure of dual strict feasible
-%      (near optimal) solutions of a conic problem in the standard primal-dual
-%      form.  This form and the block-diagonal format (A,b,c,K) is explained in
-%      'mysdps.m'.
+%   obj.rigorous_upper_bound()  Compute a rigorous upper bound of the dual
+%      optimal value  b'*y  and a rigorous enclosure of a primal strict
+%      feasible (near optimal) solution of a VSDP object 'obj'.
 %
-%         'x0'     A primal feasible (eps-optimal) solution of the same
-%                  dimension as input c.  This solution can be computed using
-%                  'mysdps'.
+%   obj.rigorous_upper_bound(ybnd)  Optionally a priori known finite upper
+%      bounds of the dual optimal solution 'y' can be provided to speed up
+%      the computation time, but no rigorous enclosure of a primal strict
+%      feasible (near optimal) solution is computed.  It is recommend to prefer
+%      infinite or no bounds at all instead of unreasonable large bounds.  This
+%      improves the quality of the lower bound in many cases, but may increase
+%      the computational time.
 %
-%      The output is:
+%      The a priori bounds must fulfill the following dual boundedness
+%      assumption:
 %
-%         'fU'     Verified upper bound of the dual optimal value.
+%        -ybnd(i) <= y(i) <= ybnd(i),  i = 1:length(b).
 %
-%         'x'      Rigorous enclosure of primal strict feasible solutions.
 %
-%         'lb'     Verified lower bounds of the eigenvalues or spectral values
-%                  of x with respect to K.
+%   See also vsdp, vsdp.rigorous_lower_bound.
 %
-%         'info'   Struct containing further information.
-%           - iter  The number of iterations.
-%
-%   VSDPUP(A,b,c,K,x0,y0,z0) optionally provide the other approximate
-%      solutions of 'mysdps' (y0 and z0).
-%
-%   VSDPUP(A,b,c,K,x0,[],[],yu) optionally provide known finite upper bounds
-%      of the dual optimal solution y.  The following dual boundedness
-%      assumption is assumed: an optimal dual solution y satisfies
-%
-%         -yu(i) <= y(i) <= yu(i),  i = 1:m.
-%
-%      We recommend to use infinite bounds yu(i) instead of unreasonable large
-%      bounds yu(i).  This improves the quality of the lower bound in many
-%      cases, but may increase the computational time.
-%
-%   VSDPUP(A,b,c,K,x0,[],[],[],opts) optionally provide a structure for
-%      additional parameter settings, explained in vsdpinit.
-%
-%   See also mysdps, vsdpinit, vsdplow, vsdpinfeas.
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-% check input
-narginchk(5,9);
-if (isempty(A) || isempty(b) || isempty(c) || isempty(K) || isempty(x0))
-  error('VSDP:VSDPUP','non-empty input arguments are required');
-end
-if (any(isnan(x0)))
-  error('VSDP:VSDPUP', 'approximate solution x contains NaN');
-end
-if ((nargin < 6) || any(isnan(y0)))
-  y0 = [];
-end
-if ((nargin < 7) || any(isnan(z0)))
-  z0 = [];
-end
-if (nargin < 8)
-  yu = [];
-end
-if (nargin < 9)
-  opts = [];
-end
-
-VSDP_OPTIONS = vsdpinit(opts);
-
-[A,b,c,K,x0,y0,z0,imported_fmt] = import_vsdp(A,b,c,K,x0,y0,z0);
-
-% Check if finite dual upper bounds `yu` are given.
-% Otherwiese use infinite bounds.
-yu = yu(:);
-if (isempty (yu))
-  yu = inf(length(b), 1);
-elseif (length(yu) ~= length(b))
-  error('VSDP:VSDPUP', 'upper bound vector has wrong dimension');
-end
-
-% Algorithm with given finite dual bounds `yu`.
-if (isfinite (max (yu)))
-  %TODO: x0 = full(x0);  % faster for verification code
-  
-  % Project `x0` into the respective cones (e.g. compute $x^{+}$).
-  %
-  % Implementation Note: We do not use another variable here to avoid
-  %                      unnecessary copying.  Just think of `x0` as $x^{+}$
-  %                      starting from here.
-  
-  % LP cones
-  x0(K.f+1:K.f+K.l) = max(x0(K.f+1:K.f+K.l),0);
-  
-  % Second-order cones
-  blke = K.f + K.l;
-  for j = 1:length(K.q)
-    % Very simple projection: `x(1) >= ||x(2:end)||` holds, if `x(1)` is set
-    % to the maximum of both sites of the inequality.
-    x0(blke+1) = max (x0(blke+1), sup (norm (intval (x0(blke+2:blke+K.q(j))))));
-    blke = blke + K.q(j);
+% If dual upper bounds 'ybnd' are not given use infinite bounds.
+if (nargin == 2)
+  ybnd = ybnd(:);
+  if (length (ybnd) ~= length (b))
+    error ('VSDP:rigorous_upper_bound:badYBND', ...
+      ['rigorous_upper_bound: The length of the upper bound vector ', ...
+      '''ybnd'' must be %d, but is %d.'], length (b), length (ybnd));
   end
-  
-  % SDP cones
-  blke = K.f + K.l + sum(K.q);
-  for j = 1:length(K.s)
-    dind = cumsum(1:K.s(j));  % index for diagonal entries
-    vx = x0(blke+1:blke+dind(end));
-    vx(dind) = 2*vx(dind);    % regard mu=2 for x
-    lambdaj = bnd4sd(vx);
-    if (lambdaj < 0)  % simple projection into feasible space
-      x0(dind+blke) = x0(dind+blke) + (-lambdaj)/2;
-    end
-    blke = blke + dind(end);
+else
+  ybnd = inf(length (b), 1);
+end
+
+
+if (~all (isfinite (ybnd)))
+  obj = rigorous_upper_bound_infinite_bounds (obj, ybnd);
+  return;
+end
+
+% All dual upper bounds 'ybnd' are finite.
+
+%TODO: x0 = full(x0);  % faster for verification code
+
+% Project `x0` into the respective cones (e.g. compute $x^{+}$).
+%
+% Implementation Note: We do not use another variable here to avoid
+%                      unnecessary copying.  Just think of `x0` as $x^{+}$
+%                      starting from here.
+
+% LP cones
+x0(K.f+1:K.f+K.l) = max(x0(K.f+1:K.f+K.l),0);
+
+% Second-order cones
+blke = K.f + K.l;
+for j = 1:length(K.q)
+  % Very simple projection: `x(1) >= ||x(2:end)||` holds, if `x(1)` is set
+  % to the maximum of both sites of the inequality.
+  x0(blke+1) = max (x0(blke+1), sup (norm (intval (x0(blke+2:blke+K.q(j))))));
+  blke = blke + K.q(j);
+end
+
+% SDP cones
+blke = K.f + K.l + sum(K.q);
+for j = 1:length(K.s)
+  dind = cumsum(1:K.s(j));  % index for diagonal entries
+  vx = x0(blke+1:blke+dind(end));
+  vx(dind) = 2*vx(dind);    % regard mu=2 for x
+  lambdaj = bnd4sd(vx);
+  if (lambdaj < 0)  % simple projection into feasible space
+    x0(dind+blke) = x0(dind+blke) + (-lambdaj)/2;
   end
-  
-  % Compute verified upper bound `ru` on `|A * x^{+} - b|`.
-  ru = mag (A * intval(x0) - b);
-  
-  % Compute verified upper bound `fU` of the dual optimal value.
-  fU = sup (c' * x0 + ru' * yu);
-  
-  % Using this algorithm, there is no computation of:
-  %   - a rigorous enclosure of primal strict feasible solutions `x`,
-  %   - verified lower bounds `lb` of the eigenvalues or spectral values of `x`
-  %     with respect to each cone.
-  %
-  % Therefore, set these values to `NaN`.
-  %
-  x  = NaN;
-  lb = NaN;
-  info.iter = 1;
-  
-else  % Algorithm with infinite dual bounds `yu`.
-  
+  blke = blke + dind(end);
+end
+
+% Compute verified upper bound `ru` on `|A * x^{+} - b|`.
+ru = mag (A * intval(x0) - b);
+
+% Compute verified upper bound `fU` of the dual optimal value.
+fU = sup (c' * x0 + ru' * ybnd);
+
+x  = NaN;
+lb = NaN;
+info.iter = 0;
+return;
+end
+
+function obj = rigorous_upper_bound_infinite_bounds (obj, ybnd)
   x = x0;  % starting point
   I = [];  % index vector inside loop
   nc = K.l + length(K.q) + length(K.s);  % number of cone constraints
