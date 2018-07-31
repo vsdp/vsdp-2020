@@ -183,6 +183,7 @@ while (iter <= obj.options.ITER_MAX)
     sdp_matrix * epsilon((end - length (obj.K.s) + 1):end)];
   
   % Display short pertubation statistic.
+  iter = iter + 1;
   if (obj.options.VERBOSE_OUTPUT)
     fprintf ('\n\n');
     fprintf ('--------------------------------------------------\n');
@@ -212,7 +213,6 @@ while (iter <= obj.options.ITER_MAX)
   % Store last successful solver info and new dual solution.
   solver_info = sol.solver_info;
   y = sol.y;
-  iter = iter + 1;
 end
 
 % Append number of iterations to solver info.
