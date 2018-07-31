@@ -1,7 +1,7 @@
 function install_vsdp ()
 % INSTALL_VSDP  Ensures VSDP to work properly.
 %
-%   See also vsdp.vsdp.
+%   See also vsdp.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)

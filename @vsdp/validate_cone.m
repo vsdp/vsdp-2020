@@ -16,7 +16,7 @@ function [K, N, n] = validate_cone (K_in)
 %       K.l = 4;
 %       K.s = [2; 3];
 %
-%   See also vsdp.vsdp.
+%   See also vsdp.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)

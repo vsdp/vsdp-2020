@@ -1,8 +1,7 @@
 function obj = validate (obj)
 % VALIDATE  Validate the VSDP 2012/18 input format.
 %
-%
-%   See also vsdp.vsdp.
+%   See also vsdp.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
