@@ -1,4 +1,4 @@
-function obj = solve_sdpt3 (obj)
+function obj = solve_sdpt3 (obj, sol_type)
 % SOLVE_SDPT3  Approximately solve conic problem instance with SDPT3.
 %
 %   For information about SDPT3, see:
@@ -11,6 +11,14 @@ function obj = solve_sdpt3 (obj)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
+narginchk (1, 2);
+if (nargin == 1)
+  sol_type = 'Approximate solution';
+  [A, b, c] = deal (obj.At, obj.b, obj.c);
+else
+  [A, b, c] = obj.get_perturbed_midpoint_problem ();
+end
+
 % Check solver availability.
 if (exist ('sqlp', 'file') ~= 2)
   error ('VSDP:solve_sdpt3:notAvailable', ...
@@ -20,8 +28,10 @@ if (exist ('sqlp', 'file') ~= 2)
 end
 
 % Should initial solution guess be taken into account?
-if ((obj.options.USE_STARTING_POINT) && (~isempty (obj.solution)))
-  [x0, y0, z0] = deal (obj.solution.x, obj.solution.y, obj.solution.z);
+if ((obj.options.USE_INITIAL_GUESS) ...
+    && (~isempty (obj.solution('Initial guess'))))
+  isol = obj.solution('Initial guess');
+  [x0, y0, z0] = deal (isol.x, isol.y, isol.z);
 else
   [x0, y0, z0] = deal ([], [], []);
 end
@@ -43,7 +53,6 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[A, b, c] = obj.get_perturbed_midpoint_problem ();
 blk = obj.K.blk;
 warning ('off', 'VSDP:svec:justScale');
 A = mat2cell (vsdp.svec (obj, A, sqrt(2)), obj.K.dims, obj.m);
@@ -59,18 +68,32 @@ end
 
 % Call solver.
 tic;
-[~, x, y, z, INFO] = sqlp (blk, A, c, b, OPTIONS, x0, y0, z0);
-elapsed_time = toc;
+[~, x, y, z, info] = sqlp (blk, A, c, b, OPTIONS, x0, y0, z0);
+solver_info.elapsed_time = toc;
 
 % Store solution.
 x = vsdp.svec (obj, vsdp.cell2mat (x(:)), 2);
 z = vsdp.svec (obj, vsdp.cell2mat (z(:)), 1);
 f_objective = [obj.c'*x; obj.b'*y];
-if (isstruct (INFO))
-  info = INFO.termcode;  % SDPT3-4.0 output
+solver_info.name = 'sdpt3';
+if (isstruct (info))
+  termcode = info.termcode;  % SDPT3-4.0 output
 else
-  info = INFO(1);  % SDPT3-3.x output
+  termcode = info(1);  % SDPT3-3.x output
 end
-obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
+switch (termcode)
+  case 0
+    solver_info.termination = 'Normal termination';
+  case 1
+    solver_info.termination = 'Primal infeasible';
+  case 2
+    solver_info.termination = 'Dual infeasible';
+  case 3
+    solver_info.termination = 'Primal and dual infeasibile';
+  otherwise
+    solver_info.termination = 'Unknown';
+end
+
+obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
 
 end

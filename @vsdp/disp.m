@@ -54,50 +54,56 @@ if (~isempty (obj.K.s))
 end
 
 % Display short VSDP reference, what can be done now.
-fprintf ('\n  State:\n\n');
-state = {' ', 'x'};
-
-if (isempty (obj.solution))
-  fprintf ('     [ ]  Approximate solution:\n\n');
-  fprintf ('            [x,y,z] = %s.solve();\n\n', inputname(1));
+fprintf ('\n');
+fprintf ('  %s.solutions(''Approximate solution'')  for (P) and (D).\n', ...
+  inputname(1));
+if (isempty (obj.solutions('Approximate solution')))
+  fprintf ('\n      None.  Compute with ''%s = %s.solve()''\n\n', ...
+    inputname(1), inputname(1));
 else
-  disp (obj.solution)
+  disp (obj.solutions('Approximate solution'))
 end
 
-rig_lb = false;
-fprintf ('     [%c]  Rigorous lower bound   lbnd <= c''*x   for (P):\n\n', ...
-  state{rig_lb + 1});
-if (~rig_lb)
-  fprintf ('               lbnd = %s.rigorous_lower_bound();\n\n', ...
-    inputname(1));
+fprintf (['  %s.solutions(''Rigorous lower bound'')  fL <= c''*x   ', ...
+  'for (P):\n'], inputname(1));
+if (isempty (obj.solutions('Rigorous lower bound')))
+  fprintf ( ...
+    '\n      None.  Compute with ''%s = %s.rigorous_lower_bound()''\n\n', ...
+    inputname(1), inputname(1));
 else
-  fprintf ('               lbnd = %f\n\n', obj.lbnd);
+  disp (obj.solutions('Rigorous lower bound'))
 end
 
-rig_ub = false;
-fprintf ('     [%c]  Rigorous upper bound   b''*y <= ubnd   for (D):\n\n', ...
-  state{rig_ub + 1});
-if (~rig_ub)
-  fprintf ('               ubnd = %s.rigorous_upper_bound();\n\n', ...
-    inputname(1));
+fprintf (['  %s.solutions(''Rigorous upper bound'')  b''*y <= fU   ', ...
+  'for (D):\n'], inputname(1));
+if (isempty (obj.solutions('Rigorous upper bound')))
+  fprintf ( ...
+    '\n      None.  Compute with ''%s = %s.rigorous_upper_bound()''\n\n', ...
+    inputname(1), inputname(1));
 else
-  fprintf ('               ubnd = %f\n\n', obj.ubnd);
+  disp (obj.solutions('Rigorous upper bound'))
 end
 
-p_inf = false;
-fprintf ('     [%c]  Check if (P) is infeasible:\n\n', state{p_inf + 1});
-if (~p_inf)
-  fprintf ('               cert = %s.check_prim_infeasible();\n\n', ...
-    inputname(1));
+fprintf ('  %s.solutions(''Certificate primal infeasibility''):\n', ...
+  inputname(1));
+if (isempty (obj.solutions('Certificate primal infeasibility')))
+  fprintf ( ...
+    '\n      None.  Check with ''%s = %s.check_primal_infeasible()''\n\n', ...
+    inputname(1), inputname(1));
 else
+  disp (obj.solutions('Certificate primal infeasibility'))
 end
 
-d_inf = false;
-fprintf ('     [%c]  Check if (D) is infeasible:\n\n', state{d_inf + 1});
-if (~d_inf)
-  fprintf ('               cert = %s.check_dual_infeasible()\n\n', inputname(1));
+fprintf ('  %s.solutions(''Certificate dual infeasibility''):\n', ...
+  inputname(1));
+if (isempty (obj.solutions('Certificate dual infeasibility')))
+  fprintf ( ...
+    '\n      None.  Check with ''%s = %s.check_dual_infeasible()''\n\n', ...
+    inputname(1), inputname(1));
 else
+  disp (obj.solutions('Certificate dual infeasibility'))
 end
+
 fprintf (' For more information type:  %s.info()\n\n', inputname(1));
 
 end

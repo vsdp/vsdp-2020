@@ -40,9 +40,10 @@ disp ([space, space, space, names, ...
   space, sizes, space, space, sparsity, space, classes, ...
   space, space, bytes, space, byte_size]);
 
-if (~isempty (obj.solution))
-  fprintf ('\n\n  Solution details:\n\n');
-  obj.solution.mem_info ();
+fprintf ('\n\n  Solution details:\n\n');
+for i = 1:length(obj.solutions)
+  fprintf ('  Solution %d: %s', i, obj.solutions(i).sol_type);
+  obj.solutions(i).mem_info ();
 end
 
 fprintf (['\n\n  Cone structure of ''K''', ...

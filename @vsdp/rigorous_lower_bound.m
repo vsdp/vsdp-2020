@@ -1,4 +1,4 @@
-function [fL,y,dl,info] = rigorous_lower_bound (obj, xbnd)
+function obj = rigorous_lower_bound (obj, xbnd)
 % VSDPLOW  Verified lower bound for conic programming.
 %
 %   [fL,y,dl,info] = VSDPLOW(At,b,c,K,[],y0) Computes a verified lower bound of
@@ -72,19 +72,18 @@ if (~isempty (obj.K.q))
 end
 
 % If the problem was not approximately solved before, do it now.
-if (isempty (obj.solution))
+if (isempty (obj.solutions('Approximate solution')))
   warning ('VSDP:rigorous_lower_bound:noApproximateSolution', ...
     ['rigorous_lower_bound: The conic problem has no approximate ', ...
     'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-  obj.solve (obj.options.SOLVER);
+  obj.solve (obj.options.SOLVER, 'Approximate solution');
 end
-old_solution = obj.solution;
+y = intval (obj.solutions('Approximate solution').y);
 
 % Algorithm for both finite and infinite upper bounds `xu`.
+rlb = tic;
 iter = 0;
 while (iter <= obj.options.ITER_MAX)
-  iter = iter + 1;
-  
   % If infinite upper bounds for free variables are given.  Ensure, that
   % the approximate dual solution 'y' solves the free variable part, see
   %
@@ -100,13 +99,10 @@ while (iter <= obj.options.ITER_MAX)
     y = vsdp.verify_uls (obj, obj.At(1:obj.K.f,:), ...
       obj.c(1:obj.K.f), obj.solution.y);
     if (~isintval (y) || any (isnan (y)))
-      tidy_up (obj, old_solution);
       error ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
         ['rigorous_lower_bound: Could not find a verified solution of the ', ...
         'linear  system of free variables.']);
     end
-  else
-    y = intval (obj.solution.y);
   end
   
   % Step 1: Compute rigorous enclosure [d] for  c - At*y.
@@ -158,8 +154,8 @@ while (iter <= obj.options.ITER_MAX)
       defect = dl.value(idx)' * intval (xbnd(idx));
     end
     fL = inf_ (obj.b' * y + defect);
-    tidy_up (obj, old_solution);
-    return;  % SUCCESS
+    solver_info.termination = 'Normal termination';
+    break;  % SUCCESS
   end
   
   % Step 4: Perturb midpoint problem, such that
@@ -169,7 +165,6 @@ while (iter <= obj.options.ITER_MAX)
   k      (idx) = k      (idx) + 1;
   epsilon(idx) = epsilon(idx) - (obj.options.ALPHA .^ k (idx)) .* dl(idx);
   if (~all (isfinite (epsilon)))
-    tidy_up (obj, old_solution);
     error ('VSDP:rigorous_lower_bound:infinitePertubation', ...
       'rigorous_lower_bound: Perturbation exceeds finite range.');
   end
@@ -181,37 +176,37 @@ while (iter <= obj.options.ITER_MAX)
     fprintf ('--------------------------------------------------\n');
     fprintf ('  VSDP.RIGOROUS_LOWER_BOUND  (iteration %d)\n', iter);
     fprintf ('--------------------------------------------------\n');
-    fprintf ('  Violated cones (dl < 0): %d\n',          sum (idx));
-    fprintf ('  Max. cone violation:     %+.2e\n',       min (dl.value));
-    fprintf ('  Max. pertubation:        %+.2e\n\n',     max (epsilon));
+    fprintf ('  Violated cones   (dl < 0): %d\n',      sum (idx));
+    fprintf ('  Max. violation    min(dl): %+.2e\n',   min (dl.value));
+    fprintf ('  Pertubation  max(epsilon): %+.2e\n\n', max (epsilon));
     fprintf ('  Solve pertubed problem using ''%s''.\n', obj.options.SOLVER);
     fprintf ('--------------------------------------------------\n\n');
   end
   
-  % Step 5: Solve perturbed problem
+  % Step 5: Solve perturbed problem%
+  %
+  % Set pertubation parameters.
+  obj.pertubation.b = [];
   obj.pertubation.c = c_epsilon;
-  obj.solve (obj.options.SOLVER);
-  if ((obj.solution.info ~= 0) || isempty (y) || any (isnan (y)) ...
-      || any (isinf (y)))
-    tidy_up (obj, old_solution);
+  
+  obj.solve (obj.options.SOLVER, 'Rigorous lower bound');
+  sol = obj.solutions('Rigorous lower bound');
+  if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...
+      || isempty (sol.y) || any (isnan (sol.y)) || any (isinf (sol.y)))
     error ('VSDP:rigorous_lower_bound:unsolveablePertubation', ...
       ['rigorous_lower_bound: Conic solver could not find a solution ', ...
       'for perturbed problem']);
   end
+  % Store last successful solver info and new dual solution.
+  solver_info = sol.sol_info;
+  y = sol.y;
+  iter = iter + 1;
 end
 
-if (iter == VSDP_OPTIONS.ITER_MAX)
-  error ('VSDP:VSDPLOW', 'VSDPLOW: maximum number of iterations reached');
-end
-obj.solution = old_solution;
-fL = -Inf;
-y = NaN;
-dl = NaN;
+% Append number of iterations to solver info.
+solver_info.elapsed_time = toc(rlb);
+solver_info.iter = iter;
+obj.add_solution ('Rigorous lower bound', [], y, dl.value, [fL, nan], ...
+  solver_info);
 
-end
-
-function tidy_up (obj, old_solution)
-% TIDY_UP  Revert changes to the VSDP object.
-obj.pertubation.c = [];
-obj.solution = old_solution;
 end
