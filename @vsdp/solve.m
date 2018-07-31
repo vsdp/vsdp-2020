@@ -1,13 +1,13 @@
-function obj = solve (obj, solver)
+function obj = solve (obj, varargin)
 % SOLVE  Guided approximate solution the given conic problem instance.
 %
 %   obj.SOLVE()  Let the user choose interactively the solver to be used.  A
 %                valid decision is saved in 'obj.options.SOLVER'.
-%   obj.SOLVE('solver')  Solve the problem instance with 'solver'.  This call is
-%                        identical to the call 'obj.solve_solver()'.  The
+%   obj.SOLVE('solver')  Solve the problem instance with 'solver'.  This call
+%                        is identical to the call 'obj.solve_solver()'.  The
 %                        decision is not saved in 'obj.options.SOLVER'.
 %
-%   See 'help vsdp.vsdp' for a description of the conic problem instance.
+%   See 'help vsdp' for a description of the conic problem instance.
 %
 %   Example:
 %
@@ -25,11 +25,11 @@ function obj = solve (obj, solver)
 %       obj = vsdp(At, b, c, K).solve('sdpt3')
 %       obj = vsdp(At, b, c, K).solve_sdpt3()
 %
-%   See also vsdp.vsdp.
+%   See also vsdp.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-narginchk (1, 2);
+narginchk (1, 3);
 
 % Generate a list of by VSDP supported solvers.
 supported_solvers = methods (obj);
@@ -67,15 +67,15 @@ if (nargin == 1)  % Interactive mode.
   obj.options.SOLVER = solver;
 else  % Non-interactive mode.
   try
-    solver = validatestring (solver, supported_solvers);
+    solver = validatestring (varargin{1}, supported_solvers);
   catch
     error ('VSDP:solve:unsupportedSolver', ...
       ['The solver ''%s'' is not supported by VSDP.  ', ...
-      'Choose one of:\n\n    %s'], solver, supported_solvers_str);
+      'Choose one of:\n\n    %s'], varargin{1}, supported_solvers_str);
   end
 end
 
 % Dispatch to solver.
-obj = eval (['obj.solve_', solver, '()']);
+obj = eval (['obj.solve_', solver, '(varargin{2:end})']);
 
 end
