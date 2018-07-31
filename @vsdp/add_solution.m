@@ -1,20 +1,23 @@
 function obj = add_solution (obj, varargin)
-% ADD_SOLUTION  Add initial guess or approximate solution.
+% ADD_SOLUTION  Add solution object.
 %
-%   See also vsdp.vsdp.
+%   obj = add_solution (obj, sol) Add vsdp solution object 'sol'
+%                                  to vsdp object 'obj'.
+%
+%   See also vsdp, vsdp_solution.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 if (nargin == 2)
-  if (~isa (varargin{1}, 'vsdp_approx_solution'))
+  if (~isa (varargin{1}, 'vsdp_solution'))
     error ('VSDP:add_solution:badType', ...
-      ['add_solution: A single argument must be a ''vsdp_approx_solution'' ', ...
+      ['add_solution: A single argument must be a ''vsdp_solution'' ', ...
       'object.']);
   else
     sol = varargin{1};
   end
 else
-  sol = vsdp_approx_solution (varargin{:});
+  sol = vsdp_solution (varargin{:});
 end
 
 [m, n] = sol.size ();
@@ -32,6 +35,7 @@ if ((n > 0) && (n ~= obj.n))
     'x = vsdp.svec (obj, x(:), 2, ''unsymmetric'');', ...
     'z = vsdp.svec (obj, z(:), 1, ''unsymmetric'');');
 end
-obj.solution = sol;
+
+obj.solutions(sol.sol_type) = sol;
 
 end
