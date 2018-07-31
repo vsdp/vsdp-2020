@@ -24,12 +24,22 @@ obj.options.VERBOSE_OUTPUT = false;
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
   obj.solve (obj.options.SOLVER);
-  verifyEqual (testCase, full (obj.solution.info), 0);
-  verifyEqual (testCase, full (obj.solution.x), x_sol, ...
+  sol = obj.solutions('Approximate solution');
+  verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
+  verifyEqual (testCase, full (sol.x), x_sol, ...
     'AbsTol', 1e-4, 'RelTol', eps ());
-  verifyEqual (testCase, full (obj.solution.y), y_sol, ...
+  verifyEqual (testCase, full (sol.y), y_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
-  verifyEqual (testCase, full (obj.solution.z), z_sol, ...
+  verifyEqual (testCase, full (sol.z), z_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
+  
+  obj.rigorous_lower_bound ();
+  sol = obj.solutions('Rigorous lower bound');
+  verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
+  %TODO x_sol too unaccurate!
+  %verifyEqual (testCase, sol.f_objective(1) <= (obj.c' * x_sol), true);
+  verifyEqual (testCase, isnan (sol.f_objective(2)), true);
+  verifyEqual (testCase, isempty (sol.x), true);
+  verifyEqual (testCase, all (sol.z) >= 0, true);
 end
 end

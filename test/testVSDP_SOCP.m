@@ -26,11 +26,11 @@ obj.options.VERBOSE_OUTPUT = false;
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
   obj.solve (obj.options.SOLVER);
-  y = obj.solution.y;
-  verifyEqual (testCase, obj.solution.info, 0);
+  sol = obj.solutions('Approximate solution');
+  verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, ...
-    round (y(1), 7) >= round (norm (q - P*y(3:5)), 7), true);
+    round (sol.y(1), 7) >= round (norm (q - P*sol.y(3:5)), 7), true);
   verifyEqual (testCase, ...
-    round (y(2), 7) >= round (norm ([1; y(3:5)]), 7), true);
+    round (sol.y(2), 7) >= round (norm ([1; sol.y(3:5)]), 7), true);
 end
 end
