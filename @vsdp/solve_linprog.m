@@ -1,4 +1,4 @@
-function obj = solve_linprog (obj)
+function obj = solve_linprog (obj, sol_type)
 % SOLVE_LINPROG  Approximately solve conic problem instance with LINPROG.
 %
 %   For more information about LINPROG, see:
@@ -9,6 +9,8 @@ function obj = solve_linprog (obj)
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+
+narginchk (1, 2);
 
 % Check solver availability.
 if (exist ('linprog', 'file') ~= 2)
@@ -24,9 +26,17 @@ if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
     '(K.s) are not supported by LINPROG.']);
 end
 
+if (nargin == 1)
+  sol_type = 'Approximate solution';
+  [A, b, c] = deal (obj.At, obj.b, obj.c);
+else
+  [A, b, c] = obj.get_perturbed_midpoint_problem ();
+end
+
 % Should initial solution guess be taken into account?
-if ((obj.options.USE_STARTING_POINT) && (~isempty (obj.solution)))
-  x0 = full (obj.solution.x);
+if ((obj.options.USE_INITIAL_GUESS) ...
+    && (~isempty (obj.solution('Initial guess'))))
+  x0 = full (obj.solution('Initial guess').x);
 else
   x0 = [];
 end
@@ -54,7 +64,7 @@ ubound = inf(length(c),1);  % upper bound
 tic;
 [x, ~, flag, ~, lambda] = linprog ...
   (c, [], [], A, b, lbound, ubound, x0, options);
-elapsed_time = toc;
+solver_info.elapsed_time = toc;
 
 % Store solution.
 if (isfield (lambda, 'eqlin'))
@@ -62,19 +72,20 @@ if (isfield (lambda, 'eqlin'))
   z = c - A'*y;
 end
 f_objective = [obj.c'*x; obj.b'*y];
+solver_info.name = 'linprog';
 switch (flag)
   case 1
-    info = 0; % normal termination
+    solver_info.termination = 'Normal termination';
   case -2
-    info = 1; % primal infeasible
+    solver_info.termination = 'Primal infeasible';
   case -3
-    info = 2; % dual infeasible (primal unbounded)
+    solver_info.termination = 'Dual infeasible';
   case -5
-    info = 3; % primal and dual infeasible
+    solver_info.termination = 'Primal and dual infeasibile';
   otherwise
-    info = -1; % an error occured
+    solver_info.termination = 'Unknown';
 end
 
-obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
+obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
 
 end

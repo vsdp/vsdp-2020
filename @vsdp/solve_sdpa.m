@@ -1,4 +1,4 @@
-function obj = solve_sdpa (obj)
+function obj = solve_sdpa (obj, sol_type)
 % SOLVE_SDPA  Approximately solve conic problem instance with SDPA.
 %
 %   For more information on the SDPA-M format, see:
@@ -10,6 +10,8 @@ function obj = solve_sdpa (obj)
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+
+narginchk (1, 2);
 
 % Check solver availability.
 if ((exist ('mexsdpa', 'file') ~= 3) && (exist ('callSDPA', 'file') ~= 2))
@@ -25,12 +27,21 @@ if ((obj.K.f > 0) || (sum(obj.K.q) > 0))
     'are not supported by SDPA.']);
 end
 
+if (nargin == 1)
+  sol_type = 'Approximate solution';
+  [At, c, b] = deal (obj.At, obj.b, obj.c);  % Note b <--> c!
+else
+  [At, c, b] = obj.get_perturbed_midpoint_problem ();
+end
+
 % Note: for 'x0' and later 'x' see [1, p. 14] "mDIM -- All the letters after m
 % through the end of the line are neglected".
 
 % Should initial solution guess be taken into account?
-if ((obj.options.USE_STARTING_POINT) && (~isempty (obj.solution)))
-  [x0, X0, Y0] = deal (obj.solution.y, obj.solution.z, obj.solution.x);
+if ((obj.options.USE_INITIAL_GUESS) ...
+    && (~isempty (obj.solution('Initial guess'))))
+  isol = obj.solution('Initial guess');
+  [x0, X0, Y0] = deal (isol.y, isol.z, isol.x);
   x0 = [x0; 0];  % expand to mDIM
   X0 = mat2cell (X0,  obj.K.dims, 1);
   Y0 = mat2cell (Y0,  obj.K.dims, 1);
@@ -53,7 +64,6 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[At, c, b] = obj.get_perturbed_midpoint_problem ();  % Note b <--> c!
 c = -c;
 F = [ ...
   mat2cell(-b,  obj.K.dims, 1), ...
@@ -72,33 +82,36 @@ elseif (exist('callSDPA','file') == 2)
     (mDIM, nBLOCK, bLOCKsTRUCT, c, F, x0, X0, Y0, OPTIONS);
   INFO = 0;
 else
-  error('VSDP:MYSDPS', 'You need to compile the SDPA MEX-interface.');
+  error ('VSDP:solve_sdpa:mexNotCompiled', ...
+    'solve_sdpa: You need to compile the SDPA MEX-interface.');
 end
-elapsed_time = toc;
+solver_info.elapsed_time = toc;
 
 % Store solution.
 y = x(1:end-1);
 x = vsdp.svec (obj, vsdp.cell2mat (Y), 2);
 z = vsdp.svec (obj, vsdp.cell2mat (X), 1);
 f_objective = [obj.c'*x; obj.b'*y];
+solver_info.name = 'sdpa';
 if (isstruct (INFO))
   switch(INFO.phasevalue)
     case {'pdOPT', 'pFEAS', 'dFEAS', 'pdFEAS'}
       % In the latter three cases, the problem remained feasible, but reached
       % the maximal iteration count.
-      info = 0;
+      solver_info.termination = 'Normal termination';
     case {'pINF_dFEAS', 'pUNBD'}
-      info = 1; % Primal infeasible.
+      solver_info.termination = 'Primal infeasible';
     case {'pFEAS_dINF', 'dUNBD'}
-      info = 2; % Dual infeasible.
+      solver_info.termination = 'Dual infeasible';
     case 'pdINF'
-      info = 3; % Primal and dual infeasible.
+      solver_info.termination = 'Primal and dual infeasibile';
     otherwise
-      info = -1;
+      solver_info.termination = 'Unknown';
   end
 else
-  info = INFO;
+  solver_info.termination = 'Unknown';
 end
-obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
+
+obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
 
 end

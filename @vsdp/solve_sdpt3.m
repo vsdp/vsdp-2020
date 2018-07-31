@@ -12,12 +12,6 @@ function obj = solve_sdpt3 (obj, sol_type)
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 narginchk (1, 2);
-if (nargin == 1)
-  sol_type = 'Approximate solution';
-  [A, b, c] = deal (obj.At, obj.b, obj.c);
-else
-  [A, b, c] = obj.get_perturbed_midpoint_problem ();
-end
 
 % Check solver availability.
 if (exist ('sqlp', 'file') ~= 2)
@@ -25,6 +19,13 @@ if (exist ('sqlp', 'file') ~= 2)
     ['solve_sdpt3: SDPT3 does not seem to be ready.  ', ...
     'Did you run ''install_sdpt3()'' inside the solver directory?\n\n', ...
     'To select another solver, run:  %s.solve()'], inputname(1));
+end
+
+if (nargin == 1)
+  sol_type = 'Approximate solution';
+  [A, b, c] = deal (obj.At, obj.b, obj.c);
+else
+  [A, b, c] = obj.get_perturbed_midpoint_problem ();
 end
 
 % Should initial solution guess be taken into account?

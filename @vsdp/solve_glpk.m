@@ -1,4 +1,4 @@
-function obj = solve_glpk (obj)
+function obj = solve_glpk (obj, sol_type)
 % SOLVE_GLPK  Approximately solve conic problem instance with GLPK.
 %
 %   For more information about GLPK, see:
@@ -9,6 +9,8 @@ function obj = solve_glpk (obj)
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+
+narginchk (1, 2);
 
 % Check solver availability.
 if (exist ('glpk', 'file') ~= 2)
@@ -22,6 +24,20 @@ if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
   error ('VSDP:solve_glpk:unsupportedCones', ...
     ['solve_glpk: Second-order cones (K.q) and semidefinite cones (K.s) ', ...
     'are not supported by GLPK.']);
+end
+
+if (nargin == 1)
+  sol_type = 'Approximate solution';
+  [A, b, c] = deal (obj.At, obj.b, obj.c);
+else
+  [A, b, c] = obj.get_perturbed_midpoint_problem ();
+end
+
+% Should initial solution guess be taken into account?
+if (obj.options.USE_INITIAL_GUESS)
+  warning ('VSDP:solve_glpk:ignoreInitialGuess', ...
+    ['solve_glpk: GLPK does not support initial guesses (x0,y0,z0) ' ...
+    'and proceeds without them.']);
 end
 
 % Should special solver options be taken into account?
@@ -52,7 +68,7 @@ ctype = repmat ('S', length (b), 1);  % constraint types: equality
 tic;
 [x, ~, errnum, extra] = glpk ...
   (c, A, b, lbound, ubound, ctype, vtype, sense, param);
-elapsed_time = toc;
+solver_info.elapsed_time = toc;
 
 % Store solution.
 if (isfield (extra, 'lambda'))
@@ -60,19 +76,20 @@ if (isfield (extra, 'lambda'))
   z = c - A*obj.y;
 end
 f_objective = [obj.c'*x; obj.b'*y];
+solver_info.name = 'glpk';
 switch (errnum)
   case 0
-    info = 0; % normal termination
+    solver_info.termination = 'Normal termination';
   case 10
-    info = 1; % primal infeasible
+    solver_info.termination = 'Primal infeasible';
   case 11
-    info = 2; % dual infeasible
+    solver_info.termination = 'Dual infeasible';
   case 15
-    info = 3; % primal and dual infeasible
+    solver_info.termination = 'Primal and dual infeasibile';
   otherwise
-    info = -1; % an error occured
+    solver_info.termination = 'Unknown';
 end
 
-obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
+obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
 
 end

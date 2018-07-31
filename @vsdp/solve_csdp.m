@@ -1,4 +1,4 @@
-function obj = solve_csdp (obj)
+function obj = solve_csdp (obj, sol_type)
 % SOLVE_CSDP  Approximately solve conic problem instance with CSDP.
 %
 %   For more information about CSDP, see:
@@ -10,6 +10,8 @@ function obj = solve_csdp (obj)
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+
+narginchk (1, 2);
 
 % Check solver availability.
 if (exist ('csdp', 'file') ~= 2)
@@ -24,9 +26,18 @@ if (sum (obj.K.q) > 0)
     'solve_csdp: Second-order cones (K.q) are not supported by CSDP.');
 end
 
+if (nargin == 1)
+  sol_type = 'Approximate solution';
+  [A, b, c] = deal (obj.At, obj.b, obj.c);
+else
+  [A, b, c] = obj.get_perturbed_midpoint_problem ();
+end
+
 % Should initial solution guess be taken into account?
-if ((obj.options.USE_STARTING_POINT) && (~isempty (obj.solution)))
-  [x0, y0, z0] = deal (obj.solution.x, obj.solution.y, obj.solution.z);
+if ((obj.options.USE_INITIAL_GUESS) ...
+    && (~isempty (obj.solution('Initial guess'))))
+  isol = obj.solution('Initial guess');
+  [x0, y0, z0] = deal (isol.x, isol.y, isol.z);
 else
   [x0, y0, z0] = deal ([], [], []);
 end
@@ -44,7 +55,6 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[A, b, c] = obj.get_perturbed_midpoint_problem ();
 [b, c, x0, y0, z0] = deal (full (b), full (c), full (x0), full (y0), full (z0));
 
 % Convert to SeDuMi-Format (same as CSDP format).
@@ -74,7 +84,7 @@ end
 % Call solver.
 tic;
 [x, y, z, INFO] = csdp (args{:});
-elapsed_time = toc;
+solver_info.elapsed_time = toc;
 
 if (ispc ())
   cd (p);
@@ -84,9 +94,18 @@ end
 x = vsdp.svec (obj, x, 2);
 z = vsdp.svec (obj, z, 1);
 f_objective = [obj.c'*x; obj.b'*y];
-if (any (INFO == [0, 1, 2]))
-  info = INFO;
+solver_info.name = 'csdp';
+switch (INFO)
+  case 0
+    solver_info.termination = 'Normal termination';
+  case 1
+    solver_info.termination = 'Primal infeasible';
+  case 2
+    solver_info.termination = 'Dual infeasible';
+  otherwise
+    solver_info.termination = 'Unknown';
 end
-obj.add_solution(x, y, z, f_objective, obj.options.SOLVER, info, elapsed_time);
+
+obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
 
 end
