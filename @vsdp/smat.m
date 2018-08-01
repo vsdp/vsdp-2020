@@ -8,8 +8,8 @@ function A = smat (obj, a, mu)
 %
 %   with required arguments:
 %
-%      'K' or 'obj'  Cone structure or VSDP object.  For details, see
-%                    'help vsdp.validate_cone'
+%      'obj'  Cone structure or VSDP object.  For details, see
+%             'help vsdp.validate_cone'
 %      'a'           vsdp.svec-vectorized matrices.
 %
 %   and optional arguments:
@@ -53,6 +53,7 @@ end
 
 % Determine how to vectorize the input:
 % a) square double/sparse/intval matrix A
+do_reshape = false;
 if (isempty (obj))
   err_msg = ['smat: With empty first parameter ''A'' must be ', ...
     'a svec-vectorized matrix.'];
@@ -70,10 +71,13 @@ if (isempty (obj))
         rethrow (ME);
     end
   end
+  do_reshape = true;
+  obj = K;  % Validated cone to forward.
 elseif (isa (obj, 'vsdp'))
   [K, N, n] = deal (obj.K, obj.N, obj.n);
 else  % Otherwise 'obj == K' should be a valid cone structure.
   [K, N, n] = vsdp.validate_cone (obj);
+  obj = K;  % Validated cone to forward.
 end
 
 % There is nothing to do, if there are no semidefinite cones at all or if the
@@ -102,14 +106,14 @@ end
 offset = K.f + K.l + sum (K.q);
 A(1:offset,:) = a(1:offset,:);
 
-[vidx, midx, lidx] = vsdp.sindex (K);
+[vidx, midx, lidx] = vsdp.sindex (obj);
 % Scale off diagonal elements.
-A(midx(:,1),:) = a(vidx(:,1),:);
-A(midx(:,2),:) = a(vidx(:,2),:) * mu;
-A(lidx,:)      = a(vidx(:,2),:) * mu;
+A(midx(:,1),:) = a( vidx,:);
+A(midx(:,2),:) = a(~vidx,:) * mu;
+A(lidx,:)      = a(~vidx,:) * mu;
 
 % If a was a single svec matrix vector, reshape it to matrix.
-if (isempty (obj))
+if (do_reshape)
   A = reshape (A, K.s, K.s);
 end
 

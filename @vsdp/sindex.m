@@ -1,13 +1,14 @@
-function [vidx, midx, lidx] = sindex (K)
+function [vidx, midx, lidx] = sindex (obj)
 % SINDEX  Compute indices for symmetric matrices of a cone structure 'K'.
 %
 %   [vidx, midx, lidx] = vsdp.sindex (K);
 %
-%      'K'  Cone structure, see 'help vsdp.validate_cone' for details.
+%      'obj'  Cone structure, or VSDP object.  See 'help vsdp.validate_cone'
+%             for details.
 %
-%      'vidx(:,1)'  Indices of the diagonal entries for the symmetric vectorized
-%                   (vsdp.svec) matrices.
-%      'vidx(:,2)'  Indices of the upper tridiagonal entries for the symmetric
+%       'vidx'  Indices of the diagonal entries for the symmetric vectorized
+%               (vsdp.svec) matrices.
+%      '~vidx'  Indices of the upper tridiagonal entries for the symmetric
 %                   vectorized (vsdp.svec) matrices.
 %      'midx(:,1)'  Indices of the diagonal entries for the full matrices.
 %      'midx(:,2)'  Indices of the upper tridiagonal entries for the full
@@ -41,11 +42,11 @@ function [vidx, midx, lidx] = sindex (K)
 %
 %   the main diagonal is indexed by:
 %
-%      Avec(vidx(:,1)) == A(midx(:,1)) == [a c f j]'
+%      Avec( vidx) == A(midx(:,1)) == [a c f j]'
 %
 %   and the triangular upper matrix elements are indexed by:
 %
-%      Avec(vidx(:,2)) == A(midx(:,2)) == [b d e g h i]'
+%      Avec(~vidx) == A(midx(:,2)) == [b d e g h i]'
 %
 %   Ocasionally, it is important to extract the lower triangular part of 'A' as
 %   well.  But the Fortran index order by logical indexing would yield
@@ -75,7 +76,11 @@ function [vidx, midx, lidx] = sindex (K)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-K = vsdp.validate_cone (K);
+if (isa (obj, 'vsdp'))
+  K = obj.K;
+else
+  K = vsdp.validate_cone (obj);
+end
 
 idxs = cell(length(K.s), max (1, nargout));
 switch (nargout)
@@ -93,12 +98,12 @@ switch (nargout)
     end
 end
 offset = K.f + K.l + sum (K.q);
-vidx = false (offset, 2);
+vidx = false (offset, 1);
 if (sum (K.s) > 0)  % Preserve logical data type in case of empty arrays [].
   vidx = [vidx; vertcat(idxs{:,1})];
 end
 if (nargout > 1)
-  midx = vidx(1:offset,:);
+  midx = false (offset, 2);
   if (sum (K.s) > 0)  % Preserve logical data type in case of empty arrays [].
     midx = [midx; vertcat(idxs{:,2})];
   end
@@ -117,9 +122,8 @@ function [vidx, midx, lidx] = idx (N)
 % IDX  Performs the index computation for a single matrix.
 %
 
-vidx = false(N * (N + 1) / 2, 2);
+vidx = false(N * (N + 1) / 2, 1);
 vidx(cumsum(1:N),1) = true;
-vidx(:,2) = ~(vidx(:,1));
 
 if (nargout >= 2)
   midx = false(N^2, 2);

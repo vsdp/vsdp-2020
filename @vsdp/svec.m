@@ -97,10 +97,12 @@ if (isempty (obj))
         rethrow (ME);
     end
   end
+  obj = K;  % Validated cone to forward.
 elseif (isa (obj, 'vsdp'))
   [K, N, n] = deal (obj.K, obj.N, obj.n);
 else  % Otherwise 'obj == K' should be a valid cone structure.
   [K, N, n] = vsdp.validate_cone (obj);
+  obj = K;  % Validated cone to forward.
 end
 
 % There is nothing to do, if there are no semidefinite cones at all.
@@ -115,8 +117,8 @@ if (size (A, 1) == n)
     warning ('VSDP:svec:justScale', ...
       ['svec: Input ''A'' is already condensed vectorized, just scale ', ...
       'off-diagonal elements.']);
-    vidx = vsdp.sindex (K);
-    A(vidx(:,2),:) = A(vidx(:,2),:) * mu;
+    idx = ~vsdp.sindex (obj);  % Inverted for off-diagonal elements.
+    A(idx,:) = A(idx,:) * mu;
   end
   return;
 end
@@ -130,12 +132,12 @@ if (size (A, 1) ~= N)
 end
 
 if (~isSymmetric)
-  [~, midx, lidx] = vsdp.sindex (K);
+  [~, midx, lidx] = vsdp.sindex (obj);
   % Compute average of lower and upper off diagonal elements and store them in
   % the upper part.
   A(midx(:,2),:) = (A(midx(:,2),:) + A(lidx,:)) / 2;
 else
-  [~, midx] = vsdp.sindex (K);
+  [~, midx] = vsdp.sindex (obj);
 end
 % Scale off diagonal elements.
 if (mu ~= 1)
