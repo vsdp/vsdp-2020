@@ -27,13 +27,13 @@ function obj = rigorous_upper_bound (obj, ybnd)
 % Validate dual upper bounds.
 if (nargin == 2)
   ybnd = ybnd(:);
-  if (length (ybnd) ~= length (b))
+  if (length (ybnd) ~= length (obj.b))
     error ('VSDP:rigorous_upper_bound:badYBND', ...
       ['rigorous_upper_bound: The length of the upper bound vector ', ...
-      '''ybnd'' must be %d, but is %d.'], length (b), length (ybnd));
+      '''ybnd'' must be %d, but is %d.'], length (obj.b), length (ybnd));
   end
 else  % If dual upper bounds are not given, use infinite bounds.
-  ybnd = inf(length (b), 1);
+  ybnd = inf(length (obj.b), 1);
 end
 
 % If the problem was not approximately solved before, do it now.
@@ -51,7 +51,7 @@ if (~all (isfinite (ybnd)))
       ['rigorous_upper_bound: At least one element in the bounds ', ...
       '''ybnd'' was not finite.  Using algorithm for infinite bounds.']);
   end
-  obj = rigorous_upper_bound_infinite_bounds (obj, x);
+  obj = rigorous_upper_bound_infinite_bounds (obj);
   return;
 end
 rub = tic;
@@ -99,12 +99,12 @@ obj.add_solution ('Rigorous upper bound', nan, [], nan, [nan, fU], solver_info);
 end
 
 function obj = rigorous_upper_bound_infinite_bounds (obj)
+% Create helper structures.
+[~, num_of_bounds, vidx, sdp_matrix] = obj.rigorous_lower_cone_bound();
 % Bound and perturbation parameter.  alpha = obj.options.ALPHA
 %
 %  epsilon = epsilon + (alpha.^k) .* dl,  where dl < 0.
 %
-num_of_bounds = obj.K.f + obj.K.l + length (obj.K.q) + length (obj.K.s);
-lb        = vsdp_indexable (zeros (num_of_bounds, 1), obj);
 k         = zeros (num_of_bounds, 1);  % Counter for perturbation.
 epsilon   = zeros (num_of_bounds, 1);  % Factor  for perturbation.
 x_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'x'.
@@ -117,40 +117,19 @@ while (iter <= obj.options.ITER_MAX)
   x = vsdp.verify_uls (obj, obj.At', obj.b, x);
   if ((~isintval (x) || any (isnan (x))))
     error ('VSDP:rigorous_upper_bound:noUlsEnclosure', ...
-      ['rigorous_lower_bound: Could not find a rigorous solution for the ', ...
+      ['rigorous_upper_bound: Could not find a rigorous solution for the ', ...
       'linear system of constraints.']);
   end
-  x = vsdp_indexable (x, obj);
   
   % Step 2: Verified lower bounds on 'x' for each cone.
-  %
-  % Free variables are ignored ==> 0.
-  lb.f = zeros (obj.K.f, 1);
-  
-  % LP cone variables.
-  lb.l = inf_ (x.l);
-  
-  % Second-order cone variables.
-  offset = obj.K.f + obj.K.l;
-  for j = 1:length (obj.K.q)
-    xq = x.q(j);
-    lb(j + offset) = inf_ (xq(1) - norm (xq(2:end)));
-  end
-  
-  % SDP cone variables.
-  offset = offset + length(obj.K.q);
-  for j = 1:length(obj.K.s)
-    % For smat, remember that 'x' is scaled by mu = 2.
-    lb(j + offset) = ...
-      min (inf_ (vsdp.verify_eigsym (vsdp.smat ([], x.s(j), 1/2))));
-  end
-  
+  lb = obj.rigorous_lower_cone_bound (x, 1/2, false);
+    
   % Step 3: Cone feasibility check and upper bound computation:
   %
   % If all lower bounds 'lb' on 'x' are non-negative, there are no cone
   % violations and 'x' is an enclosure of a primal strict feasible (near
   % optimal) solution.
-  idx = (lb.value < 0);
+  idx = (lb < 0);
   
   if (~any (idx))  % If no violations.
     fU = sup (obj.c' * x);
@@ -179,7 +158,7 @@ while (iter <= obj.options.ITER_MAX)
     fprintf ('  VSDP.RIGOROUS_UPPER_BOUND  (iteration %d)\n', iter);
     fprintf ('--------------------------------------------------\n');
     fprintf ('  Violated cones    (lb < 0): %d\n',      sum (idx));
-    fprintf ('  Max. violation     min(lb): %+.2e\n',   min (lb.value));
+    fprintf ('  Max. violation     min(lb): %+.2e\n',   min (lb));
     fprintf ('  Perturbation  max(epsilon): %+.2e\n\n', max (epsilon));
     fprintf ('  Solve perturbed problem using ''%s''.\n', obj.options.SOLVER);
     fprintf ('--------------------------------------------------\n\n');
@@ -204,17 +183,13 @@ while (iter <= obj.options.ITER_MAX)
   x = sol.x + x_epsilon;  % Undo perturbation.
 end
 
-setround(rnd); % reset rounding mode
-
-if (info.iter == VSDP_OPTIONS.ITER_MAX)
-  err_msg = 'maximum number of iterations reached';
+%TODO
+if (iter == obj.options.ITER_MAX)
+  error ('maximum number of iterations reached');
 end
 
-if (VSDP_OPTIONS.VERBOSE_OUTPUT)
-  disp(['VSDPUP: ', err_msg]);
-end
-
-fU = Inf;
-x = NaN;
-lb = NaN;
+% Update solver info and store solution.
+solver_info.elapsed_time = toc(rub);
+solver_info.iter = iter;
+obj.add_solution ('Rigorous upper bound', x, [], lb, [nan, fU], solver_info);
 end

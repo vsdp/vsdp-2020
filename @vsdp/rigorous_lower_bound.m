@@ -34,8 +34,12 @@ function obj = rigorous_lower_bound (obj, xbnd)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
+narginchk (1, 2);
+
+% Create helper structures.
+[~, num_of_bounds, vidx, sdp_matrix] = obj.rigorous_lower_cone_bound();
+
 % Check, if primal upper bounds are given, otherwise use default upper bounds.
-num_of_bounds = obj.K.f + obj.K.l + length (obj.K.q) + length (obj.K.s);
 if (nargin < 2)
   xbnd = inf (num_of_bounds, 1);
 else
@@ -65,25 +69,6 @@ k         = zeros (num_of_bounds, 1);  % Counter for perturbation.
 epsilon   = zeros (num_of_bounds, 1);  % Factor  for perturbation.
 c_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'c'.
 
-% Index vector for perturbation.  In case of semidefinite programs, only
-% the diagonal elements have to be perturbed.  Those are easily obtained:
-vidx = vsdp.sindex (obj);          % Get only diagonal entries of SDP cones.
-vidx(1:(obj.K.f + obj.K.l)) = true;  % Copy free and linear part directly.
-if (~isempty (obj.K.q))
-  % In case of second-order cones, only the first element is perturbed.
-  vidx(obj.K.idx.q(:,1)) = true;
-end
-% And another index vector for semidefinite block perturbation.  This one maps a
-% single epsilon(j) to the diagonal of the SDP block j.
-%
-%                 [1  ]   [epsilon_1]
-%    sdp_matrix = [  1] * [epsilon_2],  for  obj.K.s = [1, 2]
-%                 [  1]
-n = sum (obj.K.s);
-cols = zeros (n, 1);
-cols(cumsum ([1; obj.K.s(1:end-1)])) = 1;
-sdp_matrix = sparse (1:n, cumsum (cols), 1);
-
 % Algorithm for both finite and infinite upper bounds 'xbnd'.
 rlb = tic;
 iter = 0;
@@ -108,38 +93,16 @@ while (iter <= obj.options.ITER_MAX)
     end
   end
   
-  % Step 1: Compute rigorous enclosure [d] for  c - At*y.
-  d = vsdp_indexable (obj.c - obj.At * y, obj);
+  % Step 1: Compute rigorous enclosure '[d]' for 'c - At * y'.
+  d = obj.c - obj.At * y;
   
   % Step 2: Rigorous lower bounds 'dl' on '[d]' for each cone.
-  %
-  % Free variables: if infinite upper bounds for free variables are given, we
-  %                 ensured above, that the solution is contained, thus we
-  %                 assume no defect!
-  if (any (isinf (xbnd(1:obj.K.f))))
-    dl.f = zeros (obj.K.f, 1);
-  else
-    dl.f = mag (d.f);
+  dl = obj.rigorous_lower_cone_bound (d, 1, true);
+  % If finite upper bounds for free variables are given.
+  if (~any (isinf (xbnd(1:obj.K.f))))
+    dl(1:obj.K.f) = mag (d(1:obj.K.f));
   end
   
-  % LP cone variables.
-  dl.l = inf_ (d.l);
-  
-  % Second-order cone variables.
-  offset = obj.K.f + obj.K.l;
-  for j = 1:length (obj.K.q)
-    dq = d.q(j);
-    dl(j + offset) = inf_ (dq(1) - norm (dq(2:end)));
-  end
-  
-  % SDP cone variables.
-  offset = offset + length(obj.K.q);
-  for j = 1:length(obj.K.s)
-    E_ = inf_ (vsdp.verify_eigsym (vsdp.smat ([], d.s(j), 1)));
-    % Weight the smallest eigenvalue lower bound E_ by the number of negative
-    % eigenvalues.
-    dl(j + offset) = min (E_) * sum (E_ < 0);
-  end
   
   % Step 3: Cone feasibility check and lower bound computation:
   %
@@ -147,14 +110,14 @@ while (iter <= obj.options.ITER_MAX)
   % non-negative, e.g. 'dl >= 0'.  If there are cone violations 'dl(dl < 0)'
   % and there exist a finite upper bound 'xbnd(dl < 0)' on 'x' for each
   % violated constraint, the correction term 'defect' has to be added.
-  idx = (dl.value < 0);
+  idx = (dl < 0);
   
   if (~any (idx) || (~any (isinf (xbnd(idx)))))
     % If there are no violations, 'defect = 0' and 'y' is dual feasible.
     if (~any (idx))
       defect = 0;
     else
-      defect = dl.value(idx)' * intval (xbnd(idx));
+      defect = dl(idx)' * intval (xbnd(idx));
     end
     fL = inf_ (obj.b' * y + defect);
     solver_info.termination = 'Normal termination';
@@ -182,7 +145,7 @@ while (iter <= obj.options.ITER_MAX)
     fprintf ('  VSDP.RIGOROUS_LOWER_BOUND  (iteration %d)\n', iter);
     fprintf ('--------------------------------------------------\n');
     fprintf ('  Violated cones    (dl < 0): %d\n',      sum (idx));
-    fprintf ('  Max. violation     min(dl): %+.2e\n',   min (dl.value));
+    fprintf ('  Max. violation     min(dl): %+.2e\n',   min (dl));
     fprintf ('  Perturbation  max(epsilon): %+.2e\n\n', max (epsilon));
     fprintf ('  Solve perturbed problem using ''%s''.\n', obj.options.SOLVER);
     fprintf ('--------------------------------------------------\n\n');
@@ -210,7 +173,5 @@ end
 % Update solver info and store solution.
 solver_info.elapsed_time = toc(rlb);
 solver_info.iter = iter;
-obj.add_solution ('Rigorous lower bound', [], y, dl.value, [fL, nan], ...
-  solver_info);
-
+obj.add_solution ('Rigorous lower bound', [], y, dl, [fL, nan], solver_info);
 end

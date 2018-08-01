@@ -111,7 +111,7 @@ classdef vsdp < handle
       % VSDP  Constructor for conic problem data class.
       %
       %   See also vsdp.
-     
+      
       narginchk (1, 7);
       
       switch (nargin)
@@ -160,6 +160,8 @@ classdef vsdp < handle
   end
   
   methods (Access = protected)
+    [lb, n, vidx, sdp_matrix] = rigorous_lower_cone_bound (obj, x, mu, ...
+      weight_sdp)
     function [At, b, c] = get_perturbed_midpoint_problem (obj)
       [At, b, c] = deal (mid (obj.At), mid (obj.b), mid (obj.c));
       if (~isempty (obj.perturbation.b))
