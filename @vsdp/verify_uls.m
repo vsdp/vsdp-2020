@@ -99,8 +99,11 @@ if (isempty (obj))
   I = [];
 else
   I = obj.cache('I');
+  % Dimensons of the last matrix as "hash", because cached value is invalid for
+  % different VSDP functions.
+  last_dims = obj.cache('last_dims');
 end
-if (isempty (I))
+if (isempty (I) || isempty (last_dims) || (~all (size (A) ~= last_dims)))
   % Bias towards greater entries in 'x0'.
   [~,I] = sort (abs (x0), 'descend');
   % Reorder the columns in 'A' and transpose.
@@ -117,6 +120,8 @@ if (isempty (I))
   I = sort (I(p(1:m)));
   if (~isempty (obj))
     obj.cache(I);
+    last_dims = size (A);
+    obj.cache(last_dims);
   end
 end
 
