@@ -32,6 +32,16 @@ for i = 1:length(use_solvers)
     'AbsTol', 1e-7, 'RelTol', eps ());
   verifyEqual (testCase, full (sol.y), y_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
+  
+  obj.rigorous_lower_bound ();
+  sol = obj.solutions('Rigorous lower bound');
+  verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
+  verifyEqual (testCase, sol.f_objective(1) <= (obj.c' * x_sol), true);
+  verifyEqual (testCase, isnan (sol.f_objective(2)), true);
+  verifyEqual (testCase, isempty (sol.x), true);
+  verifyEqual (testCase, isintval (sol.y), true);
+  verifyEqual (testCase, isreal (sol.z), true);
+  verifyEqual (testCase, all (sol.z) >= 0, true);
 end
 end
 
@@ -65,5 +75,15 @@ for i = 1:length(use_solvers)
     'AbsTol', 1e-7, 'RelTol', eps ());
   verifyEqual (testCase, full (sol.y), y_sol, ...
     'AbsTol', 1e-7, 'RelTol', eps ());
+  
+  obj.rigorous_lower_bound ();
+  sol = obj.solutions('Rigorous lower bound');
+  verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
+  verifyEqual (testCase, sol.f_objective(1) <= (obj.c' * x_sol), true);
+  verifyEqual (testCase, isnan (sol.f_objective(2)), true);
+  verifyEqual (testCase, isempty (sol.x), true);
+  verifyEqual (testCase, isintval (sol.y), true);
+  verifyEqual (testCase, isreal (sol.z), true);
+  verifyEqual (testCase, all (sol.z) >= 0, true);
 end
 end

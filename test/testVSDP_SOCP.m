@@ -32,5 +32,15 @@ for i = 1:length(use_solvers)
     round (sol.y(1), 7) >= round (norm (q - P*sol.y(3:5)), 7), true);
   verifyEqual (testCase, ...
     round (sol.y(2), 7) >= round (norm ([1; sol.y(3:5)]), 7), true);
+  
+  obj.rigorous_lower_bound ();
+  sol = obj.solutions('Rigorous lower bound');
+  verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
+  verifyEqual (testCase, isfinite (sol.f_objective(1)), true);
+  verifyEqual (testCase, isnan (sol.f_objective(2)), true);
+  verifyEqual (testCase, isempty (sol.x), true);
+  verifyEqual (testCase, isintval (sol.y), true);
+  verifyEqual (testCase, isreal (sol.z), true);
+  verifyEqual (testCase, all (sol.z) >= 0, true);
 end
 end

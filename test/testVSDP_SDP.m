@@ -13,8 +13,9 @@ c = [-2; -1; -1; -2; -3; 0; -1; 0; -2; 0; -1; 0; -3; 0; 0; 0; 0];
 b = [1; 2];
 K.s = [2; 3; 2];
 
-% Only 3 digits accuracy in Borchers2017, assume at least 4.
-x_sol = [0.125; 0.25; 0.125; 0.66667; zeros(8,1)];
+% In Borchers2017 "2/3" is rounded to 0.667 what is too inaccurate.  A short
+% evaluation with pen&paper assures that 'tr(A2*x) = 2  ==>  x(4) = 2/3'.
+x_sol = [0.125; 0.25; 0.125; 2/3; zeros(8,1)];
 y_sol = [-0.75; -1];
 z_sol = [0.25; -0.25; 0.25; 0; 0; 2; 0; 0; 2; 0.75; 0; 1];
 
@@ -26,6 +27,7 @@ for i = 1:length(use_solvers)
   obj.solve (obj.options.SOLVER);
   sol = obj.solutions('Approximate solution');
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
+  % May solvers have problems with x([4,7]), thus big tolerance 1e-4
   verifyEqual (testCase, full (sol.x), x_sol, ...
     'AbsTol', 1e-4, 'RelTol', eps ());
   verifyEqual (testCase, full (sol.y), y_sol, ...
@@ -36,10 +38,11 @@ for i = 1:length(use_solvers)
   obj.rigorous_lower_bound ();
   sol = obj.solutions('Rigorous lower bound');
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
-  %TODO x_sol too unaccurate!
-  %verifyEqual (testCase, sol.f_objective(1) <= (obj.c' * x_sol), true);
+  verifyEqual (testCase, sol.f_objective(1) <= (obj.c' * x_sol), true);
   verifyEqual (testCase, isnan (sol.f_objective(2)), true);
   verifyEqual (testCase, isempty (sol.x), true);
+  verifyEqual (testCase, isintval (sol.y), true);
+  verifyEqual (testCase, isreal (sol.z), true);
   verifyEqual (testCase, all (sol.z) >= 0, true);
 end
 end
