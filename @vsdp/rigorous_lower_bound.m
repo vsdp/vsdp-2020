@@ -110,7 +110,7 @@ while (iter <= obj.options.ITER_MAX)
   
   % Step 1: Compute rigorous enclosure [d] for  c - At*y.
   d = vsdp_indexable (obj.c - obj.At * y, obj);
-
+  
   % Step 2: Rigorous lower bounds 'dl' on '[d]' for each cone.
   %
   % Free variables: if infinite upper bounds for free variables are given, we
@@ -173,7 +173,7 @@ while (iter <= obj.options.ITER_MAX)
   end
   c_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q))); ...
     sdp_matrix * epsilon((end - length (obj.K.s) + 1):end)];
-
+  
   % Display short perturbation statistic.
   iter = iter + 1;
   if (obj.options.VERBOSE_OUTPUT)
@@ -187,13 +187,13 @@ while (iter <= obj.options.ITER_MAX)
     fprintf ('  Solve perturbed problem using ''%s''.\n', obj.options.SOLVER);
     fprintf ('--------------------------------------------------\n\n');
   end
-
+  
   % Step 5: Solve perturbed problem.
   %
   % Set perturbation parameters.
   obj.perturbation.b = [];
   obj.perturbation.c = c_epsilon;  % c := c - c(epsilon)
-
+  
   obj.solve (obj.options.SOLVER, 'Rigorous lower bound');
   sol = obj.solutions('Rigorous lower bound');
   if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...

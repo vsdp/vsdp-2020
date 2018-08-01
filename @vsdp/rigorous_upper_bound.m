@@ -48,8 +48,8 @@ end
 if (~all (isfinite (ybnd)))
   if (nargin == 2)
     warning ('VSDP:rigorous_upper_bound:infiniteBounds', ...
-    ['rigorous_upper_bound: At least one element in the bounds ', ...
-    '''ybnd'' was not finite.  Using algorithm for infinite bounds.']);
+      ['rigorous_upper_bound: At least one element in the bounds ', ...
+      '''ybnd'' was not finite.  Using algorithm for infinite bounds.']);
   end
   obj = rigorous_upper_bound_infinite_bounds (obj, x);
   return;
@@ -116,27 +116,27 @@ while (iter <= obj.options.ITER_MAX)
   % Step 1: Compute rigorous enclosure for 'A * x = b'.
   x = vsdp.verify_uls (obj, obj.At', obj.b, x);
   if ((~isintval (x) || any (isnan (x))))
-      error ('VSDP:rigorous_upper_bound:noUlsEnclosure', ...
-        ['rigorous_lower_bound: Could not find a rigorous solution for the ', ...
-        'linear system of constraints.']);
+    error ('VSDP:rigorous_upper_bound:noUlsEnclosure', ...
+      ['rigorous_lower_bound: Could not find a rigorous solution for the ', ...
+      'linear system of constraints.']);
   end
   x = vsdp_indexable (x, obj);
-
+  
   % Step 2: Verified lower bounds on 'x' for each cone.
   %
   % Free variables are ignored ==> 0.
   lb.f = zeros (obj.K.f, 1);
-
+  
   % LP cone variables.
   lb.l = inf_ (x.l);
-
+  
   % Second-order cone variables.
   offset = obj.K.f + obj.K.l;
   for j = 1:length (obj.K.q)
     xq = x.q(j);
     lb(j + offset) = inf_ (xq(1) - norm (xq(2:end)));
   end
-
+  
   % SDP cone variables.
   offset = offset + length(obj.K.q);
   for j = 1:length(obj.K.s)
@@ -144,20 +144,20 @@ while (iter <= obj.options.ITER_MAX)
     lb(j + offset) = ...
       min (inf_ (vsdp.verify_eigsym (vsdp.smat ([], x.s(j), 1/2))));
   end
-
+  
   % Step 3: Cone feasibility check and upper bound computation:
   %
   % If all lower bounds 'lb' on 'x' are non-negative, there are no cone
   % violations and 'x' is an enclosure of a primal strict feasible (near
   % optimal) solution.
   idx = (lb.value < 0);
-
+  
   if (~any (idx))  % If no violations.
     fU = sup (obj.c' * x);
     solver_info.termination = 'Normal termination';
     break;  % SUCCESS
   end
-
+  
   % Step 4: Perturb midpoint problem, such that
   %
   %    P(epsilon) = (mid([A]), mid([b]), mid([c]) + c_epsilon)
@@ -170,7 +170,7 @@ while (iter <= obj.options.ITER_MAX)
   end
   x_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q))); ...
     sdp_matrix * epsilon((end - length (obj.K.s) + 1):end)];
-
+  
   % Display short perturbation statistic.
   iter = iter + 1;
   if (obj.options.VERBOSE_OUTPUT)
@@ -184,13 +184,13 @@ while (iter <= obj.options.ITER_MAX)
     fprintf ('  Solve perturbed problem using ''%s''.\n', obj.options.SOLVER);
     fprintf ('--------------------------------------------------\n\n');
   end
-
+  
   % Step 5: Solve perturbed problem.
   %
   % Set perturbation parameters.
   obj.perturbation.b = (x_epsilon' * obj.At)';  % b := b - A * x(epsilon)
   obj.perturbation.c = [];
-
+  
   obj.solve (obj.options.SOLVER, 'Rigorous upper bound');
   sol = obj.solutions('Rigorous upper bound');
   if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...
