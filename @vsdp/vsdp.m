@@ -163,7 +163,7 @@ classdef vsdp < handle
     function [At, b, c] = get_perturbed_midpoint_problem (obj)
       [At, b, c] = deal (mid (obj.At), mid (obj.b), mid (obj.c));
       if (~isempty (obj.pertubation.b))
-        b = b + obj.pertubation.b;
+        b = b - obj.pertubation.b;
       end
       if (~isempty (obj.pertubation.c))
         c = c - obj.pertubation.c;

@@ -43,7 +43,6 @@ if (isempty (obj.solutions('Approximate solution')))
     'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
   obj.solve (obj.options.SOLVER, 'Approximate solution');
 end
-x = vsdp_indexable (intval (obj.solutions('Approximate solution').x), obj);
 
 % If any upper bound 'ybnd' is not finite, proceed with other algorithm.
 if (~all (isfinite (ybnd)))
@@ -59,6 +58,8 @@ rub = tic;
 
 % Step 1: Project approximate solution into the respective cones, e.g.
 %         compute x^+.
+
+x = vsdp_indexable (intval (obj.solutions('Approximate solution').x), obj);
 
 % LP cones
 x.l = max (x.l, 0);
@@ -78,7 +79,7 @@ for j = 1:length(K.s)
   E_min = min (inf_ (vsdp.verify_eigsym (vsdp.smat ([], x.s(j), 1/2))));
   % If the matrix in not positive semidefinite, perform a simple cone
   % projection, by shifting the diagonal by the minimal eigenvalue.
-  if (E_min < 0)  
+  if (E_min < 0)
     xs = x.s(j);
     idx = cumsum (1:K.s(j));  % Index vector for diagonal entries.
     xs(idx) = xs(idx) - E_min;
@@ -97,111 +98,110 @@ solver_info.elapsed_time = toc(rub);
 obj.add_solution ('Rigorous upper bound', nan, [], nan, [nan, fU], solver_info);
 end
 
-function obj = rigorous_upper_bound_infinite_bounds (obj, x)
-lb = -inf(nc,1);    % dual lower bounds
-epsj = ones(nc,1);  % factor for perturbation
-xeps = sparse(length(x),1);   % perturbation for x
-pertS = cell(length(K.s),1);  % diagonal perturbations of semidefinite blocks
+function obj = rigorous_upper_bound_infinite_bounds (obj)
+% Bound and perturbation parameter.  alpha = obj.options.ALPHA
+%
+%  epsilon = epsilon + (alpha.^k) .* dl,  where dl < 0.
+%
+num_of_bounds = obj.K.f + obj.K.l + length (obj.K.q) + length (obj.K.s);
+lb        = vsdp_indexable (zeros (num_of_bounds, 1), obj);
+k         = zeros (num_of_bounds, 1);  % Counter for perturbation.
+epsilon   = zeros (num_of_bounds, 1);  % Factor  for perturbation.
+x_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'x'.
 
-% Index vector for perturbation entries
-pertI = ones(sum(K.s),1);
-pertI(cumsum(K.s(1:end-1))+1) = 1-K.s(1:end-1);
-pertI = [ones(K.l+(~isempty(K.q)),1); K.q(1:end-1); cumsum(pertI)];
-pertI(1) = K.f + 1;
-pertI = cumsum(pertI);
+x = obj.solutions('Approximate solution').x;
+rub = tic;
+iter = 0;
+while (iter <= obj.options.ITER_MAX)
+  % Step 1: Compute rigorous enclosure for 'A * x = b'.
+  x = vsdp.verify_uls (obj, obj.At', obj.b, x);
+  if ((~isintval (x) || any (isnan (x))))
+      error ('VSDP:rigorous_upper_bound:noUlsEnclosure', ...
+        ['rigorous_lower_bound: Could not find a rigorous solution for the ', ...
+        'linear system of constraints.']);
+  end
+  x = vsdp_indexable (x, obj);
 
-% Save rounding mode
-rnd = getround();
-setround(0);
+  % Step 2: Verified lower bounds on 'x' for each cone.
+  %
+  % Free variables are ignored ==> 0.
+  lb.f = zeros (obj.K.f, 1);
 
-info.iter = 0;
-err_msg = '';
-while (info.iter <= VSDP_OPTIONS.ITER_MAX)
-  info.iter = info.iter + 1;
-  setround(1);  % default rounding for verification part
-  
-  % Step 1: Compute rigorous enclosure for `A * x = b`.
-  [x, I] = vuls([], [], A, b, [], [], x, I);
-  if (~isintval(x))
-    err_msg = 'could not find solution of primal equations';
-    break;
+  % LP cone variables.
+  lb.l = inf_ (x.l);
+
+  % Second-order cone variables.
+  offset = obj.K.f + obj.K.l;
+  for j = 1:length (obj.K.q)
+    xq = x.q(j);
+    lb(j + offset) = inf_ (xq(1) - norm (xq(2:end)));
   end
-  
-  % Step 2: Verified lower bounds for each cone.
-  
-  % LP cones
-  if (K.l > 0)
-    ind = (K.f + 1):(K.f + K.l);
-    xl = -inf(x(ind));
-    % Treat all linear variables as one cone: if any element is negative,
-    % all constraints close to zero will be perturbated.
-    xl_max = max(xl);
-    if (xl_max > 0)  % there is a negative bound
-      ind = (xl > (-xl_max / 2));
-      xl(ind) = xl(ind) + xl_max;
-    end
-    lb(1:K.l) = -xl;
+
+  % SDP cone variables.
+  offset = offset + length(obj.K.q);
+  for j = 1:length(obj.K.s)
+    % For smat, remember that 'x' is scaled by mu = 2.
+    lb(j + offset) = ...
+      min (inf_ (vsdp.verify_eigsym (vsdp.smat ([], x.s(j), 1/2))));
   end
-  
-  % Second-order cones
-  ind = K.f + K.l;
-  for j = 1:length(K.q)
-    ind = (ind(end) + 2):(ind(end) + K.q(j));
-    % lb = inf (z(1) - ||z(2:end)||)
-    lb(K.l+j) = inf_ (z(ind(1)-1) - norm (intval (z(ind))));
-  end
-  
-  % SDP cones
-  blke = K.f + K.l + sum(K.q) + sum(K.s.*(K.s+1))/2;
-  for j = length(K.s):-1:1
-    ofs = K.l + length(K.q) + j; % FIXME: K.f?
-    dind = cumsum(1:K.s(j));  % index for diagonal entries
-    blk3 = dind(end);
-    vx = x(blke-blk3+1:blke) / 2;
-    vx(dind) = 2 * vx(dind);  % regard mu=2 for x
-    [lmin,lb(ofs),pertS{j}] = bnd4sd(vx, VSDP_OPTIONS.FULL_EIGS_ENCLOSURE);
-    if (lmin > 0)
-      lb(ofs) = lmin;
-    end
-    pertS{j} = epsj(ofs) * pertS{j}(:);
-    blke = blke - blk3;
-  end
-  
+
   % Step 3: Cone feasibility check and upper bound computation:
   %
-  % If all lower bounds `lb` are non-negative, there are no cone violations
-  % and the rigorous upper bound `fU` on the dual objective value can be
-  % computed.
+  % If all lower bounds 'lb' on 'x' are non-negative, there are no cone
+  % violations and 'x' is an enclosure of a primal strict feasible (near
+  % optimal) solution.
+  idx = (lb.value < 0);
+
+  if (~any (idx))  % If no violations.
+    fU = sup (obj.c' * x);
+    solver_info.termination = 'Normal termination';
+    break;  % SUCCESS
+  end
+
+  % Step 4: Perturb midpoint problem, such that
   %
-  if (all (lb >= 0))
-    fU = sup (c' * x);
-    x = export_vsdp(imported_fmt,K,x);
-    setround(rnd);  % reset rounding mode
-    return; % SUCCESS
+  %    P(epsilon) = (mid([A]), mid([b]), mid([c]) + c_epsilon)
+  %
+  k      (idx) = k      (idx) + 1;
+  epsilon(idx) = epsilon(idx) - (obj.options.ALPHA .^ k (idx)) .* dl(idx);
+  if (~all (isfinite (epsilon)))
+    error ('VSDP:rigorous_upper_bound:infinitePerturbation', ...
+      'rigorous_upper_bound: Perturbation exceeds finite range.');
   end
-  
-  % Step 4: Perturb problem
-  setround(0);  % no code for rigorous computations
-  ind = 1:K.l+length(K.q);
-  if isempty(ind)
-    xeps = xeps + sparse(pertI,1,cat(1,pertS{:}),length(c),1);
-  else
-    xeps = xeps + sparse(pertI,1,cat(1,epsj(ind).*min(lb(ind),0),pertS{:}), ...
-      length(c),1);
+  x_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q))); ...
+    sdp_matrix * epsilon((end - length (obj.K.s) + 1):end)];
+
+  % Display short perturbation statistic.
+  iter = iter + 1;
+  if (obj.options.VERBOSE_OUTPUT)
+    fprintf ('\n\n');
+    fprintf ('--------------------------------------------------\n');
+    fprintf ('  VSDP.RIGOROUS_UPPER_BOUND  (iteration %d)\n', iter);
+    fprintf ('--------------------------------------------------\n');
+    fprintf ('  Violated cones    (lb < 0): %d\n',      sum (idx));
+    fprintf ('  Max. violation     min(lb): %+.2e\n',   min (lb.value));
+    fprintf ('  Perturbation  max(epsilon): %+.2e\n\n', max (epsilon));
+    fprintf ('  Solve perturbed problem using ''%s''.\n', obj.options.SOLVER);
+    fprintf ('--------------------------------------------------\n\n');
   end
-  if (~all(isfinite(xeps)))
-    err_msg = 'perturbation extended range';
-    break;
+
+  % Step 5: Solve perturbed problem.
+  %
+  % Set perturbation parameters.
+  obj.perturbation.b = (x_epsilon' * obj.At)';  % b := b - A * x(epsilon)
+  obj.perturbation.c = [];
+
+  obj.solve (obj.options.SOLVER, 'Rigorous upper bound');
+  sol = obj.solutions('Rigorous upper bound');
+  if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...
+      || isempty (sol.x) || any (isnan (sol.x)) || any (isinf (sol.x)))
+    error ('VSDP:rigorous_upper_bound:unsolveablePerturbation', ...
+      ['rigorous_upper_bound: Conic solver could not find a solution ', ...
+      'for perturbed problem']);
   end
-  epsj(lb < 0) = epsj(lb < 0) * (1 + VSDP_OPTIONS.ALPHA); % update perturbation factor
-  
-  % Step 5: Solve perturbed problem
-  [~,x0,y0,z0,info_solver] = mysdps(A,b+(xeps'*A)',c,K,x0,y0,z0);
-  if ((info_solver ~= 0) || isempty(x0) || any(isnan(x0)) || any(isinf(x0)))
-    err_msg = 'conic solver could not find solution for perturbed problem';
-    break;
-  end
-  x = x0 - xeps;  % undo perturbation
+  % Store last successful solver info and new dual solution.
+  solver_info = sol.solver_info;
+  x = sol.x + x_epsilon;  % Undo perturbation.
 end
 
 setround(rnd); % reset rounding mode
