@@ -78,9 +78,9 @@ classdef vsdp < handle
     b   % Right-hand side vector, or dual objective vector.
     c   % Primal objective vector.
     K   % Cone structure, 'K.f', 'K.l', 'K.q', 'K.s'.
-    cache_memory % Memory for caching expensive computation results.
-    options      % Options for this problem instance.
-    pertubation  % Pertubation parameter.
+    cache_memory  % Memory for caching expensive computation results.
+    options       % Options for this problem instance.
+    perturbation  % Perturbation parameter.
     % Solutions for the conic problem.
     %
     % See also vsdp_solution.
@@ -135,8 +135,8 @@ classdef vsdp < handle
           end
           [obj.At, obj.b, obj.c, obj.K] = varargin{1:4};
           obj.options = vsdp_options ();
-          obj.pertubation.b = [];
-          obj.pertubation.c = [];
+          obj.perturbation.b = [];
+          obj.perturbation.c = [];
           obj.solutions = containers.Map({ ...
             'Initial guess', ...
             'Approximate solution', ...
@@ -162,11 +162,11 @@ classdef vsdp < handle
   methods (Access = protected)
     function [At, b, c] = get_perturbed_midpoint_problem (obj)
       [At, b, c] = deal (mid (obj.At), mid (obj.b), mid (obj.c));
-      if (~isempty (obj.pertubation.b))
-        b = b - obj.pertubation.b;
+      if (~isempty (obj.perturbation.b))
+        b = b - obj.perturbation.b;
       end
-      if (~isempty (obj.pertubation.c))
-        c = c - obj.pertubation.c;
+      if (~isempty (obj.perturbation.c))
+        c = c - obj.perturbation.c;
       end
     end
   end

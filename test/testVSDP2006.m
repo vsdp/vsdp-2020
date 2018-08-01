@@ -359,7 +359,7 @@ function testVSDPLOW_example_DELTA_feasible_finite_bnd(testCase)
 [blk,A,C,b,DELTA] = example_DELTA_feasible();
 [~,Xt,yt,Zt,~] = mysdps(blk,A,C,b);
 xu = 1e5;
-% FIXME: pertubation neccessary to work with approximation from SDPT3-4.0
+% FIXME: perturbation neccessary to work with approximation from SDPT3-4.0
 yt(2) = yt(2) - DELTA/2;
 [fL,Y,dl] = vsdplow(blk,A,C,b,Xt,yt,Zt,xu);
 verifyEqual(testCase, fL, -0.5, 'RelTol', DELTA)
