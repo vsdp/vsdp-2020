@@ -52,13 +52,13 @@ else
 end
 
 % If the problem was not approximately solved before, do it now.
-if (isempty (obj.solutions('Approximate solution')))
+if (isempty (obj.solutions('Approximate')))
   warning ('VSDP:rigorous_lower_bound:noApproximateSolution', ...
     ['rigorous_lower_bound: The conic problem has no approximate ', ...
     'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-  obj.solve (obj.options.SOLVER, 'Approximate solution');
+  obj.solve (obj.options.SOLVER, 'Approximate');
 end
-y = intval (obj.solutions('Approximate solution').y);
+y = intval (obj.solutions('Approximate').y);
 
 % Bound and perturbation parameter.  alpha = obj.options.ALPHA
 %

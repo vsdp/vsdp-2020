@@ -37,11 +37,11 @@ else  % If dual upper bounds are not given, use infinite bounds.
 end
 
 % If the problem was not approximately solved before, do it now.
-if (isempty (obj.solutions('Approximate solution')))
+if (isempty (obj.solutions('Approximate')))
   warning ('VSDP:rigorous_upper_bound:noApproximateSolution', ...
     ['rigorous_upper_bound: The conic problem has no approximate ', ...
     'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-  obj.solve (obj.options.SOLVER, 'Approximate solution');
+  obj.solve (obj.options.SOLVER, 'Approximate');
 end
 
 % If any upper bound 'ybnd' is not finite, proceed with other algorithm.
@@ -59,7 +59,7 @@ rub = tic;
 % Step 1: Project approximate solution into the respective cones, e.g.
 %         compute x^+.
 
-x = vsdp_indexable (intval (obj.solutions('Approximate solution').x), obj);
+x = vsdp_indexable (intval (obj.solutions('Approximate').x), obj);
 
 % LP cones
 x.l = max (x.l, 0);
@@ -109,7 +109,7 @@ k         = zeros (num_of_bounds, 1);  % Counter for perturbation.
 epsilon   = zeros (num_of_bounds, 1);  % Factor  for perturbation.
 x_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'x'.
 
-x = obj.solutions('Approximate solution').x;
+x = obj.solutions('Approximate').x;
 rub = tic;
 iter = 0;
 while (iter <= obj.options.ITER_MAX)
@@ -142,7 +142,7 @@ while (iter <= obj.options.ITER_MAX)
   %    P(epsilon) = (mid([A]), mid([b]), mid([c]) + c_epsilon)
   %
   k      (idx) = k      (idx) + 1;
-  epsilon(idx) = epsilon(idx) - (obj.options.ALPHA .^ k (idx)) .* dl(idx);
+  epsilon(idx) = epsilon(idx) - (obj.options.ALPHA .^ k (idx)) .* lb(idx);
   if (~all (isfinite (epsilon)))
     error ('VSDP:rigorous_upper_bound:infinitePerturbation', ...
       'rigorous_upper_bound: Perturbation exceeds finite range.');

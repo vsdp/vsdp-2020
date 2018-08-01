@@ -55,13 +55,13 @@ end
 
 % Display short VSDP reference, what can be done now.
 fprintf ('\n');
-fprintf ('  %s.solutions(''Approximate solution'')  for (P) and (D).\n', ...
+fprintf ('  %s.solutions(''Approximate'')  for (P) and (D).\n', ...
   inputname(1));
-if (isempty (obj.solutions('Approximate solution')))
+if (isempty (obj.solutions('Approximate')))
   fprintf ('\n      None.  Compute with ''%s = %s.solve()''\n\n', ...
     inputname(1), inputname(1));
 else
-  disp (obj.solutions('Approximate solution'))
+  disp (obj.solutions('Approximate'))
 end
 
 fprintf (['  %s.solutions(''Rigorous lower bound'')  fL <= c''*x   ', ...

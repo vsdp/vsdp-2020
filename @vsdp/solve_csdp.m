@@ -27,16 +27,15 @@ if (sum (obj.K.q) > 0)
 end
 
 if (nargin == 1)
-  sol_type = 'Approximate solution';
+  sol_type = 'Approximate';
   [A, b, c] = deal (obj.At, obj.b, obj.c);
 else
   [A, b, c] = obj.get_perturbed_midpoint_problem ();
 end
 
 % Should initial solution guess be taken into account?
-if ((obj.options.USE_INITIAL_GUESS) ...
-    && (~isempty (obj.solution('Initial guess'))))
-  isol = obj.solution('Initial guess');
+if ((obj.options.USE_INITIAL_GUESS) && (~isempty (obj.solution('Initial'))))
+  isol = obj.solution('Initial');
   [x0, y0, z0] = deal (isol.x, isol.y, isol.z);
 else
   [x0, y0, z0] = deal ([], [], []);

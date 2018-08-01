@@ -28,7 +28,7 @@ if ((obj.K.f > 0) || (sum(obj.K.q) > 0))
 end
 
 if (nargin == 1)
-  sol_type = 'Approximate solution';
+  sol_type = 'Approximate';
   [At, c, b] = deal (obj.At, obj.b, obj.c);  % Note b <--> c!
 else
   [At, c, b] = obj.get_perturbed_midpoint_problem ();
@@ -38,9 +38,8 @@ end
 % through the end of the line are neglected".
 
 % Should initial solution guess be taken into account?
-if ((obj.options.USE_INITIAL_GUESS) ...
-    && (~isempty (obj.solution('Initial guess'))))
-  isol = obj.solution('Initial guess');
+if ((obj.options.USE_INITIAL_GUESS) && (~isempty (obj.solution('Initial'))))
+  isol = obj.solution('Initial');
   [x0, X0, Y0] = deal (isol.y, isol.z, isol.x);
   x0 = [x0; 0];  % expand to mDIM
   X0 = mat2cell (X0,  obj.K.dims, 1);

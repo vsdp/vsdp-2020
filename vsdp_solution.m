@@ -4,8 +4,8 @@ classdef vsdp_solution < handle
     % Solution type.
     %
     % One of:
-    %   - 'Initial guess',
-    %   - 'Approximate solution',
+    %   - 'Initial',
+    %   - 'Approximate',
     %   - 'Rigorous lower bound',
     %   - 'Rigorous upper bound',
     %   - 'Certificate primal infeasibility',
@@ -43,7 +43,7 @@ classdef vsdp_solution < handle
       %
       %   Example:
       %
-      %      sol_type = 'Initial guess';
+      %      sol_type = 'Initial';
       %      x = [1 2 3]';  % Primal solution.
       %      y = [4 5]';    % Dual solution.
       %      z = [];
@@ -56,8 +56,8 @@ classdef vsdp_solution < handle
       
       narginchk (4, 6);
       
-      obj.sol_type = validatestring (sol_type, {'Initial guess', ...
-        'Approximate solution', 'Rigorous lower bound', ...
+      obj.sol_type = validatestring (sol_type, {'Initial', ...
+        'Approximate', 'Rigorous lower bound', ...
         'Rigorous upper bound', 'Certificate primal infeasibility', ...
         'Certificate dual infeasibility'});
       
@@ -79,12 +79,14 @@ classdef vsdp_solution < handle
       else
         obj.z = [];
       end
-      if (~isempty (obj.x) && ~isempty (obj.z))
-        if (length (obj.x) ~= length (obj.z))
-          error ('VSDP:vsdp_solution:sizeMissmatch', ...
-            'vsdp_solution: The lengths of ''x'' and ''z'' must agree.');
-        end
+      if ((isequal (obj.sol_type, 'Initial') ...
+          || isequal (obj.sol_type, 'Approximate')) ...
+          && ~isempty (obj.x) && ~isempty (obj.z) ...
+          && (length (obj.x) ~= length (obj.z)))
+        error ('VSDP:vsdp_solution:sizeMissmatch', ...
+          'vsdp_solution: The lengths of ''x'' and ''z'' must agree.');
       end
+      
       if (nargin > 4)
         validateattributes (f_objective(:), {'double'}, {'size', [2, 1]});
         obj.f_objective = full (f_objective(:));
@@ -155,9 +157,9 @@ classdef vsdp_solution < handle
           obj.solver_info.elapsed_time, iter_str);
       end
       switch (obj.sol_type)
-        case 'Initial guess'
+        case 'Initial'
           obj.mem_info ();
-        case 'Approximate solution'
+        case 'Approximate'
           if (~all (isnan (obj.f_objective)))
             fprintf ('        c''*x = %.15e\n', obj.f_objective(1));
             fprintf ('        b''*y = %.15e\n', obj.f_objective(2));
@@ -169,7 +171,7 @@ classdef vsdp_solution < handle
           fprintf ('          fL = %.15e\n',   obj.f_objective(1));
           fprintf ('\n');
         case 'Rigorous upper bound'
-          obj.mem_info ();
+          fprintf ('          fU = %.15e\n',   obj.f_objective(2));
           fprintf ('\n');
         case 'Certificate primal infeasibility'
           obj.mem_info ();

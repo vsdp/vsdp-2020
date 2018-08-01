@@ -22,7 +22,7 @@ if (exist ('sedumi', 'file') ~= 2)
 end
 
 if (nargin == 1)
-  sol_type = 'Approximate solution';
+  sol_type = 'Approximate';
   [A, b, c] = deal (obj.At, obj.b, obj.c);
 else
   [A, b, c] = obj.get_perturbed_midpoint_problem ();
