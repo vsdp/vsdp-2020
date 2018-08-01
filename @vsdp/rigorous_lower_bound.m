@@ -56,21 +56,21 @@ if (isempty (obj.solutions('Approximate solution')))
 end
 y = intval (obj.solutions('Approximate solution').y);
 
-% Bound and pertubation parameter.  alpha = obj.options.ALPHA
+% Bound and perturbation parameter.  alpha = obj.options.ALPHA
 %
-%  epsilon = epsilon + (alpha.^k) .* dl_,  where dl_ < 0.
+%  epsilon = epsilon + (alpha.^k) .* dl,  where dl < 0.
 %
 dl        = vsdp_indexable (zeros (num_of_bounds, 1), obj);
-k         = zeros (num_of_bounds, 1);
-epsilon   = zeros (num_of_bounds, 1);  % factor for perturbation
-c_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'c' via 'vidx'.
+k         = zeros (num_of_bounds, 1);  % Counter for perturbation.
+epsilon   = zeros (num_of_bounds, 1);  % Factor  for perturbation.
+c_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'c'.
 
 % Index vector for perturbation.  In case of semidefinite programs, only
 % the diagonal elements have to be perturbed.  Those are easily obtained:
 vidx = vsdp.sindex (obj);          % Get only diagonal entries of SDP cones.
 vidx(1:(obj.K.f + obj.K.l)) = true;  % Copy free and linear part directly.
 if (~isempty (obj.K.q))
-  % In case of second-order cones, only the first element is pertubed.
+  % In case of second-order cones, only the first element is perturbed.
   vidx(obj.K.idx.q(:,1)) = true;
 end
 % And another index vector for semidefinite block perturbation.  This one maps a
@@ -101,17 +101,17 @@ while (iter <= obj.options.ITER_MAX)
     %    At.f * y = c.f
     %
     y = vsdp.verify_uls (obj, obj.At(1:obj.K.f,:), obj.c(1:obj.K.f), mid (y));
-    if (~isintval (y) || any (isnan (y)))
+    if ((~isintval (y) || any (isnan (y))))
       error ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
         ['rigorous_lower_bound: Could not find a rigorous solution of the ', ...
-        'linear  system of free variables.']);
+        'linear system of free variables.']);
     end
   end
   
   % Step 1: Compute rigorous enclosure [d] for  c - At*y.
   d = vsdp_indexable (obj.c - obj.At * y, obj);
-  
-  % Step 2: Rigorous lower bounds on cone eigenvalues
+
+  % Step 2: Rigorous lower bounds 'dl' on '[d]' for each cone.
   %
   % Free variables: if infinite upper bounds for free variables are given, we
   %                 ensured above, that the solution is contained, thus we
@@ -129,7 +129,7 @@ while (iter <= obj.options.ITER_MAX)
   offset = obj.K.f + obj.K.l;
   for j = 1:length (obj.K.q)
     dq = d.q(j);
-    dl(j + offset,1) = inf_ (dq(1) - norm (dq(2:end)));
+    dl(j + offset) = inf_ (dq(1) - norm (dq(2:end)));
   end
   
   % SDP cone variables.
@@ -168,37 +168,37 @@ while (iter <= obj.options.ITER_MAX)
   k      (idx) = k      (idx) + 1;
   epsilon(idx) = epsilon(idx) - (obj.options.ALPHA .^ k (idx)) .* dl(idx);
   if (~all (isfinite (epsilon)))
-    error ('VSDP:rigorous_lower_bound:infinitePertubation', ...
+    error ('VSDP:rigorous_lower_bound:infinitePerturbation', ...
       'rigorous_lower_bound: Perturbation exceeds finite range.');
   end
   c_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q))); ...
     sdp_matrix * epsilon((end - length (obj.K.s) + 1):end)];
-  
-  % Display short pertubation statistic.
+
+  % Display short perturbation statistic.
   iter = iter + 1;
   if (obj.options.VERBOSE_OUTPUT)
     fprintf ('\n\n');
     fprintf ('--------------------------------------------------\n');
     fprintf ('  VSDP.RIGOROUS_LOWER_BOUND  (iteration %d)\n', iter);
     fprintf ('--------------------------------------------------\n');
-    fprintf ('  Violated cones   (dl < 0): %d\n',      sum (idx));
-    fprintf ('  Max. violation    min(dl): %+.2e\n',   min (dl.value));
-    fprintf ('  Pertubation  max(epsilon): %+.2e\n\n', max (epsilon));
-    fprintf ('  Solve pertubed problem using ''%s''.\n', obj.options.SOLVER);
+    fprintf ('  Violated cones    (dl < 0): %d\n',      sum (idx));
+    fprintf ('  Max. violation     min(dl): %+.2e\n',   min (dl.value));
+    fprintf ('  Perturbation  max(epsilon): %+.2e\n\n', max (epsilon));
+    fprintf ('  Solve perturbed problem using ''%s''.\n', obj.options.SOLVER);
     fprintf ('--------------------------------------------------\n\n');
   end
-  
-  % Step 5: Solve perturbed problem%
+
+  % Step 5: Solve perturbed problem.
   %
-  % Set pertubation parameters.
-  obj.pertubation.b = [];
-  obj.pertubation.c = c_epsilon;
-  
+  % Set perturbation parameters.
+  obj.perturbation.b = [];
+  obj.perturbation.c = c_epsilon;  % c := c - c(epsilon)
+
   obj.solve (obj.options.SOLVER, 'Rigorous lower bound');
   sol = obj.solutions('Rigorous lower bound');
   if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...
       || isempty (sol.y) || any (isnan (sol.y)) || any (isinf (sol.y)))
-    error ('VSDP:rigorous_lower_bound:unsolveablePertubation', ...
+    error ('VSDP:rigorous_lower_bound:unsolveablePerturbation', ...
       ['rigorous_lower_bound: Conic solver could not find a solution ', ...
       'for perturbed problem']);
   end
@@ -207,7 +207,7 @@ while (iter <= obj.options.ITER_MAX)
   y = intval (sol.y);
 end
 
-% Append number of iterations to solver info.
+% Update solver info and store solution.
 solver_info.elapsed_time = toc(rlb);
 solver_info.iter = iter;
 obj.add_solution ('Rigorous lower bound', [], y, dl.value, [fL, nan], ...
