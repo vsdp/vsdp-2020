@@ -103,7 +103,7 @@ else
   % different VSDP functions.
   last_dims = obj.cache('last_dims');
 end
-if (isempty (I) || isempty (last_dims) || (~all (size (A) ~= last_dims)))
+if (isempty (I) || isempty (last_dims) || (~all (size (A) == last_dims)))
   % Bias towards greater entries in 'x0'.
   [~,I] = sort (abs (x0), 'descend');
   % Reorder the columns in 'A' and transpose.
