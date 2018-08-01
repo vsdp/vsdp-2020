@@ -67,10 +67,8 @@ c_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'c' via 'vidx'.
 
 % Index vector for perturbation.  In case of semidefinite programs, only
 % the diagonal elements have to be perturbed.  Those are easily obtained:
-vidx = vsdp.sindex (obj.K);
-vidx = vidx(:,1);  % Get only diagonal entries of SDP cones.
-% Copy free and linear part directly.
-vidx(1:(obj.K.f + obj.K.l)) = true;
+vidx = vsdp.sindex (obj);          % Get only diagonal entries of SDP cones.
+vidx(1:(obj.K.f + obj.K.l)) = true;  % Copy free and linear part directly.
 if (~isempty (obj.K.q))
   % In case of second-order cones, only the first element is pertubed.
   vidx(obj.K.idx.q(:,1)) = true;
