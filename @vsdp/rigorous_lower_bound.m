@@ -64,7 +64,6 @@ y = intval (obj.solutions('Approximate').y);
 %
 %  epsilon = epsilon + (alpha.^k) .* dl,  where dl < 0.
 %
-dl        = vsdp_indexable (zeros (num_of_bounds, 1), obj);
 k         = zeros (num_of_bounds, 1);  % Counter for perturbation.
 epsilon   = zeros (num_of_bounds, 1);  % Factor  for perturbation.
 c_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'c'.

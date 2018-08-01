@@ -64,6 +64,10 @@ classdef vsdp < handle
   
   % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
   
+  properties
+    options  % Options for this problem instance.
+  end
+  
   properties (GetAccess = public, SetAccess = protected)
     % Condensed cone dimension.
     %
@@ -79,7 +83,6 @@ classdef vsdp < handle
     c   % Primal objective vector.
     K   % Cone structure, 'K.f', 'K.l', 'K.q', 'K.s'.
     cache_memory  % Memory for caching expensive computation results.
-    options       % Options for this problem instance.
     perturbation  % Perturbation parameter.
     % Solutions for the conic problem.
     %

@@ -49,10 +49,14 @@ if (nargin == 1)
   end
   
   % Index matrix to translate the SDP part of 'lb'.
-  N = sum (obj.K.s);
-  cols = zeros (N, 1);
-  cols(cumsum ([1; obj.K.s(1:end-1)])) = 1;
-  sdp_matrix = sparse (1:N, cumsum (cols), 1);
+  if (isempty (obj.K.s))
+    sdp_matrix = [];
+  else
+    N = sum (obj.K.s);
+    cols = zeros (N, 1);
+    cols(cumsum ([1; obj.K.s(1:end-1)])) = 1;
+    sdp_matrix = sparse (1:N, cumsum (cols), 1);
+  end
   lb = [];  % Just to set a value.
 else  % Compute cone lower bound.
   narginchk (4, 4);

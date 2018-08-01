@@ -73,7 +73,7 @@ solver_info.elapsed_time = toc;
 % Store solution.
 if (isfield (extra, 'lambda'))
   y = extra.lambda;
-  z = c - A*obj.y;
+  z = obj.c - obj.At*y;
 end
 f_objective = [obj.c'*x; obj.b'*y];
 solver_info.name = 'glpk';
