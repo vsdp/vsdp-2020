@@ -102,8 +102,7 @@ while (iter <= obj.options.ITER_MAX)
     %
     %    At.f * y = c.f
     %
-    y = vsdp.verify_uls (obj, obj.At(1:obj.K.f,:), ...
-      obj.c(1:obj.K.f), obj.solution.y);
+    y = vsdp.verify_uls (obj, obj.At(1:obj.K.f,:), obj.c(1:obj.K.f), mid (y));
     if (~isintval (y) || any (isnan (y)))
       error ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
         ['rigorous_lower_bound: Could not find a rigorous solution of the ', ...
@@ -207,7 +206,7 @@ while (iter <= obj.options.ITER_MAX)
   end
   % Store last successful solver info and new dual solution.
   solver_info = sol.solver_info;
-  y = sol.y;
+  y = intval (sol.y);
 end
 
 % Append number of iterations to solver info.
