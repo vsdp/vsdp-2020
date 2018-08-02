@@ -133,7 +133,7 @@ classdef vsdp < handle
           % If first parameter is of type cell, we assume, that the VSDP 2006
           % input format was used  ==>  call static VSDP constructor.
           if (iscell (varargin{1}))
-            obj = vsdp.fromVSDP2006Fmt (varargin{:});
+            obj = vsdp.from_2006_fmt (varargin{:});
             return;
           end
           [obj.At, obj.b, obj.c, obj.K] = varargin{1:4};

@@ -1,7 +1,8 @@
 function obj = check_primal_infeasible (obj)
-% CHECK_PRIMAL_INFEASIBLE  Infeasibility check for VSDP conic program.
+% CHECK_PRIMAL_INFEASIBLE  Primal infeasibility check for VSDP conic program.
 %
-%   obj.check_primal_infeasible()  Check VSDP object 'obj' to be infeasible.
+%   obj.check_primal_infeasible()  Check VSDP object 'obj' to be primal
+%                                  infeasible.
 %
 %       Using a theorem of alternatives to claim a conic program to be primal
 %       infeasible (see https://vsdp.github.io/references.html#Jansson2007 for
@@ -34,7 +35,24 @@ function obj = check_primal_infeasible (obj)
 %       A = [A1(:), A2(:)];  % vectorize
 %       obj = vsdp(A, b, c, K).check_primal_infeasible()
 %
+%       K.s = 2;
+%       A1 = [-1 0; 0  0];
+%       A2 = [ 0 0; 0 -1];
+%        c = [0 1 1 0]';
+%        b = [-1; 0];
+%       A = [A1(:), A2(:)];  % vectorize
+%       obj = vsdp(A, b, c, K).check_primal_infeasible()
+%
+%       K.s = 3;
+%       A1 = [1 0 0; 0 0 0; 0 0 0];
+%       A2 = [0 0 1; 0 1 0; 1 0 0];
+%        c = [1 0 0; 0 1 0; 0 0 0];
+%        b = [0; 1];
+%       A = [A1(:), A2(:)];  % vectorize
+%       obj = vsdp(A, b, c(:), K).check_primal_infeasible()
+%
 %   See also vsdp, vsdp.rigorous_lower_bound, vsdp.rigorous_upper_bound.
+%            vsdp.check_dual_infeasible.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
