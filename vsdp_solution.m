@@ -99,7 +99,7 @@ classdef vsdp_solution < handle
         obj.solver_info = solver_info;
         % But ensure certain fields to be set.
         if (~isfield (obj.solver_info, 'name'))
-          obj.solver_info.name = 'Unknown';
+          obj.solver_info.name = 'None';
         end
         if (isfield (obj.solver_info, 'elapsed_time'))
           validateattributes (obj.solver_info.elapsed_time, {'double'}, ...
@@ -147,13 +147,18 @@ classdef vsdp_solution < handle
     function disp (obj)
       % DISP  Visualize the solution.
       if (~isempty (obj.solver_info))
+        if (~strcmp (obj.solver_info.name, 'None'))
+          solver_str = sprintf ('Solver ''%s'': ', obj.solver_info.name);
+        else
+          solver_str = '';
+        end
         if (isfield (obj.solver_info, 'iter'))
           iter_str = sprintf (', %d iterations', obj.solver_info.iter);
         else
           iter_str = '';
         end
-        fprintf ('      Solver ''%s'': %s, %.1f seconds%s.\n\n', ...
-          obj.solver_info.name, obj.solver_info.termination, ...
+        fprintf ('      %s%s, %.1f seconds%s.\n\n', ...
+          solver_str, obj.solver_info.termination, ...
           obj.solver_info.elapsed_time, iter_str);
       end
       switch (obj.sol_type)
@@ -174,11 +179,21 @@ classdef vsdp_solution < handle
           fprintf ('          fU = %.15e\n',   obj.f_objective(2));
           fprintf ('\n');
         case 'Certificate primal infeasibility'
-          obj.mem_info ();
-          fprintf ('\n');
+          fprintf ('      ');
+          if (obj.f_objective(1))
+            fprintf (['A certificate of primal infeasibility ''y'' was ', ...
+              'found.\n      The conic problem is primal infeasible.\n\n']);
+          else
+            fprintf (['NO certificate of primal infeasibility was found.\n\n']);
+          end
         case 'Certificate dual infeasibility'
-          obj.mem_info ();
-          fprintf ('\n');
+          fprintf ('      ');
+          if (obj.f_objective(2))
+            fprintf (['A certificate of dual infeasibility ''x'' was ', ...
+              'found.\n      The conic problem is dual infeasible.\n\n']);
+          else
+            fprintf (['NO certificate of dual infeasibility was found.\n\n']);
+          end
         otherwise
           error ('VSDP_SOLUTION:disp:unknownType', ...
             'disp: Unknown solution type.');
