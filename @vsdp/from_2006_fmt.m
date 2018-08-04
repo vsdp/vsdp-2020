@@ -1,7 +1,7 @@
-function obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0)
-% FROM_VSDP_2006_FMT  Import SDP problem data from VSDP 2006 format.
+function obj = from_2006_fmt (blk, A, C, b, X0, y0, Z0)
+% FROM_2006_FMT  Import SDP problem data from VSDP 2006 format.
 %
-%   obj = vsdp.FROM_VSDP_2006_FMT (blk, A, C, b, X0, y0, Z0)
+%   obj = vsdp.FROM_2006_FMT (blk, A, C, b, X0, y0, Z0)
 %
 %   The VSDP 2006 block-diagonal structure format is:
 %
@@ -35,9 +35,9 @@ function obj = from_vsdp_2006_fmt (blk, A, C, b, X0, y0, Z0)
 %       A{2,1} = [1 1; 1 1];
 %         C{1} = [1 0; 0 1];
 %            b = [1; 2.0001];
-%       obj = vsdp.FROM_VSDP_2006_FMT (blk, A, C, b);
+%       obj = vsdp.FROM_2006_FMT (blk, A, C, b);
 %
-%   See also to_vsdp_2006_fmt.
+%   See also vsdp.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
@@ -45,8 +45,8 @@ narginchk (4, 7);
 
 % Translate cone structure.
 if (~iscell (blk) || isempty (blk{1,2}))
-  error ('VSDP:FROM_VSDP_2006_FMT:no_cone_structure', ...
-    'from_VSDP_2006_fmt: bad cone structure `blk`');
+  error ('VSDP:FROM_2006_FMT:badConeStructure', ...
+    'from_2006_fmt: bad cone structure ''blk''.');
 end
 K.s = horzcat (blk{:,2});
 

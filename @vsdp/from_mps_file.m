@@ -552,4 +552,3 @@ function h = hash(key,n)
 h = sum(key./(27.3:27+length(key)));
 h = round((h-floor(h))*(n-1)) + 1;
 end
-

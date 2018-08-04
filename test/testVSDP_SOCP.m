@@ -43,7 +43,7 @@ for i = 1:length(use_solvers)
   verifyEqual (testCase, isreal (sol.z), true);
   verifyEqual (testCase, all (sol.z) >= 0, true);
   
-    obj.rigorous_upper_bound ();
+  obj.rigorous_upper_bound ();
   sol = obj.solutions('Rigorous upper bound');
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, isnan (sol.f_objective(1)), true);

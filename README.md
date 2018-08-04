@@ -15,13 +15,13 @@ The software is completely written in [MATLAB](https://www.mathworks.com) /
 toolbox [INTLAB](http://www.ti3.tuhh.de/rump/intlab).  Thus interval input is
 supported as well.
 
-Via its interface, VSDP provides easy access to the conic solvers:
-- [CSDP](https://projects.coin-or.org/Csdp),
-- [GLPK](https://www.gnu.org/software/glpk/),
-- [LINPROG](https://www.mathworks.com/help/optim/ug/linprog.html),
-- [lp_solve](https://lpsolve.sourceforge.io),
-- [SeDuMi](https://github.com/sqlp/sedumi),
-- [SDPA](https://sdpa.sourceforge.io), and
-- [SDPT3](https://github.com/sqlp/sdpt3).
+This version of VSDP provides easy access to the conic solvers:
+- [CSDP](https://github.com/coin-or/Csdp),
+  [GLPK](https://www.gnu.org/software/glpk/),
+  [LINPROG](https://www.mathworks.com/help/optim/ug/linprog.html),
+  [lp_solve](https://lpsolve.sourceforge.io),
+  [SDPA](https://sdpa.sourceforge.io),
+  [SDPT3](https://github.com/sqlp/sdpt3), and
+  [SeDuMi](https://github.com/sqlp/sedumi).
 
 For more information, please visit <https://vsdp.github.io/>.

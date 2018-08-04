@@ -6,7 +6,7 @@ function tests = testVSDP()
 %       clc; table (runtests ('testVSDP')) % Matlab
 %       clc; testVSDP;                     % Octave
 %
-%   See also demovsdp.
+%   See also vsdp.
 
 % Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 

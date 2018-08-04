@@ -1,7 +1,15 @@
 function obj = analyze (obj, yes_to_all)
 % ANALYZE  Analyze the conic program for pathological patterns.
 %
-%   Detailed explanation goes here
+%   1) Check for diagonal SDP blocks:  If the constraint vector 'c.s(j)' and the 
+%      constraint matrix 'A.s(j)' only contain entries on the main diagonal,
+%      it is recommended to convert them into a LP block.  This saves memory
+%      'n*(n+1)/2' vs. 'n' entries and computation time.
+%
+%   See also vsdp.
+%
+
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 % Check for diagonal only SDP blocks ==> LP blocks.
 At = vsdp_indexable (obj.At, obj);

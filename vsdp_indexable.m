@@ -1,5 +1,5 @@
 classdef vsdp_indexable < handle
-  % VSDP_INDEXABLE  A quantity that can be seperated
+  % VSDP_INDEXABLE  A quantity that can be separated
   %   Detailed explanation goes here
   
   properties

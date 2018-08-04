@@ -7,7 +7,7 @@ function obj = validate (obj)
 
 narginchk (1, 1);
 
-% The cone structure constains all relevant metadata for the actual data,
+% The cone structure contains all relevant metadata for the actual data,
 % especially the vectorized cone sizes 'N' (uncondensed size) and 'n' condensed
 % size.
 [obj.K, obj.N, obj.n] = vsdp.validate_cone (obj.K);
@@ -42,7 +42,7 @@ end
 if (size (obj.At, 2) ~= obj.m)
   obj.At = obj.At';
 end
-% Ensure vectorzied condensed cone dimension.
+% Ensure vectorized condensed cone dimension.
 try
   obj.At = vsdp.svec (obj, obj.At, 1, 'unsymmetric');
 catch ME
@@ -55,7 +55,7 @@ if (~isfloat (obj.c) && ~isa (obj.c, 'intval'))
   error ('VSDP:validate:badTypeC', ...
     'validate: Primal objective vector ''c'' must be numeric or an interval.');
 end
-% Ensure vectorzied condensed cone dimension.
+% Ensure vectorized condensed cone dimension.
 try
   obj.c = vsdp.svec (obj, obj.c(:), 1, 'unsymmetric');
 catch ME

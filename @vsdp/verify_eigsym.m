@@ -19,8 +19,8 @@ function E = verify_eigsym (A)
 %       A = midrad (A, 0.01*ones(3));
 %       E = vsdp.verify_eigsym (A);
 %
-%   See also vsdplow, vsdpup, vsdpinfeas.
-%
+%   See also vsdp, rigorous_lower_bound, rigorous_upper_bound,
+%            check_primal_infeasible, check_dual_infeasible.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

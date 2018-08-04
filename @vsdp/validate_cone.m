@@ -1,5 +1,5 @@
 function [K, N, n] = validate_cone (K_in)
-% VALIDATE_CONE  Ensure a given VSDP cone strucuture to be valid.
+% VALIDATE_CONE  Ensure a given VSDP cone structure to be valid.
 %
 %   A valid cone structure has the fields in the given order:
 %
@@ -78,7 +78,7 @@ end
 
 if (any ([K.f; K.l; K.q; K.s] ~= round([K.f; K.l; K.q; K.s])))
   error ('VSDP:validate_cone:needPositiveIntegers', ...
-    'validate_cone: All cone dimensions must be positive intergers.');
+    'validate_cone: All cone dimensions must be positive integers.');
 end
 
 % Determine (un-)condensed cone dimension.

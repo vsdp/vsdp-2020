@@ -6,7 +6,7 @@ function obj = from_sdpa_file (fname, blksize)
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\sparse-initial-data.ini-s', blksize);
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\dense-initial-data.ini',    blksize);
 %
-%      fname: string with the path + filname to the problem
+%      fname: string with the path + filename to the problem
 %
 %
 
@@ -14,13 +14,13 @@ function obj = from_sdpa_file (fname, blksize)
 
 narginchk(1, 2);
 if (exist (fname, 'file') ~= 2)
-  error ('VSDP:FROM_SDPA_FILE:file_not_exists', ...
+  error ('VSDP:from_sdpa_file:file_not_exists', ...
     'from_sdpa_file: Input file does not exist.');
 end
 
 fid = fopen (fname, 'r');
 if (fid == -1)
-  error ('VSDP:FROM_SDPA_FILE:cannot_open_file', ...
+  error ('VSDP:from_sdpa_file:cannot_open_file', ...
     'from_sdpa_file: Cannot open %s', fname);
 end
 
@@ -54,8 +54,13 @@ switch (fext)
     % any i>j ?
     idx = find(i>j);
     if ~isempty(idx)
-      warning('VSDP:SDPA2VSDP','Lower triangular elements will be ignored.');
-      col(idx) = [];  blk(idx) = [];  i(idx) = [];  j(idx) = [];  data(idx) = [];
+      warning ('VSDP:from_sdpa_file:', ...
+	    'Lower triangular elements will be ignored.');
+      col(idx) = [];
+	  blk(idx) = [];
+	  i(idx) = [];
+	  j(idx) = [];
+	  data(idx) = [];
     end
     
     % block information
@@ -109,12 +114,14 @@ switch (fext)
     [c,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if cnt~=dim
       fclose(fid);
-      error('VSDP:SDPA2VSDP','Could not read SDPA data');
+      error('VSDP:from_sdpa_file:', ...
+	    'from_sdpa_file: Could not read SDPA data');
     end
     [A,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim m]);
     if cnt~=dim*m
       fclose(fid);
-      error('VSDP:SDPA2VSDP','Could not read SDPA data');
+      error('VSDP:from_sdpa_file:', ...
+	    'from_sdpa_file: Could not read SDPA data');
     end
     fclose(fid);
     
@@ -138,9 +145,11 @@ switch (fext)
     
   case '.ini-s'  % Sparse initial data.
     
-    % cone information from blksize
-    if nargin<2 || isempty(blksize)
-      error('VSDP:SDPA2VSDP','block sizes "blksize" has to be set to read initial data');
+    % Cone information from blksize
+    if nargin < 2 || isempty(blksize)
+      error ('VSDP:from_sdpa_file:', ...
+	    ['from_sdpa_file: Block sizes "blksize" has to be set to read ', ...
+		'initial data']);
     end
     
     % dual initial vector y0
@@ -151,15 +160,22 @@ switch (fext)
     [data,cnt] = fscanf(fid,'%*[^0-9+-]%d %d %d %d %lf',[5 inf]);
     fclose(fid);
     if cnt==0 || mod(cnt,5)~=0
-      error('VSDP:SDPA2VSDP','Could not read SDPA data');
+      error ('VSDP:from_sdpa_file:', ...
+	    'from_sdpa_file: Could not read SDPA data');
     end
-    [col,blk,i,j,data] = deal(data(1,:), data(2,:), data(3,:), data(4,:), data(5,:));
+    [col, blk, i, j, data] = deal(data(1,:), data(2,:), data(3,:), ...
+	  data(4,:), data(5,:));
     
-    % any i>j ?
+    % Any i > j?
     idx = i>j;
     if any(idx)
-      warning('VSDP:SDPA2VSDP','Lower triangular elements will be ignored.');
-      col(idx) = [];  blk(idx) = [];  i(idx) = [];  j(idx) = [];  data(idx) = [];
+      warning ('VSDP:from_sdpa_file:', ...
+	    'from_sdpa_file: Lower triangular elements will be ignored.');
+      col(idx) = [];
+	  blk(idx) = [];
+	  i(idx) = [];
+	  j(idx) = [];
+	  data(idx) = [];
     end
     
     % block information
@@ -189,7 +205,8 @@ switch (fext)
     
     % cone information from blksize
     if (nargin<2 || isempty(blksize))
-      error('VSDP:SDPA2VSDP','block sizes "blksize" has to be set to read initial data');
+      error ('VSDP:from_sdpa_file:', ...
+	    'block sizes "blksize" has to be set to read initial data');
     end
     
     % dual initial vector y0
@@ -210,12 +227,12 @@ switch (fext)
     [c,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if (cnt~=dim)
       fclose(fid);
-      error('VSDP:SDPA2VSDP','Could not read SDPA data');
+      error('VSDP:from_sdpa_file:', ..., ...,'Could not read SDPA data');
     end
     [A,cnt] = fscanf(fid,'%*[^0-9+-]%f',[dim 1]);
     if (cnt~=dim)
       fclose(fid);
-      error('VSDP:SDPA2VSDP','Could not read SDPA data');
+      error('VSDP:from_sdpa_file:', ..., ...,'Could not read SDPA data');
     end
     fclose(fid);
     
@@ -235,7 +252,7 @@ switch (fext)
     end
     
   otherwise
-    error ('VSDP:FROM_SDPA_FILE:unsupported_file_extension', ...
+    error ('VSDP:from_sdpa_file:unsupported_file_extension', ...
       'from_sdpa_file: Unsupported file extension ''%s''.', fext);
 end
 

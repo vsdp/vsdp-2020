@@ -1,80 +1,83 @@
-function publish_csv_table(filename, fmt)
-% PUBLISH_CSV_TABLE  Publish a bechmark CSV table to a destination format.
+function publish_csv_table (filename, fmt)
+% PUBLISH_CSV_TABLE  Publish a benchmark CSV table to a destination format.
 %
 %   PUBLISH_CSV_TABLE(filename, fmt) If fmt == 'latex' then a LaTeX table stub
-%      is created from input bechmark CSV (=comma separated value) table
+%      is created from input benchmark CSV (=comma separated value) table
 %      'filename' in the same directory.  If fmt == 'html' then a standalone
 %      HTML website of that tables is created in a subdirectory named 'html'
 %      relative to the location of 'filename'.
 %
 %   See also benchmark.
 
-% Copyright 2016-2017 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 narginchk(2,2);
 
-str = fileread(filename);
-[pathstr,fname,fext] = fileparts(filename);
-if (~strcmpi(fext,'.csv'))
-  error('VSDP:PUBLISH_CSV_TABLE','Input file must have ''.csv'' suffix.');
+str = fileread (filename);
+[pathstr, fname, fext] = fileparts (filename);
+if (~strcmpi (fext, '.csv'))
+  error ('VSDP:publish_csv_table:noCsvFile', ...
+    'Input file must have ''.csv'' suffix.');
 end
-if (strcmp(fmt, 'html'))
+if (strcmp (fmt, 'html'))
   str = [html_header(fname), ...
     csv_to_html_table(str), ...
     html_footer([fname, fext])];
-  if (exist('html', 'dir') ~= 7)
-    mkdir('html')
+  if (exist ('html', 'dir') ~= 7)
+    mkdir ('html')
   end
   outfile = fullfile(pathstr, 'html', [fname, '.html']);
 elseif (strcmp(fmt, 'latex'))
-  str = csv_to_latex_table(str);
-  outfile = fullfile(pathstr, [fname, '.tex']);
+  str = csv_to_latex_table (str);
+  outfile = fullfile (pathstr, [fname, '.tex']);
 end
-str = strsplit(str,'\\n');
-fid = fopen(outfile, 'w');
+str = strsplit (str, '\\n');
+fid = fopen (outfile, 'w');
 for j = 1:length(str)
   fprintf(fid, '%s\n', str{j});
 end
-fclose(fid);
+fclose (fid);
 end
 
-function outstr = csv_to_latex_table(str)
+function outstr = csv_to_latex_table (str)
 str = strsplit(str,'\n');
 thead = str{1};
-thead = strrep(thead, ',', ' & ');
-thead = strrep(thead, 'fU', '$fU$');
-thead = strrep(thead, 'fL', '$fL$');
-thead = strrep(thead, 'mu$fU$$fL$', '$\mu(fU,fL)$');
-thead = strrep(thead, 'ts', '$t_s$');
-thead = strrep(thead, 'tu', '$t_u$');
-thead = strrep(thead, 'tl', '$t_l$');
+thead = strrep (thead, ',', ' & ');
+thead = strrep (thead, 'fU', '$fU$');
+thead = strrep (thead, 'fL', '$fL$');
+thead = strrep (thead, 'mu$fU$$fL$', '$\mu(fU,fL)$');
+thead = strrep (thead, 'ts', '$t_s$');
+thead = strrep (thead, 'tu', '$t_u$');
+thead = strrep (thead, 'tl', '$t_l$');
 thead = ['\hline\n', thead, ' \\\n\hline\n\endhead\n'];
 tbody = strjoin (str(2:end), ' \\\\\n');
 tbody = strrep(tbody, ',', ' & ');
-outstr = ['\begin{longtable}{', ...
-  repmat('l',1,length(strfind(thead,'&'))+1), '}\n', ...
+outstr = [ ...
+  '\begin{longtable}{', ...
+  repmat('l', 1, length (strfind (thead, '&')) + 1), '}\n', ...
   thead, ...
   tbody, ...
   '\end{longtable}\n'];
 end
 
-function outstr = csv_to_html_table(str)
-str = strsplit(str,'\n');
+function outstr = csv_to_html_table (str)
+str = strsplit (str, '\n');
 thead = str{1};
-thead = strrep(thead, ',', '</th><th>');
-thead = strrep(thead, 'fU', '$fU$');
-thead = strrep(thead, 'fL', '$fL$');
-thead = strrep(thead, 'mu$fU$$fL$', '$μ(fU,fL)$');
-thead = strrep(thead, 'ts', '$t_s$');
-thead = strrep(thead, 'tu', '$t_u$');
-thead = strrep(thead, 'tl', '$t_l$');
+thead = strrep (thead, ',', '</th><th>');
+thead = strrep (thead, 'fU', '$fU$');
+thead = strrep (thead, 'fL', '$fL$');
+thead = strrep (thead, 'mu$fU$$fL$', '$μ(fU,fL)$');
+thead = strrep (thead, 'ts', '$t_s$');
+thead = strrep (thead, 'tu', '$t_u$');
+thead = strrep (thead, 'tl', '$t_l$');
 thead = ['<thead>\n<tr><th>', thead, '</th></tr></thead>\n'];
 tbody = strjoin (str(2:end), '</td></tr>\n<tr><td>');
 tbody = strrep(tbody, ',', '</td><td>');
 tbody = ['<tr><td>', tbody, '</td></tr>'];
 tbody = strrep(tbody, '<tr><td></td></tr>', '');
 tbody = ['<tbody>\n', tbody, ''];
-outstr = ['<table id=''main_tab''>\n', ...
+outstr = [ ...
+  '<table id=''main_tab''>\n', ...
   thead, ...
   tbody, ...
   '</table>\n', ...

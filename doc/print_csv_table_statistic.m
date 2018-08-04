@@ -1,9 +1,9 @@
-function str = print_csv_table_statistic(filename)
-% PRINT_CSV_TABLE_STATISTIC  Prints short statistic of a bechmark CSV table.
+function str = print_csv_table_statistic (filename)
+% PRINT_CSV_TABLE_STATISTIC  Prints short statistic of a benchmark CSV table.
 %
 %   See also benchmark.
 
-% Copyright 2016-2017 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 str = fileread(filename);
 cstr = strsplit(str,'\n');
@@ -17,21 +17,21 @@ for i = 1:length(cstr)
 end
 
 % Remove not required columns
-idxFrom = @(strfind) find(strcmp(strfind, carray(1,:)));
-carray(:,[idxFrom('Problem'),idxFrom('Equations'),idxFrom('Variables'), ...
-  idxFrom('fU'),idxFrom('fL')]) = [];
-idxFrom = @(strfind) find(strcmp(strfind, carray(1,:)));
+idxFrom = @(str) find (strcmp (str, carray(1,:)));
+carray(:,[idxFrom('Problem'), idxFrom('Equations'), idxFrom('Variables'), ...
+  idxFrom('fU'), idxFrom('fL')]) = [];
+idxFrom = @(str) find (strcmp (str, carray(1,:)));
 
 % Compute tu/ts and tl/ts
-ts = cellfun(@str2double,carray(2:end,idxFrom('ts')));
-tu = cellfun(@str2double,carray(2:end,idxFrom('tu')));
-tl = cellfun(@str2double,carray(2:end,idxFrom('tl')));
+ts = cellfun (@str2double, carray(2:end, idxFrom('ts')));
+tu = cellfun (@str2double, carray(2:end, idxFrom('tu')));
+tl = cellfun (@str2double, carray(2:end, idxFrom('tl')));
 tu = tu ./ ts;
 tl = tl ./ ts;
-carray(2:end,idxFrom('tu')) = num2cell(tu);
-carray(2:end,idxFrom('tl')) = num2cell(tl);
-carray{1,idxFrom('tu')} = 'tuts';
-carray{1,idxFrom('tl')} = 'tlts';
+carray(2:end, idxFrom('tu')) = num2cell(tu);
+carray(2:end, idxFrom('tl')) = num2cell(tl);
+carray{1,     idxFrom('tu')} = 'tuts';
+carray{1,     idxFrom('tl')} = 'tlts';
 
 % Convert mufUfL to double
 mufUfL = cellfun(@str2double,carray(2:end,idxFrom('mufUfL')));

@@ -37,8 +37,8 @@ fun = {@(x) x, @(x) sparse(x)};
 if (exist ('intval', 'file') == 2)
   fun{end + 1} = @(x) intval (x);
 else
-  warning ('VSDP:testVSDP_svec:noIntval', ...
-    'testVSDP_svec: Skip intval tests.');
+  warning ('VSDP:testVSDP_svec_smat:noIntval', ...
+    'testVSDP_svec_smat: Skip intval tests.');
 end
 
 % SVEC

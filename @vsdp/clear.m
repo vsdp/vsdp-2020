@@ -1,7 +1,9 @@
 function obj = clear (obj, str)
 % CLEAR  Clear 'all' or parts of a VSDP object.
 %
-%   Detailed explanation goes here
+%   See also vsdp.
+
+% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
 str = validatestring (str, { ...
   'all', ...

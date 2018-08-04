@@ -5,7 +5,7 @@ function obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
 %
 %   The problem data of the SDPT3-4.0 is:
 %
-%      'n'  Number of cones (semidefinite 's', quadratic 'q', linear'l',
+%      'n'  Number of cones (semidefinite 's', quadratic 'q', linear 'l',
 %                            unrestricted (free variables) 'u')
 %      'blk'  cell(n,2)
 %      'At'   cell(n,1)  Each cell  double(n_j,m)
@@ -96,7 +96,7 @@ At = At(sort_idx);
 c  = vsdp.cell2mat (c(:));
 At = cell2mat (At(:));  % No vectorization needed, use native 'cell2mat'.
 
-% Treat optional paramter.
+% Treat optional parameter.
 if (nargin >= 5)
   x0 = x0(sort_idx);
   x0 = vsdp.cell2mat (x0(:));

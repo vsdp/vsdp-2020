@@ -7,7 +7,7 @@ classdef vsdp < handle
   %              s.t. At'*x = b           s.t. z := c - At*y
   %                       x in K               z in K^*
   %
-  %      where K is a cartesian product of the cones of free variables
+  %      where K is a Cartesian product of the cones of free variables
   %      (K.f), LP (K.l), SOCP (K.q), and SDP (K.s).  K^* is the dual cone.
   %      For a theoretical introduction into verified conic programming see
   %
@@ -41,7 +41,7 @@ classdef vsdp < handle
   %
   %   To use an initial guess (x0,y0,z0) type:
   %
-  %      obj.add_solution ('initial guess', x0, y0, z0);
+  %      obj.add_solution ('initial', x0, y0, z0);
   %      obj.options.USE_INITIAL_GUESS = true;
   %
   %   Example:
@@ -77,7 +77,7 @@ classdef vsdp < handle
     %
     % 'N = K.f + K.l + sum(K.q) + sum(K.s .* K.s)'.
     N
-    m % Number of constraints.
+    m   % Number of constraints.
     At  % Transposed condensed constraint matrix 'n x m'.
     b   % Right-hand side vector, or dual objective vector.
     c   % Primal objective vector.

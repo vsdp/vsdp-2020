@@ -48,8 +48,8 @@ function [vidx, midx, lidx] = sindex (obj)
 %
 %      Avec(~vidx) == A(midx(:,2)) == [b d e g h i]'
 %
-%   Ocasionally, it is important to extract the lower triangular part of 'A' as
-%   well.  But the Fortran index order by logical indexing would yield
+%   Occasionally, it is important to extract the lower triangular part of 'A'
+%   as well.  But the Fortran index order by logical indexing would yield
 %   [B D G E H I].  To obtain the same order of the elements as in
 %   'A(midx(:,2))', use the index vector 'lidx' for the lower triangular part:
 %
@@ -71,7 +71,7 @@ function [vidx, midx, lidx] = sindex (obj)
 %      disp ( A(midx(:,2))' )  % Upper triangular part of A
 %      disp ( A(lidx)' )       % Lower triangular part of A
 %
-%   See also vsdp.svec, vsdp.smat.
+%   See also vsdp, vsdp.svec, vsdp.smat.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)

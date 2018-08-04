@@ -29,7 +29,7 @@ end
 
 if (nargin == 1)
   sol_type = 'Approximate';
-  [At, c, b] = deal (obj.At, obj.b, obj.c);  % Note b <--> c!
+  [At, c, b] = deal (mid (obj.At), mid (obj.b), mid (obj.c));  % Note b <--> c!
 else
   [At, c, b] = obj.get_perturbed_midpoint_problem ();
 end

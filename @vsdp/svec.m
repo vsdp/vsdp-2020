@@ -42,7 +42,7 @@ function A = svec (obj, A, mu, param)
 %   Only non-redundant coefficients (non-capital letters) are stored and the
 %   off-diagonal elements are scaled by factor 'mu'.
 %
-%   See also vsdp.sindex, vsdp.smat.
+%   See also vsdp, vsdp.sindex, vsdp.smat.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)

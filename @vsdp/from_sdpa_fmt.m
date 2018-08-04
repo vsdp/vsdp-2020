@@ -77,7 +77,7 @@ F = -vsdp.cell2mat (F);  % F = [c, At]
 At = F(:,2:end);
 c = F(:,1);       % Creates new 'c'!
 
-% Treat optional paramter.
+% Treat optional parameter.
 if (nargin > 3)
   y = x0;
 else

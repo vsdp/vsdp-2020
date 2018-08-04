@@ -20,7 +20,7 @@ function x = verify_uls (obj, A, b, x0)
 %   refer to <https://vsdp.github.io/references.html#Rump2013a>.
 %
 %   The computation of rigorous lower and upper bounds for the optimal value
-%   requires considering a modified problem.  There, a nonsquare interval
+%   requires considering a modified problem.  There, a non-square interval
 %   matrix [A] (m x n) with m < n and a right-hand side [b] (m x 1) are given,
 %   and the goal is to compute an interval vector [x] such that property (i) is
 %   fulfilled.
@@ -53,7 +53,8 @@ function x = verify_uls (obj, A, b, x0)
 %       x0 = [0 1 0 1]';
 %       x  = vsdp.verify_uls([], A, b, x0);
 %
-%   See also vsdpinfeas, vsdplow, vsdpup.
+%   See also vsdp, rigorous_lower_bound, rigorous_upper_bound,
+%            check_primal_infeasible, check_dual_infeasible.
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
@@ -99,8 +100,8 @@ if (isempty (obj))
   I = [];
 else
   I = obj.cache('I');
-  % Dimensons of the last matrix as "hash", because cached value is invalid for
-  % different VSDP functions.
+  % Dimensions of the last matrix as "hash", because cached value is invalid
+  % for different VSDP functions.
   last_dims = obj.cache('last_dims');
 end
 if (isempty (I) || isempty (last_dims) || (~all (size (A) == last_dims)))

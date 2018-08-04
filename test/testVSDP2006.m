@@ -10,22 +10,6 @@ function tests = testVSDP2006()
 
 % Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
-if (~exist('sqlp.m', 'file'))
-  fprintf(1, '%s.  %s\n\n\t%s\n\n%s.\n\n', ...
-    'Approximate solver "SDPT3" not found', ...
-    'Get a recent version from', 'https://github.com/sqlp/sdpt3', ...
-    'and run "install_sdpt3" from the root directory');
-  error('VSDP:vsdpTest:noSDPT3', 'SDPT3 not found');
-end
-
-if (~exist('INTLAB_Version_9.m', 'file'))
-  fprintf(1, '%s.  %s\n\n\t%s\n\n%s.\n\n', ...
-    'Interval toolbox "INTLAB" (>= 9) not found', ...
-    'Get a recent version from', 'http://www.ti3.tuhh.de/rump/intlab', ...
-    'and run "startintlab" from the root directory');
-  error('VSDP:vsdpTest:noINTLAB', 'INTLAB (>= 9) not found');
-end
-
 if (exist ('OCTAVE_VERSION', 'builtin'))
   addpath (fullfile (pwd (), '..', 'octave'));
 end

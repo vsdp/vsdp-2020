@@ -6,7 +6,7 @@ function install_vsdp ()
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-% Check whether path already exists, add path if necessary.
+% Check whether path already exists and add path if necessary.
 vsdp_path = fullfile (fileparts (which ('install_vsdp')));
 addpath (vsdp_path);
 addpath (fullfile (vsdp_path, 'test'));

@@ -29,7 +29,7 @@ function A = smat (obj, a, mu)
 %                              [e]                                   [f   ]
 %                              [f]
 %
-%   See also vsdp.sindex, vsdp.svec.
+%   See also vsdp, vsdp.sindex, vsdp.svec.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
