@@ -4,24 +4,37 @@
 
 %% Primal and dual form
 %
-% Let $\mathbb{R}^{n}_{+}$ denote the nonnegative orthant, and let
-% $\mathbb{L}^{n} := \{x \in \mathbb{R}^{n} \colon x_{1} \geq ||x_{2:n}||_{2}\}$
-% be the Lorentz cone.  We denote by $\langle c, x \rangle := c^{T} x$ the
-% usual Euclidean inner product of vectors in $\mathbb{R}^{n}$.  The set
-% $$
-% \mathbb{S}^{n}_{+} := \left\{ X \in \mathbb{R}^{n \times n} \colon
-% X = X^{T}, v^{T} X v \geq 0, \forall v \in \mathbb{R}^{n} \right\},
-% $$
-% denotes the cone of symmetric positive semidefinite $n \times n$ matrices.
-% For symmetric matrices $X$, $Y$ the inner product is given by
-% $$
-% \langle X,Y \rangle := \text{trace}(XY).
-% $$
+% VSDP can handle three self dual convex cones $\mathcal{K}$, that often occur
+% in practical applications.  These are:
+%
+% * The non-negative orthant:
+%   $$
+%   \mathbb{R}^{n}_{+} := \{ x \in \mathbb{R}^{n} \colon\; x_{i} \geq 0,
+%   \; i = 1, \ldots, n \}.
+%   $$
+% * The Lorentz cone (see
+%   <https://vsdp.github.io/references.html#Alizadeh2003 [Alizadeh2003]>):
+%   $$
+%   \mathbb{L}^{n} := \{ x \in \mathbb{R}^{n} \colon x_{1} \geq \|x_{2:n}\|_{2}\}.
+%   $$
+% * The cone of symmetric positive semidefinite matrices:
+%   $$
+%   \mathbb{S}^{n}_{+} := \left\{ X \in \mathbb{R}^{n \times n} \colon\;
+%   X = X^{T},\; v^{T} X v \geq 0,\; \forall v \in \mathbb{R}^{n} \right\}.
+%   $$
+%
+% If a quantity is in the interior of one of the above cones, the definitions
+% above must hold with strict inequalities.
+%
+% By $\langle c, x \rangle := c^{T} x$ the usual Euclidean inner product of
+% vectors in $\mathbb{R}^{n}$ is denoted.  For symmetric matrices
+% $X, Y \in \mathbb{S}^{n}$ the inner product is given by
+% $\langle X,Y \rangle := \text{trace}(XY)$.
 %
 % Let $A^{f}$ and $A^{l}$ be a $m \times n_{f}$ and a $m \times n_{l}$ matrix,
 % respectively, and let $A_{i}^{q}$ be $m \times q_{i}$ matrices for
-% $i = 1,\ldots,n_{q}$.  Let $x^{f} \in \mathbb{R}^{n_{f}}$,
-% $x^{l} \in \mathbb{R}^{n_{l}}$, $x_{i}^{q} \in \mathbb{R}^{q_i}$, and
+% $i = 1,\ldots,n_{q}$.  Let $c^{f} \in \mathbb{R}^{n_{f}}$,
+% $c^{l} \in \mathbb{R}^{n_{l}}$, $c_{i}^{q} \in \mathbb{R}^{q_i}$, and
 % $b \in \mathbb{R}^{m}$.  Moreover, let $A_{1,j}^{s}, \ldots, A_{m,j}^{s}$,
 % $C_{j}^{s}$, $X_{j}^{s}$ be symmetric $(s_{j} \times s_{j})$ matrices for
 % $j = 1, \ldots, n_{s}$.
@@ -84,8 +97,8 @@
 % free variables are converted into the difference of nonnegative variables.
 % Besides the major disadvantage that this transformation is numerical
 % unstable, it also increases the number of variables of the particular
-% problems.  In VSDP </free_variables free variables> can be handled in a
-% numerical stable manner.
+% problems.  In VSDP <https://vsdp.github.io/free_variables free variables>
+% can be handled in a numerical stable manner.
 %
 
 
@@ -105,117 +118,88 @@
 % inverse operation is denoted by $smat(x)$ such that $smat(svec(X)) = X$.
 %
 % By using $svec$ it is possible to map each symmetric matrix to a vector
-% quantity and by using the scaling factor $\alpha = 1$ for all $A_{kj}^{s}$,
-% $C_{j}^{s}$, and $Z_{j}^{s}$ and the scaling factor $\alpha = 2$ for all
-% $X_{j}^{s}$, the inner product of symmetrix matrices reduces to a simple scalar product of
-% two vectors.
-We condense the above quantities as follows:
-% $$
-% \begin{equation}
-% \begin{aligned}
-% x^{s} &:= (\operatorname{vec}(X_{1}^{s}); \ldots;
-%            \operatorname{vec}(X_{n_{s}}^{s})), &
-% c^{s} &:= (\operatorname{vec}(C_{1}^{s}); \ldots;
-%            \operatorname{vec}(C_{n_{s}}^{s})), \\
-% x^{q} &:= (x_{1}^{q}; \ldots; x_{n_{q}}^{q}), &
-% c^{q} &:= (c_{1}^{q}; \ldots; c_{n_{q}}^{q}), \\
-% x     &:= (x^{f}; x^{l}; x^{q}; x^{s}), &
-% c     &:= (c^{f}; c^{l}; c^{q}; c^{s}).
-% \end{aligned}
-% \label{condensedX}
-% \end{equation}
-% $$
+% quantity.  Additionally, by using the scaling factor $\alpha = 1$ for all
+% $A_{kj}^{s}$, $C_{j}^{s}$, and $Z_{j}^{s}$ and the scaling factor
+% $\alpha = 2$ for all $X_{j}^{s}$, the inner product of symmetric matrices
+% reduces to a simple scalar product of two vectors.  Thus all cones can be
+% treated in exactly the same way.
 %
-% Here $c^{q}$ and $x^{q}$ consist of $\bar{q} = \sum_{i=1}^{n_{q}} q_i$
-% components, and $c^{s}$, $x^{s}$ are vectors of length
-% $\bar{s} = \sum_{j=1}^{n_{s}} s_{j}^{2}$.  The total length of $x$ and $c$
-% is equal to $n = n_{f} + n_{l} + \bar{q} + \bar{s}$.  As in the syntax of
-% Matlab the separating column denotes the vertical concatenation of the
-% corresponding vectors.
-%
-% The matrices describing the linear equations are condensed as follows:
+% The condensed quantities $c$, $x$, and $z$ are $n \times 1$-vectors:
 % $$
-% \begin{equation}
-% \begin{aligned}
-% A^{s} &= (A_{1}^{s}, \ldots, A_{n_{s}}^{s}),
-%          \text{ where } A_{j}^{s} =
-%          (\text{vec}(A_{1,j}^{s}), \ldots, \text{vec}(A_{m,j}^{s}))^{T}, \\
-% A^{q} &= (A_{1}^{q}, \ldots, A_{n_{q}}^{q}), \\
-% A     &= (A^{f}, A^{l}, A^{q}, A^{s}).
-% \end{aligned}
-% \label{condensedA}
-% \end{equation}
+% c :=
+% \begin{pmatrix}
+% c^{f} \\ c^{l} \\ c_{1}^{q} \\ \vdots \\ c_{n_{q}}^{q} \\
+% svec(C_{1}^{s},1) \\ \vdots \\ svec(C_{n_{s},1}^{s}) \\
+% \end{pmatrix},
+% x :=
+% \begin{pmatrix}
+% x^{f} \\ x^{l} \\ x_{1}^{q} \\ \vdots \\ x_{n_{q}}^{q} \\
+% svec(X_{1}^{s},2) \\ \vdots \\ svec(X_{n_{s},2}^{s})
+% \end{pmatrix},
+% z :=
+% \begin{pmatrix}
+% z^{f} \\ z^{l} \\ z_{1}^{q} \\ \vdots \\ z_{n_{q}}^{q} \\
+% svec(Z_{1}^{s},1) \\ \vdots \\ svec(Z_{n_{s}}^{s},1) \\
+% \end{pmatrix},
+% $$
+% where $n = n_{f} + n_{l} + \sum_{i = 1}^{n_{q}} q_{i}
+% + \sum_{j = 1}^{n_{s}} s_{i}(s_{i} + 1)/2$ and $A^{T}$ becomes a $n \times m$
+% matrix
+% $$
+% A^{T} :=
+% \begin{pmatrix}
+% & A^{f} & \\
+% & A^{l} & \\
+% & A_{1}^{q} & \\
+% & \vdots & \\
+% & A_{n_{q}}^{q} & \\
+% svec(A_{11}^{s},1) & \cdots & svec(A_{1m}^{s},1) \\
+% \vdots & & \vdots \\
+% svec(A_{n_{s}1}^{s},1) & \cdots & svec(A_{n_{s}m}^{s},1)
+% \end{pmatrix}
 % $$
 %
 % Let the constraint cone $K$ and its dual cone $K^{*}$ be
 % $$
-% \begin{equation}
-% \begin{aligned}
-% K &:=&
+% \begin{align}
+% \mathcal{K} &:=&
 % \mathbb{R}^{n_{f}} &\times
 % \mathbb{R}^{n_{l}}_{+} \times
 % \mathbb{L}^{q_{1}} \times \ldots \times \mathbb{L}^{q_{n_{q}}} \times
 % \mathbb{S}^{s_{1}}_{+} \times \ldots \times \mathbb{S}^{s_{n_{s}}}_{+}, \\
-% K^{*} &:=&
+% \mathcal{K}^{*} &:=&
 % \{0\}^{n_{f}} &\times
 % \mathbb{R}^{n_{l}}_{+} \times
 % \mathbb{L}^{q_{1}} \times \ldots \times \mathbb{L}^{q_{n_{q}}} \times
 % \mathbb{S}^{s_{1}}_{+} \times \ldots \times \mathbb{S}^{s_{n_{s}}}_{+}.
-% \end{aligned}
-% \label{primalDualCone}
-% \end{equation}
+% \end{align}
 % $$
 %
 % With these abbreviations we obtain the following block form of the conic
-% problem \eqref{stdPrim}:
+% problem:
 % $$
-% \label{cpPrim}
 % \begin{array}{ll}
 % \text{minimize}   & c^{T} x, \\
 % \text{subject to} & Ax = b, \\
-%                   & x \in K,
+%                   & x \in \mathcal{K},
 % \end{array}
 % $$
 % with optimal value $\hat{f}_{p}$ and the corresponding dual problem
 % $$
-% \label{cpDual}
 % \begin{array}{ll}
 % \text{maximize}   & b^{T} y, \\
-% \text{subject to} & z = c - (A)^{T} y \in K^{*},
+% \text{subject to} & z = c - (A)^{T} y \in \mathcal{K}^{*},
 % \end{array}
 % $$
 % with optimal value $\hat{f}_{d}$.
-%
-% For a linear programming problem a vector $x \in \mathbb{R}^{n_{l}}$ is in
-% the interior of the cone $K = \mathbb{R}^{n_{l}}_{+}$, if $x_{i} > 0$ for
-% $i = 1,\ldots,n_{l}$.  For a vector $x \in \mathbb{R}^{n}$ let
-% $\lambda_{\min}(x) := x_{1} - ||x_{:}||_{2}$ denote the smallest eigenvalue
-% of $x$ (see </references#Alizadeh2003 [Alizadeh2003]>).  Then
-% for second order cone programming problems a vector
-% $x \in \mathbb{R}^{\bar{q}}$ is in the interior of the cone
-% $K = \mathbb{L}^{q_{1}} \times, \ldots, \times \mathbb{L}^{q_{n_{q}}}$,
-% if $\lambda_{\min}(x_{i}) > 0$ for $i = 1,\ldots,n_{q}$.  Furthermore, for
-% a symmetric matrix $X \in \mathbb{S}^{n}$ let $\lambda_{\min}(X)$ denote the
-% smallest eigenvalue of $X$.  Then for semidefinite programming problems a
-% symmetric block matrix
-% $$
-% X = \begin{pmatrix}
-% X_{1} & 0 & 0 \\
-% 0 & \ddots & 0 \\
-% 0 & 0 & X_{n_{s}}
-% \end{pmatrix},
-% $$
-% is in the interior of the cone
-% $K = \mathbb{S}^{s_{1}}_{+} \times,\ldots,\times \mathbb{S}^{s_{n_{s}}}_{+}$,
-% if $\lambda_{\min}(X_{j}) > 0$ for $j = 1,\ldots,n_{s}$.
 %
 % It is well known that for linear programming problems strong duality
 % $\hat{f}_{p} = \hat{f}_{d}$ holds without any constraint qualifications.
 % General conic programs satisfy only the weak duality condition
 % $\hat{f}_{d} \leq \hat{f}_{p}$.  Strong duality requires additional
 % constraint qualifications, such as _Slater's constraint qualifications_ (see
-% </references#Boyd1996 [Boyd1996]>,
-% </references#NestNem [NestNem]>).
+% <https://vsdp.github.io/references.html#Vandenberghe1996 [Vandenberghe1996]>,
+% <https://vsdp.github.io/references.html#BenTal2001 [BenTal2001]>).
 %
 % *Strong Duality Theorem*
 %
@@ -227,14 +211,17 @@ We condense the above quantities as follows:
 %   is finite, then $\hat{f}_{d} = \hat{f}_{p}$, and the primal infimum is
 %   attained.
 %
-% In general, one of the problems \eqref{cpPrim} or \eqref{cpDual} may have
-% optimal solutions and its dual problem is infeasible, or the duality gap may
-% be positive at optimality.
+% In general, the primal or dual problem formulation may have optimal solutions
+% while its respective dual problem is infeasible, or the duality gap may be
+% positive at optimality.
 %
 % Duality theory is central to the study of optimization.  Firstly, algorithms
 % are frequently based on duality (like primal-dual interior point methods),
 % secondly, they enable one to check whether or not a given feasible point is
 % optimal, and thirdly, it allows one to compute verified results efficiently.
+%
+
+%% Interval arithmetic
 %
 % For the usage of VSDP a knowledge of interval arithmetic is not required.
 % Intervals are only used to specify error bounds.  An interval vector or an
