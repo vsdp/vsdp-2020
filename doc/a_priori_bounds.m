@@ -6,7 +6,7 @@
 % design variables such as bar volumes can be roughly bounded.  If such bounds
 % are available they can speed up the computation of guaranteed error bounds
 % for the optimal value substantially, see
-% </references#Jansson2006 [Jansson2006]>.
+% <https://vsdp.github.io/references.html#Jansson2006 [Jansson2006]>.
 %
 % For linear programming problems the upper bound for the variable $x^{l}$
 % is a vector $\bar{x}$ such that $x^{l} \leq \bar{x}$.  For second
