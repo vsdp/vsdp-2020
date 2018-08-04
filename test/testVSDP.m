@@ -10,10 +10,6 @@ function tests = testVSDP()
 
 % Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
-if (exist ('OCTAVE_VERSION', 'builtin'))
-  addpath (fullfile (pwd (), '..', 'octave'));
-end
-
 tests = functiontests (localfunctions);
 end
 
