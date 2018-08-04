@@ -152,11 +152,11 @@ function outstr = do_text (str)
 endfunction
 
 function outstr = do_blockmath (str)
-  outstr = ['\[' str '\]'];
+  outstr = ['$$' str '$$'];
 endfunction
 
 function outstr = do_inlinemath (str)
-  outstr = ['\(' str '\)'];
+  outstr = ['$' str '$'];
 endfunction
 
 function outstr = do_bold (str)
