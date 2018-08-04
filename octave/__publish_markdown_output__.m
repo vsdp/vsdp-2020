@@ -92,7 +92,7 @@ function outstr = do_header (title_str, intro_str, toc_cstr)
 endfunction
 
 function outstr = do_footer (m_source_str)
-  outstr = ["\n\nPublished with GNU Octave ", version()];
+  outstr = ["\n\nPublished with GNU Octave ", version(), "\n"];
 endfunction
 
 function outstr = do_code (str)
