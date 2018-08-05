@@ -87,8 +87,13 @@ function outstr = do_output_file_extension ()
 endfunction
 
 function outstr = do_header (title_str, intro_str, toc_cstr)
-  outstr = ["---\ntitle: ", title_str, "\n---\n\n# ", title_str, "\n\n", ...
-  intro_str, "\n* TOC\n{:toc}\n\n"];
+  permalink_str = regexprep (tolower (title_str), ' ', '_');
+  headline_str  = sprintf ("\n# %s\n", title_str);
+  title_str     = sprintf ("title: %s\n", title_str);
+  permalink_str = sprintf ("permalink: %s.html\n", permalink_str);
+  toc_str       = "* TOC\n{:toc}\n";
+  outstr = sprintf ("---\n%s%s---\n%s\n%s\n%s\n", title_str, permalink_str, ...
+    headline_str, intro_str, toc_str);
 endfunction
 
 function outstr = do_footer (m_source_str)
@@ -152,11 +157,11 @@ function outstr = do_text (str)
 endfunction
 
 function outstr = do_blockmath (str)
-  outstr = ['$$' str '$$'];
+  outstr = ['<div>$$' str '$$</div>'];
 endfunction
 
 function outstr = do_inlinemath (str)
-  outstr = ['$' str '$'];
+  outstr = ['<span>$' str '$</span>'];
 endfunction
 
 function outstr = do_bold (str)
@@ -180,8 +185,5 @@ function outstr = do_R ()
 endfunction
 
 function str = do_escape_special_chars (str)
-  str = regexprep (str, '&', '&amp;');
-  str = regexprep (str, '<', '&lt;');
-  str = regexprep (str, '>', '&gt;');
-  ## str = regexprep (str, '"', '&quot;'); ## MATLAB R2017a compatibility.
+  str = str;
 endfunction

@@ -2,20 +2,13 @@
 %
 % In this section we describe how linear programming problems can be solved
 % with VSDP.  In particular, two linear programming examples are considered
-% in detail.  Each conic problem is fully described by the four variables
-% $(A,b,c,K)$.  The first two quantities represent the affine constraints
-% $Ax = b$.  The third is the primal objective vector |c|, and the last
-% describes the underlying cone.  The cone |K| is a structure with four fields:
-% |K.f|, |K.l|, |K.q|, and |K.s|.  The field |K.f| stores the number of free
-% variables $n_{f}$, the field |K.l| stores the number of nonnegative variables
-% $n_{l}$, the field |K.q| stores the dimensions $q_{1}, \ldots, q_{n_{q}}$ of
-% the second order cones, and similarly |K.s| stores the dimensions $s_{1},
-% \ldots, s_{n_{s}}$ of the semidefinite cones.  If a component of |K| is
-% empty, then it is assumed that the corresponding cone do not occur.
+% in detail.
+%%
+
+%% First example
 %
-% Consider the linear programming problem
+% Consider the linear program
 % $$
-% \label{LP1}
 % \begin{array}{ll}
 % \text{minimize}   & 2x_{2} + 3x_{4} + 5x_{5}, \\
 % \text{subject to} &
@@ -28,17 +21,16 @@
 % $$
 % with its corresponding dual problem
 % $$
-% \label{LP1Dual}
 % \begin{array}{ll}
 % \text{maximize}   & 2 y_{1} + 3 y_{2}, \\
 % \text{subject to} &
 % z = \begin{pmatrix} 0 \\ 2 \\ 0 \\ 3 \\ 5 \end{pmatrix} -
 % \begin{pmatrix}
 % -1 &  0 \\
-% 2 &  0 \\
-% 0 & -1 \\
-% 1 &  0 \\
-% 1 &  2
+%  2 &  0 \\
+%  0 & -1 \\
+%  1 &  0 \\
+%  1 &  2
 % \end{pmatrix} y \in \mathbb{R}^{5}_{+},
 % \end{array}
 % $$
@@ -58,19 +50,26 @@ c = [0; 2; 0; 3; 5];
 K.l = 5;
 
 %%
-% By using |vsdpinit| the approximate conic solver can be set globally for all
-% VSDP functions. Here we choose the solver SDPT3:
-%
-
-vsdpinit('sdpt3');
-
-%%
-% If we call the |mysdps| for problem \eqref{LP1} this problem will be solved
-% approximately, yielding the output
+% To obtain an appropriate output, we choose the following format: 
 %
 
 format infsup long
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K)
+
+%%
+% To create an VSDP object of the linear program above, we call the VSDP class
+% constructor and assign the approximate solver SDPT3 to that object.  This
+% approximate solver will be used for all VSDP functions.
+%
+
+obj = vsdp (A, b, c, K)
+obj.options.SOLVER = 'sdpt3';
+
+%%
+% By calling the |solve| method, we can compute an approximate solution using
+% SDPT3
+%
+
+obj.solve ('sdpt3');
 
 %%
 % The returned variables have the following meaning: |objt| stores the
@@ -88,7 +87,7 @@ format infsup long
 % value can be computed by the function |vsdplow|:
 %
 
-[fL,y,dl] = vsdplow(A,b,c,K,xt,yt,zt)
+obj.rigorous_lower_bound ()
 
 %%
 % The output consists of
