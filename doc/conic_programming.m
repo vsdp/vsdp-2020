@@ -70,7 +70,8 @@
 % & (A_{i}^{q})^{T} y + z_{i}^{q} = c_{i}^{q}, \\
 % & (\mathcal{A}_{j}^{s})^{*} y + Z_{j}^{s} = C_{j}^{s},
 % \end{array}$$
-% where $z^{f} \in \{0\}^{n_{f}}$, $z^{l} \in \mathbb{R}^{n_{l}}_{+}$,
+% where $z^{f} \in \lbrace 0 \rbrace^{n_{f}}$,
+% $z^{l} \in \mathbb{R}^{n_{l}}_{+}$,
 % $z_{i}^{q} \in \mathbb{L}^{q_i}$, $i = 1, \ldots, n_{q}$, and
 % $Z_{j}^{s} \in \mathbb{S}^{s_{j}}_{+}$, $j = 1, \ldots, n_{s}$.
 %
@@ -126,7 +127,7 @@
 % svec(Z_{1}^{s},1) \\ \vdots \\ svec(Z_{n_{s}}^{s},1) \\
 % \end{pmatrix},$$
 % where
-% $n = n_{f} + n_{l} + \sum_{i = 1}^{n_{q}} q_{i} + \sum_{j = 1}^{n_{s}} s_{i}(s_{i} + 1)/2$
+% $n = n_{f} + n_{l} + \sum_{i = 1}^{n_{q}} q_{i} + \sum_{j = 1}^{n_{s}} s_{j}(s_{j} + 1)/2$
 % and $A^{T}$ becomes a $n \times m$ matrix
 % $$A^{T} :=
 % \begin{pmatrix}
