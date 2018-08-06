@@ -8,8 +8,7 @@
 %% First example
 %
 % Consider the linear program
-% $$
-% \begin{array}{ll}
+% $$\begin{array}{ll}
 % \text{minimize}   & 2x_{2} + 3x_{4} + 5x_{5}, \\
 % \text{subject to} &
 % \begin{pmatrix}
@@ -17,11 +16,9 @@
 %  0 & 0 & -1 & 0 & 2
 % \end{pmatrix} x = \begin{pmatrix} 2 \\ 3 \end{pmatrix}, \\
 % & x \in \mathbb{R}^{5}_{+},
-% \end{array}
-% $$
+% \end{array}$$
 % with its corresponding dual problem
-% $$
-% \begin{array}{ll}
+% $$\begin{array}{ll}
 % \text{maximize}   & 2 y_{1} + 3 y_{2}, \\
 % \text{subject to} &
 % z = \begin{pmatrix} 0 \\ 2 \\ 0 \\ 3 \\ 5 \end{pmatrix} -
@@ -31,14 +28,13 @@
 %  0 & -1 \\
 %  1 &  0 \\
 %  1 &  2
-% \end{pmatrix} y \in \mathbb{R}^{5}_{+},
-% \end{array}
-% $$
+% \end{pmatrix} y \in \mathbb{R}^{5}_{+}.
+% \end{array}$$
 %
 % The unique exact optimal solution is given by
 % $x^{*} = \begin{pmatrix} 0 & 0.25 & 0 & 0 & 1.5 \end{pmatrix}^{T}$,
 % $y^{*} = \begin{pmatrix} 1 &2 \end{pmatrix}^{T}$ with
-% $\hat{f}_{p} = \hat{f}_{d} = 8$.
+% $\hat{f_{p}} = \hat{f_{d}} = 8$.
 %
 % The input data of the problem in VSDP are
 %
@@ -50,41 +46,44 @@ c = [0; 2; 0; 3; 5];
 K.l = 5;
 
 %%
-% To obtain an appropriate output, we choose the following format: 
+% To obtain more output digits, we choose the following format: 
 %
 
 format infsup long
 
 %%
-% To create an VSDP object of the linear program above, we call the VSDP class
-% constructor and assign the approximate solver SDPT3 to that object.  This
-% approximate solver will be used for all VSDP functions.
+% To create an VSDP object of the linear program data above, we call the VSDP
+% class constructor.
 %
 
 obj = vsdp (A, b, c, K)
+
+%%
+% By calling the |solve| method on the VSDP object |obj|, we can compute an
+% approximate solution |x|, |y|, |z|, for example using SDPT3.  When calling
+% |solve| without any arguments, the user is asked to choose one of the
+% supported solvers.
+%
+
+obj.solve ('sdpt3')
+
+%%
+% On success, one can obtain the approximate |x| and |y| solutions:
+%
+
+x = obj.solutions.approximate.x
+y = obj.solutions.approximate.y
+
+%%
+% To permanently assign an approximate solver to a VSDP object, use the
+% following syntax:
+%
+
 obj.options.SOLVER = 'sdpt3';
 
 %%
-% By calling the |solve| method, we can compute an approximate solution using
-% SDPT3
-%
-
-obj.solve ('sdpt3');
-
-%%
-% The returned variables have the following meaning: |objt| stores the
-% approximate primal and dual optimal value, |xt| represents the approximate
-% primal solution in vectorized form, and |(yt,zt)| is the dual solution pair.
-% The last returned variable |info| gives information on the success of the
-% conic solver:
-%
-% * |info = 0|: successful termination,
-% * |info = 1|: the problem might be primal infeasible,
-% * |info = 2|: the problem might be dual infeasible,
-% * |info = 3|: the problem might be primal and dual infeasible.
-%
-% With the approximate solution, a verified lower bound of the primal optimal
-% value can be computed by the function |vsdplow|:
+% With the approximate solution, a rigorous lower bound of the primal optimal
+% value can be computed by calling:
 %
 
 obj.rigorous_lower_bound ()
@@ -106,7 +105,7 @@ obj.rigorous_lower_bound ()
 % Next we compute an upper bound for the optimal value by using |vsdpup|:
 %
 
-[fU,x,lb] = vsdpup(A,b,c,K,xt,yt,zt)
+obj.rigorous_upper_bound ()
 
 %%
 % The returned variables have a similar meaning to those of |vsdplow|: |fU| is
@@ -132,6 +131,9 @@ infsup(x(1))
 % contains a primal and dual strictly feasible $??$-optimal solution, where
 % $?? = \frac{2 (fU-fL)}{|fU|+|fL|} \approx 4.83 \times 10^{-9}$.
 %
+
+%% Second example with free variables
+%
 % How a linear program with free variables can be solved with VSDP is
 % demonstrated by the following example with one free variable $x_{3}$:
 % $$
@@ -148,7 +150,7 @@ infsup(x(1))
 % The optimal solution pair of this problem is
 % $x^{*} = \begin{pmatrix} \dfrac{5}{6} & 0 & -\dfrac{1}{6} \end{pmatrix}^{T}$,
 % $y^{*} = \begin{pmatrix} \dfrac{1}{6} & \dfrac{5}{6}\end{pmatrix}^{T}$ with
-% $\hat{f}_{p} = \hat{f}_{d} = \dfrac{11}{12}$.
+% $\hat{f_{p}} = \hat{f_{d}} = \dfrac{11}{12}$.
 %
 % When entering a problem the order of the variables is important: Firstly free
 % variables, secondly nonnegative variables, thirdly second order cone
@@ -170,6 +172,6 @@ b = [0.5; 1];
 % Rigorous bounds for the optimal value can be optained with:
 %
 
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-fL = vsdplow(A,b,c,K,xt,yt,zt)
-fU = vsdpup (A,b,c,K,xt,yt,zt)
+obj = vsdp (A, b, c, K).solve ('sdpt3');
+obj.rigorous_lower_bound ();
+obj.rigorous_upper_bound ();
