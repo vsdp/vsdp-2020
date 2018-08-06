@@ -27,7 +27,6 @@ classdef vsdp_indexable < handle
     function subval = subsref(obj, S)
       % SUBSREF  Redefine subscripted reference for objects.
       %
-      %   Detailed explanation goes here
       switch (S(1).type)
         case '.'
           if (strcmp (S(1).subs, 'value'))

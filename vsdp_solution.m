@@ -244,7 +244,7 @@ classdef vsdp_solution < handle
         error ('VSDP_SOLUTION:to_2006_fmt:unsupported_cones', ...
           'to_2006_fmt: The VSDP 2006 format supports only SDP cones.');
       end
-     
+      
       if (isempty (sol.x))
         X0 = {};
       else
