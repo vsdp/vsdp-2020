@@ -37,7 +37,7 @@ else  % If dual upper bounds are not given, use infinite bounds.
 end
 
 % If the problem was not approximately solved before, do it now.
-if (isempty (obj.solutions('Approximate')))
+if (isempty (obj.solutions.approximate))
   warning ('VSDP:rigorous_upper_bound:noApproximateSolution', ...
     ['rigorous_upper_bound: The conic problem has no approximate ', ...
     'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
@@ -59,7 +59,7 @@ rub = tic;
 % Step 1: Project approximate solution into the respective cones, e.g.
 %         compute x^+.
 
-x = vsdp_indexable (intval (obj.solutions('Approximate').x), obj);
+x = vsdp_indexable (intval (obj.solutions.approximate.x), obj);
 
 % LP cones
 x.l = max (x.l, 0);
@@ -109,7 +109,7 @@ k         = zeros (num_of_bounds, 1);  % Counter for perturbation.
 epsilon   = zeros (num_of_bounds, 1);  % Factor  for perturbation.
 x_epsilon = zeros (obj.n, 1);          % 'epsilon' translated to 'x'.
 
-x = obj.solutions('Approximate').x;
+x = obj.solutions.approximate.x;
 rub = tic;
 iter = 0;
 while (iter <= obj.options.ITER_MAX)
@@ -171,7 +171,7 @@ while (iter <= obj.options.ITER_MAX)
   obj.perturbation.c = [];
   
   obj.solve (obj.options.SOLVER, 'Rigorous upper bound');
-  sol = obj.solutions('Rigorous upper bound');
+  sol = obj.solutions.rigorous_upper_bound;
   if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...
       || isempty (sol.x) || any (isnan (sol.x)) || any (isinf (sol.x)))
     error ('VSDP:rigorous_upper_bound:unsolveablePerturbation', ...

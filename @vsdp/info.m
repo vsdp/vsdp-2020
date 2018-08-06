@@ -41,9 +41,29 @@ disp ([space, space, space, names, ...
   space, space, bytes, space, byte_size]);
 
 fprintf ('\n\n  Solution details:\n\n');
-for i = 1:length(obj.solutions)
-  fprintf ('  Solution %d: %s', i, obj.solutions(i).sol_type);
-  obj.solutions(i).mem_info ();
+if (~isempty (obj.solutions.initial))
+  disp ('  - Initial:');
+  obj.solutions.initial.mem_info ();
+end
+if (~isempty (obj.solutions.approximate))
+  disp ('  - Approximate:');
+  obj.solutions.approximate.mem_info ();
+end
+if (~isempty (obj.solutions.rigorous_lower_bound))
+  disp ('  - Rigorous lower bound:');
+  obj.solutions.rigorous_lower_bound.mem_info ();
+end
+if (~isempty (obj.solutions.rigorous_upper_bound))
+  disp ('  - Rigorous upper bound:');
+  obj.solutions.rigorous_upper_bound.mem_info ();
+end
+if (~isempty (obj.solutions.certificate_primal_infeasibility))
+  disp ('  - Certificate primal infeasibility:');
+  obj.solutions.certificate_primal_infeasibility.mem_info ();
+end
+if (~isempty (obj.solutions.certificate_dual_infeasibility))
+  disp ('  - Certificate dual infeasibility:');
+  obj.solutions.certificate_dual_infeasibility.mem_info ();
 end
 
 fprintf (['\n\n  Cone structure of ''K''', ...

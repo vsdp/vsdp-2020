@@ -54,56 +54,59 @@ if (~isempty (obj.K.s))
 end
 
 % Display short VSDP reference, what can be done now.
+obj_name = inputname(1);
+if (isempty (obj_name))
+  obj_name = 'obj';
+end
 fprintf ('\n');
-fprintf ('  %s.solutions(''Approximate'')  for (P) and (D).\n', ...
-  inputname(1));
-if (isempty (obj.solutions('Approximate')))
+fprintf ('  %s.solutions.approximate  for (P) and (D):\n', obj_name);
+if (isempty (obj.solutions.approximate))
   fprintf ('\n      None.  Compute with ''%s = %s.solve()''\n\n', ...
-    inputname(1), inputname(1));
+    obj_name, obj_name);
 else
-  disp (obj.solutions('Approximate'))
+  disp (obj.solutions.approximate)
 end
 
-fprintf (['  %s.solutions(''Rigorous lower bound'')  fL <= c''*x   ', ...
-  'for (P):\n'], inputname(1));
-if (isempty (obj.solutions('Rigorous lower bound')))
+fprintf (['  %s.solutions.rigorous_lower_bound  fL <= c''*x   ', ...
+  'for (P):\n'], obj_name);
+if (isempty (obj.solutions.rigorous_lower_bound))
   fprintf ( ...
     '\n      None.  Compute with ''%s = %s.rigorous_lower_bound()''\n\n', ...
-    inputname(1), inputname(1));
+    obj_name, obj_name);
 else
-  disp (obj.solutions('Rigorous lower bound'))
+  disp (obj.solutions.rigorous_lower_bound)
 end
 
-fprintf (['  %s.solutions(''Rigorous upper bound'')  b''*y <= fU   ', ...
-  'for (D):\n'], inputname(1));
-if (isempty (obj.solutions('Rigorous upper bound')))
+fprintf (['  %s.solutions.rigorous_upper_bound  b''*y <= fU   ', ...
+  'for (D):\n'], obj_name);
+if (isempty (obj.solutions.rigorous_upper_bound))
   fprintf ( ...
     '\n      None.  Compute with ''%s = %s.rigorous_upper_bound()''\n\n', ...
-    inputname(1), inputname(1));
+    obj_name, obj_name);
 else
-  disp (obj.solutions('Rigorous upper bound'))
+  disp (obj.solutions.rigorous_upper_bound)
 end
 
-fprintf ('  %s.solutions(''Certificate primal infeasibility''):\n', ...
-  inputname(1));
-if (isempty (obj.solutions('Certificate primal infeasibility')))
+fprintf ('  %s.solutions.certificate_primal_infeasibility:\n', ...
+  obj_name);
+if (isempty (obj.solutions.certificate_primal_infeasibility))
   fprintf ( ...
     '\n      None.  Check with ''%s = %s.check_primal_infeasible()''\n\n', ...
-    inputname(1), inputname(1));
+    obj_name, obj_name);
 else
-  disp (obj.solutions('Certificate primal infeasibility'))
+  disp (obj.solutions.certificate_primal_infeasibility)
 end
 
-fprintf ('  %s.solutions(''Certificate dual infeasibility''):\n', ...
-  inputname(1));
-if (isempty (obj.solutions('Certificate dual infeasibility')))
+fprintf ('  %s.solutions.certificate_dual_infeasibility:\n', ...
+  obj_name);
+if (isempty (obj.solutions.certificate_dual_infeasibility))
   fprintf ( ...
     '\n      None.  Check with ''%s = %s.check_dual_infeasible()''\n\n', ...
-    inputname(1), inputname(1));
+    obj_name, obj_name);
 else
-  disp (obj.solutions('Certificate dual infeasibility'))
+  disp (obj.solutions.certificate_dual_infeasibility)
 end
 
-fprintf (' For more information type:  %s.info()\n\n', inputname(1));
+fprintf (' For more information type:  %s.info()\n\n', obj_name);
 
 end

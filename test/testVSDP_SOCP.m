@@ -26,7 +26,7 @@ obj.options.VERBOSE_OUTPUT = false;
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
   obj.solve (obj.options.SOLVER);
-  sol = obj.solutions('Approximate');
+  sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, ...
     round (sol.y(1), 7) >= round (norm (q - P*sol.y(3:5)), 7), true);
@@ -34,7 +34,7 @@ for i = 1:length(use_solvers)
     round (sol.y(2), 7) >= round (norm ([1; sol.y(3:5)]), 7), true);
   
   obj.rigorous_lower_bound ();
-  sol = obj.solutions('Rigorous lower bound');
+  sol = obj.solutions.rigorous_lower_bound;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, isfinite (sol.f_objective(1)), true);
   verifyEqual (testCase, isnan (sol.f_objective(2)), true);
@@ -44,7 +44,7 @@ for i = 1:length(use_solvers)
   verifyEqual (testCase, all (sol.z) >= 0, true);
   
   obj.rigorous_upper_bound ();
-  sol = obj.solutions('Rigorous upper bound');
+  sol = obj.solutions.rigorous_upper_bound;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, isnan (sol.f_objective(1)), true);
   verifyEqual (testCase, isfinite (sol.f_objective(2)), true);

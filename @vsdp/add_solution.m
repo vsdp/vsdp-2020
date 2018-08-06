@@ -36,6 +36,22 @@ if ((n > 0) && (n ~= obj.n))
     'z = vsdp.svec (obj, z(:), 1, ''unsymmetric'');');
 end
 
-obj.solutions(sol.sol_type) = sol;
+switch (sol.sol_type)
+  case 'Initial'
+    obj.solutions.initial = sol;
+  case 'Approximate'
+    obj.solutions.approximate = sol;
+  case 'Rigorous lower bound'
+    obj.solutions.rigorous_lower_bound = sol;
+  case 'Rigorous upper bound'
+    obj.solutions.rigorous_upper_bound = sol;
+  case 'Certificate primal infeasibility'
+    obj.solutions.certificate_primal_infeasibility = sol;
+  case 'Certificate dual infeasibility'
+    obj.solutions.certificate_dual_infeasibility = sol;
+  otherwise
+    error ('VSDP:add_solution:unknownType', ...
+      'add_solution: Unknown solution type.');
+end
 
 end

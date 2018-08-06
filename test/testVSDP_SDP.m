@@ -25,7 +25,7 @@ obj.options.VERBOSE_OUTPUT = false;
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
   obj.solve (obj.options.SOLVER);
-  sol = obj.solutions('Approximate');
+  sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   % May solvers have problems with x([4,7]), thus big tolerance 1e-4
   verifyEqual (testCase, full (sol.x), x_sol, ...
@@ -36,7 +36,7 @@ for i = 1:length(use_solvers)
     'AbsTol', 1e-7, 'RelTol', eps ());
   
   obj.rigorous_lower_bound ();
-  sol = obj.solutions('Rigorous lower bound');
+  sol = obj.solutions.rigorous_lower_bound;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, sol.f_objective(1) <= (obj.c' * x_sol), true);
   verifyEqual (testCase, isnan (sol.f_objective(2)), true);
@@ -46,7 +46,7 @@ for i = 1:length(use_solvers)
   verifyEqual (testCase, all (sol.z) >= 0, true);
   
   obj.rigorous_upper_bound ();
-  sol = obj.solutions('Rigorous upper bound');
+  sol = obj.solutions.rigorous_upper_bound;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, isnan (sol.f_objective(1)), true);
   verifyEqual (testCase, sol.f_objective(2) >= (obj.b' * y_sol), true);
