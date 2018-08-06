@@ -42,8 +42,8 @@ classdef vsdp_options < handle
     %
     %   obj.solve()
     %
-    % Default: 'sdpt3'.
-    SOLVER = 'sdpt3';
+    % Default: ''.
+    SOLVER = '';
     
     % Option structure for approximate solver.
     %

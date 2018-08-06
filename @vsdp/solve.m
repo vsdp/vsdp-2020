@@ -41,6 +41,9 @@ supported_solvers_str = ['''', strjoin(supported_solvers, ''', '''), ''''];
 
 if (nargin == 1)  % Interactive mode.
   initial_value = find (strcmp (obj.options.SOLVER, supported_solvers));
+  if (isempty (initial_value))
+    initial_value = find (strcmp ('sdpt3', supported_solvers));
+  end
   idx = -1;
   % Prompt the user to choose between the supported solvers.
   % If 'obj.options.SOLVER' was set properly, the option is surrounded by braces
@@ -71,7 +74,11 @@ else  % Non-interactive mode.
   catch
     error ('VSDP:solve:unsupportedSolver', ...
       ['The solver ''%s'' is not supported by VSDP.  ', ...
-      'Choose one of:\n\n    %s'], varargin{1}, supported_solvers_str);
+      'Choose one of:\n\n    %s\n\nand set ''obj.options.SOLVER''.'], ...
+      varargin{1}, supported_solvers_str);
+  end
+  if (isempty (obj.options.SOLVER))
+    obj.options.SOLVER = solver;
   end
 end
 
