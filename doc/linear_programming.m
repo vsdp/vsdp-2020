@@ -141,7 +141,7 @@ Dl = obj.solutions.rigorous_lower_bound.z
 %%
 % # |Y| is a rigorous interval enclosure of a dual feasible near optimal
 %   solution and
-% # |Dl|a lower bound of of each cone in $z = c - A^{*} y$.  For a linear
+% # |Dl| a lower bound of of each cone in $z = c - A^{*} y$.  For a linear
 %   program this is a lower bound on each component of |z|.
 %
 % Since |Dl| is positive, the dual problem is strictly feasible, and the
@@ -149,7 +149,7 @@ Dl = obj.solutions.rigorous_lower_bound.z
 % some significant digits of this interval vector are displayed.  The upper
 % and lower bounds of the interval |Y| can be obtained by using the |sup| and
 % |inf| routines of INTLAB.  For more information about the |intval| data type
-% see <https://vsdp.github.io/references.htm#Rump1999 [Rump1999]>.
+% see <https://vsdp.github.io/references.html#Rump1999 [Rump1999]>.
 %
 
 %%
@@ -166,7 +166,7 @@ Xl = obj.solutions.rigorous_upper_bound.z
 %%
 % # |X| is a rigorous interval enclosure of a primal feasible near optimal
 %   solution and
-% # |Xl|a lower bound of of each cone in |X|.  Again, for a linear program
+% # |Xl| a lower bound of of each cone in |X|.  Again, for a linear program
 %   this is a lower bound on each component of |X|.
 %
 % Since |Xl| is a positive vector, |X| is contained in the positive orthant and
@@ -175,7 +175,7 @@ Xl = obj.solutions.rigorous_upper_bound.z
 % Summarizing, we have obtained a primal dual interval solution pair with an
 % accuracy measured by
 % $$\mu(a, b) = \dfrac{a-b}{\max\{1.0, (|a| + |b|)/2\}},$$
-% see <https://vsdp.github.io/references.htm#Jansson2006 [Jansson2006]>.
+% see <https://vsdp.github.io/references.html#Jansson2006 [Jansson2006]>.
 %
 
 format shorte
