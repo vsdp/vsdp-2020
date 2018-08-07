@@ -1,13 +1,12 @@
 %% Linear Programming
 %
 % In this section we describe how linear programming problems can be solved
-% with VSDP.  In particular, two linear programming examples are considered
-% in detail.
+% with VSDP.  In particular, two linear programs are considered in detail.
 %%
 
 %% First example
 %
-% Consider the linear program
+% Consider the linear program in primal standard form
 % $$\begin{array}{ll}
 % \text{minimize}   & 2x_{2} + 3x_{4} + 5x_{5}, \\
 % \text{subject to} &
@@ -32,8 +31,7 @@
 % \end{array}$$
 %
 % The unique exact optimal solution is given by
-% $x^{*} = \begin{pmatrix} 0 & 0.25 & 0 & 0 & 1.5 \end{pmatrix}^{T}$,
-% $y^{*} = \begin{pmatrix} 1 &2 \end{pmatrix}^{T}$ with
+% $x^{*} = (0, 0.25, 0, 0, 1.5)^{T}$, $y^{*} = (1, 2)^{T}$ with
 % $\hat{f_{p}} = \hat{f_{d}} = 8$.
 %
 % The input data of the problem in VSDP are
@@ -46,111 +44,161 @@ c = [0; 2; 0; 3; 5];
 K.l = 5;
 
 %%
-% To obtain more output digits, we choose the following format: 
-%
-
-format infsup long
-
-%%
-% To create an VSDP object of the linear program data above, we call the VSDP
-% class constructor.
+% To create a VSDP object of the linear program data above, we call the VSDP
+% class constructor and do not suppress the output.
 %
 
 obj = vsdp (A, b, c, K)
 
 %%
+% The output seems quite verbose in the beginning, but it contains all relevant
+% information about the possibilities of VSDP, including the commands, that
+% can be run to compute rigorous bounds or certificates for infeasibility.
+% After these computations, the results are displayed as short summary in the
+% same context.
+%
 % By calling the |solve| method on the VSDP object |obj|, we can compute an
-% approximate solution |x|, |y|, |z|, for example using SDPT3.  When calling
+% approximate solution |x|, |y|, |z|, for example by using SDPT3.  When calling
 % |solve| without any arguments, the user is asked to choose one of the
 % supported solvers.
 %
 
-obj.solve ('sdpt3')
+obj.solve ('sdpt3');
 
 %%
-% On success, one can obtain the approximate |x| and |y| solutions:
+% The solver output is often quite verbose.  Especially for large problem
+% instances it is recommended to display the solver progress.  To suppress
+% solver messages, the following option can be set:
 %
 
-x = obj.solutions.approximate.x
-y = obj.solutions.approximate.y
+obj.options.VERBOSE_OUTPUT = false;
 
 %%
 % To permanently assign an approximate solver to a VSDP object, use the
-% following syntax:
+% following option:
 %
 
 obj.options.SOLVER = 'sdpt3';
 
 %%
-% With the approximate solution, a rigorous lower bound of the primal optimal
-% value can be computed by calling:
+% By simply typing the VSDP object's name, the user gets a short summary of
+% the solution state.
 %
 
-obj.rigorous_lower_bound ()
+obj
 
 %%
-% The output consists of
+% On success, one can obtain the approximate |x| and |y| solutions.
 %
-% # a verified lower bound for the optimal value stored in |fL|,
-% # a rigorous interval enclosure of a dual feasible solution |y|, and
-% # a componentwise lower bound of $z = c - A^{T} y$ stored in |dl|.
+
+format short
+x = obj.solutions.approximate.x
+y = obj.solutions.approximate.y
+
+%%
+% The approximate solution is close to the optimal solution
+% $x^{*} = (0, 0.25, 0, 0, 1.5)^{T}$, $y^{*} = (1, 2)^{T}$.
 %
-% Since |dl| is positive, the dual problem is strictly feasible, and the
-% rigorous interval vector |y| contains a dual interior solution.  Here only
+% With this approximate solution, a rigorous lower bound |fL| of the primal
+% optimal value $\hat{f_{p}}$ can be computed by calling:
+%
+
+obj.rigorous_lower_bound ();
+
+format long
+fL = obj.solutions.rigorous_lower_bound.f_objective(1)
+
+%%
+% Similarly, a rigorous upper bound |fU| of the dual optimal value $\hat{f_{d}}$
+% can be computed by calling:
+%
+
+obj.rigorous_upper_bound ();
+
+fU = obj.solutions.rigorous_upper_bound.f_objective(2)
+
+%%
+% All this information is available in the summary of the VSDP object and must
+% only be extracted if necessary.
+%
+
+obj
+
+%%
+% Despite the rigorous lower bound |fL|, the solution object
+% |obj.solutions.rigorous_lower_bound| contain more information:
+%
+
+format short
+format infsup
+Y = obj.solutions.rigorous_lower_bound.y
+
+%%
+%
+
+Dl = obj.solutions.rigorous_lower_bound.z
+
+%%
+% # |Y| is a rigorous interval enclosure of a dual feasible near optimal
+%   solution and
+% # |Dl|a lower bound of of each cone in $z = c - A^{*} y$.  For a linear
+%   program this is a lower bound on each component of |z|.
+%
+% Since |Dl| is positive, the dual problem is strictly feasible, and the
+% rigorous interval vector |Y| contains a dual interior solution.  Here only
 % some significant digits of this interval vector are displayed.  The upper
-% and lower bounds of the interval |y| can be obtained by using the |sup| and
+% and lower bounds of the interval |Y| can be obtained by using the |sup| and
 % |inf| routines of INTLAB.  For more information about the |intval| data type
-% see </references#Rump1999 [Rump1999]>.
+% see <https://vsdp.github.io/references.htm#Rump1999 [Rump1999]>.
 %
-% Next we compute an upper bound for the optimal value by using |vsdpup|:
-%
-
-obj.rigorous_upper_bound ()
 
 %%
-% The returned variables have a similar meaning to those of |vsdplow|: |fU| is
-% a verified upper bound for the optimal value, |x| is a rigorous interval
-% enclosure of a primal feasible solution, and |lb| is a componentwise lower
-% bound for |x|.  Since |lb| is a positive vector, hence contained in the
-% positive orthant, the primal problem is strictly feasible.  As for the
-% interval vector |y| also for the interval vector |x| only some significant
-% digits are displayed.  The quantity |x| is proper interval vector.  This
-% becomes clear when displaying the first component with |midrad|
+% The information returned by |rigorous_upper_bound()| is similar:
 %
 
-midrad(x(1))
+X = obj.solutions.rigorous_upper_bound.x
 
 %%
-% or |infsup|
 %
 
-infsup(x(1))
+Xl = obj.solutions.rigorous_upper_bound.z
 
 %%
-% Summarizing, we have obtained a primal dual interval solution pair that
-% contains a primal and dual strictly feasible $??$-optimal solution, where
-% $?? = \frac{2 (fU-fL)}{|fU|+|fL|} \approx 4.83 \times 10^{-9}$.
+% # |X| is a rigorous interval enclosure of a primal feasible near optimal
+%   solution and
+% # |Xl|a lower bound of of each cone in |X|.  Again, for a linear program
+%   this is a lower bound on each component of |X|.
 %
+% Since |Xl| is a positive vector, |X| is contained in the positive orthant and
+% the primal problem is strictly feasible.
+%
+% Summarizing, we have obtained a primal dual interval solution pair with an
+% accuracy measured by
+% $$\mu(a, b) = \dfrac{a-b}{\max\{1.0, (|a| + |b|)/2\}},$$
+% see <https://vsdp.github.io/references.htm#Jansson2006 [Jansson2006]>.
+%
+
+format shorte
+mu = (fU - fL) / max (1, (abs (fU) + abs(fL)) / 2)
+
 
 %% Second example with free variables
 %
 % How a linear program with free variables can be solved with VSDP is
 % demonstrated by the following example with one free variable $x_{3}$:
-% $$
-% \begin{array}{ll}
+% $$\begin{array}{ll}
 % \text{minimize}   & x_{1} + x_{2} - 0.5 x_{3}, \\
 % \text{subject to}
 % & x_{1} - x_{2} + 2 x_{3} = 0.5, \\
 % & x_{1} + x_{2} -   x_{3} = 1, \\
 % & x_{1} \geq 0, \\
 % & x_{2} \geq 0.
-% \end{array}
-% $$
+% \end{array}$$
 %
 % The optimal solution pair of this problem is
-% $x^{*} = \begin{pmatrix} \dfrac{5}{6} & 0 & -\dfrac{1}{6} \end{pmatrix}^{T}$,
-% $y^{*} = \begin{pmatrix} \dfrac{1}{6} & \dfrac{5}{6}\end{pmatrix}^{T}$ with
-% $\hat{f_{p}} = \hat{f_{d}} = \dfrac{11}{12}$.
+% $x^{*} = (\frac{5}{6}, 0, -\frac{1}{6})^{T}$,
+% $y^{*} = (\frac{1}{6}, \frac{5}{6})^{T}$ with
+% $\hat{f_{p}} = \hat{f_{d}} = \frac{11}{12} \approx 9.166\ldots$.
 %
 % When entering a problem the order of the variables is important: Firstly free
 % variables, secondly nonnegative variables, thirdly second order cone
@@ -169,9 +217,15 @@ c = [-0.5; 1; 1]; % the same applies to c
 b = [0.5; 1];
 
 %%
-% Rigorous bounds for the optimal value can be optained with:
+% The whole VSDP computation can be done in a few lines of code:
 %
 
-obj = vsdp (A, b, c, K).solve ('sdpt3');
-obj.rigorous_lower_bound ();
-obj.rigorous_upper_bound ();
+obj = vsdp (A, b, c, K);
+obj.options.VERBOSE_OUTPUT = false;
+obj.solve ('sdpt3').rigorous_lower_bound ().rigorous_upper_bound ();
+
+%%
+% Yielding
+%
+
+obj
