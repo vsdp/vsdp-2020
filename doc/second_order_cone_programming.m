@@ -29,18 +29,24 @@
 % $$\begin{array}{ll}
 % \text{maximize}   & -y_{1} - y_{2}, \\
 % \text{subject to}
-% & y_{1} \geq || (q - P y_{3:5} ) ||_{2}, \\
+% & y_{1} \geq \| (q - P y_{3:5} ) \|_{2}, \\
 % & y_{2} \geq
 % \begin{Vmatrix}\begin{pmatrix} 1 \\ y_{3:5} \end{pmatrix}\end{Vmatrix}_{2}, \\
 % & y \in \mathbb{R}^5,
 % \end{array}$$
 % where
-% $$P = \begin{pmatrix}
-%  3 & 1 & 4 \\
-%  0 & 1 & 1 \\
-% -2 & 5 & 3 \\
-%  1 & 4 & 5
-% \end{pmatrix}, \;\text{and}\quad
+
+A = [ 3 1 4 ; ...
+      0 1 1 ; ...
+     -2 5 3 ; ...
+      1 4 5 ];
+
+%%
+% and
+%
+
+b = [ 0 2 1 3 ]';
+
 % \quad q = \begin{pmatrix} 0 \\ 2 \\ 1 \\ 3 \end{pmatrix}.$$
 % We want to transform this problem to the dual standard form.
 % The two inequalities can be written in the form
@@ -116,7 +122,7 @@ K.q = [5;5];
 % error bounds by using |vsdplow| and |vsdpup|:
 %
 
-obj = vsdp (A, b, c, K)
+obj = vsdp (A, b, c, K);
 obj.options.VERBOSE_OUTPUT = false;
 obj.solve ('sdpt3');
 obj.rigorous_lower_bound ();
@@ -128,6 +134,11 @@ obj.rigorous_upper_bound ();
 %
 
 disp (obj)
+
+%%
+%
+
+fL = obj.solutions.approximate.y
 
 %%
 % The quantities |x| and |y| are not displayed here. The two output vectors
