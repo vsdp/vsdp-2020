@@ -1,40 +1,12 @@
 %% Second Order Cone Programming
 %
-% This section explains how to work with second order cone problems.  The
-% second order cone problem in primal standard form is
-% given by
-% $$\begin{array}{ll}
-% \text{minimize}
-% & \langle c^{f}, x^{f} \rangle +
-%   \sum_{i=1}^{n_{q}} \langle c_{i}^{q}, x_{i}^{q} \rangle, \\
-% \text{subject to}
-% & A^{f} x^{f} + \sum_{i=1}^{n_{q}} A_{i}^{q} x_{i}^{q} = b, \\
-% & x^{f} \in \mathbb{R}^{n_{f}}, \\
-% & x_{i}^{q} \in \mathbb{L}^{q_{i}}, \quad i = 1, \ldots, n_{q}.
-% \end{array}$$
-% The corresponding dual problem is
-% $$\begin{array}{ll}
-% \text{maximize}   & b^{T} y, \\
-% \text{subject to}
-% & (A_{i}^{q})^{T} y + z_{i}^{q} = c_{i}^{q},
-% \quad z_{i}^{q} \in \mathbb{L}^{q_{i}},
-% \quad i = 1,\ldots,n_{q}, \\
-% & (A^{f})^{T} y + z^{f} = c^{f},
-% \quad z^{f} \in \mathbb{R}^{n_{f}}, \\
-% & z^{f} = 0.
-% \end{array}$$
+% Let us consider a least squares problem taken from
+% <https://vsdp.github.io/references.html#ElGhaoui1997 [ElGhaoui1997]>
 %
-% Let us consider the total least squares problem taken from
-% <https://vsdp.github.io/references.html#ElGhaoui1997 [ElGhaoui1997]>:
-% $$\begin{array}{ll}
-% \text{maximize}   & -y_{1} - y_{2}, \\
-% \text{subject to}
-% & y_{1} \geq \| (q - P y_{3:5} ) \|_{2}, \\
-% & y_{2} \geq
-% \begin{Vmatrix}\begin{pmatrix} 1 \\ y_{3:5} \end{pmatrix}\end{Vmatrix}_{2}, \\
-% & y \in \mathbb{R}^5,
-% \end{array}$$
-% where
+% $$\|b - Ax\|_2 = \min_{y \in \mathbb{R}^{3}} \|b - Ay\|_2$$
+%
+% with singular matrix
+%
 
 A = [ 3 1 4 ; ...
       0 1 1 ; ...
@@ -42,15 +14,29 @@ A = [ 3 1 4 ; ...
       1 4 5 ];
 
 %%
-% and
+% and right-hand side
 %
 
-b = [ 0 2 1 3 ]';
+b = [ 0 ; ...
+      2 ; ...
+      1 ; ...
+      3 ];
 
-% \quad q = \begin{pmatrix} 0 \\ 2 \\ 1 \\ 3 \end{pmatrix}.$$
-% We want to transform this problem to the dual standard form.
+%%
+% This problem can be formulated as second-order cone program in dual standard
+% form:
+%
+% $$\begin{array}{ll}
+% \text{maximize}   & -y_{1} - y_{2}, \\
+% \text{subject to}
+% & y_{1} \geq \| (b - A y_{3:5} ) \|_{2}, \\
+% & y_{2} \geq \begin{Vmatrix}\begin{pmatrix}
+% 1 \\ y_{3} \\ y_{4} \\ y_{5} \end{pmatrix}\end{Vmatrix}_{2}, \\
+% & y \in \mathbb{R}^{5}.
+% \end{array}$$
+%
 % The two inequalities can be written in the form
-% $$\begin{pmatrix} y_{1} \\ q - P y_{3:5} \end{pmatrix} \in \mathbb{L}^{5}
+% $$\begin{pmatrix} y_{1} \\ b - A y_{3:5} \end{pmatrix} \in \mathbb{L}^{5}
 % \quad\text{and}\quad
 % \begin{pmatrix} y_{2} \\ 1 \\ y_{3:5} \end{pmatrix} \in \mathbb{L}^{5}.$$
 % Since
