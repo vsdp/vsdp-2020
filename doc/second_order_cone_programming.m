@@ -1,26 +1,28 @@
 %% Second Order Cone Programming
 %
-% Let us consider a least squares problem taken from
+% Consider a least squares problem from
 % <https://vsdp.github.io/references.html#ElGhaoui1997 [ElGhaoui1997]>
 %
-% $$\|b - Ax\|_2 = \min_{y \in \mathbb{R}^{3}} \|b - Ay\|_2$$
+% $$\left\|b_{data} - A_{data}\,\hat{y}\right\|_2
+% = \min_{y_{3:5} \in \mathbb{R}^{3}}
+% \left\|b_{data} - A_{data}\,y_{3:5}\right\|_2$$
 %
 % with singular matrix
 %
 
-A = [ 3 1 4 ; ...
-      0 1 1 ; ...
-     -2 5 3 ; ...
-      1 4 5 ];
+A_data = [ 3 1 4  ;
+           0 1 1  ;
+          -2 5 3  ;
+           1 4 5 ];
 
 %%
 % and right-hand side
 %
 
-b = [ 0 ; ...
-      2 ; ...
-      1 ; ...
-      3 ];
+b_data = [ 0  ;
+           2  ;
+           1  ;
+           3 ];
 
 %%
 % This problem can be formulated as second-order cone program in dual standard
@@ -29,30 +31,30 @@ b = [ 0 ; ...
 % $$\begin{array}{ll}
 % \text{maximize}   & -y_{1} - y_{2}, \\
 % \text{subject to}
-% & y_{1} \geq \| (b - A y_{3:5} ) \|_{2}, \\
-% & y_{2} \geq \begin{Vmatrix}\begin{pmatrix}
-% 1 \\ y_{3} \\ y_{4} \\ y_{5} \end{pmatrix}\end{Vmatrix}_{2}, \\
+% & y_{1} \geq \| (b_{data} - A_{data}\,y_{3:5} ) \|_{2}, \\
+% & y_{2} \geq
+% \begin{Vmatrix}\begin{pmatrix} 1 \\ y_{3:5} \end{pmatrix}\end{Vmatrix}_{2}, \\
 % & y \in \mathbb{R}^{5}.
 % \end{array}$$
 %
-% The two inequalities can be written in the form
-% $$\begin{pmatrix} y_{1} \\ b - A y_{3:5} \end{pmatrix} \in \mathbb{L}^{5}
-% \quad\text{and}\quad
+% The two inequality constraints can be written as five dimensional vectors
+%
+% $$\begin{pmatrix} y_{1} \\ b_{data} - A_{data}\,y_{3:5} \end{pmatrix}
+% \in \mathbb{L}^{5} \quad\text{and}\quad
 % \begin{pmatrix} y_{2} \\ 1 \\ y_{3:5} \end{pmatrix} \in \mathbb{L}^{5}.$$
-% Since
-% $$\begin{pmatrix} y_{1} \\ q - P y_{3:5} \end{pmatrix} =
-% \underbrace{\begin{pmatrix} 0 \\ 0 \\ 2 \\ 1 \\ 3 \end{pmatrix}}_{=c_{1}^{q}}
+%
+% Both vectors can be expressed as matrix-vector product of $y$
+%
+% $$\underbrace{\begin{pmatrix} 0 \\ b_{data} \end{pmatrix}}_{=c_{1}^{q}}
 % - \underbrace{\begin{pmatrix}
-% -1 & 0 &  0 & 0 & 0 \\
-%  0 & 0 &  3 & 1 & 4 \\
-%  0 & 0 &  0 & 1 & 1 \\
-%  0 & 0 & -2 & 5 & 3 \\
-%  0 & 0 &  1 & 4 & 5
+% -1 & 0 & 0 & 0 & 0 \\
+%  0 & 0 & ( & A_{data} & )
 % \end{pmatrix}}_{=(A_{1}^{q})^{T}}
-% \begin{pmatrix} y_{1} \\ y_{2} \\ y_{3} \\ y_{4} \\ y_{5} \end{pmatrix},$$
+% \begin{pmatrix} y_{1} \\ y_{2} \\ y_{3} \\ y_{4} \\ y_{5} \end{pmatrix}
+% \in \mathbb{L}^{5}$$
 % and
-% $$\begin{pmatrix} y_{2} \\ 1 \\ y_{3:5} \end{pmatrix} =
-% \underbrace{\begin{pmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{pmatrix}}_{=c_{2}^{q}}
+%
+% $$\underbrace{\begin{pmatrix} 0 \\ 1 \\ 0 \\ 0 \\ 0 \end{pmatrix}}_{=c_{2}^{q}}
 % - \underbrace{\begin{pmatrix}
 % 0 & -1 &  0 &  0 &  0 \\
 % 0 &  0 &  0 &  0 &  0 \\
@@ -60,21 +62,20 @@ b = [ 0 ; ...
 % 0 &  0 &  0 & -1 &  0 \\
 % 0 &  0 &  0 &  0 & -1
 % \end{pmatrix}}_{=(A_{2}^{q})^{T}}
-% \begin{pmatrix} y_{1} \\ y_{2} \\ y_{3} \\ y_{4} \\ y_{5} \end{pmatrix},$$
-% our dual problem \eqref{socpDual} takes the form
+% \begin{pmatrix} y_{1} \\ y_{2} \\ y_{3} \\ y_{4} \\ y_{5} \end{pmatrix}
+% \in \mathbb{L}^{5}$$
+%
+% With these formulations, the dual problem takes the form
 % $$\begin{array}{ll}
 % \text{maximize}
 % & \underbrace{\begin{pmatrix} -1 & -1 & 0 & 0 & 0 \end{pmatrix}}_{=b^{T}} y, \\
 % \text{subject to}
 % & z = \underbrace{\begin{pmatrix}
-%                   0 \\ 0 \\ 2 \\ 1 \\ 3 \\ 0 \\ 1 \\ 0 \\ 0 \\ 0
+%                   0 \\ b_{data} \\ 0 \\ 1 \\ 0 \\ 0 \\ 0
 %                   \end{pmatrix}}_{=c}
 %     - \underbrace{\begin{pmatrix}
 %                   -1 &  0 &  0 &  0 &  0 \\
-%                    0 &  0 &  3 &  1 &  4 \\
-%                    0 &  0 &  0 &  1 &  1 \\
-%                    0 &  0 & -2 &  5 &  3 \\
-%                    0 &  0 &  1 &  4 &  5 \\
+%                    0 &  0 &  ( & A_{data} & ) \\
 %                    0 & -1 &  0 &  0 &  0 \\
 %                    0 &  0 &  0 &  0 &  0 \\
 %                    0 &  0 & -1 &  0 &  0 \\
@@ -88,13 +89,13 @@ b = [ 0 ; ...
 % primal problem.
 %
 
-c = [  0; 0; 2;  1; 3;  0; 1;  0;  0;  0];
-A = [ -1, 0, 0,  0, 0,  0, 0,  0,  0,  0;
-       0, 0, 0,  0, 0, -1, 0,  0,  0,  0;
-       0, 3, 0, -2, 1,  0, 0, -1,  0,  0;
-       0, 1, 1,  5, 4,  0, 0,  0, -1,  0;
-       0, 4, 1,  3, 5,  0, 0,  0,  0, -1];
-b = [-1; -1; 0; 0; 0];
+At = zeros (10, 5);
+At(1,1) = -1;
+At(2:5, 3:5)  = A_data;
+At(6,2) = -1;
+At(8:10, 3:5) = -eye(3);
+b = [-1 -1 0 0 0]';
+c = [ 0 b_data' 0 1 0 0 0]';
 
 %%
 % Apart from the data |(A,b,c)|, the vector |q = [5;5]| of the second order
@@ -108,11 +109,11 @@ K.q = [5;5];
 % error bounds by using |vsdplow| and |vsdpup|:
 %
 
-obj = vsdp (A, b, c, K);
+obj = vsdp (At, b, c, K);
 obj.options.VERBOSE_OUTPUT = false;
-obj.solve ('sdpt3');
-obj.rigorous_lower_bound ();
-obj.rigorous_upper_bound ();
+obj.solve('sdpt3');
+obj.rigorous_lower_bound();
+obj.rigorous_upper_bound();
 
 %%
 % The approximate primal and dual optimal values and the rigorous lower and
