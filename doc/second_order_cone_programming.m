@@ -10,18 +10,18 @@
 % with singular matrix
 %
 
-A_data = [ 3 1 4  ;
-           0 1 1  ;
-          -2 5 3  ;
+A_data = [ 3 1 4 ;
+           0 1 1 ;
+          -2 5 3 ;
            1 4 5 ];
 
 %%
 % and right-hand side
 %
 
-b_data = [ 0  ;
-           2  ;
-           1  ;
+b_data = [ 0 ;
+           2 ;
+           1 ;
            3 ];
 
 %%
@@ -37,7 +37,7 @@ b_data = [ 0  ;
 % & y \in \mathbb{R}^{5}.
 % \end{array}$$
 %
-% The two inequality constraints can be written as five dimensional vectors
+% The two inequality constraints can be written as second-order cone vectors
 %
 % $$\begin{pmatrix} y_{1} \\ b_{data} - A_{data}\,y_{3:5} \end{pmatrix}
 % \in \mathbb{L}^{5} \quad\text{and}\quad
@@ -63,7 +63,7 @@ b_data = [ 0  ;
 % 0 &  0 &  0 &  0 & -1
 % \end{pmatrix}}_{=(A_{2}^{q})^{T}}
 % \begin{pmatrix} y_{1} \\ y_{2} \\ y_{3} \\ y_{4} \\ y_{5} \end{pmatrix}
-% \in \mathbb{L}^{5}$$
+% \in \mathbb{L}^{5}.$$
 %
 % With these formulations, the dual problem takes the form
 % $$\begin{array}{ll}
@@ -81,7 +81,8 @@ b_data = [ 0  ;
 %                    0 &  0 & -1 &  0 &  0 \\
 %                    0 &  0 &  0 & -1 &  0 \\
 %                    0 &  0 &  0 &  0 & -1
-%                   \end{pmatrix}}_{=A^{T}} y \in K^{*},
+%                   \end{pmatrix}}_{=A^{T}} y \in K^{*}, \\
+% & y \in \mathbb{R}^{5}.
 % \end{array}$$
 % where $K^{*} = \mathbb{L}^{5} \times \mathbb{L}^{5}$.
 %
@@ -95,10 +96,10 @@ At(2:5, 3:5)  = A_data;
 At(6,2) = -1;
 At(8:10, 3:5) = -eye(3);
 b = [-1 -1 0 0 0]';
-c = [ 0 b_data' 0 1 0 0 0]';
+c = [ 0 b_data' 0 0 0 0 0]';
 
 %%
-% Apart from the data |(A,b,c)|, the vector |q = [5;5]| of the second order
+% Apart from the data |(At,b,c)|, the vector |q = [5;5]| of the second-order
 % cone block sizes must be forwarded to the structure |K|:
 %
 
@@ -106,7 +107,7 @@ K.q = [5;5];
 
 %%
 % Now we compute approximate solutions by using |solve| and then verified
-% error bounds by using |vsdplow| and |vsdpup|:
+% error bounds by using |rigorous_lower_bound| and |rigorous_upper_bound|:
 %
 
 obj = vsdp (At, b, c, K);
@@ -116,58 +117,55 @@ obj.rigorous_lower_bound();
 obj.rigorous_upper_bound();
 
 %%
-% The approximate primal and dual optimal values and the rigorous lower and
-% upper bounds are
+% Finally, we get an overview about all the performed computations:
 %
 
 disp (obj)
 
 %%
-%
+% Now we analyze the resulting regularized least squares solution |y_SOCP =|
+% $y_{3:5}$
 
-fL = obj.solutions.approximate.y
-
-%%
-% The quantities |x| and |y| are not displayed here. The two output vectors
-% |lb| and |dl| provide rigorous lower bounds for the eigenvalues of these
-% variables.  Since both vectors are positive
-%
-
-fL = obj.solutions.rigorous_lower_bound.f_objective(1)
-fU = obj.solutions.rigorous_upper_bound.f_objective(2)
-
-lb = obj.solutions.rigorous_lower_bound.z
-dl = obj.solutions.rigorous_upper_bound.z
+y_SOCP = obj.solutions.approximate.y(3:5)
 
 %%
-% the primal and the dual set of feasible solutions have a non empty relative
-% interior.  Thus Slater's constraint qualifications (*Strong Duality Theorem*)
-% imply that the duality gap is zero.  The intervals $x$ and $y$ contain
-% interior feasible $\epsilon$-optimal solutions, where
+% and compare it to a naive least squares solution |y_LS|
 %
 
-epsilon = 2 * (fU - fL) / (abs (fU) + abs (fL))
+y_LS = A_data \ b_data
+
+%%
+%
+
+[                  norm(y_SOCP)                    norm(y_LS);
+ norm(b_data - A_data * y_SOCP)  norm(b_data - A_data * y_LS)]
+
 
 %%
 % The conic programming allows to mix constraints of different types.
 % For instance, one can add the linear inequality
-% $\sum_{i=1}^{5} y_{i} \leq 3.5$ to the previous dual problem.  By using the
-% standard form \eqref{cpPrim}, \eqref{cpDual}, and the condensed quantities
-% \eqref{condensedX} it follows that we must add to the matrix |A| the column
-% consisting of ones and to |c| the value 3.5.  We extend the input data as
-% follows:
+% $\sum_{i=1}^{5} y_{i} \leq 3.5$ to the previous dual problem.  We extend the
+% input data as follows:
 %
 
-A = [[1; 1; 1; 1; 1], A];
-c = [3.5; c];
+At = [1 1 1 1 1; At];
+c =  [3.5      ; c ];
 K.l = 1;
 
 %%
+% Note that the order of the cone variables matters for |At| and |c|:
+%
+% # |K.f| Free              variables
+% # |K.l| Linear            variables
+% # |K.q| Second-order cone variables
+% # |K.s| Semidefinite      variables
 %
 
-obj = vsdp (A, b, c, K).solve ('sdpt3');
-obj.rigorous_lower_bound ();
-obj.rigorous_upper_bound ();
+obj = vsdp (At, b, c, K);
+obj.options.VERBOSE_OUTPUT = false;
+obj.solve('sdpt3');
+obj.rigorous_lower_bound();
+obj.rigorous_upper_bound();
 
 %%
 % Then we obtain
