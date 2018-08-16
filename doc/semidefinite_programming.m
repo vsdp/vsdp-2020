@@ -1,122 +1,125 @@
 %% Semidefinite Programming
 %
-% Let the SDP program be given in the standard form \eqref{cpPrim}
-% $$
-% \label{BlockDiagPSDP}
-% \begin{array}{lll}
+% The primal standard form of a conic program with $n_{s}$ symmetric positive
+% semidefinite cones
+%
+% $$\mathbb{S}^{s_{j}}_{+} := \left\{ X \in \mathbb{R}^{s_{j} \times s_{j}}
+% \colon\; X = X^{T},\; v^{T} X v \geq 0,\; \forall v \in \mathbb{R}^{s_{j}}
+% \right\},\quad j = 1,\ldots,n_{s}.$$
+%
+% is
+%
+% $$\begin{array}{lll}
 % \text{minimize}
-% & \sum_{j=1}^{n_{s}} \langle C_{j}^{s}, X_{j}^{s} \rangle, & \\
+% & \sum_{j=1}^{n_{s}} \langle C_{j}, X_{j} \rangle & \\
 % \text{subject to}
-% & \sum_{j=1}^{n_{s}} \langle A_{i,j}^{s}, X_{j}^{s} \rangle = b_{i},
+% & \sum_{j=1}^{n_{s}} \langle A_{ij}, X_{j} \rangle = b_{i},
 % & i = 1,\ldots,m, \\
-% & X_{j}^{s} \in \mathbb{S}^{s_{j}}_{+},
-% & j = 1,\ldots,n_{s}.
-% \end{array}
-% $$
-% Its dual problem \eqref{cpDual} is
-% $$
-% \label{BlockDiagDSDP}
-% \begin{array}{ll}
-% \text{maximize} & b^{T} y, \\
+% & X_{j} \in \mathbb{S}^{s_{j}}_{+},
+% & j = 1,\ldots,n_{s},
+% \end{array}$$
+%
+% with symmetric $s_{j} \times s_{j}$ matrices $A_{ij}$ and $C_{j}$.
+% The dual problem form is
+%
+% $$\begin{array}{ll}
+% \text{maximize} & b^{T} y \\
 % \text{subject to}
-% & Z_{j}^{s} = C_{j}^{s} - \sum_{i=1}^{m} y_{i} A_{i,j}^{s}
+% & Z_{j} := C_{j} - \sum_{i=1}^{m} y_{i} A_{ij}
 %   \in \mathbb{S}^{s_{j}}_{+},\quad j = 1, \ldots, n_{s}.
-% \end{array}
-% $$
-% The matrices $A_{i,j}^{s}, C_{j}^{s}, X_{j}^{s}$ are assumed to be
-% symmetric $s_{j} \times s_{j}$ matrices. We store this problem in our
-% condensed format \eqref{vec}, \eqref{condensedX}, and \eqref{condensedA}.
+% \end{array}$$
 %
-% Let us consider the example
-% (see </references#Borchers2009 [Borchers2009]>):
-% $$
-% \begin{array}{lll}
+% We consider an example from the CSDP User's Guide
+% <https://vsdp.github.io/references.html#Borchers2017 [Borchers2017]>:
+%
+% $$\begin{array}{lll}
 % \text{minimize}
-% & \sum_{j=1}^{3} \langle C_{j}^{s}, X_{j}^{s} \rangle, & \\
+% & \sum_{j=1}^{3} \langle C_{j}, X_{j} \rangle & \\
 % \text{subject to}
-% & \sum_{j=1}^{3} \langle A_{i,j}^{s}, X_{j}^{s} \rangle = b_{i},\quad
+% & \sum_{j=1}^{3} \langle A_{ij}, X_{j} \rangle = b_{i},\quad
 %      i = 1,2, \\
-% & X_{1}^{s} \in \mathbb{S}^{2}_{+}, \\
-% & X_{2}^{s} \in \mathbb{S}^{3}_{+}, \\
-% & X_{3}^{s} \in \mathbb{S}^{2}_{+},
-% \end{array}
-% $$
-% where
-% $$
-% \begin{array}{ccc}
-%   A^{s}_{1,1} = \begin{pmatrix} 3 & 1 \\ 1 & 3 \end{pmatrix}
-% & A^{s}_{1,2} =
-%   \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix}
-% & A^{s}_{1,3} = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix} \\
-%   A^{s}_{2,1} = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}
-% & A^{s}_{2,2} =
-%   \begin{pmatrix} 3 & 0 & 1 \\ 0 & 4 & 0 \\ 1 & 0 & 5 \end{pmatrix}
-% & A^{s}_{2,3} = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix} \\
-%   C^{s}_{1} = \begin{pmatrix} -2 & -1 \\ -1 & -2 \end{pmatrix}
-% & C^{s}_{2} =
-%   \begin{pmatrix} -3 & 0 & -1 \\ 0 & -2 & 0 \\ -1 & 0 & -3 \end{pmatrix}
-% & C^{s}_{3} = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix} \\
-%   b = \begin{pmatrix} 1 \\ 2 \end{pmatrix} & &
-% \end{array}
-% $$
+% & X_{1} \in \mathbb{S}^{2}_{+}, \\
+% & X_{2} \in \mathbb{S}^{3}_{+}, \\
+% & X_{3} \in \mathbb{S}^{2}_{+},
+% \end{array}$$
 %
-% In the condensed format the corresponding coefficient matrix and the primal
-% objective are
-% $$
-% \begin{aligned}
-% A &= \begin{pmatrix}
-%      3 & 1 & 1 & 3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
-%      0 & 0 & 0 & 0 & 3 & 0 & 1 & 0 & 4 & 0 & 1 & 0 & 5 & 0 & 0 & 0 & 1
-%      \end{pmatrix},\\
-% c &= \begin{pmatrix}
-%   -2 & -1 & -1 & -2 & -3 & 0 & -1 & 0 & -2 & 0 & -1 & 0 & -3 & 0 & 0 & 0 & 0
-%   \end{pmatrix}^{T}.
-% \end{aligned}
-% $$
+% where $b = \begin{pmatrix} 1 \\ 2 \end{pmatrix}$,
 %
-% We enter the problem data
+% $$\begin{array}{ccc}
+%   C^{s_{1}}_{1} = \begin{pmatrix} -2 & -1 \\ -1 & -2 \end{pmatrix},
+% & C^{s_{2}}_{2} =
+%   \begin{pmatrix} -3 & 0 & -1 \\ 0 & -2 & 0 \\ -1 & 0 & -3 \end{pmatrix},
+% & C^{s_{3}}_{3} = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix}, \\
+%   A^{s_{1}}_{1,1} = \begin{pmatrix} 3 & 1 \\ 1 & 3 \end{pmatrix},
+% & A^{s_{2}}_{1,2} =
+%   \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{pmatrix},
+% & A^{s_{3}}_{1,3} = \begin{pmatrix} 1 & 0 \\ 0 & 0 \end{pmatrix}, \\
+%   A^{s_{1}}_{2,1} = \begin{pmatrix} 0 & 0 \\ 0 & 0 \end{pmatrix},
+% & A^{s_{2}}_{2,2} =
+%   \begin{pmatrix} 3 & 0 & 1 \\ 0 & 4 & 0 \\ 1 & 0 & 5 \end{pmatrix},
+% & A^{s_{3}}_{2,3} = \begin{pmatrix} 0 & 0 \\ 0 & 1 \end{pmatrix}.
+% \end{array}$$
+%
+% In the vectorized format the corresponding coefficient matrix |At| and the
+% primal objective vector |c| are
 %
 
-clear A b c K
+At{1} = [ 3; 1;
+          1; 3;
+          0; 0; 0;
+          0; 0; 0;
+          0; 0; 0;
+          1; 0;
+          0; 0 ];
+At{2} = [ 0; 0;
+          0; 0;
+          3; 0; 1;
+          0; 4; 0;
+          1; 0; 5;
+          0; 0;
+          0; 1 ];
+At = [At{:}];
 
-A = [3, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0;
-     0, 0, 0, 0, 3, 0, 1, 0, 4, 0, 1, 0, 5, 0, 0, 0, 1];
-c = [-2; -1; -1; -2; -3; 0; -1; 0; -2; 0; -1; 0; -3; 0; 0; 0; 0];
-b = [1; 2];
+b = [ 1;
+      2 ];
+
+c = [ -2; -1; 
+      -1; -2;
+      -3;  0; -1;
+       0; -2;  0;
+      -1;  0; -3;
+       0;  0;
+       0;  0];
 
 %%
 % define the structure |K| for the PSD-cone
 %
 
-K.s = [2; 3; 2];
+K.s = [2 3 2];
 
 %%
-% and call |mysdps|
+% Now we compute approximate solutions by using |solve| and then verified
+% error bounds by using |rigorous_lower_bound| and |rigorous_upper_bound|:
 %
 
-vsdpinit('sdpt3');
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-objt
+obj = vsdp (At, b, c, K);
+obj.options.VERBOSE_OUTPUT = false;
+obj.solve('sdpt3');
+obj.rigorous_lower_bound();
+obj.rigorous_upper_bound();
 
 %%
-% The other quantities are not displayed for brevity.
-%
-% By calling |vsdplow| and |vsdpup| we get verified error bounds
+% Finally, we get an overview about all the performed computations:
 %
 
-[fL,y,dl] = vsdplow(A,b,c,K,xt,yt,zt)
-
-%%
-%
-
-[fU,x,lb] = vsdpup(A,b,c,K,xt,yt,zt)
+disp (obj)
 
 %%
 % The components |lb(j)| are lower bounds of the smallest eigenvalues
 % $\lambda_{\min}([X_{j}^{s}])$ for |j = 1,2,3|.  Hence |lb > 0| proves that
 % all real matrices $X_{j}^{s}$, that are contained in the corresponding
 % interval matrices $[X_{j}^{s}]$, are in the interior of the cone
-% $\mathbb{S}^{2}_{+} \times \mathbb{S}^{3}_{+} \times\mathbb{S}^{2}_{+}$,
+% $\mathbb{S}^{2}_{+} \times \mathbb{S}^{3}_{+} \times \mathbb{S}^{2}_{+}$,
 % where the interval matrices $[X_{j}^{s}]$ are obtained by applying the |mat|
 % operator to intval |x|.  Analogously, |dl(j)| are lower bounds for the
 % smallest eigenvalues of the dual interval matrices $[Z_{j}^{s}]$ that
@@ -124,109 +127,106 @@ objt
 % and |lb| are positive, strict feasibility is proved for the primal and the
 % dual problem, and strong duality holds valid.
 %
+
+%%
 % Now we consider the following example
-% (see </references#Jansson2006 [Jansson2006]>):
-% $$
-% \label{SDPexample}
-% \begin{array}{ll}
-% \text{minimize} & \langle C_{1}, X \rangle, \\
+% (see <https://vsdp.github.io/references.html#Jansson2007a [Jansson2007a]>):
+%
+% $$\begin{array}{ll}
+% \text{minimize} & \langle C(\delta), X \rangle \\
 % \text{subject to}
-% & \langle A_{1,1}, X \rangle = 1, \\
-% & \langle A_{2,1}, X \rangle = 2??, \\
-% & \langle A_{3,1}, X \rangle = 0, \\
-% & \langle A_{4,1}, X \rangle = 0, \\
+% & \langle A_{1}, X \rangle = 1, \\
+% & \langle A_{2}, X \rangle = \epsilon, \\
+% & \langle A_{3}, X \rangle = 0, \\
+% & \langle A_{4}, X \rangle = 0, \\
 % & X \in \mathbb{S}^{3}_{+},
-% \end{array}
-% $$
+% \end{array}$$
+%
+% with Lagragian dual
+%
+% $$\begin{array}{ll}
+% \text{maximize} & y_{1} + \epsilon y_{2} \\
+% \text{subject to}
+% & Z := C(\delta) - \sum_{i = 1}^{4} A_{i} y_{i} \in \mathbb{S}^{3}_{+}, \\
+% & y \in \mathbb{R}^{4},
+% \end{array}$$
+%
 % where
-% $$
-% \begin{array}{cc}
-% C_{1} = \begin{pmatrix}
-%         0   & 0.5 & 0 \\
-%         0.5 & ??   & 0 \\
-%         0   & 0   & ??
-%         \end{pmatrix},
-% & b = \begin{pmatrix} 1 \\ 2?? \\ 0 \\ 0 \end{pmatrix}, \\
-% A_{1,1} = \begin{pmatrix}
-%            0   & -0.5 & 0 \\
-%           -0.5 &  0   & 0 \\
-%            0   &  0   & 0
-%           \end{pmatrix},
-% & A_{2,1} = \begin{pmatrix}
-%             1 & 0 & 0 \\
-%             0 & 0 & 0 \\
-%             0 & 0 & 0
-%             \end{pmatrix}, \\
-% A_{3,1} = \begin{pmatrix}
-%           0 & 0 & 1 \\
-%           0 & 0 & 0 \\
-%           1 & 0 & 0
-%           \end{pmatrix},
-% & A_{4,1} = \begin{pmatrix}
-%             0 & 0 & 0 \\
-%             0 & 0 & 1 \\
-%             0 & 1 & 0
-%             \end{pmatrix}.
-% \end{array}
-% $$
 %
-% It is easy to prove that for
+
+c = @(DELTA) ...
+    [  0;   1/2;    0;
+      1/2; DELTA;   0;
+       0;    0;   DELTA ];
+
+At = {};
+At{1} = [ 0; -1/2; 0;
+        -1/2;  0;  0;
+          0;   0;  0 ];
+At{2} = [ 1; 0; 0;
+          0; 0; 0;
+          0; 0; 0 ];
+At{3} = [ 0; 0; 1;
+          0; 0; 0;
+          1; 0; 0 ];
+At{4} = [ 0; 0; 0;
+          0; 0; 1;
+          0; 1; 0 ];
+At = [At{:}];
+
+b = @(EPSILON) [1; EPSILON; 0; 0];
+
+K.s = 3;
+
+%%         
+% The linear constraints of the primal problem form imply
 %
-% * $?? > 0$: the problem is feasible with
-%   $\hat{f}_{p} = \hat{f}_{d} = -0.5$ (zero duality gap),
-% * $?? = 0$: the problem is feasible but ill-posed with nonzero duality
-%   gap,
-% * $?? < 0$: the problem is infeasible.
+% $$X(\epsilon) = \begin{pmatrix}
+% \epsilon & -1 & 0 \\ -1 & X_{22} & 0 \\ 0 & 0 & X_{33}
+% \end{pmatrix} \in \mathbb{S}^{3}_{+}$$
+%
+% iff $X_{22} \geq 0$, $X_{33} \geq 0$, and $\epsilon X_{22} - 1 \geq 0$.
+%
+% The constraints of the dual form imply
+%
+% $$Z(\delta) = \begin{pmatrix}
+% -y_{2} & \frac{1+y_{1}}{2} & -y_{3} \\
+% \frac{1+y_{1}}{2} & \delta & -y_{4} \\
+% -y_{3} & -y_{4} & \delta \end{pmatrix} \in \mathbb{S}^{3}_{+}.$$
+%
+% Hence, for
+% * $\epsilon \leq 0$: the problem is primal infeasible $\hat{f_{p}} = +\infty$.
+% * $\delta   \leq 0$: the problem is dual   infeasible $\hat{f_{d}} = -\infty$.
+% * $\epsilon = 0$ and $\delta = 0$: the problem is ill-posed and there is a
+%   duality gap with $\hat{f_{p}} = +\infty$ and $\hat{f_{d}} = -1$.
+% * $\epsilon > 0$ and $\delta > 0$: the problem is feasible with
+%   $\hat{f_{p}} = \hat{f_{d}}$ = -1 + \delta / \epsilon$.
 %
 % For $?? > 0$ the primal optimal solution of the problem is given by the
 % matrix
-% $$
-% \label{OptSolSDPExp}
-% X^{*} = \begin{pmatrix}
-% 2?? & -1 & 0 \\ -1 & \dfrac{1}{2??} & 0 \\ 0 & 0 & 0
-% \end{pmatrix}.
-% $$
+
+%
 % The corresponding dual optimal vector is
 % $y^{*} = \begin{pmatrix} 0 & -1/(4??) & 0 & 0 \end{pmatrix}^{T}$.
 % We choose $?? = 10^{-4}$ and enter the problem.
 %
 
-% define delta parameter
-d = 1e-4;
-% define the constraint matrices
-A1 = [ 0,   -0.5, 0;
-      -0.5,  0,   0;
-       0,    0,   0];
-A2 = [1, 0, 0;
-      0, 0, 0;
-      0, 0, 0];
-A3 = [0, 0, 1;
-      0, 0, 0;
-      1, 0, 0];
-A4 = [0, 0, 0;
-      0, 0, 1;
-      0, 1, 0];
-
-b = [1; 2*d; 0; 0];
-
-C = [0,   0.5, 0;
-     0.5, d,   0;
-     0,   0,   d];
-
-% define the cone structure K
-K.s = 3;
-
-% vectorize the matrices Ai and C
-A = [A1(:), A2(:), A3(:), A4(:)];
-c = C(:);
+DELTA   = 10^(-4);
+EPSILON = 10^(-4);
 
 %%
-% The SDPT3-solver provides the following results:
 %
 
-vsdpinit('sdpt3');
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-objt, xt, yt, info  % zt:  hidden for brevity
+obj = vsdp (At, b(EPSILON), c(DELTA), K);
+obj.options.VERBOSE_OUTPUT = false;
+obj.solve('sdpt3');
+obj.rigorous_lower_bound();
+obj.rigorous_upper_bound();
+
+%%
+%
+
+disp (obj)
 
 %%
 % The value of the return parameter |info| confirms successful termination of
