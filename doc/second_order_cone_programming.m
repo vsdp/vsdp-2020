@@ -1,5 +1,8 @@
-%% Second Order Cone Programming
+%% Second-order Cone Programming
 %
+%%
+
+%%
 % Consider a least squares problem from
 % <https://vsdp.github.io/references.html#ElGhaoui1997 [ElGhaoui1997]>
 %
