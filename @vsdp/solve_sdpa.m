@@ -29,10 +29,8 @@ end
 
 if (nargin == 1)
   sol_type = 'Approximate';
-  [At, c, b] = deal (mid (obj.At), mid (obj.b), mid (obj.c));  % Note b <--> c!
-else
-  [At, c, b] = obj.get_perturbed_midpoint_problem ();
 end
+[A, c, b] = obj.get_midpoint_problem_data (sol_type);   % Note b <--> c!
 
 % Note: for 'x0' and later 'x' see [1, p. 14] "mDIM -- All the letters after m
 % through the end of the line are neglected".

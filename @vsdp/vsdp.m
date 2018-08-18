@@ -163,13 +163,18 @@ classdef vsdp < handle
   methods (Access = protected)
     [lb, n, vidx, sdp_matrix] = rigorous_lower_cone_bound (obj, x, mu, ...
       weight_sdp)
-    function [At, b, c] = get_perturbed_midpoint_problem (obj)
+      
+    function [At, b, c] = get_midpoint_problem_data (obj, sol_type)
       [At, b, c] = deal (mid (obj.At), mid (obj.b), mid (obj.c));
-      if (~isempty (obj.perturbation.b))
-        b = b - obj.perturbation.b;
-      end
-      if (~isempty (obj.perturbation.c))
-        c = c - obj.perturbation.c;
+      if ((nargin > 1) && ~strcmp (sol_type, "Approximate"))
+        % Return the perturbed midpoint problem just in case no approximate
+        % solution is requested.
+        if (~isempty (obj.perturbation.b))
+          b = b - obj.perturbation.b;
+        end
+        if (~isempty (obj.perturbation.c))
+          c = c - obj.perturbation.c;
+        end
       end
     end
   end

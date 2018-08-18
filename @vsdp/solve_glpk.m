@@ -28,10 +28,8 @@ end
 
 if (nargin == 1)
   sol_type = 'Approximate';
-  [A, b, c] = deal (obj.At, obj.b, obj.c);
-else
-  [A, b, c] = obj.get_perturbed_midpoint_problem ();
 end
+[A, b, c] = obj.get_midpoint_problem_data (sol_type);
 
 % Should initial solution guess be taken into account?
 if (obj.options.USE_INITIAL_GUESS)
