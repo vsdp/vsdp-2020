@@ -147,8 +147,8 @@ while (iter <= obj.options.ITER_MAX)
     error ('VSDP:rigorous_upper_bound:infinitePerturbation', ...
       'rigorous_upper_bound: Perturbation exceeds finite range.');
   end
-  x_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q))); ...
-    sdp_matrix * epsilon((end - length (obj.K.s) + 1):end)];
+  x_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q)),1); ...
+    sdp_matrix * epsilon((end - length (obj.K.s) + 1):end,1)];
   
   % Display short perturbation statistic.
   iter = iter + 1;
