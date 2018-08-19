@@ -29,6 +29,11 @@
 %   \in \mathbb{S}^{s_{j}}_{+},\quad j = 1, \ldots, n_{s}.
 % \end{array}$$
 %
+%%
+
+
+%% A feasible SDP
+%
 % We consider an example from the CSDP User's Guide
 % <https://vsdp.github.io/references.html#Borchers2017 [Borchers2017]>:
 %
@@ -92,7 +97,7 @@ c = [ -2; -1;
        0;  0];
 
 %%
-% define the structure |K| for the PSD-cone
+% And the cone structure |K| for this problem is
 %
 
 K.s = [2 3 2];
@@ -115,20 +120,57 @@ obj.rigorous_upper_bound();
 disp (obj)
 
 %%
-% The components |lb(j)| are lower bounds of the smallest eigenvalues
-% $\lambda_{\min}([X_{j}^{s}])$ for |j = 1,2,3|.  Hence |lb > 0| proves that
-% all real matrices $X_{j}^{s}$, that are contained in the corresponding
-% interval matrices $[X_{j}^{s}]$, are in the interior of the cone
-% $\mathbb{S}^{2}_{+} \times \mathbb{S}^{3}_{+} \times \mathbb{S}^{2}_{+}$,
-% where the interval matrices $[X_{j}^{s}]$ are obtained by applying the |mat|
-% operator to intval |x|.  Analogously, |dl(j)| are lower bounds for the
-% smallest eigenvalues of the dual interval matrices $[Z_{j}^{s}]$ that
-% correspond to the dual solution |y|.  Since, for this example, both |dl|
-% and |lb| are positive, strict feasibility is proved for the primal and the
-% dual problem, and strong duality holds valid.
+% To compare the approximate solution |X|, |y|, and |Z| with
+% <https://vsdp.github.io/references.html#Borchers2017 [Borchers2017]> the
+% vectorized solution quantities |x| and |z| have to be transformed back to
+% matrices by using |vsdp.smat| and the appropriate scaling factor:
 %
 
+x = full(obj.solutions.approximate.x);
+X = {vsdp.smat([], x(1:3),   1/2),
+     vsdp.smat([], x(4:9),   1/2),
+     vsdp.smat([], x(10:12), 1/2)}
+y = obj.solutions.approximate.y
+z = full(obj.solutions.approximate.z);
+Z = {vsdp.smat([], z(1:3),   1),
+     vsdp.smat([], z(4:9),   1),
+     vsdp.smat([], z(10:12), 1)}
+
 %%
+% The compuation of the rigorous lower bounds involves the computation of the
+% smallest eigenvalues |Zl(j)=| $\lambda_{\min}([Z_{j}])$ for $j = 1,2,3$.
+%
+
+Zl = obj.solutions.rigorous_lower_bound.z'
+Y  = obj.solutions.rigorous_lower_bound.y
+
+%%
+% Since all |Zl >= 0| it is proven that all matrices $Z_{j}$ are in the
+% interior of the cone
+% $\mathbb{S}^{2}_{+} \times \mathbb{S}^{3}_{+} \times \mathbb{S}^{2}_{+}$
+% and |Y| is a rigorous enclosure of a dual strict feasible (near optimal)
+% solution.
+%
+% Analogous computations are performed for the rigorous upper bound.  Here
+% lower bounds on the smallest eigenvalue of the primal solution are computed
+% |Xl(j)=| $\lambda_{\min}([X_{j}])$ for $j = 1,2,3$.
+%
+
+Xl = obj.solutions.rigorous_upper_bound.z'
+
+%%
+% The matrix |X| is a rigorous enclosure of a primal strict feasible (near
+% optimal) solution and can be restored from the vectorized quantity
+% |obj.solutions.rigorous_upper_bound.x| as shown for the approximate solution.
+% We omit the dispay of the interval matrix |X| for brevity.
+%
+% Since all |Xl| are positive, strict feasibility for the primal problem is
+% proved.  Thus strong duality holds for this example.
+%
+
+
+%% An infeasible SDP
+%
 % Now we consider the following example
 % (see <https://vsdp.github.io/references.html#Jansson2007a [Jansson2007a]>):
 %
@@ -147,7 +189,8 @@ disp (obj)
 % $$\begin{array}{ll}
 % \text{maximize} & y_{1} + \epsilon y_{2} \\
 % \text{subject to}
-% & Z := C(\delta) - \sum_{i = 1}^{4} A_{i} y_{i} \in \mathbb{S}^{3}_{+}, \\
+% & Z(\delta) := C(\delta) - \sum_{i = 1}^{4} A_{i} y_{i}
+%   \in \mathbb{S}^{3}_{+}, \\
 % & y \in \mathbb{R}^{4},
 % \end{array}$$
 %
@@ -186,8 +229,7 @@ K.s = 3;
 % \end{pmatrix} \in \mathbb{S}^{3}_{+}$$
 %
 % iff $X_{22} \geq 0$, $X_{33} \geq 0$, and $\epsilon X_{22} - 1 \geq 0$.
-%
-% The constraints of the dual form imply
+% The conic constraint of the dual form is
 %
 % $$Z(\delta) = \begin{pmatrix}
 % -y_{2} & \frac{1+y_{1}}{2} & -y_{3} \\
@@ -195,23 +237,19 @@ K.s = 3;
 % -y_{3} & -y_{4} & \delta \end{pmatrix} \in \mathbb{S}^{3}_{+}.$$
 %
 % Hence, for
+%
 % * $\epsilon \leq 0$: the problem is primal infeasible $\hat{f_{p}} = +\infty$.
 % * $\delta   \leq 0$: the problem is dual   infeasible $\hat{f_{d}} = -\infty$.
-% * $\epsilon = 0$ and $\delta = 0$: the problem is ill-posed and there is a
-%   duality gap with $\hat{f_{p}} = +\infty$ and $\hat{f_{d}} = -1$.
+% * $\epsilon = \delta = 0$: the problem is ill-posed and there is a duality
+%   gap with $\hat{f_{p}} = +\infty$ and $\hat{f_{d}} = -1$.
 % * $\epsilon > 0$ and $\delta > 0$: the problem is feasible with
-%   $\hat{f_{p}} = \hat{f_{d}}$ = -1 + \delta / \epsilon$.
+%   $\hat{f_{p}} = \hat{f_{d}} = -1 + \delta / \epsilon$.
 %
-% For $?? > 0$ the primal optimal solution of the problem is given by the
-% matrix
-
-%
-% The corresponding dual optimal vector is
-% $y^{*} = \begin{pmatrix} 0 & -1/(4??) & 0 & 0 \end{pmatrix}^{T}$.
-% We choose $?? = 10^{-4}$ and enter the problem.
+% We start with the last feasible case and expect
+% $\hat{f_{p}} = \hat{f_{d}} = -1 + 10$ with.
 %
 
-DELTA   = 10^(-4);
+DELTA   = 10^(-3);
 EPSILON = 10^(-4);
 
 %%
@@ -226,6 +264,21 @@ obj.rigorous_upper_bound();
 %%
 %
 
+disp (obj)
+
+%%
+% Nothing bad happened, as expected.
+%
+% Now we change the setting for primal infeasiblilty, what SDPT3 detects as
+% well:
+%
+
+DELTA   = -10^(-3);
+EPSILON = -10^(-4);
+obj = vsdp (At, b(EPSILON), c(DELTA), K);
+obj.options.VERBOSE_OUTPUT = false;
+obj.solve('sdpt3');
+obj.check_primal_infeasible();
 disp (obj)
 
 %%

@@ -136,15 +136,15 @@ Y = obj.solutions.rigorous_lower_bound.y
 %%
 %
 
-Dl = obj.solutions.rigorous_lower_bound.z
+Zl = obj.solutions.rigorous_lower_bound.z
 
 %%
 % # |Y| is a rigorous interval enclosure of a dual feasible near optimal
 %   solution and
-% # |Dl| a lower bound of of each cone in $z = c - A^{*} y$.  For a linear
+% # |Zl| a lower bound of of each cone in $z = c - A^{*} y$.  For a linear
 %   program this is a lower bound on each component of |z|.
 %
-% Since |Dl| is positive, the dual problem is strictly feasible, and the
+% Since |Zl| is positive, the dual problem is strictly feasible, and the
 % rigorous interval vector |Y| contains a dual interior solution.  Here only
 % some significant digits of this interval vector are displayed.  The upper
 % and lower bounds of the interval |Y| can be obtained by using the |sup| and
