@@ -58,13 +58,13 @@ function obj = check_primal_infeasible (obj)
 
 narginchk (1, 1);
 % If the problem was not approximately solved before, do it now.
-if (isempty (obj.solutions('Approximate')))
+if (isempty (obj.solutions.approximate))
   warning ('VSDP:check_primal_feasible:noApproximateSolution', ...
     ['check_primal_feasible: The conic problem has no approximate ', ...
     'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
   obj.solve (obj.options.SOLVER, 'Approximate');
 end
-y = obj.solutions('Approximate').y;
+y = obj.solutions.approximate.y;
 if (isempty (y) || ~all (isfinite (y)))
     error ('VSDP:check_primal_feasible:badApproximateSolution', ...
     ['check_primal_feasible: The approximate dual solution ''y'' is ', ...
@@ -95,12 +95,12 @@ else
   y = intval (y);
 end
 
-% Step 1: If  y'*b  is not negative, we cannot claim anything about the
+% Step 1: If  b'*y  is not positive, we cannot claim anything about the
 %         primal problem feasibility.
-if (sup (obj.b' * y) < 0)
-  % Step 2: Rigorous lower cone bound for At*y with free variables.
-  lb = obj.rigorous_lower_cone_bound (obj.At * y, 1, false);
-  % Step 3: If 'At*y' is in the cone, 'y' is a rigorous certificate of primal
+if (inf (obj.b' * y) > 0)
+  % Step 2: Rigorous lower cone bound for '-At*y' with free variables.
+  lb = obj.rigorous_lower_cone_bound (-obj.At * y, 1, false);
+  % Step 3: If '-At*y' is in the cone, 'y' is a rigorous certificate of primal
   %         infeasibility.
   if (all (lb >= 0))
     is_infeasible = true;
