@@ -51,7 +51,6 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[A, b, c] = obj.get_perturbed_midpoint_problem ();
 [A, b, c] = deal (A', full (b), full (c));
 
 sense = 1;  % Minimization
