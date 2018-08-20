@@ -86,9 +86,10 @@ while (iter <= obj.options.ITER_MAX)
     %
     y = vsdp.verify_uls (obj, obj.At(1:obj.K.f,:), obj.c(1:obj.K.f), mid (y));
     if ((~isintval (y) || any (isnan (y))))
-      error ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
+      warning ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
         ['rigorous_lower_bound: Could not find a rigorous solution of the ', ...
         'linear system of free variables.']);
+      break;  % STOP
     end
   end
   
@@ -120,7 +121,10 @@ while (iter <= obj.options.ITER_MAX)
     end
     fL = inf_ (obj.b' * y + defect);
     solver_info.termination = 'Normal termination';
-    break;  % SUCCESS
+    solver_info.elapsed_time = toc(rlb);
+    solver_info.iter = iter;
+    obj.add_solution ('Rigorous lower bound', [], y, dl, [fL, nan], solver_info);
+    return;  % SUCCESS
   end
   
   % Step 4: Perturb midpoint problem, such that
@@ -130,8 +134,9 @@ while (iter <= obj.options.ITER_MAX)
   k      (idx) = k      (idx) + 1;
   epsilon(idx) = epsilon(idx) - (obj.options.ALPHA .^ k (idx)) .* dl(idx);
   if (~all (isfinite (epsilon)))
-    error ('VSDP:rigorous_lower_bound:infinitePerturbation', ...
+    warning ('VSDP:rigorous_lower_bound:infinitePerturbation', ...
       'rigorous_lower_bound: Perturbation exceeds finite range.');
+    break;  % STOP
   end
   c_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q)),1); ...
     sdp_matrix * epsilon((end - length (obj.K.s) + 1):end,1)];
@@ -158,19 +163,26 @@ while (iter <= obj.options.ITER_MAX)
   
   obj.solve (obj.options.SOLVER, 'Rigorous lower bound');
   sol = obj.solutions.rigorous_lower_bound;
-  if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...
+  solver_info = sol.solver_info;
+  if ((~strcmp (solver_info.termination, 'Normal termination')) ...
       || isempty (sol.y) || any (isnan (sol.y)) || any (isinf (sol.y)))
-    error ('VSDP:rigorous_lower_bound:unsolveablePerturbation', ...
+    warning ('VSDP:rigorous_lower_bound:unsolveablePerturbation', ...
       ['rigorous_lower_bound: Conic solver could not find a solution ', ...
       'for perturbed problem']);
+    break;  % STOP
   end
-  % Store last successful solver info and new dual solution.
-  solver_info = sol.solver_info;
+  % Store new dual solution.
   y = intval (sol.y);
 end
 
+if (iter >= obj.options.ITER_MAX)
+  warning ('VSDP:rigorous_lower_bound:maxIterationReached', ...
+    'rigorous_lower_bound: Maximum number of iterations reached.');
+end
+
 % Update solver info and store solution.
+solver_info.termination = 'Unknown';
 solver_info.elapsed_time = toc(rlb);
 solver_info.iter = iter;
-obj.add_solution ('Rigorous lower bound', [], y, dl, [fL, nan], solver_info);
+obj.add_solution ('Rigorous lower bound', [], [], dl, [-inf, nan], solver_info);
 end

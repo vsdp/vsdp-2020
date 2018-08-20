@@ -116,9 +116,10 @@ while (iter <= obj.options.ITER_MAX)
   % Step 1: Compute rigorous enclosure for 'A * x = b'.
   x = vsdp.verify_uls (obj, obj.At', obj.b, x);
   if ((~isintval (x) || any (isnan (x))))
-    error ('VSDP:rigorous_upper_bound:noUlsEnclosure', ...
+    warning ('VSDP:rigorous_upper_bound:noUlsEnclosure', ...
       ['rigorous_upper_bound: Could not find a rigorous solution for the ', ...
       'linear system of constraints.']);
+    break;  %STOP
   end
   
   % Step 2: Verified lower bounds on 'x' for each cone.
@@ -134,7 +135,11 @@ while (iter <= obj.options.ITER_MAX)
   if (~any (idx))  % If no violations.
     fU = sup (obj.c' * x);
     solver_info.termination = 'Normal termination';
-    break;  % SUCCESS
+    solver_info.elapsed_time = toc(rub);
+    solver_info.iter = iter;
+    obj.add_solution ('Rigorous upper bound', x, [], lb, [nan, fU], ...
+      solver_info);
+    return;  % SUCCESS
   end
   
   % Step 4: Perturb midpoint problem, such that
@@ -144,8 +149,9 @@ while (iter <= obj.options.ITER_MAX)
   k      (idx) = k      (idx) + 1;
   epsilon(idx) = epsilon(idx) - (obj.options.ALPHA .^ k (idx)) .* lb(idx);
   if (~all (isfinite (epsilon)))
-    error ('VSDP:rigorous_upper_bound:infinitePerturbation', ...
+    warning ('VSDP:rigorous_upper_bound:infinitePerturbation', ...
       'rigorous_upper_bound: Perturbation exceeds finite range.');
+    break;  %STOP
   end
   x_epsilon(vidx) = [epsilon(1:(obj.K.f + obj.K.l + length (obj.K.q)),1); ...
     sdp_matrix * epsilon((end - length (obj.K.s) + 1):end,1)];
@@ -172,24 +178,26 @@ while (iter <= obj.options.ITER_MAX)
   
   obj.solve (obj.options.SOLVER, 'Rigorous upper bound');
   sol = obj.solutions.rigorous_upper_bound;
-  if ((~strcmp (sol.solver_info.termination, 'Normal termination')) ...
+  solver_info = sol.solver_info;
+  if ((~strcmp (solver_info.termination, 'Normal termination')) ...
       || isempty (sol.x) || any (isnan (sol.x)) || any (isinf (sol.x)))
-    error ('VSDP:rigorous_upper_bound:unsolveablePerturbation', ...
+    warning ('VSDP:rigorous_upper_bound:unsolveablePerturbation', ...
       ['rigorous_upper_bound: Conic solver could not find a solution ', ...
       'for perturbed problem']);
+    break;  %STOP
   end
-  % Store last successful solver info and new dual solution.
-  solver_info = sol.solver_info;
+  % Store new dual solution.
   x = sol.x + x_epsilon;  % Undo perturbation.
 end
 
-%TODO
-if (iter == obj.options.ITER_MAX)
-  error ('maximum number of iterations reached');
+if (iter >= obj.options.ITER_MAX)
+  warning ('VSDP:rigorous_upper_bound:maxIterationReached', ...
+    'rigorous_upper_bound: Maximum number of iterations reached.');
 end
 
 % Update solver info and store solution.
+solver_info.termination = 'Unknown';
 solver_info.elapsed_time = toc(rub);
 solver_info.iter = iter;
-obj.add_solution ('Rigorous upper bound', x, [], lb, [nan, fU], solver_info);
+obj.add_solution ('Rigorous upper bound', [], [], lb, [nan, +inf], solver_info);
 end
