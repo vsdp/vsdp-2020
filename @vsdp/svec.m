@@ -75,8 +75,8 @@ end
 % Determine how to vectorize the input:
 % a) square double/sparse/intval matrix A
 if (isempty (obj))
-  if (isvector (A))
-    % Assume A was already svec-vecorized.
+  if (isvector (sup (A))) % "sup (A)" due to Octave bug with classes.
+    % Assume A was already svec-vectorized.
     K.s = sqrt(0.25 + 2*length (A)) - 0.5;  % because n = K.s*(K.s+1)/2
     % If this is not the case, assume A = A(:).
     if (K.s ~= round (K.s))
