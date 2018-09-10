@@ -44,10 +44,24 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-A = vsdp.smat (obj, A, 1);
-c = vsdp.smat (obj, c, 1);
-
 [r, res] = mosekopt('symbcon');
+
+prob.bardim = obj.K.s;
+for i = 1:length(obj.K.s)
+  N = obj.K.s(i);
+  cdim = N * (N + 1) / 2;
+  % cone number
+  prob.barc.subj = ones(cdim, 1) * i;
+  % colums
+  prob.barc.subl = zeros(cdim, 1);
+  prob.barc.subl([1, cumsum(1:N-1) + 1],1) = 1;
+  prob.barc.subl = cumsum(prob.barc.subl);
+  % rows
+  prob.barc.subk = ones(cdim, 1);
+  prob.barc.subk(cumsum(1:N-1) + 1,1) = 0:-1:(-N+2);
+  prob.barc.subk = cumsum(prob.barc.subk);
+  prob.barc.val(c(1:K.s));
+end
 
 % Call solver.
 tic;
