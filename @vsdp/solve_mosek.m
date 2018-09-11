@@ -49,49 +49,58 @@ end
 % Split into individual SDP cones.
 c = mat2cell(c, obj.K.dims, 1);
 A = mat2cell(A, obj.K.dims, ones(1, obj.m));
+[~, prob.barc.subj, ...
+  prob.barc.subk, prob.barc.subl, prob.barc.val] = to_mosek_fmt(c);
+[prob.bara.subi, prob.bara.subj, ...
+  prob.bara.subk, prob.bara.subl, prob.bara.val] = to_mosek_fmt(A);
 
-% Compute the lower triangular matrix in each cell.
-c = cellfun(@(x) tril (vsdp.smat([], x, 1)), c, 'UniformOutput', false);
-A = cellfun(@(x) tril (vsdp.smat([], x, 1)), A, 'UniformOutput', false);
+prob.bardim = obj.K.s;
 
-% Get the non-zero entries including the indices.
-[prob.barc.subk, prob.barc.subl, prob.barc.val] = cellfun(@find, c, ...
-  'UniformOutput', false);
-% 
-prob.barc.subj = cellfun(@(x, i) i * ones(size(x)), prob.barc.subk, ...
-  num2cell(1:3)', 'UniformOutput', false);
-prob.barc.subj = vertcat(prob.barc.subj{:})'; % cone   index
-prob.barc.subk = vertcat(prob.barc.subk{:})'; % row    index
-prob.barc.subl = vertcat(prob.barc.subl{:})'; % column index
-prob.barc.val  = vertcat(prob.barc.val{:})';  % values
-prob.bardim    = obj.K.s;
-
-prob.a = [];
+prob.a = sparse(obj.m,0);
 prob.c = [];
+prob.blc = obj.b';
+prob.buc = obj.b';
 
 % Call solver.
 tic;
-[r,res] = mosekopt('minimize info',prob);
+[r, res] = mosekopt('minimize info',prob);
 solver_info.elapsed_time = toc;
 
-% Store solution.
-x = vsdp.svec (obj, x, 2);
-z = vsdp.svec (obj, c - A*y, 1);
-f_objective = [obj.c'*x; obj.b'*y];
-solver_info.name = 'mosek';
-switch (info.pinf + 2*info.dinf)
-  case 0
-    solver_info.termination = 'Normal termination';
-  case 1
-    solver_info.termination = 'Primal infeasible';
-  case 2
-    solver_info.termination = 'Dual infeasible';
-  case 3
-    solver_info.termination = 'Primal and dual infeasibile';
-  otherwise
-    solver_info.termination = 'Unknown';
+% Store solution after normal termination.
+if (isscalar(r) && isnumeric(r) && (r == 0))
+  solver_info.name = 'mosek';
+  solver_info.termination = 'Normal termination';
+  x = vsdp.svec (obj, res.sol.itr.barx, 2);
+  y = res.sol.itr.y;
+  z = vsdp.svec (obj, c - A*y, 1);
+  f_objective = [obj.c'*x; obj.b'*y];
+  obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
 end
 
-obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
+end
 
+
+function [subi, subj, subk, subl, val] = to_mosek_fmt (x)
+%
+%
+
+% Compute the lower triangular matrix in each cell.
+x = cellfun(@(x) tril (vsdp.smat([], x, 1)), x, 'UniformOutput', false);
+
+% Get the non-zero entries including the indices.
+[subk, subl, val] = cellfun(@find, x, 'UniformOutput', false);
+
+% Compute index vectors for the constraints (subi) and the cones (subj).
+[ii, jj] = meshgrid(1:size(x,2), 1:size(x,1));
+subi = cellfun(@(x, i) i * ones(size(x)), subk, num2cell(ii), ...
+  'UniformOutput', false);
+subj = cellfun(@(x, j) j * ones(size(x)), subk, num2cell(jj), ...
+  'UniformOutput', false);
+
+% Vectorize quantities
+subi = vertcat(subi{:})'; % constraint index
+subj = vertcat(subj{:})'; % cone       index
+subk = vertcat(subk{:})'; % row        index
+subl = vertcat(subl{:})'; % column     index
+val  = vertcat(val{:})';  % values
 end
