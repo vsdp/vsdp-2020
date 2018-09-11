@@ -46,22 +46,28 @@ end
 % Prepare data for solver.
 [r, res] = mosekopt('symbcon');
 
-prob.bardim = obj.K.s;
-for i = 1:length(obj.K.s)
-  N = obj.K.s(i);
-  cdim = N * (N + 1) / 2;
-  % cone number
-  prob.barc.subj = ones(cdim, 1) * i;
-  % colums
-  prob.barc.subl = zeros(cdim, 1);
-  prob.barc.subl([1, cumsum(1:N-1) + 1],1) = 1;
-  prob.barc.subl = cumsum(prob.barc.subl);
-  % rows
-  prob.barc.subk = ones(cdim, 1);
-  prob.barc.subk(cumsum(1:N-1) + 1,1) = 0:-1:(-N+2);
-  prob.barc.subk = cumsum(prob.barc.subk);
-  prob.barc.val(c(1:K.s));
-end
+% Split into individual SDP cones.
+c = mat2cell(c, obj.K.dims, 1);
+A = mat2cell(A, obj.K.dims, ones(1, obj.m));
+
+% Compute the lower triangular matrix in each cell.
+c = cellfun(@(x) tril (vsdp.smat([], x, 1)), c, 'UniformOutput', false);
+A = cellfun(@(x) tril (vsdp.smat([], x, 1)), A, 'UniformOutput', false);
+
+% Get the non-zero entries including the indices.
+[prob.barc.subk, prob.barc.subl, prob.barc.val] = cellfun(@find, c, ...
+  'UniformOutput', false);
+% 
+prob.barc.subj = cellfun(@(x, i) i * ones(size(x)), prob.barc.subk, ...
+  num2cell(1:3)', 'UniformOutput', false);
+prob.barc.subj = vertcat(prob.barc.subj{:})'; % cone   index
+prob.barc.subk = vertcat(prob.barc.subk{:})'; % row    index
+prob.barc.subl = vertcat(prob.barc.subl{:})'; % column index
+prob.barc.val  = vertcat(prob.barc.val{:})';  % values
+prob.bardim    = obj.K.s;
+
+prob.a = [];
+prob.c = [];
 
 % Call solver.
 tic;
