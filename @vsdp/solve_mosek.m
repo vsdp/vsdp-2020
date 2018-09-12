@@ -61,9 +61,16 @@ prob.c = [];
 prob.blc = obj.b';
 prob.buc = obj.b';
 
+% Adapt output verbosity.
+if (obj.options.VERBOSE_OUTPUT)
+  echo_level = 3;
+else
+  echo_level = 0;
+end
+
 % Call solver.
 tic;
-[r, res] = mosekopt('minimize info',prob);
+[r, res] = mosekopt (sprintf ('minimize info echo(%d)', echo_level), prob);
 solver_info.elapsed_time = toc;
 
 % Store solution after normal termination.
@@ -150,5 +157,7 @@ for j = 1:length(obj.K.s)
   % Insert indices shifted by the cone offset.
   idx(sidx(1):sidx(2),:) = I + sidx(1) - 1;
 end
+S = warning ('off', 'VSDP:svec:justScale');
 x = vsdp.svec (obj, x(idx), 2);
+warning (S);
 end
