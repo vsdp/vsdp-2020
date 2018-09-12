@@ -5,7 +5,7 @@ SDP_VSDP_2012_P15 (testCase);  % K.s = [2; 3; 2]
 end
 
 function SDP_VSDP_2012_P15 (testCase)
-use_solvers = {'sedumi', 'sdpt3', 'sdpa', 'csdp'};
+use_solvers = {'sedumi', 'sdpt3', 'sdpa', 'csdp', 'mosek'};
 
 A = [3, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0;
   0, 0, 0, 0, 3, 0, 1, 0, 4, 0, 1, 0, 5, 0, 0, 0, 1];
@@ -24,7 +24,13 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve (obj.options.SOLVER);
+  try
+    obj.solve (obj.options.SOLVER);
+  catch
+    warning ('VSDP:testVSDP_SDP:solverNotAvailable', ...
+      'testVSDP_SDP: Solver %s not available.  Skip.', use_solvers{i});
+    continue;
+  end
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   % May solvers have problems with x([4,7]), thus big tolerance 1e-4

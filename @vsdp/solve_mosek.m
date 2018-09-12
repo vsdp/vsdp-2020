@@ -44,22 +44,45 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-[r, res] = mosekopt('symbcon');
 
-% Split into individual SDP cones.
-c = mat2cell(c, obj.K.dims, 1);
-A = mat2cell(A, obj.K.dims, ones(1, obj.m));
-[~, prob.barc.subj, ...
-  prob.barc.subk, prob.barc.subl, prob.barc.val] = to_mosek_fmt(c);
-[prob.bara.subi, prob.bara.subj, ...
-  prob.bara.subk, prob.bara.subl, prob.bara.val] = to_mosek_fmt(A);
+% Split into individual cones.
+c = vsdp_indexable (c, obj);
+A = vsdp_indexable (A, obj);
 
-prob.bardim = obj.K.s;
+% Regard the free, linear, and second-order cone.
+prob.a = sparse([A.f', A.l', A.q']);
+prob.c = [c.f', c.l', c.q'];
 
-prob.a = sparse(obj.m,0);
-prob.c = [];
-prob.blc = obj.b';
-prob.buc = obj.b';
+% Define lower bounds for free, linear, and second-order cone variables.
+prob.blx = [-inf * ones(1, obj.K.f), zeros(1, obj.K.l), ...
+  -inf * ones(1, sum (obj.K.q))];
+
+% If there are second-order cones.
+if (sum (obj.K.q) > 0)
+  [~, res] = mosekopt('symbcon');
+  prob.cones.type   = repmat (res.symbcon.MSK_CT_QUAD, 1, length (obj.K.q));
+  % The indices of all second-order cone variables.
+  prob.cones.sub    = obj.K.idx.q(1,1):obj.K.idx.q(end,end);
+  % The indices of all second-order cone starts.
+  prob.cones.subptr = obj.K.idx.q(:,1)';
+end
+
+% If there are semidefinite cones.
+if (sum (obj.K.s) > 0)
+  prob.bardim = obj.K.s;
+  sdp_dims = obj.K.dims(end-length(obj.K.s)+1:end);
+  [~, prob.barc.subj, ...
+    prob.barc.subk, prob.barc.subl, prob.barc.val] = to_mosek_fmt ( ...
+    mat2cell(c.s, sdp_dims, 1));
+  [prob.bara.subi, prob.bara.subj, ...
+    prob.bara.subk, prob.bara.subl, prob.bara.val] = to_mosek_fmt ( ...
+    mat2cell(A.s, sdp_dims, ones(1, obj.m)));
+end
+
+% As the VSDP format support equality contraints only, we have to set the
+% lower and upper bound for 'A*x' equal to 'b'.
+prob.blc = b';
+prob.buc = b';
 
 % Adapt output verbosity.
 if (obj.options.VERBOSE_OUTPUT)
@@ -77,7 +100,7 @@ solver_info.elapsed_time = toc;
 if (isscalar(r) && isnumeric(r) && (r == 0))
   solver_info.name = 'mosek';
   solver_info.termination = 'Normal termination';
-  x = to_vsdp_fmt(obj, res.sol.itr.barx);
+  x = [res.sol.itr.xx, to_vsdp_fmt(obj, res.sol.itr.barx)];
   y = res.sol.itr.y;
   z = vsdp.svec (obj, obj.c - obj.At*y, 1);
   f_objective = [obj.c'*x; obj.b'*y];
@@ -157,6 +180,7 @@ for j = 1:length(obj.K.s)
   % Insert indices shifted by the cone offset.
   idx(sidx(1):sidx(2),:) = I + sidx(1) - 1;
 end
+idx = idx(obj.K.idx.s(1,1):obj.K.idx.s(end,end),:);
 S = warning ('off', 'VSDP:svec:justScale');
 x = vsdp.svec (obj, x(idx), 2);
 warning (S);
