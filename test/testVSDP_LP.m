@@ -4,7 +4,7 @@ LP_VSDP_2012_P11 (testCase);  % K.l = 2 and K.f = 1
 end
 
 function LP_VSDP_2012_P09 (testCase)
-use_solvers = {'sedumi', 'sdpt3'};
+use_solvers = {'sedumi', 'sdpt3', 'mosek'};
 if (exist ('OCTAVE_VERSION', 'builtin'))
   use_solvers{end+1} = 'glpk';
 else
@@ -25,7 +25,13 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve (obj.options.SOLVER);
+  try
+    obj.solve (obj.options.SOLVER);
+  catch
+    warning ('VSDP:testVSDP_LP:solverNotAvailable', ...
+      'testVSDP_LP: Solver %s not available.  Skip.', use_solvers{i});
+    continue;
+  end
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, full (sol.x), x_sol, ...
@@ -56,7 +62,7 @@ end
 end
 
 function LP_VSDP_2012_P11 (testCase)
-use_solvers = {'sedumi', 'sdpt3'};
+use_solvers = {'sedumi', 'sdpt3', 'mosek'};
 if (exist ('OCTAVE_VERSION', 'builtin'))
   use_solvers{end+1} = 'glpk';
 else
@@ -78,7 +84,13 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve (obj.options.SOLVER);
+  try
+    obj.solve (obj.options.SOLVER);
+  catch
+    warning ('VSDP:testVSDP_LP:solverNotAvailable', ...
+      'testVSDP_LP: Solver %s not available.  Skip.', use_solvers{i});
+    continue;
+  end
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, full (sol.x), x_sol, ...

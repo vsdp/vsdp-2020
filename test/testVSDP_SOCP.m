@@ -5,7 +5,7 @@ SOCP_VSDP_2012_P13 (testCase);  % K.q = [5; 5]
 end
 
 function SOCP_VSDP_2012_P13 (testCase)
-use_solvers = {'sedumi', 'sdpt3'};
+use_solvers = {'sedumi', 'sdpt3', 'mosek'};
 
 A = [ ...
   -1, 0, 0,  0, 0,  0, 0,  0,  0,  0;
@@ -25,7 +25,13 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  obj.solve (obj.options.SOLVER);
+  try
+    obj.solve (obj.options.SOLVER);
+  catch
+    warning ('VSDP:testVSDP_SOCP:solverNotAvailable', ...
+      'testVSDP_SOCP: Solver %s not available.  Skip.', use_solvers{i});
+    continue;
+  end
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, ...
