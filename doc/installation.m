@@ -34,8 +34,9 @@
 % *Using git*
 %
 % If you have <https://git-scm.com/ git> installed and about 700 MB of disk
-% space available, you can easily obtain a full bundle of VSDP, SDPT3, SeDuMi,
-% and CSDP including several benchmark libraries by the command
+% space available, you can easily obtain a full bundle of VSDP 2006, 2012, 2018,
+% including some aforementioned approximate solvers, and some benchmark
+% libraries by the command
 %
 %    git clone --recurse-submodules https://github.com/vsdp/vsdp.github.io
 %
