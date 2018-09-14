@@ -5,15 +5,16 @@
 %% Requirements
 % To run VSDP, the following requirements have to be fulfilled:
 %
-% * A recent version of <http://www.mathworks.com/products/matlab/ MATLAB> or
-%   <http://www.octave.org/ GNU Octave> has to be installed.
-% * The interval toolbox <http://www.ti3.tu-harburg.de/rump/intlab/ INTLAB> is
+% * A recent version of <http://www.octave.org GNU Octave> or
+%   <http://www.mathworks.com/products/matlab MATLAB> has to be installed.
+% * The interval toolbox <http://www.ti3.tu-harburg.de/rump/intlab INTLAB> is
 %   required.
 % * At least one of the following approximate solvers has to be installed:
 %   <https://github.com/coin-or/Csdp CSDP>,
-%   <https://www.gnu.org/software/glpk/ GLPK>,
+%   <https://www.gnu.org/software/glpk GLPK>,
 %   <https://www.mathworks.com/help/optim/ug/linprog.html LINPROG>,
 %   <https://lpsolve.sourceforge.io lp_solve>,
+%   <https://www.mosek.com MOSEK>,
 %   <https://sdpa.sourceforge.io SDPA>,
 %   <https://github.com/sqlp/sdpt3 SDPT3>, or
 %   <https://github.com/sqlp/sedumi SeDuMi>.
@@ -65,7 +66,7 @@
 %
 %  Test summary
 %  ------------
-%  
+%
 %  testSINDEX      PASSED  0.036834
 %  testSVEC_SMAT   PASSED  0.277806
 %  testLP          PASSED  0.923324
