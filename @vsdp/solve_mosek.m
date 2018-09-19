@@ -26,8 +26,8 @@ end
 
 % Should initial solution guess be taken into account?
 if (obj.options.USE_INITIAL_GUESS)
-  warning ('VSDP:solve_sedumi:ignoreInitialGuess', ...
-    ['solve_sedumi: SeDuMi does not support initial guesses (x0,y0,z0) ' ...
+  warning ('VSDP:solve_mosek:ignoreInitialGuess', ...
+    ['solve_mosek: MOSEK does not support initial guesses (x0,y0,z0) ' ...
     'and proceeds without them.']);
 end
 
@@ -100,7 +100,7 @@ solver_info.elapsed_time = toc;
 if (isscalar(r) && isnumeric(r) && (r == 0))
   solver_info.name = 'mosek';
   solver_info.termination = 'Normal termination';
-  x = [res.sol.itr.xx, to_vsdp_fmt(obj, res.sol.itr.barx)];
+  x = [res.sol.itr.xx(:); to_vsdp_fmt(obj, res.sol.itr.barx)];
   y = res.sol.itr.y;
   z = vsdp.svec (obj, obj.c - obj.At*y, 1);
   f_objective = [obj.c'*x; obj.b'*y];
@@ -149,39 +149,23 @@ end
 function x = to_vsdp_fmt (obj, x)
 % TO_VSDP_FMT  Translate the MOSEK solution 'X' to VSDP format.
 %
-%    The computations are similar to those in vsdp.svec.  The ordering of
-%    the entries inside the MOSEK solution for each SDP cone are shown
-%    below in Matrix 'J'.  Those have to be translated to the VSDP ordering
-%    shown in Matrix 'I' below.  See the following example for N = 5:
-%
-%            [ 1            ]         [ 1            ]
-%            [ 2  3         ]         [ 2  7         ]
-%        I = [ 4  5  6      ]     J = [ 3  8 13      ]
-%            [ 7  8  9 10   ]         [ 4  9 14 19   ]
-%            [11 12 13 14 15]         [ 5 10 15 20 25]
-%
-%    The difference to 'lidx' from vsdp.svec is that 'lidx' addresses the
-%    lower triangular part for a quadratic NxN matrix, whereas 'idx' below
-%    just addresses the vectorized
-%
 %   See also vsdp, vsdp.svec.
 
-% Index vector for sorting.
-idx = zeros(obj.n, 1);
-
-% For each SDP cone
-for j = 1:length(obj.K.s)
-  N = obj.K.s(j);
-  sidx = obj.K.idx.s(j,:);
-  I = zeros (N);
-  I(triu (true (N))) = 1:(N*(N+1)/2);
-  I = I';
-  I(I == 0) = [];
-  % Insert indices shifted by the cone offset.
-  idx(sidx(1):sidx(2),:) = I + sidx(1) - 1;
+if (isempty (x))
+  return;
 end
-idx = idx(obj.K.idx.s(1,1):obj.K.idx.s(end,end),:);
+
+% Offset to the semidefinite cones.
+sdp_offset = obj.K.idx.s(1,1) - 1;
+x = [zeros(sdp_offset, 1); x(:)];
+
+% Index vector for sorting.
+[~,~,~,vlidx] = vsdp.sindex (obj);
+
 S = warning ('off', 'VSDP:svec:justScale');
-x = vsdp.svec (obj, x(idx), 2);
+x = vsdp.svec (obj, x([(1:sdp_offset)'; vlidx]), 2);
 warning (S);
+
+% Strip non-semidefinite portion.
+x(1:sdp_offset) = [];
 end
