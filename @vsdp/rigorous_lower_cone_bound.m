@@ -42,6 +42,7 @@ n  = obj.K.f + obj.K.l + length (obj.K.q) + length (obj.K.s);
 if (nargin == 1)
   % Index vector for perturbation.
   vidx = vsdp.sindex (obj);            % Get only diagonal entries of SDP cones.
+  vidx = vidx(:,1);
   vidx(1:(obj.K.f + obj.K.l)) = true;  % Copy free and linear part directly.
   if (~isempty (obj.K.q))
     % In case of second-order cones, only the first element is perturbed.

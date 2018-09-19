@@ -106,11 +106,11 @@ end
 offset = K.f + K.l + sum (K.q);
 A(1:offset,:) = a(1:offset,:);
 
-[vidx, midx, lidx] = vsdp.sindex (obj);
+[vidx, midx, mlidx] = vsdp.sindex (obj);
 % Scale off diagonal elements.
-A(midx(:,1),:) = a( vidx,:);
-A(midx(:,2),:) = a(~vidx,:) * mu;
-A(lidx,:)      = a(~vidx,:) * mu;
+A(midx(:,1),:) = a(vidx(:,1),:);
+A(midx(:,2),:) = a(vidx(:,2),:) * mu;
+A(mlidx,:)     = a(vidx(:,2),:) * mu;
 
 % If a was a single svec matrix vector, reshape it to matrix.
 if (do_reshape)

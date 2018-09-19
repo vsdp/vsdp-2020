@@ -117,8 +117,8 @@ if (size (A, 1) == n)
     warning ('VSDP:svec:justScale', ...
       ['svec: Input ''A'' is already condensed vectorized, just scale ', ...
       'off-diagonal elements.']);
-    idx = ~vsdp.sindex (obj);  % Inverted for off-diagonal elements.
-    A(idx,:) = A(idx,:) * mu;
+    vidx = vsdp.sindex (obj);  % vidx(:,2) are off-diagonal indices.
+    A(vidx(:,2),:) = A(vidx(:,2),:) * mu;
   end
   return;
 end
@@ -132,10 +132,10 @@ if (size (A, 1) ~= N)
 end
 
 if (~isSymmetric)
-  [~, midx, lidx] = vsdp.sindex (obj);
+  [~, midx, mlidx] = vsdp.sindex (obj);
   % Compute average of lower and upper off diagonal elements and store them in
   % the upper part.
-  A(midx(:,2),:) = (A(midx(:,2),:) + A(lidx,:)) / 2;
+  A(midx(:,2),:) = (A(midx(:,2),:) + A(mlidx,:)) / 2;
 else
   [~, midx] = vsdp.sindex (obj);
 end

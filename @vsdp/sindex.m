@@ -1,24 +1,28 @@
-function [vidx, midx, lidx] = sindex (obj)
+function [vidx, midx, mlidx, vlidx] = sindex (obj)
 % SINDEX  Compute indices for symmetric matrices of a cone structure 'K'.
 %
-%   [vidx, midx, lidx] = vsdp.sindex (K);
+%   [vidx, midx, mlidx, vlidx] = vsdp.sindex (K);
 %
 %      'obj'  Cone structure, or VSDP object.  See 'help vsdp.validate_cone'
 %             for details.
 %
-%       'vidx'  Indices of the diagonal entries for the symmetric vectorized
-%               (vsdp.svec) matrices.
-%      '~vidx'  Indices of the upper tridiagonal entries for the symmetric
+%      'vidx(:,1)'  Indices of the diagonal entries for the symmetric vectorized
+%                   (vsdp.svec) matrices.
+%      'vidx(:,2)'  Indices of the upper tridiagonal entries for the symmetric
 %                   vectorized (vsdp.svec) matrices.
 %      'midx(:,1)'  Indices of the diagonal entries for the full matrices.
 %      'midx(:,2)'  Indices of the upper tridiagonal entries for the full
 %                   matrices.
-%      'lidx'       Indices of the lower tridiagonal entries for the full
+%      'mlidx'      Indices of the lower tridiagonal entries for the full
 %                   matrices in the order given by 'midx(:,2)'.
+%      'vlidx'      Indices of the lower tridiagonal entries for the
+%                   vectorized (but not by vsdp.svec) matrices in the order
+%                   given by 'vidx(:,2)'.
 %
 %   For a better comprehension of this function, consider the following
-%   quadratic 4x4 (K.s = 4) matrix 'A' with Fortran indices 'idx' and a
-%   vsdp.svec-vectorized Matrix 'Avec':
+%   quadratic 4x4 (K.s = 4) matrix 'A' with Fortran indices 'idx', a
+%   vsdp.svec-vectorized Matrix 'Avec' and a lower triangular matrix in
+%   Fortran index order 'A_fv':
 %
 %             [a b d g]            [ 1  5  9 13]
 %             [B c e h]            [ 2  6 10 14]
@@ -26,6 +30,7 @@ function [vidx, midx, lidx] = sindex (obj)
 %             [G H I j]            [ 4  8 12 16]
 %
 %      Avec = [a b c d e f g h i j]'
+%      A_fv = [a B D G c E H f I j]'
 %
 %   The goal of symmetric vectorization (vsdp.svec) is to store only the upper
 %   triangular part in 'Avec', because the entries B,D,G,... are redundant in
@@ -38,26 +43,31 @@ function [vidx, midx, lidx] = sindex (obj)
 %
 %   By computing the index matrices and vector
 %
-%      [vidx, midx, lidx] = vsdp.sindex(K);   % with K.s = 4
+%      [vidx, midx, mlidx, vlidx] = vsdp.sindex(K);   % with K.s = 4
 %
 %   the main diagonal is indexed by:
 %
-%      Avec( vidx) == A(midx(:,1)) == [a c f j]'
+%      Avec(vidx(:,1)) == A(midx(:,1)) == [a c f j]'
 %
 %   and the triangular upper matrix elements are indexed by:
 %
-%      Avec(~vidx) == A(midx(:,2)) == [b d e g h i]'
+%      Avec(vidx(:,2)) == A(midx(:,2)) == [b d e g h i]'
 %
 %   Occasionally, it is important to extract the lower triangular part of 'A'
 %   as well.  But the Fortran index order by logical indexing would yield
 %   [B D G E H I].  To obtain the same order of the elements as in
-%   'A(midx(:,2))', use the index vector 'lidx' for the lower triangular part:
+%   'A(midx(:,2))', use the index vector 'mlidx' for the lower triangular part:
 %
-%      A(lidx) == [B D E G H I]'
+%      A(mlidx) == [B D E G H I]'
 %
-%   NOTE: in general one should avoid to compute 'midx' and 'lidx', as it is an
-%   expensive operation.  Working on a vectorized representation of 'A' is
+%   NOTE: in general one should avoid to compute 'midx' and 'mlidx', as it is
+%   an expensive operation.  Working on a vectorized representation of 'A' is
 %   more favorable.
+%
+%   Sometimes one is confronted with another type of symmetric
+%   vectorization in Fortran index order (see 'A_fv' above).  To translate
+%   this structure to that of 'Avec', one needs to reorder the entries.
+%   This order is defined by 'vlidx', which includes the main diagonal!
 %
 %   Example:
 %
@@ -66,10 +76,10 @@ function [vidx, midx, lidx] = sindex (obj)
 %           31, 32, 33, 34; ...
 %           41, 42, 43, 44];
 %      K.s = 4;
-%      [~,midx,lidx] = vsdp.sindex(K);
+%      [~,midx,mlidx] = vsdp.sindex(K);
 %      disp ( A(midx(:,1))' )  % Diagonal elements of A
 %      disp ( A(midx(:,2))' )  % Upper triangular part of A
-%      disp ( A(lidx)' )       % Lower triangular part of A
+%      disp ( A(mlidx)' )      % Lower triangular part of A
 %
 %   See also vsdp, vsdp.svec, vsdp.smat.
 %
@@ -96,13 +106,17 @@ switch (nargout)
     for i = 1:length(K.s)
       [idxs{i,1}, idxs{i,2}, idxs{i,3}] = idx (K.s(i));
     end
+  case 4
+    for i = 1:length(K.s)
+      [idxs{i,1}, idxs{i,2}, idxs{i,3}, idxs{i,4}] = idx (K.s(i));
+    end
 end
 offset = K.f + K.l + sum (K.q);
-vidx = false (offset, 1);
+vidx = false (offset, 2);
 if (sum (K.s) > 0)  % Preserve logical data type in case of empty arrays [].
   vidx = [vidx; vertcat(idxs{:,1})];
 end
-if (nargout > 1)
+if ((nargout == 2) || (nargout == 3))
   midx = false (offset, 2);
   if (sum (K.s) > 0)  % Preserve logical data type in case of empty arrays [].
     midx = [midx; vertcat(idxs{:,2})];
@@ -113,19 +127,29 @@ if (nargout == 3)
   for i = 1:length(offset)
     idxs{i,3} = idxs{i,3} + offset(i);
   end
-  lidx = vertcat (idxs{:,3});
+  mlidx = vertcat (idxs{:,3});
+end
+if (nargout == 4)
+  for i = 1:length(K.s)
+    idxs{i,4} = idxs{i,4} + K.idx.s(i,1) - 1;
+  end
+  vlidx = vertcat (idxs{:,4});
+  % Ensure 'midx' and 'mlidx' to be set.
+  midx  = [];
+  mlidx = [];
 end
 
 end
 
-function [vidx, midx, lidx] = idx (N)
+function [vidx, midx, mlidx, vlidx] = idx (N)
 % IDX  Performs the index computation for a single matrix.
 %
 
-vidx = false(N * (N + 1) / 2, 1);
+vidx = false(N * (N + 1) / 2, 2);
 vidx(cumsum(1:N),1) = true;
+vidx(:,2) = ~vidx(:,1);
 
-if (nargout >= 2)
+if ((nargout == 2) || (nargout == 3))
   midx = false(N^2, 2);
   d = diag (true (N, 1));
   midx(:,1) = d(:);
@@ -137,10 +161,10 @@ if (nargout == 3)
   % The following few lines of code are very tricky and should be explained.
   % Functionally, the code is equivalent to:
   %
-  %    lidx = reshape (1:N^2, N, N);
-  %    lidx = tril (lidx, -1)';
-  %    lidx(lidx == 0) = [];
-  %    lidx = lidx(:);
+  %    mlidx = reshape (1:N^2, N, N);
+  %    mlidx = tril (mlidx, -1)';
+  %    mlidx(mlidx == 0) = [];
+  %    mlidx = mlidx(:);
   %
   % But is by factor 2 slower and requires much more memory.  Assume the
   % following NxN matrix of indices in logical order I and Fortran order J for
@@ -152,19 +176,34 @@ if (nargout == 3)
   %          [ 7  8  9 10   ]         [ 4  9 14 19   ]
   %          [11 12 13 14 15]         [ 5 10 15 20 25]
   %
-  % The desired vector 'lidx' is:
+  % The desired vector 'mlidx' is:
   %
   %   Position:       1 2     4           7            == cumsum ([1, 1:(N-2)]))
-  %   lidx =        [ 2 3 8   4   9 14    5    10 15 20]
+  %   mlidx =       [ 2 3 8   4   9 14    5    10 15 20]
   %
   %        = cumsum([ 2 1 N (1-N) N  N (1-N-N)  N  N  N])
   %
   
-  lidx = N * ones (N * (N - 1) / 2, 1);
-  if (~isempty (lidx))  % catch N == 1
-    lidx(cumsum ([1, 1:(N-2)])) = [2, (1:-N:(1-N*(N-3)))];
-    lidx = cumsum (lidx);
+  mlidx = N * ones (N * (N - 1) / 2, 1);
+  if (~isempty (mlidx))  % catch N == 1
+    mlidx(cumsum ([1, 1:(N-2)])) = [2, (1:-N:(1-N*(N-3)))];
+    mlidx = cumsum (mlidx);
   end
+end
+
+if (nargout == 4)
+  % Do basically the same as for 'mlidx', but now for a vecotrized sparse
+  % matrix with a Fortran indexing as in matrix 'J' above, that needs to be
+  % translated to the order of matrix 'I'.
+  vlidx = zeros (N);
+  vlidx(triu (true (N))) = 1:(N*(N+1)/2);
+  vlidx = vlidx';
+  vlidx(vlidx == 0) = [];
+  vlidx = vlidx(:);
+  
+  % Ensure 'midx' and 'mlidx' to be set.
+  midx  = [];
+  mlidx = [];
 end
 
 end

@@ -105,7 +105,7 @@ classdef vsdp < handle
     A = smat (obj, a, mu);
     E = verify_eigsym (A);
     x = verify_uls (obj, A, b, x0);
-    [vidx, midx, lidx] = sindex (K);
+    [vidx, midx, mlidx, vlidx] = sindex (K);
     [K, N, n] = validate_cone (K);
   end
   
