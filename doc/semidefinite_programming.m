@@ -178,7 +178,7 @@ Xl = obj.solutions.rigorous_upper_bound.z'
 % \text{minimize} & \langle C(\delta), X \rangle \\
 % \text{subject to}
 % & \langle A_{1}, X \rangle = 1, \\
-% & \langle A_{2}, X \rangle = \epsilon, \\
+% & \langle A_{2}, X \rangle = \varepsilon, \\
 % & \langle A_{3}, X \rangle = 0, \\
 % & \langle A_{4}, X \rangle = 0, \\
 % & X \in \mathbb{S}^{3}_{+},
@@ -187,7 +187,7 @@ Xl = obj.solutions.rigorous_upper_bound.z'
 % with Lagragian dual
 %
 % $$\begin{array}{ll}
-% \text{maximize} & y_{1} + \epsilon y_{2} \\
+% \text{maximize} & y_{1} + \varepsilon y_{2} \\
 % \text{subject to}
 % & Z(\delta) := C(\delta) - \sum_{i = 1}^{4} A_{i} y_{i}
 %   \in \mathbb{S}^{3}_{+}, \\
@@ -224,11 +224,11 @@ K.s = 3;
 %%         
 % The linear constraints of the primal problem form imply
 %
-% $$X(\epsilon) = \begin{pmatrix}
-% \epsilon & -1 & 0 \\ -1 & X_{22} & 0 \\ 0 & 0 & X_{33}
+% $$X(\varepsilon) = \begin{pmatrix}
+% \varepsilon & -1 & 0 \\ -1 & X_{22} & 0 \\ 0 & 0 & X_{33}
 % \end{pmatrix} \in \mathbb{S}^{3}_{+}$$
 %
-% iff $X_{22} \geq 0$, $X_{33} \geq 0$, and $\epsilon X_{22} - 1 \geq 0$.
+% iff $X_{22} \geq 0$, $X_{33} \geq 0$, and $\varepsilon X_{22} - 1 \geq 0$.
 % The conic constraint of the dual form is
 %
 % $$Z(\delta) = \begin{pmatrix}
@@ -238,12 +238,14 @@ K.s = 3;
 %
 % Hence, for
 %
-% * $\epsilon \leq 0$: the problem is primal infeasible $\hat{f_{p}} = +\infty$.
-% * $\delta   \leq 0$: the problem is dual   infeasible $\hat{f_{d}} = -\infty$.
-% * $\epsilon = \delta = 0$: the problem is ill-posed and there is a duality
+% * $\varepsilon \leq 0$: the problem is primal infeasible
+%   $\hat{f_{p}} = +\infty$.
+% * $\delta      \leq 0$: the problem is dual   infeasible
+%   $\hat{f_{d}} = -\infty$.
+% * $\varepsilon = \delta = 0$: the problem is ill-posed and there is a duality
 %   gap with $\hat{f_{p}} = +\infty$ and $\hat{f_{d}} = -1$.
-% * $\epsilon > 0$ and $\delta > 0$: the problem is feasible with
-%   $\hat{f_{p}} = \hat{f_{d}} = -1 + \delta / \epsilon$.
+% * $\varepsilon > 0$ and $\delta > 0$: the problem is feasible with
+%   $\hat{f_{p}} = \hat{f_{d}} = -1 + \delta / \varepsilon$.
 %
 % We start with the last feasible case and expect
 % $\hat{f_{p}} = \hat{f_{d}} = -1 + 10$ with.
@@ -267,19 +269,26 @@ obj.rigorous_upper_bound();
 disp (obj)
 
 %%
-% Nothing bad happened, as expected.
+% Everything as expected, we obtain finite rigorous lower and upper bounds
+% |fL| and |fU|.
 %
 % Now we change the setting for primal infeasiblilty, what SDPT3 detects as
 % well:
 %
 
-DELTA   = -10^(-3);
+DELTA   =  10^(-3);
 EPSILON = -10^(-4);
 obj = vsdp (At, b(EPSILON), c(DELTA), K);
 obj.options.VERBOSE_OUTPUT = false;
 obj.solve('sdpt3');
-obj.check_primal_infeasible();
-disp (obj)
+obj.solutions.approximate
+
+%%
+% We can make sure of the 
+%
+
+obj.rigorous_lower_bound();
+obj.solutions.rigorous_lower_bound
 
 %%
 % The value of the return parameter |info| confirms successful termination of
