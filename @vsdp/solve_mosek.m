@@ -77,7 +77,7 @@ if (sum (obj.K.s) > 0)
     obj, vsdp.smat (obj, A, 1));
 end
 
-% As the VSDP format support equality contraints only, we have to set the
+% As the VSDP format support equality constraints only, we have to set the
 % lower and upper bound for 'A*x' equal to 'b'.
 prob.blc = b;
 prob.buc = b;
@@ -166,7 +166,7 @@ end
 
 
 function [ltri, subk, subl] = mosek_idx(N)
-% MOSEK_IDX  Gernate indices for a MOSEK lower triangular vectorized matrix.
+% MOSEK_IDX  Generate indices for a MOSEK lower triangular vectorized matrix.
 %
 %      ltri - lower triangular index of full Fortran vectorized matrix.
 %      subk - row    index
