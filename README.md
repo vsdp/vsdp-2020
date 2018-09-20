@@ -17,11 +17,12 @@ supported as well.
 
 This version of VSDP provides easy access to the conic solvers:
 - [CSDP](https://github.com/coin-or/Csdp),
-  [GLPK](https://www.gnu.org/software/glpk/),
+  [GLPK](https://www.gnu.org/software/glpk),
   [LINPROG](https://www.mathworks.com/help/optim/ug/linprog.html),
   [lp_solve](https://lpsolve.sourceforge.io),
+  [MOSEK](https://www.mosek.com),
   [SDPA](https://sdpa.sourceforge.io),
-  [SDPT3](https://github.com/sqlp/sdpt3), and
-  [SeDuMi](https://github.com/sqlp/sedumi).
+  [SDPT3](http://www.math.nus.edu.sg/~mattohkc/SDPT3.html), and
+  [SeDuMi](http://sedumi.ie.lehigh.edu).
 
 For more information, please visit <https://vsdp.github.io/>.
