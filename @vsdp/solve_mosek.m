@@ -51,7 +51,7 @@ A = vsdp_indexable (A, obj);
 
 % Regard the free, linear, and second-order cone.
 prob.a = sparse([A.f', A.l', A.q']);
-prob.c = [c.f', c.l', c.q'];
+prob.c = [c.f; c.l; c.q];
 
 % Define lower bounds for free, linear, and second-order cone variables.
 prob.blx = [-inf * ones(1, obj.K.f), zeros(1, obj.K.l), ...
@@ -63,8 +63,9 @@ if (sum (obj.K.q) > 0)
   prob.cones.type   = repmat (res.symbcon.MSK_CT_QUAD, 1, length (obj.K.q));
   % The indices of all second-order cone variables.
   prob.cones.sub    = obj.K.idx.q(1,1):obj.K.idx.q(end,end);
-  % The indices of all second-order cone starts.
-  prob.cones.subptr = obj.K.idx.q(:,1)';
+  % The indices of all second-order cone starts.  Those are the indices
+  % relative to 'prob.cones.sub', not the "global" indices.
+  prob.cones.subptr = obj.K.idx.q(:,1)' - obj.K.idx.q(1,1) + 1;
 end
 
 % If there are semidefinite cones.
@@ -81,8 +82,8 @@ end
 
 % As the VSDP format support equality contraints only, we have to set the
 % lower and upper bound for 'A*x' equal to 'b'.
-prob.blc = b';
-prob.buc = b';
+prob.blc = b;
+prob.buc = b;
 
 % Adapt output verbosity.
 if (obj.options.VERBOSE_OUTPUT)
