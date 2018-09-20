@@ -45,13 +45,10 @@ end
 
 % Prepare data for solver.
 
-% Split into individual cones.
-c = vsdp_indexable (c, obj);
-A = vsdp_indexable (A, obj);
-
 % Regard the free, linear, and second-order cone.
-prob.a = sparse([A.f', A.l', A.q']);
-prob.c = [c.f; c.l; c.q];
+idx = obj.K.f + obj.K.l + sum(obj.K.q);
+prob.a = sparse(A(1:idx,:)');
+prob.c = c(1:idx,1);
 
 % Define lower bounds for free, linear, and second-order cone variables.
 prob.blx = [-inf * ones(1, obj.K.f), zeros(1, obj.K.l), ...
@@ -71,13 +68,13 @@ end
 % If there are semidefinite cones.
 if (sum (obj.K.s) > 0)
   prob.bardim = obj.K.s;
-  sdp_dims = obj.K.dims(end-length(obj.K.s)+1:end);
   [~, prob.barc.subj, ...
     prob.barc.subk, prob.barc.subl, prob.barc.val] = to_mosek_fmt ( ...
-    mat2cell(c.s, sdp_dims, 1));
+    obj, vsdp.smat (obj, c, 1));
+  
   [prob.bara.subi, prob.bara.subj, ...
     prob.bara.subk, prob.bara.subl, prob.bara.val] = to_mosek_fmt ( ...
-    mat2cell(A.s, sdp_dims, ones(1, obj.m)));
+    obj, vsdp.smat (obj, A, 1));
 end
 
 % As the VSDP format support equality contraints only, we have to set the
@@ -121,7 +118,7 @@ end
 end
 
 
-function [subi, subj, subk, subl, val] = to_mosek_fmt (x)
+function [subi, subj, subk, subl, val] = to_mosek_fmt (obj, X)
 % TO_MOSEK_FMT  Translate the VSDP quantities 'At' and 'c' to MOSEK format.
 %
 %   The output are four to five vectors of equal length representing data
@@ -133,27 +130,70 @@ function [subi, subj, subk, subl, val] = to_mosek_fmt (x)
 %      subl - column     index
 %      val  - non-zero  values
 %
-%   See also vsdp.
+%   See also vsdp, vsdp.sindex, mosek_idx.
 
-% Compute the lower triangular matrix in each cell.
-x = cellfun(@(x) tril (vsdp.smat([], x, 1)), x, 'UniformOutput', false);
+
+[ltri, subk_all, subl_all] = cellfun(@mosek_idx, num2cell (obj.K.s), ...
+  'UniformOutput', false);
+ltri     = vertcat (ltri{:});      % lower triangular    indices (unshifted)
+subj_all = ones (size (ltri));     % all possible cone   indices (unshifted)
+subk_all = vertcat (subk_all{:});  % all possible row    indices
+subl_all = vertcat (subl_all{:});  % all possible column indices
+
+% Shift lower triangular 'ltri' and cone 'subj_all' indices.
+offset_n = 0;
+offset_N = 0;
+for i = 1:length (obj.K.s)
+  N = obj.K.s(i);
+  idx = (offset_n + 1):(offset_n + N*(N+1)/2);
+  ltri(idx,1) = ltri(idx,1) + offset_N;
+  subj_all(idx,1) = subj_all(idx,1) * i;
+  offset_n = idx(end);
+  offset_N = offset_N + N^2;
+end
+
+% Reduce 'X' to semidefinite part.
+X = X(obj.K.idx.s(1,1):end,:);
 
 % Get the non-zero entries including the indices.
-[subk, subl, val] = cellfun(@find, x, 'UniformOutput', false);
+[all_idx, subi, val] = find (X(ltri,:));
+subi = subi';
+subj = subj_all(all_idx)';
+subk = subk_all(all_idx)';
+subl = subl_all(all_idx)';
+val = val';
+end
 
-% Compute index vectors for the constraints (subi) and the cones (subj).
-[ii, jj] = meshgrid (1:size(x,2), 1:size(x,1));
-subi = cellfun (@(x, i) i * ones(size(x)), subk, num2cell(ii), ...
-  'UniformOutput', false);
-subj = cellfun (@(x, j) j * ones(size(x)), subk, num2cell(jj), ...
-  'UniformOutput', false);
 
-% Vectorize quantities
-subi = vertcat (subi{:})'; % constraint index
-subj = vertcat (subj{:})'; % cone       index
-subk = vertcat (subk{:})'; % row        index
-subl = vertcat (subl{:})'; % column     index
-val  = vertcat (val{:})';  % non-zero  values
+function [ltri, subk, subl] = mosek_idx(N)
+% MOSEK_IDX  Gernate indices for a MOSEK lower triangular vectorized matrix.
+%
+%      ltri - lower triangular index of full Fortran vectorized matrix.
+%      subk - row    index
+%      subl - column index
+%
+%   Example for N = 3:
+%
+%             [1 4 7]        ltri = [1 2 3 5 6 9]
+%         A = [2 5 8]   ==>  subk = [1 2 3 2 3 3]
+%             [3 6 9]        subl = [1 1 1 2 2 3]
+%
+%   See also vsdp, vsdp.sindex, to_mosek_fmt.
+
+n = N*(N+1)/2;
+diag_idx = cumsum ([1, N*ones(1, N-1) - (0:1:N-2)]);
+
+ltri = ones(n,1);
+ltri(diag_idx(2:end)) = 2:N;
+ltri = cumsum (ltri);
+
+subk = ones(n,1);
+subk(diag_idx(2:end)) = -N*ones(1, N-1) + (2:N);
+subk = cumsum (subk);
+
+subl = zeros(n,1);
+subl(diag_idx) = ones(N,1);
+subl = cumsum (subl);
 end
 
 
