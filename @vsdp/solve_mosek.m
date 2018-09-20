@@ -101,8 +101,18 @@ solver_info.elapsed_time = toc;
 if (isscalar(r) && isnumeric(r) && (r == 0))
   solver_info.name = 'mosek';
   solver_info.termination = 'Normal termination';
-  x = [res.sol.itr.xx(:); to_vsdp_fmt(obj, res.sol.itr.barx)];
-  y = res.sol.itr.y;
+  % In case of a pure LP, prefer the basic solution 'bas' (simplex optimizer).
+  % Otherwise use the interior-point solution 'itr' if available.
+  if (isfield (res.sol, 'bas'))
+    x = res.sol.bas.xx(:);
+    y = res.sol.bas.y(:);
+  elseif (isfield (res.sol, 'itr'))
+    x = [res.sol.itr.xx(:); to_vsdp_fmt(obj, res.sol.itr.barx)];
+    y = res.sol.itr.y(:);
+  else
+    error ('VSDP:solve_mosek:solutionNotAvailable', ...
+      'solve_mosek: The MOSEK solution struct cannot be interpreted by VSDP.');
+  end
   z = vsdp.svec (obj, obj.c - obj.At*y, 1);
   f_objective = [obj.c'*x; obj.b'*y];
   obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
