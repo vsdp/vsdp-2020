@@ -14,7 +14,7 @@ function obj = solve_sdpa (obj, sol_type)
 narginchk (1, 2);
 
 % Check solver availability.
-if ((exist ('mexsdpa', 'file') ~= 3) && (exist ('callSDPA', 'file') ~= 2))
+if ((exist ('mexsdpa', 'file') ~= 3) && (exist ('sdpamIO', 'file') ~= 2))
   error ('VSDP:solve_sdpa:notAvailable', ...
     ['solve_sdpa: SDPA does not seem to be ready.\n\n', ...
     'To select another solver, run:  %s.solve()'], inputname(1));
@@ -61,6 +61,7 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
+mDIM = length (c);
 c = -c;
 F = [ ...
   mat2cell(-b, obj.K.dims, 1), ...
@@ -73,7 +74,11 @@ if (obj.K.l > 0)
 else
   F = cellfun(@(x) vsdp.smat([], x, 1), F, 'UniformOutput', false);
 end
-[nBLOCK, mDIM] = size (F);
+[nBLOCK, m] = size (F);
+if ((m - 1) ~= mDIM)
+  error ('VSDP:solve_sdpa:badMDIM', ...
+    'solve_sdpa: The dimension ''mDIM'' does not match with the matrix.');
+endif
 bLOCKsTRUCT = [-obj.K.l(obj.K.l > 0), obj.K.s'];
 
 % Call solver.
@@ -81,18 +86,17 @@ tic;
 if (exist ('mexsdpa', 'file') == 3)
   [~, x, X, Y, INFO] = sdpam ...
     (mDIM, nBLOCK, bLOCKsTRUCT, c, F, x0, X0, Y0, OPTIONS);
-elseif (exist('callSDPA','file') == 2)
-  [x, X, Y] = callSDPA ...
+elseif (exist('sdpamIO','file') == 2)
+  [~, x, X, Y, INFO] = sdpamIO ...
     (mDIM, nBLOCK, bLOCKsTRUCT, c, F, x0, X0, Y0, OPTIONS);
-  INFO = 0;
 else
-  error ('VSDP:solve_sdpa:mexNotCompiled', ...
-    'solve_sdpa: You need to compile the SDPA MEX-interface.');
+  error ('VSDP:solve_sdpa:mexNotAvailable', ...
+    'solve_sdpa: Cannot find the SDPA MEX-interface.');
 end
 solver_info.elapsed_time = toc;
 
 % Store solution.
-y = x(1:end-1);
+y = x;
 x = vsdp.svec (obj, vsdp.cell2mat (Y), 2);
 z = vsdp.svec (obj, vsdp.cell2mat (X), 1);
 f_objective = [obj.c'*x; obj.b'*y];
