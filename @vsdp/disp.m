@@ -95,7 +95,8 @@ else
 end
 
 if (isempty (obj.solutions.certificate_primal_infeasibility))
-  if (isinf (obj.solutions.rigorous_upper_bound.f_objective(2)))
+  if (~isempty (obj.solutions.rigorous_upper_bound) 
+      && isinf (obj.solutions.rigorous_upper_bound.f_objective(2)))
     fprintf ('\n  The rigorous upper bound is infinite, ');
     fprintf ('check primal infeasibility:\n\n');
     fprintf ('    ''%s = %s.check_primal_infeasible()''\n', obj_name, obj_name);
@@ -106,7 +107,8 @@ else
 end
 
 if (isempty (obj.solutions.certificate_dual_infeasibility))
-  if (isinf (obj.solutions.rigorous_lower_bound.f_objective(1)))
+  if (~isempty (obj.solutions.rigorous_lower_bound) 
+      && isinf (obj.solutions.rigorous_lower_bound.f_objective(1)))
     fprintf ('\n  The rigorous lower bound is infinite, ');
     fprintf ('check dual infeasibility:\n\n');
     fprintf ('    ''%s = %s.check_dual_infeasible()''\n', obj_name, obj_name);
