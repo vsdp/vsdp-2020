@@ -38,10 +38,14 @@ end
 
 % If the problem was not approximately solved before, do it now.
 if (isempty (obj.solutions.approximate))
-  warning ('VSDP:rigorous_upper_bound:noApproximateSolution', ...
-    ['rigorous_upper_bound: The conic problem has no approximate ', ...
-    'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-  obj.solve (obj.options.SOLVER, 'Approximate');
+  if (~isempty (obj.options.SOLVER))
+    warning ('VSDP:rigorous_upper_bound:noApproximateSolution', ...
+      ['rigorous_upper_bound: The conic problem has no approximate ', ...
+      'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
+    obj.solve (obj.options.SOLVER, 'Approximate');
+  else
+    obj.solve ();  % Interactive mode.
+  end
 end
 
 % If any upper bound 'ybnd' is not finite, proceed with other algorithm.

@@ -57,16 +57,20 @@ function obj = check_dual_infeasible (obj)
 
 narginchk (1, 1);
 % If the problem was not approximately solved before, do it now.
-if (isempty (obj.solutions('Approximate')))
-  warning ('VSDP:check_dual_feasible:noApproximateSolution', ...
-    ['check_dual_feasible: The conic problem has no approximate ', ...
-    'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-  obj.solve (obj.options.SOLVER, 'Approximate');
+if (isempty (obj.solutions.approximate))
+  if (~isempty (obj.options.SOLVER))
+    warning ('VSDP:check_dual_infeasible:noApproximateSolution', ...
+      ['check_dual_infeasible: The conic problem has no approximate ', ...
+      'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
+    obj.solve (obj.options.SOLVER, 'Approximate');
+  else
+    obj.solve ();  % Interactive mode.
+  end
 end
-x = obj.solutions('Approximate').x;
+x = obj.solutions.approximate.x;
 if (isempty (x) || ~all (isfinite (x)))
-    error ('VSDP:check_dual_feasible:badApproximateSolution', ...
-    ['check_dual_feasible: The approximate primal solution ''x'' is ', ...
+    error ('VSDP:check_dual_infeasible:badApproximateSolution', ...
+    ['check_dual_infeasible: The approximate primal solution ''x'' is ', ...
     'empty or contains infinite entries.']);
 end
 
@@ -85,8 +89,8 @@ if (sup (beta) < 0)
   rhs = intval ([zeros(obj.m, 1); inf_(beta)]);
   x = vsdp.verify_uls (obj, [obj.At'; obj.c'], rhs, x);
   if (~isintval (x) || ~all (isfinite (x)))
-    error ('VSDP:check_dual_feasible:ulsNotSolvable', ...
-    'check_dual_feasible: Cannot solve the underdetermined linear system.');
+    error ('VSDP:check_dual_infeasible:ulsNotSolvable', ...
+    'check_dual_infeasible: Cannot solve the underdetermined linear system.');
   end
   lb = obj.rigorous_lower_cone_bound (x, 1/2, false);
   if (all (lb >= 0))
@@ -95,6 +99,7 @@ if (sup (beta) < 0)
     solver_info.termination  = 'Normal termination';
     obj.add_solution ('Certificate dual infeasibility', x, [], lb, ...
       [nan, is_infeasible], solver_info);
+    return;
   end
 end
 

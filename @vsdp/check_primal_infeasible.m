@@ -59,15 +59,19 @@ function obj = check_primal_infeasible (obj)
 narginchk (1, 1);
 % If the problem was not approximately solved before, do it now.
 if (isempty (obj.solutions.approximate))
-  warning ('VSDP:check_primal_feasible:noApproximateSolution', ...
-    ['check_primal_feasible: The conic problem has no approximate ', ...
-    'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-  obj.solve (obj.options.SOLVER, 'Approximate');
+  if (~isempty (obj.options.SOLVER))
+    warning ('VSDP:check_primal_infeasible:noApproximateSolution', ...
+      ['check_primal_infeasible: The conic problem has no approximate ', ...
+      'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
+    obj.solve (obj.options.SOLVER, 'Approximate');
+  else
+    obj.solve ();  % Interactive mode.
+  end
 end
 y = obj.solutions.approximate.y;
 if (isempty (y) || ~all (isfinite (y)))
-    error ('VSDP:check_primal_feasible:badApproximateSolution', ...
-    ['check_primal_feasible: The approximate dual solution ''y'' is ', ...
+    error ('VSDP:check_primal_infeasible:badApproximateSolution', ...
+    ['check_primal_infeasible: The approximate dual solution ''y'' is ', ...
     'empty or contains infinite entries.']);
 end
 
@@ -87,8 +91,8 @@ if (obj.K.f > 0)
   %
   y = vsdp.verify_uls (obj, obj.At(1:obj.K.f,:), zeros(obj.K.f, 1), y);
   if ((~isintval (y) || ~all (isfinite (y))))
-    error ('VSDP:check_primal_feasible:noBoundsForFreeVariables', ...
-      ['check_primal_feasible: Could not find a rigorous solution of ', ...
+    error ('VSDP:check_primal_infeasible:noBoundsForFreeVariables', ...
+      ['check_primal_infeasible: Could not find a rigorous solution of ', ...
       'the linear system of free variables.']);
   end
 else
@@ -108,6 +112,7 @@ if (inf (obj.b' * y) > 0)
     solver_info.termination  = 'Normal termination';
     obj.add_solution ('Certificate primal infeasibility', [], y, lb, ...
       [is_infeasible, nan], solver_info);
+    return;
   end
 end
 
