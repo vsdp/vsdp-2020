@@ -3,20 +3,17 @@ function info (obj)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-fprintf ('\n\n');
-fprintf ('  VSDP Conic programming problem\n');
-fprintf ('  ------------------------------\n\n');
-
-dig1 = num2str(digits(obj.N));
-fprintf (['    m = %', dig1,'d  [Number of constraints]\n'], obj.m);
-fprintf (['    N = %', dig1,'d  [Uncondensed cone dimension]\n'], obj.N);
-fprintf (['    n = %', dig1,'d  [  Condensed cone dimension]\n'], obj.n);
+% Short conic programming theory.
+fprintf ('\n  VSDP conic programming problem in primal (P) dual (D) form:\n\n');
+fprintf ('       (P)  min   c''*x          (D)  max  b''*y\n');
+fprintf ('            s.t. At''*x = b           s.t. z := c - At*y\n');
+fprintf ('                     x in K               z in K^*\n\n');
 
 [At, b, c] = deal (obj.At, obj.b, obj.c);
 S = whos ('At', 'b', 'c');
 clear ('At', 'b', 'c');
 
-fprintf ('\n\n  Parameter details:\n\n');
+fprintf ('  Parameter details:\n\n');
 % Display details about variables.
 names = sprintf('%2s:\n', S.name);
 names = strsplit (names, '\n');
@@ -40,29 +37,40 @@ disp ([space, space, space, names, ...
   space, sizes, space, space, sparsity, space, classes, ...
   space, space, bytes, space, byte_size]);
 
+dig1 = num2str(digits(obj.N));
+fprintf ('\n');
+fprintf (['    m = %', dig1,'d  [     Number of constraints]\n'], obj.m);
+fprintf (['    N = %', dig1,'d  [Uncondensed cone dimension]\n'], obj.N);
+fprintf (['    n = %', dig1,'d  [  Condensed cone dimension]\n'], obj.n);
+
 fprintf ('\n\n  Solution details:\n\n');
 if (~isempty (obj.solutions.initial))
-  disp ('  - Initial:');
+  disp ('\n  - Initial:\n\n');
   obj.solutions.initial.mem_info ();
 end
 if (~isempty (obj.solutions.approximate))
-  disp ('  - Approximate:');
+  fprintf ('\n  - obj.solutions.approximate for (P) and (D):\n\n');
+  disp (obj.solutions.approximate);
   obj.solutions.approximate.mem_info ();
 end
 if (~isempty (obj.solutions.rigorous_lower_bound))
-  disp ('  - Rigorous lower bound:');
+  fprintf ('\n  - obj.solutions.rigorous_lower_bound  fL <= c''*x   for (P):\n\n');
+  disp (obj.solutions.rigorous_lower_bound);
   obj.solutions.rigorous_lower_bound.mem_info ();
 end
 if (~isempty (obj.solutions.rigorous_upper_bound))
-  disp ('  - Rigorous upper bound:');
+  fprintf ('\n  - obj.solutions.rigorous_upper_bound  b''*y <= fU   for (D):\n\n');
+  disp (obj.solutions.rigorous_upper_bound);
   obj.solutions.rigorous_upper_bound.mem_info ();
 end
 if (~isempty (obj.solutions.certificate_primal_infeasibility))
-  disp ('  - Certificate primal infeasibility:');
+  fprintf ('\n  - obj.solutions.certificate_primal_infeasibility:\n\n');
+  disp (obj.solutions.certificate_primal_infeasibility);
   obj.solutions.certificate_primal_infeasibility.mem_info ();
 end
 if (~isempty (obj.solutions.certificate_dual_infeasibility))
-  disp ('  - Certificate dual infeasibility:');
+  fprintf ('\n  - obj.solutions.certificate_dual_infeasibility:\n\n');
+  disp (obj.solutions.certificate_dual_infeasibility);
   obj.solutions.certificate_dual_infeasibility.mem_info ();
 end
 
