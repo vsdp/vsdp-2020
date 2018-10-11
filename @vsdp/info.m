@@ -45,7 +45,7 @@ fprintf (['    n = %', dig1,'d  [  Condensed cone dimension]\n'], obj.n);
 
 fprintf ('\n\n  Solution details:\n\n');
 if (~isempty (obj.solutions.initial))
-  disp ('\n  - Initial:\n\n');
+  fprintf ('\n  - Initial:\n\n');
   obj.solutions.initial.mem_info ();
 end
 if (~isempty (obj.solutions.approximate))

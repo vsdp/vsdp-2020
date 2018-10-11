@@ -73,7 +73,7 @@ classdef vsdp_options < handle
       %       obj.ITER_MAX            = 10
       %       obj.SDP_ASSUME_SYMMETRY = false
       %       obj.SDP_MIN_BLK_SIZE    = 2500
-      %       obj.SOLVER              = 'sdpt3'
+      %       obj.SOLVER              = ''
       %       obj.SOLVER_OPTIONS      = []
       %       obj.USE_INITIAL_GUESS  = false
       %       obj.VERBOSE_OUTPUT      = true
