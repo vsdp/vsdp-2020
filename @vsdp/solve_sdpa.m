@@ -78,7 +78,7 @@ end
 if ((m - 1) ~= mDIM)
   error ('VSDP:solve_sdpa:badMDIM', ...
     'solve_sdpa: The dimension ''mDIM'' does not match with the matrix.');
-endif
+end
 bLOCKsTRUCT = [-obj.K.l(obj.K.l > 0), obj.K.s'];
 
 % Call solver.

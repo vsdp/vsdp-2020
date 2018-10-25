@@ -1,7 +1,7 @@
 function obj = analyze (obj, yes_to_all)
 % ANALYZE  Analyze the conic program for pathological patterns.
 %
-%   1) Check for diagonal SDP blocks:  If the constraint vector 'c.s(j)' and the 
+%   1) Check for diagonal SDP blocks:  If the constraint vector 'c.s(j)' and the
 %      constraint matrix 'A.s(j)' only contain entries on the main diagonal,
 %      it is recommended to convert them into a LP block.  This saves memory
 %      'n*(n+1)/2' vs. 'n' entries and computation time.
@@ -28,19 +28,17 @@ for i = 1:length(obj.K.s)
   if ((nnz (Al) == nnz (As)) && (nnz (cl) == nnz (cs)))
     warning ('VDSP:analyze:possibleLpCone', ...
       'analyze: K.s(%d) seems to only have diagonal elements.  ', i);
-    if (nargout == 1)  % Properly assign the handle.
-      if ((nargin == 2) && (yes_to_all))
-        fprintf(' --> Convert it to LP block.\n');
-      else
-        answer = input ('Convert it to LP block? [y/n] ', 's');
-        if (isempty (answer) || (answer ~= 'y'))
-          continue;
-        end
+    if ((nargin == 2) && (yes_to_all))
+      fprintf(' --> Convert it to LP block.\n');
+    else
+      answer = input ('Convert it to LP block? [y/n] ', 's');
+      if (isempty (answer) || (answer ~= 'y'))
+        continue;
       end
-      A_linear = [A_linear; Al];
-      c_linear = [c_linear; cl];
-      drop_idx = [drop_idx; i];
     end
+    A_linear = [A_linear; Al];
+    c_linear = [c_linear; cl];
+    drop_idx = [drop_idx; i];
   end
 end
 % Perform the SDP to LP update.
