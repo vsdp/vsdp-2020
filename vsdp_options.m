@@ -164,14 +164,9 @@ classdef vsdp_options < handle
       obj.SOLVER = str;
     end
     
-    function set.SOLVER_OPTIONS (obj, str)
-      try
-        validateattributes (str, {'char'}, {});
-      catch
-        error ('VSDP:vsdp_options:SOLVER_OPTIONS', ...
-          'vsdp_options: SOLVER_OPTIONS must be a string (char array).');
-      end
-      obj.SOLVER_OPTIONS = str;
+    function set.SOLVER_OPTIONS (obj, opts)
+      % No check, permit arbitrary objects.
+      obj.SOLVER_OPTIONS = opts;
     end
     
     function set.USE_INITIAL_GUESS (obj, bool)
