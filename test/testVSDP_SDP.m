@@ -20,10 +20,15 @@ y_sol = [-0.75; -1];
 z_sol = [0.25; -0.25; 0.25; 0; 0; 2; 0; 0; 2; 0.75; 0; 1];
 
 obj = vsdp (A, b, c, K);
-obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
+  % Make a clean copy.
+  obj = vsdp (obj);
+  obj.options.VERBOSE_OUTPUT = false;
   obj.options.SOLVER = use_solvers{i};
+  if (strcmp (use_solvers{i}, 'sdpa'))
+    obj.options.ITER_MAX = 70;
+  end
   try
     obj.solve (obj.options.SOLVER);
   catch
