@@ -30,7 +30,7 @@ end
 if (nargin == 1)
   sol_type = 'Approximate';
 end
-[A, c, b] = obj.get_midpoint_problem_data (sol_type);   % Note b <--> c!
+[A, b, c] = obj.get_midpoint_problem_data (sol_type);
 
 % Note: for 'x0' and later 'x' see [1, p. 14] "mDIM -- All the letters after m
 % through the end of the line are neglected".
@@ -61,34 +61,45 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-mDIM = length (c);
-c = -c;
-F = [ ...
-  mat2cell(-b, obj.K.dims, 1), ...
-  mat2cell(-A, obj.K.dims, ones(1, obj.m))];
-if (obj.K.l > 0)
-  F(1,:) = cellfun(@(x) sparse (diag (x)), F(1,:), ...
-    'UniformOutput', false);
-  F(2:end,:) = cellfun(@(x) vsdp.smat([], x, 1), F(2:end,:), ...
-    'UniformOutput', false);
-else
-  F = cellfun(@(x) vsdp.smat([], x, 1), F, 'UniformOutput', false);
-end
-[nBLOCK, m] = size (F);
-if ((m - 1) ~= mDIM)
-  error ('VSDP:solve_sdpa:badMDIM', ...
-    'solve_sdpa: The dimension ''mDIM'' does not match with the matrix.');
-end
+mDIM = length (b);
 bLOCKsTRUCT = [-obj.K.l(obj.K.l > 0), obj.K.s'];
+nBLOCK = length (bLOCKsTRUCT);
 
 % Call solver.
 tic;
-if (exist ('mexsdpa', 'file') == 3)
+% Call the MEX interface for small problem dimensions.
+if ((exist ('mexsdpa', 'file') == 3) && (obj.m < 100))
+  b = -b;
+  F = [ ...
+    mat2cell(-c, obj.K.dims, 1), ...
+    mat2cell(-A, obj.K.dims, ones(1, obj.m))];
+  if (obj.K.l > 0)
+    F(1,:) = cellfun(@(x) sparse (diag (x)), F(1,:), ...
+      'UniformOutput', false);
+    F(2:end,:) = cellfun(@(x) vsdp.smat([], x, 1), F(2:end,:), ...
+      'UniformOutput', false);
+  else
+    F = cellfun(@(x) vsdp.smat([], x, 1), F, 'UniformOutput', false);
+  end
+  [nBLOCK, m] = size (F);
+  if ((m - 1) ~= mDIM)
+    error ('VSDP:solve_sdpa:badMDIM', ...
+      'solve_sdpa: The dimension ''mDIM'' does not match with the matrix.');
+  end
+  if (length (bLOCKsTRUCT) ~= nBLOCK)
+    error ('VSDP:solve_sdpa:badnBLOCK', ...
+      'solve_sdpa: The ''nBLOCK'' does not match with ''bLOCKsTRUCT''.');
+  end
   [~, x, X, Y, INFO] = sdpam ...
-    (mDIM, nBLOCK, bLOCKsTRUCT, c, F, x0, X0, Y0, OPTIONS);
+    (mDIM, nBLOCK, bLOCKsTRUCT, b, F, x0, X0, Y0, OPTIONS);
 elseif (exist('sdpamIO','file') == 2)
+  % Fallback solution in case the MEX interface does not work or the problem
+  % is large.  The Format for 'sdpamIO' is SeDuMi-like.
+  A = vsdp.smat (obj, A, 1);
+  c = full (vsdp.smat (obj, c, 1));
+  K = obj.K;
   [~, x, X, Y, INFO] = sdpamIO ...
-    (mDIM, nBLOCK, bLOCKsTRUCT, c, F, x0, X0, Y0, OPTIONS);
+    (mDIM, nBLOCK, bLOCKsTRUCT, A, full(b), c, K, [], OPTIONS);
 else
   error ('VSDP:solve_sdpa:mexNotAvailable', ...
     'solve_sdpa: Cannot find the SDPA MEX-interface.');
@@ -96,7 +107,7 @@ end
 solver_info.elapsed_time = toc;
 
 % Store solution.
-y = x;
+y = -x;
 x = vsdp.svec (obj, vsdp.cell2mat (Y), 2);
 z = vsdp.svec (obj, vsdp.cell2mat (X), 1);
 f_objective = [obj.c'*x; obj.b'*y];
