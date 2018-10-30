@@ -1,5 +1,8 @@
 function info (obj)
 % INFO  Display detailed information about VSDP object.
+%
+%   See also vsdp.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

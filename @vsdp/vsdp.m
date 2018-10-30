@@ -114,6 +114,7 @@ classdef vsdp < handle
       % VSDP  Constructor for conic problem data class.
       %
       %   See also vsdp.
+      %
       
       narginchk (1, 7);
       

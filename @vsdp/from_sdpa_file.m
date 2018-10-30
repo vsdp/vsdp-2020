@@ -1,13 +1,16 @@
 function obj = from_sdpa_file (fname, blksize)
-% FROM_SDPA_FILE  Import conic problem from a SDPA file.
+% FROM_SDPA_FILE  Import conic problem from a SDPA file 'fname'.
+%
+%   The parameter 'blksize' is used for initial data import.
+%
+%   Example:
 %
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\sparse-problem-data.dat-s');
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\dense-problem-data.dat');
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\sparse-initial-data.ini-s', blksize);
 %   obj = vsdp.FROM_SDPA_FILE ('C:\path\to\dense-initial-data.ini',    blksize);
 %
-%      fname: string with the path + filename to the problem
-%
+%   See also vsdp.
 %
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)

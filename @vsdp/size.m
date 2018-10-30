@@ -1,5 +1,8 @@
 function varargout = size (obj, dim)
 % SIZE  Size of VSDP instance.
+%
+%   See also vsdp.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

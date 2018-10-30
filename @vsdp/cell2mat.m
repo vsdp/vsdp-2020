@@ -13,6 +13,8 @@ function x = cell2mat (X)
 %         { [ X{n,1} ] ... [ X{n,m} ] }            [ X{n,1}(:) ... X{n,m}(:) ]
 %         { [        ]     [        ] }            [     |             |     ]
 %
+%   See also vsdp.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

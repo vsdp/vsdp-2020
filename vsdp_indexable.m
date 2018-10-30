@@ -1,6 +1,17 @@
 classdef vsdp_indexable < handle
-  % VSDP_INDEXABLE  A quantity that can be separated
-  %   Detailed explanation goes here
+  % VSDP_INDEXABLE  A quantity that can be separated into differrent cones.
+  %
+  %   Example:
+  %
+  %      obj  = vsdp (...);
+  %      n    = obj.K.f + obj.K.l;
+  %      lb   = vsdp_indexable (zeros (n, 1), obj);
+  %      lb.l = ...
+  %
+  %   See also vsdp.
+  %
+  
+  % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
   
   properties
     value
@@ -68,7 +79,6 @@ classdef vsdp_indexable < handle
     function obj = subsasgn (obj, S, varargin)
       % SUBASGN  Redefine subscripted assignment for objects.
       %
-      %   Detailed explanation goes here
       narginchk (3, 3);
       val = varargin{1};
       switch (S(1).type)

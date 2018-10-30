@@ -9,6 +9,8 @@ function val = cache (obj, val)
 %      obj.cache('clear');     % Clears the cache if the current scope.
 %      obj.cache('clearall');  % Clears the entire cache.
 %
+%   See also vsdp.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

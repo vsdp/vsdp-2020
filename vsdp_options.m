@@ -193,6 +193,6 @@ classdef vsdp_options < handle
       %TODO: At the end add all warning IDs
       warning (state{bool + 1}, 'VSDP:vsdp_options:SOLVER')
     end
-       
+    
   end
 end

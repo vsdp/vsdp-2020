@@ -234,7 +234,8 @@ classdef vsdp_solution < handle
     function [X0, y0, Z0] = to_2006_fmt (sol, obj)
       % TO_2006_FMT  Export conic problem solution to VSDP 2006 format.
       %
-      %   [X0, y0, Z0] = obj.toVSDP2006Fmt();
+      %   [X0, y0, Z0] = sol.to_2006_fmt (obj);  Export the solution 'sol' of
+      %      a VSDP 2018 conic problem 'obj' to VSDP 2006 format.
       %
       %   See also vsdp, vsdp_solution.
       %
