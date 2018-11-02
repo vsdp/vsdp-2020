@@ -61,36 +61,36 @@ function x = verify_uls (obj, A, b, x0)
 narginchk (4, 4);
 
 if (~isempty (obj) && ~isa (obj, 'vsdp'))
-  error ('VSDP:vuls:badObj', ...
-    'vuls: The first argument must be empty or a VSDP object.');
+  error ('VSDP:verify_uls:badObj', ...
+    'verify_uls: The first argument must be empty or a VSDP object.');
 end
 
 b = b(:);
 if (~(isfloat (b) || isintval (b)) || ~isreal (b))
-  error ('VSDP:vuls:badB', ...
-    'vuls: data type of right-hand side vector ''b'' unsupported.');
+  error ('VSDP:verify_uls:badB', ...
+    'verify_uls: data type of right-hand side vector ''b'' unsupported.');
 end
 m = length (b);
 
 x0 = x0(:);
 if (~isfloat (x0) || ~isreal (x0))
-  error ('VSDP:vuls:badX0', ...
-    'vuls: data type of initial solution ''x0'' unsupported.');
+  error ('VSDP:verify_uls:badX0', ...
+    'verify_uls: data type of initial solution ''x0'' unsupported.');
 end
 n = length (x0);
 
 if (m >= n)
-  warning ('VSDP:vuls:notUnderdetermined', ...
-    'vuls: The system is not underdetermined m >= n.');
+  warning ('VSDP:verify_uls:notUnderdetermined', ...
+    'verify_uls: The system is not underdetermined m >= n.');
 end
 
 if (~(isfloat (A) || isintval (A)) || ~isreal (A))
-  error ('VSDP:vuls:badA', ...
-    'vuls: data type of matrix ''A'' unsupported.');
+  error ('VSDP:verify_uls:badA', ...
+    'verify_uls: data type of matrix ''A'' unsupported.');
 end
 if (any (size (A) ~= [m, n]))
-  error ('VSDP:vuls:badA', ...
-    'vuls: ''A'' must be a %d x %d matrix, but is a %d x %d matrix.', ...
+  error ('VSDP:verify_uls:badA', ...
+    'verify_uls: ''A'' must be a %d x %d matrix, but is a %d x %d matrix.', ...
     m, n, size (A,1), size (A,2));
 end
 

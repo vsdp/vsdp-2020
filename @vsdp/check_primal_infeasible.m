@@ -9,8 +9,8 @@ function obj = check_primal_infeasible (obj)
 %       proofs and details):
 %
 %       Let y satisfy
-%       
-%         (1) A'*y in K^*  and  y'*b < 0
+%
+%         (1) -A'*y in K^*  and  y'*b > 0
 %
 %       then the system
 %
