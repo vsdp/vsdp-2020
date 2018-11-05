@@ -95,9 +95,13 @@ tic;
 solver_info.elapsed_time = toc;
 
 % Store solution after normal termination.
-if (isscalar(r) && isnumeric(r) && (r == 0))
+if (isscalar(r) && isnumeric(r))
   solver_info.name = 'mosek';
-  solver_info.termination = 'Normal termination';
+  if (r == 0)
+    solver_info.termination = 'Normal termination';
+  else
+    solver_info.termination = 'Unknown';
+  end
   % In case of a pure LP, prefer the basic solution 'bas' (simplex optimizer).
   % Otherwise use the interior-point solution 'itr' if available.
   if (isfield (res.sol, 'bas'))
