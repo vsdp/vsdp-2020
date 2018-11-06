@@ -93,6 +93,7 @@ while (iter <= obj.options.ITER_MAX)
       warning ('VSDP:rigorous_lower_bound:noBoundsForFreeVariables', ...
         ['rigorous_lower_bound: Could not find a rigorous solution of the ', ...
         'linear system of free variables.']);
+      dl = [];
       break;  % STOP
     end
   end

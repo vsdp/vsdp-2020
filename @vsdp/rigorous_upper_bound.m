@@ -123,6 +123,7 @@ while (iter <= obj.options.ITER_MAX)
     warning ('VSDP:rigorous_upper_bound:noUlsEnclosure', ...
       ['rigorous_upper_bound: Could not find a rigorous solution for the ', ...
       'linear system of constraints.']);
+    lb = [];
     break;  %STOP
   end
   
