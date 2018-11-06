@@ -193,10 +193,20 @@ end
 
 if (nargout == 4)
   % Do basically the same as for 'mlidx', but now for a vecotrized sparse
-  % matrix with a Fortran indexing as in matrix 'J' above, that needs to be
+  % matrix with a Fortran indexing as in matrix 'J' below, that needs to be
   % translated to the order of matrix 'I'.
+  %
+  % Example for N = 5:
+  %
+  %          [ 1            ]         [ 1            ]
+  %          [ 2  3         ]         [ 2  6         ]
+  %      I = [ 4  5  6      ]     J = [ 3  7 10      ]
+  %          [ 7  8  9 10   ]         [ 4  8 11 13   ]
+  %          [11 12 13 14 15]         [ 5  9 12 14 15]
+  %
+  
   vlidx = zeros (N);
-  vlidx(triu (true (N))) = 1:(N*(N+1)/2);
+  vlidx(tril (true (N))) = 1:(N * (N + 1) / 2);
   vlidx = vlidx';
   vlidx(vlidx == 0) = [];
   vlidx = vlidx(:);
