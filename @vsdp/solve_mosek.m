@@ -104,15 +104,17 @@ if (isscalar(r) && isnumeric(r))
   end
   % In case of a pure LP, prefer the basic solution 'bas' (simplex optimizer).
   % Otherwise use the interior-point solution 'itr' if available.
-  if (isfield (res.sol, 'bas'))
+  if (isfield (res, 'sol') && isfield (res.sol, 'bas'))
     x = res.sol.bas.xx(:);
     y = res.sol.bas.y(:);
-  elseif (isfield (res.sol, 'itr'))
+  elseif (isfield (res, 'sol') && isfield (res.sol, 'itr'))
     x = [res.sol.itr.xx(:); to_vsdp_fmt(obj, res.sol.itr.barx)];
     y = res.sol.itr.y(:);
   else
-    error ('VSDP:solve_mosek:solutionNotAvailable', ...
-      'solve_mosek: The MOSEK solution struct cannot be interpreted by VSDP.');
+    obj.add_solution (sol_type, [], [], [], nan(2,1), solver_info);
+    warning ('VSDP:solve_mosek:solutionNotAvailable', ...
+      'solve_mosek: No solution returned by MOSEK.');
+    return;
   end
   z = vsdp.svec (obj, obj.c - obj.At*y, 1);
   f_objective = [obj.c'*x; obj.b'*y];
