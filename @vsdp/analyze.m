@@ -11,6 +11,18 @@ function obj = analyze (obj, yes_to_all)
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
+narginchk (1, 2);
+if (nargout ~= 1)
+  % Determine object name.
+  obj_name = inputname(1);
+  if (isempty (obj_name))
+    obj_name = 'obj';
+  end
+  error ('VDSP:analyze:updateHandle', ...
+    ['analyze: Call this function by ''%s = %s.analyse()'' to avoid ', ...
+    'stale object handles.'], obj_name, obj_name);
+end
+
 % Check for diagonal only SDP blocks ==> LP blocks.
 At = vsdp_indexable (obj.At, obj);
 c  = vsdp_indexable (obj.c , obj);
