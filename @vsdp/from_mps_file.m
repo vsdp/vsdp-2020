@@ -112,7 +112,7 @@ function problem = read_mps(filename)
 
 % Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
 
-% initiailize default output
+% initialize default output
 problem.name = '';
 problem.objsense = 'MINIMIZE';
 problem.objname = '';

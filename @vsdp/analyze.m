@@ -1,10 +1,20 @@
 function obj = analyze (obj, yes_to_all)
 % ANALYZE  Analyze the conic program for pathological patterns.
 %
-%   1) Check for diagonal SDP blocks:  If the constraint vector 'c.s(j)' and the
-%      constraint matrix 'A.s(j)' only contain entries on the main diagonal,
-%      it is recommended to convert them into a LP block.  This saves memory
-%      'n*(n+1)/2' vs. 'n' entries and computation time.
+%   obj = obj.ANALYZE ()       Interactive mode.  If a pathological pattern is
+%   obj = obj.ANALYZE (false)  recognized for the VSDP conic program 'obj', ask
+%                              the user if it should be fixed.
+%
+%   obj = obj.ANALYZE (true) Automatically fix all recognized problem patterns.
+%
+%   Analyzed patterns:
+%
+%     #1 Check for diagonal SDP blocks:  If the constraint vector 'c.s(j)' and
+%        the constraint matrix 'A.s(j)' only have entries on the main
+%        diagonal, it is recommended to convert them into a LP block.  This
+%        saves memory: 'n*(n+1)/2' vs. 'n' entries and computation time.
+%        Additionally, VSDP can easier compute rigorous cone bounds, as no
+%        eigenvalue computations are involved.
 %
 %   See also vsdp.
 %
@@ -68,7 +78,7 @@ if (~isempty (drop_idx))
   obj.c = [obj.c(1:(obj.K.f + obj.K.l),:); ...
     c_linear; obj.c((obj.K.f + obj.K.l + 1):end,:)];
   obj.K.l = obj.K.l + size (A_linear, 1);
-  % Finally, create a new fresh VSDP object and analyse it recursively.
+  % Finally, create a new fresh VSDP object and analyze it recursively.
   obj = vsdp(obj).analyze();
 end
 end

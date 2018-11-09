@@ -192,7 +192,7 @@ if (nargout == 3)
 end
 
 if (nargout == 4)
-  % Do basically the same as for 'mlidx', but now for a vecotrized sparse
+  % Do basically the same as for 'mlidx', but now for a vectorized sparse
   % matrix with a Fortran indexing as in matrix 'J' below, that needs to be
   % translated to the order of matrix 'I'.
   %

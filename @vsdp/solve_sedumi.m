@@ -67,7 +67,7 @@ switch (info.pinf + 2*info.dinf)
   case 2
     solver_info.termination = 'Dual infeasible';
   case 3
-    solver_info.termination = 'Primal and dual infeasibile';
+    solver_info.termination = 'Primal and dual infeasible';
   otherwise
     solver_info.termination = 'Unknown';
 end

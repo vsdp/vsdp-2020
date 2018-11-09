@@ -77,7 +77,7 @@ switch (flag)
   case -3
     solver_info.termination = 'Dual infeasible';
   case -5
-    solver_info.termination = 'Primal and dual infeasibile';
+    solver_info.termination = 'Primal and dual infeasible';
   otherwise
     solver_info.termination = 'Unknown';
 end

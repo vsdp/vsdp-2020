@@ -27,7 +27,7 @@ classdef vsdp_solution < handle
     %        'Normal termination'
     %        'Primal infeasible'
     %        'Dual infeasible'
-    %        'Primal and dual infeasibile'
+    %        'Primal and dual infeasible'
     %
     solver_info
   end
@@ -111,7 +111,7 @@ classdef vsdp_solution < handle
           obj.solver_info.termination = validatestring ( ...
             obj.solver_info.termination,  {'Unknown', 'Normal termination', ...
             'Primal infeasible', 'Dual infeasible', ...
-            'Primal and dual infeasibile'});
+            'Primal and dual infeasible'});
         else
           obj.solver_info.termination = 'Unknown';
         end

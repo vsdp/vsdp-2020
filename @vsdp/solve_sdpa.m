@@ -123,7 +123,7 @@ if (isstruct (INFO))
     case {'pFEAS_dINF', 'dUNBD'}
       solver_info.termination = 'Dual infeasible';
     case 'pdINF'
-      solver_info.termination = 'Primal and dual infeasibile';
+      solver_info.termination = 'Primal and dual infeasible';
     otherwise
       solver_info.termination = 'Unknown';
   end
