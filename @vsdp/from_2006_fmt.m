@@ -65,7 +65,7 @@ end
 % second dimension.  Vectors 'b' and 'y0' have the same format in both VSDP
 % versions.  The VSDP constructor cares for the condensed semidefinite
 % variables.
-obj = vsdp (vsdp.cell2mat (A'), b, vsdp.cell2mat (C), K, ...
+obj = vsdp (vsdp.cell2mat (A'), b, vsdp.cell2mat (C(:)), K, ...
   vsdp.cell2mat (X0), y0, vsdp.cell2mat (Z0));
 
 end
