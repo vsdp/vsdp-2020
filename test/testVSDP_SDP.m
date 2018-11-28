@@ -27,7 +27,7 @@ for i = 1:length(use_solvers)
   obj.options.VERBOSE_OUTPUT = false;
   obj.options.SOLVER = use_solvers{i};
   if (strcmp (use_solvers{i}, 'sdpa'))
-    obj.options.ITER_MAX = 70;
+    obj.options.ALPHA = 20;
   end
   try
     obj.solve (obj.options.SOLVER);
