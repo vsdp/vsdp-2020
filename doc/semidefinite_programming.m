@@ -109,9 +109,9 @@ K.s = [2 3 2];
 
 obj = vsdp (At, b, c, K);
 obj.options.VERBOSE_OUTPUT = false;
-obj.solve('sdpt3');
-obj.rigorous_lower_bound();
-obj.rigorous_upper_bound();
+obj.solve('sdpt3') ...
+   .rigorous_lower_bound() ...
+   .rigorous_upper_bound();
 
 %%
 % Finally, we get an overview about all the performed computations:
@@ -146,10 +146,8 @@ Y  = obj.solutions.rigorous_lower_bound.y
 
 %%
 % Since all |Zl >= 0| it is proven that all matrices $Z_{j}$ are in the
-% interior of the cone
-% $\mathbb{S}^{2}_{+} \times \mathbb{S}^{3}_{+} \times \mathbb{S}^{2}_{+}$
-% and |Y| is a rigorous enclosure of a dual strict feasible (near optimal)
-% solution.
+% interior of the cone $\mathcal{K}$ and |Y| is a rigorous enclosure of a dual
+% strict feasible (near optimal) solution.
 %
 % Analogous computations are performed for the rigorous upper bound.  Here
 % lower bounds on the smallest eigenvalue of the primal solution are computed
@@ -221,7 +219,7 @@ b = @(EPSILON) [1; EPSILON; 0; 0];
 
 K.s = 3;
 
-%%         
+%%
 % The linear constraints of the primal problem form imply
 %
 % $$X(\varepsilon) = \begin{pmatrix}
@@ -259,9 +257,9 @@ EPSILON = 10^(-4);
 
 obj = vsdp (At, b(EPSILON), c(DELTA), K);
 obj.options.VERBOSE_OUTPUT = false;
-obj.solve('sdpt3');
-obj.rigorous_lower_bound();
-obj.rigorous_upper_bound();
+obj.solve('sdpt3') ...
+   .rigorous_lower_bound() ...
+   .rigorous_upper_bound();
 
 %%
 %
@@ -284,7 +282,7 @@ obj.solve('sdpt3');
 obj.solutions.approximate
 
 %%
-% We can make sure of the 
+% We can make sure by computing a rigorous lower bound
 %
 
 obj.rigorous_lower_bound();
@@ -301,9 +299,8 @@ obj.solutions.rigorous_lower_bound
 % For instance, if we apply SeDuMi to the same problem we obtain:
 %
 
-vsdpinit('sedumi');
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-objt, xt, yt, info  % zt:  hidden for brevity
+obj.solve('sedumi');
+obj.solutions.approximate
 
 %%
 % SeDuMi terminates without any warning, but some results are poor.  Since the
@@ -312,34 +309,37 @@ objt, xt, yt, info  % zt:  hidden for brevity
 % this example.  The CSDP-solver gives similar results:
 %
 
-vsdpinit('sdpt3'); %TODO: csdp
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-objt, xt, yt, info  % zt:  hidden for brevity
+obj.solve('csdp');
+obj.solutions.approximate
 
 %%
 % A good deal worse are the results that can be derived with older versions of
 % these solvers, including SDPT3 and SDPA
 % </references#Jansson2006 [Jansson2006]>.
 %
-% Reliable results can be obtained by the functions |vsdplow| and |vsdpup|.
-% Firstly, we consider |vsdplow| and the approximate solver SDPT3.
+% Reliable results can be obtained by the functions |rigorous_lower_bound| and
+% |rigorous_upper_bound|.  Firstly, we consider |vsdplow| and the approximate
+% solver SDPT3.
 %
 
-vsdpinit('sdpt3');
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-[fL,y,dl] = vsdplow(A,b,c,K,xt,yt,zt)
+obj.solve('sdpt3').rigorous_lower_bound();
+y = obj.solutions.rigorous_lower_bound.y
 
 %%
-% the vector |y| is a rigorous interior dual $??$-optimal solution where we shall
-% see that $?? \approx 2.27 \times 10^{-8}$.  The positivity of |dl| verifies
-% that |y| contains a dual strictly feasible solution.  In particular, strong
-% duality holds.  By using SeDuMi similar rigorous results are obtained.  But
-% for the SDPA-solver we get
 %
 
-vsdpinit('sdpa');
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-[fL,y,dl] = vsdplow(A,b,c,K,xt,yt,zt)
+dl = obj.solutions.rigorous_lower_bound.z
+
+%%
+% the vector |y| is a rigorous interior dual $\varepsilon$-optimal solution
+% where we shall see that $\varepsilon \approx 2.27 \times 10^{-8}$.
+% The positivity of |dl| verifies that |y| contains a dual strictly feasible
+% solution.  In particular, strong duality holds.  By using SeDuMi similar
+% rigorous results are obtained.  But for the SDPA-solver we get
+%
+
+obj.solve('sdpa').rigorous_lower_bound();
+disp (obj.solutions.rigorous_lower_bound)
 
 %%
 % Thus, an infinite lower bound for the primal optimal value is obtained and
@@ -348,27 +348,24 @@ vsdpinit('sdpa');
 % conic solver.
 %
 % Similarly, a verified upper bound and a rigorous enclosure of a primal
-% $??$-optimal solution can be computed by using the |vsdpup| function
-% together with SDPT3:
+% $\varepsilon$-optimal solution can be computed by using the
+% |rigorous_upper_bound| function together with SDPT3:
 %
 
-vsdpinit('sdpt3');
-[objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-[fU,x,lb] = vsdpup(A,b,c,K,xt,yt,zt)
+obj.solve('sdpt3').rigorous_upper_bound();
+disp (obj.solutions.rigorous_upper_bound)
 
 %%
 % The output |fU| is close to the dual optimal value $\hat{f}_{d} = -0.5$.
-% The interval vector |x| contains a primal strictly feasible solution, see
-% \eqref{OptSolSDPExp}, and the variable |lb| is a lower bound for the smallest
-% eigenvalue of |x|.  Because |lb| is positive, Slater's condition is fulfilled
-% and strong duality is verified once more.
+% The interval vector |x| contains a primal strictly feasible solution and
+% the variable |lb| is a lower bound for the smallest eigenvalue of |x|.
+% Because |lb| is positive, Slater's condition is fulfilled and strong duality
+% is verified once more.
 %
 % Summarizing, by using SDPT3 for the considered example with parameter
-% $?? = 10^{-4}$, VSDP verified strong duality with rigorous bounds for the
-% optimal value
-% $$
-% -0.500000007 \leq \hat{f}_{p} = \hat{f}_{d} \leq -0.499999994.
-% $$
+% $\varepsilon = 10^{-4}$, VSDP verified strong duality with rigorous bounds
+% for the optimal value
+% $$-0.500000007 \leq \hat{f}_{p} = \hat{f}_{d} \leq -0.499999994.$$
 %
 % The rigorous upper and lower error bounds of the optimal value show only
 % modest overestimation.  Strictly primal and dual feasible solutions are

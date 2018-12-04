@@ -1,4 +1,4 @@
-%% Handling Free Variables
+%% Free Variables
 %
 % Free variables occur often in practice.  Handling free variables in interior
 % point algorithms is a pending issue (see for example
@@ -10,6 +10,9 @@
 % This approach increases the problem size and introduces ill-posedness, which
 % may lead to numerical difficulties.
 %
+%%
+
+%%
 % For an example we consider the test problem _nb_L1_ from the DIMACS test
 % library </references#Pataki2002 [Pataki2002]>.  The problem
 % originates from side lobe minimization in antenna engineering.  This is a
@@ -20,67 +23,53 @@
 % directory of VSDP.  As the computation is more expensive, only the results
 % are reported here:
 %
-%
-%   vsdpinit('sdpt3');
-%   load(fullfile('examples','nb_L1.mat'));
-%   [objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-%   objt
-%
-%   objt =
-%    -13.012270628163670 -13.012270796164543
-%
-%
+
+load (fullfile ('..', 'test', 'nb_L1.mat'));
+obj = vsdp (A, b, c, K);
+obj.options.VERBOSE_OUTPUT = false;
+obj.solve('sdpt3')
+
+%%
 % SDPT3 solves the problem without warnings, although it is ill-posed according
 % to Renegar's definition </references#Renegar1994 [Renegar1994]>.
 %
-% Now we try to get rigorous bounds using the approximation of SDPT3.
+% Now we try to get rigorous error bounds using the approximation of SDPT3.
 %
-%
-%   fL = vsdplow(A,b,c,K,xt,yt,zt)
-%   fU = vsdpup (A,b,c,K,xt,yt,zt)
-%
-%   fL =
-%     -Inf
-%   fU =
-%    -13.012270341861644
-%
-%
+
+obj.rigorous_lower_bound () ...
+   .rigorous_upper_bound ()
+
+%%
 % These results reflect that the interior of the dual feasible solution set is
 % empty.  An ill-posed problem has the property that the distance to primal or
 % dual infeasibility is zero.  If as above the distance to dual infeasibility
 % is zero, then there are sequences of dual infeasible problems with input data
 % converging to the input data of the original problem. Each problem of the
 % sequence is dual infeasible and thus has the dual optimal solution $-\infty$.
-% Hence, the result $-\infty$ of |vsdplow| is exactly the limit of the optimal
-% values of the dual infeasible problems and reflects the fact that the
-% distance to dual infeasibility is zero.  This demonstrates that the infinite
-% bound computed by VSDP is sharp, when viewed as the limit of a sequence of
-% infeasible problems.  We have a similar situation if the distance to primal
-% infeasibility is zero.
+% Hence, the result $-\infty$ of |rigorous_lower_bound| is exactly the limit of
+% the optimal values of the dual infeasible problems and reflects the fact that
+% the distance to dual infeasibility is zero.  This demonstrates that the
+% infinite bound computed by VSDP is sharp, when viewed as the limit of a
+% sequence of infeasible problems.  We have a similar situation if the distance
+% to primal infeasibility is zero.
 %
 % If the free variables are not converted into restricted ones then the problem
 % is well-posed and a rigorous finite lower bound can be computed.
 %
-%
-%   load(fullfile('examples','nb_L1free.mat'));
-%   [objt,xt,yt,zt,info] = mysdps(A,b,c,K);
-%   objt
-%
-%   objt =
-%    -13.012270619970032 -13.012270818869100
-%
-%
+
+load (fullfile ('..', 'test', 'nb_L1free.mat'));
+obj = vsdp (A, b, c, K);
+obj.options.VERBOSE_OUTPUT = true;
+obj.solve('sdpt3')
+
+%%
 % By using the computed approximations we obtain the following rigorous bounds:
 %
-%
-%   fL = vsdplow(A,b,c,K,xt,yt,zt)
-%   fU = vsdpup (A,b,c,K,xt,yt,zt)
-%
-%   fL =
-%    -13.012270819014953
-%   fU =
-%    -13.012270617556419
-%
+
+obj.rigorous_lower_bound () ...
+   .rigorous_upper_bound ()
+
+%%
 % Therefore, without splitting the free variables, we get rigorous finite lower
 % and upper bounds of the exact optimal value with an accuracy of about eight
 % decimal digits.  Moreover, verified interior solutions are computed for both

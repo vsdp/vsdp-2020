@@ -115,9 +115,9 @@ K.q = [5;5];
 
 obj = vsdp (At, b, c, K);
 obj.options.VERBOSE_OUTPUT = false;
-obj.solve('sdpt3');
-obj.rigorous_lower_bound();
-obj.rigorous_upper_bound();
+obj.solve('sedumi') ...
+   .rigorous_lower_bound() ...
+   .rigorous_upper_bound();
 
 %%
 % Finally, we get an overview about all the performed computations:
@@ -132,12 +132,15 @@ disp (obj)
 y_SOCP = obj.solutions.approximate.y(3:5)
 
 %%
-% and compare it to a naive least squares solution |y_LS|
+% and compare it to a naive least squares solution |y_LS|, which takes extreme
+% values in this example
 %
 
 y_LS = A_data \ b_data
 
 %%
+% Displaying the norms of the results side-by-side reveals, that |y_SOCP|
+% is better suited for numerical computations.
 %
 
 [                  norm(y_SOCP)                    norm(y_LS);
@@ -166,12 +169,12 @@ K.l = 1;
 
 obj = vsdp (At, b, c, K);
 obj.options.VERBOSE_OUTPUT = false;
-obj.solve('sdpt3');
-obj.rigorous_lower_bound();
-obj.rigorous_upper_bound();
+obj.solve('sedumi') ...
+   .rigorous_lower_bound() ...
+   .rigorous_upper_bound();
 
 %%
-% Then we obtain
+% Finally, one obtains
 %
 
 disp (obj)

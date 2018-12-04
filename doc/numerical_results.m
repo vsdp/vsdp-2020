@@ -7,26 +7,37 @@
 %  wrong, and all at a cost not much higher than if no error analysis had
 %  been performed.  So far, every attempt to achieve this ideal has been
 %  thwarted."
-%  -- W. M. Kahan, The Regrettable Failure of Automated Error Analysis, 1989
-%  <https://www.seas.upenn.edu/~sweirich/types/archive/1989/msg00057.html>
+%
+% -- W. M. Kahan, The Regrettable Failure of Automated Error Analysis, 1989
+% <https://www.seas.upenn.edu/~sweirich/types/archive/1989/msg00057.html>
 %
 % In this section, we present statistics for the numerical results obtained
 % by VSDP for conic programming problems.  The tests were performed using
-% approximations computed by the conic solvers: CSDP, SEDUMI, SDPT3, SDPA,
-% LINPROG, and LPSOLVE.  For second order cone programming problems only
-% SEDUMI and SDPT3 were used.  The solvers have been called with their default
+% approximations computed by the conic solvers: CSDP, MOSEK, SDPA, SDPT3,
+% and SeDuMi.  For second order cone programming problems only MOSEK, SDPT3,
+% and SeDuMi were used.  The solvers have been called with their default
 % parameters.  Almost all of the problems that could not be solved with a
 % guaranteed accuracy about $10^{-7}$ are known to be ill-posed
 % (cf. </references#Freund2003 [Freund2003]>).
 %
-% We measure the difference between two numbers by the frequently used quantity
-% $$
-% \label{eq:accurracy_measure}
-% ??(a,b) := \dfrac{a-b}{\max\{1.0, (|a|+|b|)/2\}}.
-% $$
+% We measure the accuracy of two numbers
+% $$\mu(a,b) := \dfrac{a-b}{\max\{1.0, (|a|+|b|)/2\}}.$$
 %
 % Notice that we do not use the absolute value of $a - b$.  Hence, a negative
 % sign implies that $a < b$.
+%%
+
+
+%% A preview of the numerical results from 2018
+%
+% * </_pages/tables/2018_12_04/SDPLIB_SYS1.html>
+% * </_pages/tables/2018_12_04/SDPLIB_SYS2.html>
+% * </_pages/tables/2018_12_04/SPARSE_SDP_SYS1.html>
+% * </_pages/tables/2018_12_04/SPARSE_SDP_SYS2.html>
+% * </_pages/tables/2018_12_04/DIMACS_SYS2.html>
+% * </_pages/tables/2018_12_04/ESC_SYS2_SDPT3.html>
+% * </_pages/tables/2018_12_04/ESC_SYS2_MOSEK.html>
+% * </_pages/tables/2018_12_04/RDM_SYS2_MOSEK.html>
 %
 
 
@@ -46,8 +57,8 @@
 % the four infeasible problems VSDP could compute rigorous certificates of
 % infeasibility.  Detailed numerical results can be found in Table
 % <benchmark_sdplib_2012_12_12.html>, where the computed rigorous upper bound
-% $fU$, the rigorous lower bound $fL$, and the rigorous error bound $??(fU,fL)$
-% are displayed.  We have set $??(fU,fL) = NaN$ if the upper or the lower bound
+% $fU$, the rigorous lower bound $fL$, and the rigorous error bound $\mu(fU,fL)$
+% are displayed.  We have set $\mu(fU,fL) = NaN$ if the upper or the lower bound
 % is infinite.  Table <benchmark_sdplib_2012_12_12.html> also contains
 % running times in seconds, where $t_{s}$ is the time for computing the
 % approximations, and $t_{u}$ and $t_{l}$ are the times for computing the upper
@@ -60,61 +71,26 @@ disp(print_csv_table_statistic(fullfile('doc', ...
   'benchmark_sdplib_2012_12_12.csv')))
 
 %%
-% It displays in the first row the median $\operatorname{med}(??(fU,fL))$ of the
-% computed error bounds, in the second row the largest error bound
-% $\max(??(fU,fL))$, and in the third row the minimal error bound
-% $\min(??(fU,fL))$.  For this statistic only the well-posed problems are taken
+% It displays in the first row the median $\operatorname{med}(\mu(fU,fL))$ of
+% the computed error bounds, in the second row the largest error bound
+% $\max(\mu(fU,fL))$, and in the third row the minimal error bound
+% $\min(\mu(fU,fL))$.  For this statistic only the well-posed problems are taken
 % into account.  In the two last rows the medians of time ratios
 % $t_{u} / t_{s}$ and $t_{l} / t_{s}$ are displayed.
 %
-% The median of $??(fU,fL)$ shows that for all conic solvers rigorous error
+% The median of $\mu(fU,fL)$ shows that for all conic solvers rigorous error
 % bounds with 7 or 8 significant decimal digits could be computed for most
 % problems.
 %
 % Furthermore, the table shows that the error bounds as well as the time ratios
 % depend significantly on the used conic solver.  In particular the resulting
 % time ratios indicate that the conic solvers CSDP and SeDuMi aim to compute
-% approximate primal interior $??$-optimal solutions.  In contrast SDPA and SDPT3
-% aim to compute dual interior $??$-optimal solutions.
+% approximate primal interior $\varepsilon$-optimal solutions.  In contrast
+% SDPA and SDPT3 aim to compute dual interior $\varepsilon$-optimal solutions.
 %
 % Even the largest problem _MaxG60_ with about 24 million variables and 7000
 % constraints can be solved rigorously by VSDP, with high accuracy and in a
 % reasonable time.
-%
-
-
-
-%% NETLIB LP
-%
-% Here we describe some numerical results for the
-% <http://www.netlib.org NETLIB linear programming library>.  This is a well
-% known test suite containing many difficult to solve, real-world examples
-% from a variety of sources.
-%
-% For this test set Ord????ez and Freund
-% </references#Freund2003 [Freund2003]> have shown that 71 % of
-% the problems are ill-posed.  This statement is well reflected by our results:
-% for the ill-posed problems VSDP computed infinite lower or infinite upper
-% bounds.  This happens if the distance to the next dual infeasible or primal
-% infeasible problem is zero, respectively.
-%
-% For the computation of approximations we used the solvers LINPROG, LPSOLVE,
-% SEDUMI, and SDPT3.  In the following table we display the same quantities as
-% in the previous section.  Again only the well-posed problems are taken into
-% account.
-%
-
-disp(print_csv_table_statistic(fullfile('doc', ...
-  'benchmark_netlib_lp_2012_12_12.csv')))
-
-%%
-% Here we would like to mention also the numerical results of the C++ software
-% package LURUPA </references#Keil2006 [Keil2006]>,
-% </references#Keil2009 [Keil2009]>.  In
-% </references#Keil2008 [Keil2008]> comparisons with other
-% software packages for the computation of rigorous errors bounds are described.
-%
-% Detailed results can be found in Table <benchmark_netlib_lp_2012_12_12.html>.
 %
 
 
@@ -161,7 +137,7 @@ disp(print_csv_table_statistic(fullfile('doc', ...
 % found in </references#BenTal2000 [BenTal2000]>,
 % </references#Kocvara2002 [Kocvara2002]>, and
 % </references#Bendsoe1997 [Bendsoe1997]>.  For 24 problems out
-% of this collection VSDP could compute a rigorous primal and dual $??$-optimal
+% of this collection VSDP could compute a rigorous primal and dual $\varepsilon$-optimal
 % solution.  Caused by the limited available memory and the great computational
 % times the largest problems _mater-5_, _mater-6_, _shmup5_, _trto5_, and
 % _vibra5_ has been tested only with the solver SDPT3.  The largest problem

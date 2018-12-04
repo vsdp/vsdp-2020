@@ -69,7 +69,7 @@ x = vsdp_indexable (intval (obj.solutions.approximate.x), obj);
 x.l = max (x.l, 0);
 
 % Second-order cones
-for j = 1:length(K.q)
+for j = 1:length(obj.K.q)
   xq = x.q(j);
   % Very simple projection: 'x(1) >= ||x(2:end)||' holds, if 'x(1)' is set to
   % the maximum of both sites of the inequality.
@@ -78,18 +78,20 @@ for j = 1:length(K.q)
 end
 
 % SDP cones
-for j = 1:length(K.s)
+for j = 1:length(obj.K.s)
   % Find minimal eigenvalue.  For smat, remember that 'x' is scaled by mu = 2.
   E_min = min (inf_ (vsdp.verify_eigsym (vsdp.smat ([], x.s(j), 1/2))));
   % If the matrix in not positive semidefinite, perform a simple cone
   % projection, by shifting the diagonal by the minimal eigenvalue.
   if (E_min < 0)
     xs = x.s(j);
-    idx = cumsum (1:K.s(j));  % Index vector for diagonal entries.
+    idx = cumsum (1:obj.K.s(j));  % Index vector for diagonal entries.
     xs(idx) = xs(idx) - E_min;
     x.s(j) = xs;
   end
 end
+
+x = x.value;
 
 % Step 2: Compute rigorous enclosure on '|A * x^+ - b|'.
 ru = abs (obj.At' * x - obj.b);
@@ -99,7 +101,7 @@ fU = sup (obj.c' * x + ru' * ybnd);
 solver_info.iter = 0;
 solver_info.termination = 'Normal termination';
 solver_info.elapsed_time = toc(rub);
-obj.add_solution ('Rigorous upper bound', nan, [], nan, [nan, fU], solver_info);
+obj.add_solution ('Rigorous upper bound', [], [], [], [nan, fU], solver_info);
 end
 
 function obj = rigorous_upper_bound_infinite_bounds (obj)

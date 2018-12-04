@@ -45,17 +45,14 @@ K.l = 5;
 
 %%
 % To create a VSDP object of the linear program data above, we call the VSDP
-% class constructor and do not suppress the output.
+% class constructor and do not suppress the output by a semicolon |;|.
 %
 
 obj = vsdp (A, b, c, K)
 
 %%
-% The output seems quite verbose in the beginning, but it contains all relevant
-% information about the possibilities of VSDP, including the commands, that
-% can be run to compute rigorous bounds or certificates for infeasibility.
-% After these computations, the results are displayed as short summary in the
-% same context.
+% The output contains all relevant information about the conic problem and
+% includes the command |obj.solve()| to proceed.
 %
 % By calling the |solve| method on the VSDP object |obj|, we can compute an
 % approximate solution |x|, |y|, |z|, for example by using SDPT3.  When calling
@@ -88,7 +85,8 @@ obj.options.SOLVER = 'sdpt3';
 obj
 
 %%
-% On success, one can obtain the approximate |x| and |y| solutions.
+% On success, one can obtain the approximate |x| and |y| solutions for further
+% processing.
 %
 
 format short
@@ -128,6 +126,11 @@ obj
 % Despite the rigorous lower bound |fL|, the solution object
 % |obj.solutions.rigorous_lower_bound| contain more information:
 %
+% # |Y| is a rigorous interval enclosure of a dual feasible near optimal
+%   solution and
+% # |Zl| a lower bound of of each cone in $z = c - A^{*} y$.  For a linear
+%   program this is a lower bound on each component of |z|.
+%
 
 format short
 format infsup
@@ -139,11 +142,6 @@ Y = obj.solutions.rigorous_lower_bound.y
 Zl = obj.solutions.rigorous_lower_bound.z
 
 %%
-% # |Y| is a rigorous interval enclosure of a dual feasible near optimal
-%   solution and
-% # |Zl| a lower bound of of each cone in $z = c - A^{*} y$.  For a linear
-%   program this is a lower bound on each component of |z|.
-%
 % Since |Zl| is positive, the dual problem is strictly feasible, and the
 % rigorous interval vector |Y| contains a dual interior solution.  Here only
 % some significant digits of this interval vector are displayed.  The upper
@@ -155,6 +153,11 @@ Zl = obj.solutions.rigorous_lower_bound.z
 %%
 % The information returned by |rigorous_upper_bound()| is similar:
 %
+% # |X| is a rigorous interval enclosure of a primal feasible near optimal
+%   solution and
+% # |Xl| a lower bound of of each cone in |X|.  Again, for a linear program
+%   this is a lower bound on each component of |X|.
+%
 
 X = obj.solutions.rigorous_upper_bound.x
 
@@ -164,11 +167,6 @@ X = obj.solutions.rigorous_upper_bound.x
 Xl = obj.solutions.rigorous_upper_bound.z
 
 %%
-% # |X| is a rigorous interval enclosure of a primal feasible near optimal
-%   solution and
-% # |Xl| a lower bound of of each cone in |X|.  Again, for a linear program
-%   this is a lower bound on each component of |X|.
-%
 % Since |Xl| is a positive vector, |X| is contained in the positive orthant and
 % the primal problem is strictly feasible.
 %
@@ -180,6 +178,11 @@ Xl = obj.solutions.rigorous_upper_bound.z
 
 format shorte
 mu = (fU - fL) / max (1, (abs (fU) + abs(fL)) / 2)
+
+%%
+% This means, that the computed rigorous upper and lower error bounds have
+% an accuracy of eight to nine decimal digits.
+%
 
 
 %% Second example with free variables
@@ -222,7 +225,9 @@ b = [0.5; 1];
 
 obj = vsdp (A, b, c, K);
 obj.options.VERBOSE_OUTPUT = false;
-obj.solve ('sdpt3').rigorous_lower_bound ().rigorous_upper_bound ();
+obj.solve ('sdpt3') ...
+   .rigorous_lower_bound () ...
+   .rigorous_upper_bound ();
 
 %%
 % Yielding
