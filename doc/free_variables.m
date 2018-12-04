@@ -59,7 +59,7 @@ obj.rigorous_lower_bound () ...
 
 load (fullfile ('..', 'test', 'nb_L1free.mat'));
 obj = vsdp (A, b, c, K);
-obj.options.VERBOSE_OUTPUT = true;
+obj.options.VERBOSE_OUTPUT = false;
 obj.solve('sdpt3')
 
 %%
