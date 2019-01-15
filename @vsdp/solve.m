@@ -39,7 +39,9 @@ supported_solvers = cellfun (@(x) x(7:end), supported_solvers, ...
 
 supported_solvers_str = ['''', strjoin(supported_solvers, ''', '''), ''''];
 
-if (nargin == 1)  % Interactive mode.
+if (~isempty (obj.options.SOLVER))
+  solver = obj.options.SOLVER;
+elseif (nargin == 1)  % Interactive mode.
   initial_value = find (strcmp (obj.options.SOLVER, supported_solvers));
   if (isempty (initial_value))
     initial_value = find (strcmp ('sdpt3', supported_solvers));
