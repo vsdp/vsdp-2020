@@ -1,8 +1,12 @@
-function obj = check_primal_infeasible (obj)
+function obj = check_primal_infeasible (obj, y)
 % CHECK_PRIMAL_INFEASIBLE  Primal infeasibility check for VSDP conic program.
 %
 %   obj.check_primal_infeasible()  Check VSDP object 'obj' to be primal
-%                                  infeasible.
+%                                  infeasible by using the approximate
+%                                  solution.
+%
+%   obj.check_primal_infeasible(y)  Check VSDP object 'obj' to be primal
+%                                   infeasible by using 'y'.
 %
 %       Using a theorem of alternatives to claim a conic program to be primal
 %       infeasible (see https://vsdp.github.io/references.html#Jansson2007 for
@@ -20,57 +24,52 @@ function obj = check_primal_infeasible (obj)
 %
 %   Example:
 %
-%       %  min <[0 0; 0 0], X>
-%       % s.t. <[1 0; 0 0], X> = [e];
-%       %      <[0 1; 1 d], X> = [1];
-%       %                   X in K
+%       EPSILON = -0.01;
+%       DELTA = 0.1;
+%       blk(1,:) = {'s'; 2};
+%       C{1,1} = [0 0; 0 0];
+%       A{1,1} = [1 0; 0 0];
+%       A{2,1} = [0 1; 1 DELTA];
+%       b = [EPSILON; 1];
 %
-%       e = -0.01;  % Infeasible, because X(1,1) <= 0!
-%       d = 0.1;
-%       A1 = [1 0; 0 0];
-%       A2 = [0 1; 1 d];
-%       b = [e; 1];
-%       c = zeros(4,1);
-%       K.s = 2;
-%       A = [A1(:), A2(:)];  % vectorize
-%       obj = vsdp(A, b, c, K).check_primal_infeasible()
+%       obj = vsdp(blk,A,C,b).solve ('sdpt3') ...
+%                            .rigorous_lower_bound () ...
+%                            .rigorous_upper_bound () ...
+%                            .check_primal_infeasible () ...
+%                            .check_dual_infeasible ()
 %
-%       K.s = 2;
-%       A1 = [-1 0; 0  0];
-%       A2 = [ 0 0; 0 -1];
-%        c = [0 1 1 0]';
-%        b = [-1; 0];
-%       A = [A1(:), A2(:)];  % vectorize
-%       obj = vsdp(A, b, c, K).check_primal_infeasible()
-%
-%       K.s = 3;
-%       A1 = [1 0 0; 0 0 0; 0 0 0];
-%       A2 = [0 0 1; 0 1 0; 1 0 0];
-%        c = [1 0 0; 0 1 0; 0 0 0];
-%        b = [0; 1];
-%       A = [A1(:), A2(:)];  % vectorize
-%       obj = vsdp(A, b, c(:), K).check_primal_infeasible()
-%
-%   See also vsdp, vsdp.rigorous_lower_bound, vsdp.rigorous_upper_bound.
+%   See also vsdp, vsdp.rigorous_lower_bound, vsdp.rigorous_upper_bound,
 %            vsdp.check_dual_infeasible.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
-narginchk (1, 1);
-% If the problem was not approximately solved before, do it now.
-if (isempty (obj.solutions.approximate))
-  if (~isempty (obj.options.SOLVER))
-    warning ('VSDP:check_primal_infeasible:noApproximateSolution', ...
-      ['check_primal_infeasible: The conic problem has no approximate ', ...
-      'solution yet, which is now computed using ''%s''.'], obj.options.SOLVER);
-    obj.solve (obj.options.SOLVER, 'Approximate');
-  else
-    obj.solve ();  % Interactive mode.
+narginchk (1, 2);
+
+if (nargin == 1)
+  % If the problem was not approximately solved yet, do it now.
+  if (isempty (obj.solutions.approximate))
+    if (~isempty (obj.options.SOLVER))
+      warning ('VSDP:check_primal_infeasible:noApproximateSolution', ...
+        ['check_primal_infeasible: The conic problem has no approximate ', ...
+        'solution yet, which is now computed using ''%s''.'], ...
+        obj.options.SOLVER);
+      obj.solve (obj.options.SOLVER, 'Approximate');
+    else
+      obj.solve ();  % Interactive mode.
+    end
+  end
+  y = obj.solutions.approximate.y;
+else  % Use given solution.
+  y = y(:);
+  if (length (y) ~= obj.m)
+    error ('VSDP:check_primal_infeasible:badApproximateSolution', ...
+      ['check_primal_infeasible: The approximate dual solution ''y'' ', ...
+      'must be a vector of length %d, but is %d.'], obj.m, length (y));
   end
 end
-y = obj.solutions.approximate.y;
 if (isempty (y) || ~all (isfinite (y)))
-    error ('VSDP:check_primal_infeasible:badApproximateSolution', ...
+  error ('VSDP:check_primal_infeasible:badApproximateSolution', ...
     ['check_primal_infeasible: The approximate dual solution ''y'' is ', ...
     'empty or contains infinite entries.']);
 end
