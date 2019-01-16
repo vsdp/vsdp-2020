@@ -58,8 +58,8 @@ end
 if (isfield (K_in, 'q'))
   K.q = K_in.q(K_in.q > 0);
   K.q = K.q(:);
-  K.dims = [K.dims; K.q];
-  K.blk = [K.blk; [repmat({'q'}, length(K.q), 1), num2cell(K.q)]];
+  K.dims = [K.dims; sum(K.q)];
+  K.blk = [K.blk; {'q', K.q}];
   if (~isempty (K.q))
     K.idx.q = K.f + K.l + [cumsum([1; K.q(1:end-1)]), cumsum(K.q)];
   end
