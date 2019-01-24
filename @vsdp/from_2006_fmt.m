@@ -50,22 +50,27 @@ if (~iscell (blk) || isempty (blk{1,2}))
 end
 K.s = horzcat (blk{:,2});
 
+% Need to transpose the input matrix 'A', number of constraints 'm' must be the
+% second dimension.  Vectors 'b' and 'y0' have the same format in both VSDP
+% versions.  The VSDP constructor cares for the condensed semidefinite
+% variables.
+obj = vsdp (vsdp.cell2mat (A'), b, vsdp.cell2mat (C(:)), K);
+
+
 % Treat optional parameter of solution guess.
 if (nargin < 5)
-  X0 = {};
+  return;
+else
+  X0 = vsdp.cell2mat (X0);
 end
 if (nargin < 6)
   y0 = [];
 end
 if (nargin < 7)
-  Z0 = {};
+  Z0 = [];
+else
+  Z0 = vsdp.cell2mat (Z0);
 end
-
-% Need to transpose the input matrix 'A', number of constraints 'm' must be the
-% second dimension.  Vectors 'b' and 'y0' have the same format in both VSDP
-% versions.  The VSDP constructor cares for the condensed semidefinite
-% variables.
-obj = vsdp (vsdp.cell2mat (A'), b, vsdp.cell2mat (C(:)), K, ...
-  vsdp.cell2mat (X0), y0, vsdp.cell2mat (Z0));
+obj.add_solution ('Initial', vsdp.svec (obj, X0), y0, vsdp.svec (obj, Z0));
 
 end

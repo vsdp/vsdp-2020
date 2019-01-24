@@ -149,6 +149,12 @@ classdef vsdp < handle
           obj.solutions.certificate_dual_infeasibility = [];
           obj = obj.validate ();
         case {5, 6, 7}
+          % If first parameter is of type cell, we assume, that the VSDP 2006
+          % input format was used  ==>  call static VSDP constructor.
+          if (iscell (varargin{1}))
+            obj = vsdp.from_2006_fmt (varargin{:});
+            return;
+          end
           % First create VSDP problem instance.
           obj = vsdp (varargin{1:4});
           % Then add initial solution guess.
