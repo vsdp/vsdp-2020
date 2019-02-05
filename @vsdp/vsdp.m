@@ -101,6 +101,7 @@ classdef vsdp < handle
     
     % Other static methods.
     x = cell2mat (X);
+    x = cell_sub_blocks (X, blk);
     A = svec (obj, A, mu, param);
     A = smat (obj, a, mu);
     E = verify_eigsym (A);
