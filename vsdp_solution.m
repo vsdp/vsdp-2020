@@ -184,7 +184,7 @@ classdef vsdp_solution < handle
             fprintf (['A certificate of primal infeasibility ''y'' was ', ...
               'found.\n      The conic problem is primal infeasible.\n\n']);
           else
-            fprintf (['NO certificate of primal infeasibility was found.\n\n']);
+            fprintf ('NO certificate of primal infeasibility was found.\n\n');
           end
         case 'Certificate dual infeasibility'
           fprintf ('      ');
@@ -192,7 +192,7 @@ classdef vsdp_solution < handle
             fprintf (['A certificate of dual infeasibility ''x'' was ', ...
               'found.\n      The conic problem is dual infeasible.\n\n']);
           else
-            fprintf (['NO certificate of dual infeasibility was found.\n\n']);
+            fprintf ('NO certificate of dual infeasibility was found.\n\n');
           end
         otherwise
           error ('VSDP_SOLUTION:disp:unknownType', ...
