@@ -51,18 +51,9 @@ if (~obj.options.VERBOSE_OUTPUT)
 end
 
 % Prepare data for solver.
-blk = obj.K.blk;
-warning ('off', 'VSDP:svec:justScale');
-A = mat2cell (vsdp.svec (obj, A, sqrt(2)), obj.K.dims, obj.m);
-warning ('on', 'VSDP:svec:justScale');
-c = mat2cell (c, obj.K.dims, 1);
-for i = find ([blk{:,1}] == 's', 1):size(blk, 1)
-  c{i} = vsdp.smat ([], c{i}, 1);
-end
-% In SDPT3 terminology "unconstrained" are "free" variables.
-if (blk{1,1} == 'f')
-  blk{1,1} = 'u';
-end
+A = vsdp.smat (obj, A, 1);
+c = vsdp.smat (obj, c, 1);
+[blk, A, c, b] = read_sedumi (A, b, c, obj.K);
 
 % Call solver.
 tic;
@@ -70,8 +61,8 @@ tic;
 solver_info.elapsed_time = toc;
 
 % Store solution.
-x = vsdp.svec (obj, vsdp.cell2mat (x(:)), 2);
-z = vsdp.svec (obj, vsdp.cell2mat (z(:)), 1);
+x = vsdp.svec (obj, vsdp.cell_sub_blocks (x(:), blk), 2);
+z = vsdp.svec (obj, vsdp.cell_sub_blocks (z(:), blk), 1);
 f_objective = [obj.c'*x; obj.b'*y];
 solver_info.name = 'sdpt3';
 if (isstruct (info))

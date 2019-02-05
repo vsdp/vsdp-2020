@@ -58,21 +58,21 @@ end
 if (isfield (K_in, 'q'))
   K.q = K_in.q(K_in.q > 0);
   K.q = K.q(:);
-  K.dims = [K.dims; sum(K.q)];
-  K.blk = [K.blk; {'q', K.q}];
   if (~isempty (K.q))
     K.idx.q = K.f + K.l + [cumsum([1; K.q(1:end-1)]), cumsum(K.q)];
+    K.blk(end+1, :) = {'q', K.q};
+    K.dims = [K.dims; sum(K.q)];
   end
 end
 if (isfield (K_in, 's'))
   K.s = K_in.s(K_in.s > 0);
   K.s = K.s(:);
-  K.dims = [K.dims; K.s .* (K.s + 1) / 2];
-  K.blk = [K.blk; [repmat({'s'}, length(K.s), 1), num2cell(K.s)]];
   if (~isempty (K.s))
     K.idx.s = K.s .* (K.s + 1) / 2;
     K.idx.s = K.f + K.l + sum(K.q) + ...
       [cumsum([1; K.idx.s(1:end-1)]), cumsum(K.idx.s)];
+    K.blk(end+1, :) = {'s', K.s};
+    K.dims = [K.dims; K.s .* (K.s + 1) / 2];
   end
 end
 

@@ -1,7 +1,7 @@
 function obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
 % FROM_SDPT3_FMT  Import conic problem from a SDPT3 format.
 %
-%   obj = vsdp.FROM_SDPT3_FMT (blk, At, b, c, x0, y0, z0);
+%   obj = vsdp.from_sdpt3_fmt (blk, At, b, c, x0, y0, z0);
 %
 %   The problem data of the SDPT3-4.0 is:
 %
@@ -26,11 +26,11 @@ function obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
 %
 %   Example:
 %
-%      C{1}    = [ 0 0 0 0;
-%                  0 0 0 0;
-%                  0 0 1 2;
-%                  0 0 2 1];
 %      blk{1,1} = 's'; blk{1,2} = [2 2];
+%      C{1} = [ 0 0 0 0;
+%               0 0 0 0;
+%               0 0 1 2;
+%               0 0 2 1 ];
 %      At{1} = [ ...
 %         svec(blk, [ 1 0 0 0;
 %                     0 1 0 0;
@@ -49,7 +49,7 @@ function obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
 %                     0 0 0 0;
 %                     0 0 0 1])];
 %       b = [1; 1; 1; 1];
-%       obj = vsdp.FROM_SDPT3_FMT (blk, At, b, C);
+%       obj = vsdp.from_sdpt3_fmt (blk, At, b, C);
 %
 %
 % For more information on the SDPT3-4.0 format, see:
@@ -91,17 +91,19 @@ if (length (sort_idx) ~= size (blk, 1))
   error('VSDP:from_sdpt3_fmt:unsupportedCones', ...
     'from_sdpt3_fmt: unsupported ''blk'' cell format or empty cells');
 end
-c  =  c(sort_idx);
-At = At(sort_idx);
+blk = blk(sort_idx,:);
+c   =   c(sort_idx);
+At  =  At(sort_idx);
 
 % Convert cells to matrices.
-c  = vsdp.cell2mat (c(:));
+
+c  = vsdp.cell_sub_blocks (c(:), blk);
 At = cell2mat (At(:));  % No vectorization needed, use native 'cell2mat'.
 
 % Treat optional parameter.
 if (nargin >= 5)
   x0 = x0(sort_idx);
-  x0 = vsdp.cell2mat (x0(:));
+  x0 = vsdp.cell_sub_blocks (x0(:), blk);
 else
   x0 = [];
 end
@@ -110,7 +112,7 @@ if (nargin < 6)
 end
 if (nargin == 7)
   z0 = z0(sort_idx);
-  z0 = vsdp.cell2mat (z0(:));
+  z0 = vsdp.cell_sub_blocks (z0(:), blk);
 else
   z0 = [];
 end
