@@ -1,9 +1,10 @@
 function x = cell2mat (X)
 % CELL2MAT  Vectorize all cells and concatenates them to matrix.
 %
-%    In the conversion methods of VSDP an often reoccurring pattern is to
-%    convert some `A' = cell(n,m)` into a vectorized matrix `At = double(N,m)`,
-%    where `N >> n` depends on the content of the cells:
+%   x = cell2mat (X)  In the conversion methods of VSDP an often reoccurring
+%                     pattern is to convert some `A' = cell(n,m)` into a
+%                     vectorized matrix `At = double(N,m)`, where `N >> n`
+%                     depends on the content of the cells:
 %
 %         { [        ]     [        ] }            [     |             |     ]
 %         { [ X{1,1} ] ... [ X{1,m} ] }            [ X{1,1}(:) ... X{1,m}(:) ]

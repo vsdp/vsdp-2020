@@ -7,11 +7,11 @@ function obj = check_dual_infeasible (obj, x)
 %   obj.check_dual_infeasible(x)  Check VSDP object 'obj' to be dual infeasible
 %                                 by using 'x'.
 %
-%       Using a theorem of alternatives to claim a conic program to be primal
-%       infeasible (see https://vsdp.github.io/references.html#Jansson2007 for
-%       proofs and details):
+%       Use a theorem of alternatives to claim a conic program to be primal
+%       infeasible (see https://vsdp.github.io/references.html#Jansson2007
+%       for proofs and details):
 %
-%       Let x satisfy
+%       Let 'x' satisfy
 %
 %         (1) A*x = 0,  x in K,  and  c'*x < 0
 %

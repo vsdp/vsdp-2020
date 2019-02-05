@@ -8,11 +8,11 @@ function obj = check_primal_infeasible (obj, y)
 %   obj.check_primal_infeasible(y)  Check VSDP object 'obj' to be primal
 %                                   infeasible by using 'y'.
 %
-%       Using a theorem of alternatives to claim a conic program to be primal
-%       infeasible (see https://vsdp.github.io/references.html#Jansson2007 for
-%       proofs and details):
+%       Use a theorem of alternatives to claim a conic program to be primal
+%       infeasible (see https://vsdp.github.io/references.html#Jansson2007
+%       for proofs and details):
 %
-%       Let y satisfy
+%       Let 'y' satisfy
 %
 %         (1) -A'*y in K^*  and  y'*b > 0
 %
