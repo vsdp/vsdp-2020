@@ -1,18 +1,19 @@
 function obj = analyze (obj, yes_to_all)
-% ANALYZE  Analyze the conic program for pathological patterns.
+% ANALYZE  Analyze the conic program for typical problems.
 %
-%   obj = obj.ANALYZE ()       Interactive mode.  If a pathological pattern is
-%   obj = obj.ANALYZE (false)  recognized for the VSDP conic program 'obj', ask
-%                              the user if it should be fixed.
+%   obj = obj.ANALYZE ()       Interactive mode.  If a typical problem is
+%                              recognized for the VSDP conic program 'obj',
+%                              ask the user if it should be fixed.
 %
-%   obj = obj.ANALYZE (true) Automatically fix all recognized problem patterns.
+%   obj = obj.ANALYZE (true)   Automatically fix all typical problems.
+%   obj = obj.ANALYZE (false)  Only report typical problems.
 %
-%   Analyzed patterns:
+%   Typical problems:
 %
-%     #1 Check for diagonal SDP blocks:  If the constraint vector 'c.s(j)' and
-%        the constraint matrix 'A.s(j)' only have entries on the main
-%        diagonal, it is recommended to convert them into a LP block.  This
-%        saves memory: 'n*(n+1)/2' vs. 'n' entries and computation time.
+%     #1 Check for diagonal SDP blocks:  If the constraint vector 'c.s(j)'
+%        and the constraint matrix 'A.s(j)' only have entries on the main
+%        diagonal, it is recommended to convert them into a LP block.
+%        This saves computation time and memory: 'n*(n+1)/2' vs. 'n' entries.
 %        Additionally, VSDP can easier compute rigorous cone bounds, as no
 %        eigenvalue computations are involved.
 %
@@ -32,8 +33,19 @@ if (nargout ~= 1)
     ['analyze: Call this function by ''%s = %s.analyse()'' to avoid ', ...
     'stale object handles.'], obj_name, obj_name);
 end
+if (nargin == 1)
+  interactive = true;
+  yes_to_all = false;
+else
+  interactive = false;
+end
+obj = pattern1 (obj, yes_to_all, interactive);  % Check for diagonal SDP blocks.
+end
 
-% Check for diagonal only SDP blocks ==> LP blocks.
+
+function obj = pattern1 (obj, yes_to_all, interactive)
+% PATTERN1  Check for diagonal only SDP blocks ==> LP blocks.
+
 At = vsdp_indexable (obj.At, obj);
 c  = vsdp_indexable (obj.c , obj);
 A_linear = [];
@@ -45,18 +57,20 @@ for i = 1:length(obj.K.s)
   idx = cumsum(1:obj.K.s(i));  % Compute diagonal indices
   Al = As(idx,:);  % Extract the diagonal elements of SDP cone.
   cl = cs(idx,:);
-  % If the number of non-zero elements of the matrix and the diagonal match, it
-  % must be a diagonal matrix, thus a LP matrix.
+  % If the number of non-zero elements of the matrix and the diagonal match,
+  % it must be a diagonal matrix, thus a LP matrix.
   if ((nnz (Al) == nnz (As)) && (nnz (cl) == nnz (cs)))
     warning ('VDSP:analyze:possibleLpCone', ...
       'analyze: K.s(%d) seems to only have diagonal elements.  ', i);
-    if ((nargin == 2) && (yes_to_all))
+    if (yes_to_all)
       fprintf(' --> Convert it to LP block.\n');
-    else
+    elseif (interactive)
       answer = input ('Convert it to LP block? [y/n] ', 's');
       if (isempty (answer) || (answer ~= 'y'))
         continue;
       end
+    else
+      continue;
     end
     A_linear = [A_linear; Al];
     c_linear = [c_linear; cl];
@@ -78,7 +92,7 @@ if (~isempty (drop_idx))
   obj.c = [obj.c(1:(obj.K.f + obj.K.l),:); ...
     c_linear; obj.c((obj.K.f + obj.K.l + 1):end,:)];
   obj.K.l = obj.K.l + size (A_linear, 1);
-  % Finally, create a new fresh VSDP object and analyze it recursively.
-  obj = vsdp(obj).analyze();
+  % Finally, create a new fresh VSDP object.
+  obj = vsdp(obj);
 end
 end
