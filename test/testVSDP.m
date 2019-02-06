@@ -7,6 +7,7 @@ function tests = testVSDP()
 %       clc; testVSDP;                     % Octave
 %
 %   See also vsdp.
+%
 
 % Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 

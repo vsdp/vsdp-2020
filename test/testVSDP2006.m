@@ -3,10 +3,12 @@ function tests = testVSDP2006()
 %
 %   Example:
 %
+%       addpath ('legacy')
 %       clc; table (runtests ('testVSDP2006')) % Matlab
 %       clc; testVSDP2006;                     % Octave
 %
 %   See also demovsdp.
+%
 
 % Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
@@ -173,7 +175,9 @@ end
 function testVSDPUP_example_DELTA_infeasible(testCase)
 [blk,A,C,b,~] = example_DELTA_infeasible();
 [~,Xt,yt,Zt,~] = mysdps(blk,A,C,b);
+S = warning ('off', 'VSDP:rigorous_upper_bound:unsolveablePerturbation');
 [fU,X,lb] = vsdpup(blk,A,C,b,Xt,yt,Zt);
+warning (S);
 verifyEqual(testCase, isinf(fU), true)
 verifyEqual(testCase, isnan(X), true)
 verifyEqual(testCase, isnan(lb), true)
@@ -182,7 +186,9 @@ end
 function testVSDPUP_example_primal_infeasible(testCase)
 [blk,A,C,b] = example_primal_infeasible();
 [~,Xt,yt,Zt,~] = mysdps(blk,A,C,b);
+S = warning ('off', 'VSDP:rigorous_upper_bound:unsolveablePerturbation');
 [fU,X,lb] = vsdpup(blk,A,C,b,Xt,yt,Zt);
+warning (S);
 verifyEqual(testCase, isinf(fU), true)
 verifyEqual(testCase, isnan(X), true)
 verifyEqual(testCase, isnan(lb), true)
@@ -223,7 +229,9 @@ end
 function testVSDPLOW_example_DELTA_infeasible(testCase)
 [blk,A,C,b,~] = example_DELTA_infeasible();
 [~,Xt,yt,Zt,~] = mysdps(blk,A,C,b);
+S = warning ('off', 'VSDP:rigorous_lower_bound:unsolveablePerturbation');
 [fL,Y,dl] = vsdplow(blk,A,C,b,Xt,yt,Zt);
+warning (S);
 verifyEqual(testCase, isinf(fL), true)
 verifyEqual(testCase, isnan(Y), true)
 verifyEqual(testCase, isnan(dl), true)
