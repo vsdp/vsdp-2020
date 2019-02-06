@@ -39,7 +39,7 @@ function [vidx, midx, mlidx, vlidx] = sindex (obj)
 %   To extract the upper part, one has to determine the indices in 'idx', in
 %   this example 'Avec == A([1, 5:6, 9:11, 13:16])'.  For reasons of memory
 %   efficiency, this function uses logical indexing rather than index vectors,
-%   as the order is given natrually by the Fortran indices.
+%   as the order is given naturally by the Fortran indices.
 %
 %   By computing the index matrices and vector
 %

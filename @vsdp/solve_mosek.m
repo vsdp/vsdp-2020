@@ -137,6 +137,7 @@ function [subi, subj, subk, subl, val] = to_mosek_fmt (obj, X)
 %      val  - non-zero  values
 %
 %   See also vsdp, vsdp.sindex, mosek_idx.
+%
 
 
 [ltri, subk_all, subl_all] = cellfun(@mosek_idx, num2cell (obj.K.s), ...
@@ -185,6 +186,7 @@ function [ltri, subk, subl] = mosek_idx(N)
 %             [3 6 9]        subl = [1 1 1 2 2 3]
 %
 %   See also vsdp, vsdp.sindex, to_mosek_fmt.
+%
 
 n = N*(N+1)/2;
 diag_idx = cumsum ([1, N*ones(1, N-1) - (0:1:N-2)]);
@@ -207,6 +209,7 @@ function x = to_vsdp_fmt (obj, x)
 % TO_VSDP_FMT  Translate the MOSEK solution 'X' to VSDP format.
 %
 %   See also vsdp, vsdp.svec.
+%
 
 if (isempty (x))
   return;
