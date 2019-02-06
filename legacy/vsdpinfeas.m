@@ -46,6 +46,7 @@ function [isinfeas,X,Y] = vsdpinfeas(varargin)
 %       [isinfeas,X,Y] = vsdpinfeas(blk,A,C,b,choose,Xt,yt,Zt);
 %
 %   See also mysdps.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

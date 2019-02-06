@@ -51,6 +51,7 @@ function [fL,Y,dl] = vsdplow(varargin)
 %       [fL,Y,dl] = vsdplow(blk,A,C,b,Xt,yt,Zt);
 %
 %   See also mysdps.
+%
 
 % Copyright 2004-2006 Christian Jansson (jansson@tuhh.de)
 

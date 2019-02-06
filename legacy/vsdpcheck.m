@@ -1,7 +1,7 @@
 function [m,n] = vsdpcheck(varargin)
 % VSDPCHECK  Routine for checking the VSDP-2006 format.
 %
-%   [m,n] = VSDPCHECK(blk,A,C,b)  
+%   [m,n] = VSDPCHECK(blk,A,C,b)
 %      The block-diagonal format is explained in 'mysdps.m'.
 %
 %   [...] = VSDPCHECK(...,X0,y0,Z0) optionally the format of an initial guess
@@ -17,6 +17,7 @@ function [m,n] = vsdpcheck(varargin)
 %       [m,n] = vsdpcheck(blk,A,C,b);
 %
 %   See also mysdps.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 

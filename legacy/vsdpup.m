@@ -54,6 +54,7 @@ function [fU,X,lb] = vsdpup(varargin)
 %       [fU,X,lb] = vsdpup(blk,A,C,b,Xt,yt,Zt);
 %
 %   See also mysdps.
+%
 
 % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
 
