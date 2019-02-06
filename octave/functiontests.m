@@ -1,19 +1,19 @@
 function tests = functiontests(localfcns)
-% FUNCTIONTEST  Run all functions prefixed by "test" and print a test summary.
+% FUNCTIONTESTS  Run all functions prefixed by "test" and print a test summary.
 %
-%   This function is only intended to by used by GNU Octave (<= 4.2.0), as it
-%   is not present there.
+%   This MATLAB function is not present in GNU Octave (<= 5.1.0).
 %
 %   tests = functiontests(localfcns) runs all function handles from the cell
-%      array localfcns.
+%                                    array localfcns.
 %
 %   Example:
 %
 %       tests = functiontests(localfunctions())
 %
-%   See also demovsdp.
+%   See also testVSDP, testVSDP2006.
+%
 
-% Copyright 2016-2017 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 j = 1;
 for i = 1:length(localfcns)
@@ -27,7 +27,7 @@ for i = 1:length(localfcns)
   t = tic;
   try
     test_case([]);
-  catch(err)
+  catch (err)
     disp (sprintf ("\n--> %s\n", test_case_name))
     disp (err.message)
     passed = false;

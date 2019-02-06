@@ -1,17 +1,16 @@
 function verifyEqual (~, a, b, varargin)
 % VERIFYEQUAL  Verify equality of a and b.
 %
-%   This function is only intended to by used by GNU Octave (<= 4.2.0), as it
-%   is not present there.  Basically it is a wrapper to call assert in a Matlab
-%   compatible way.
+%   This MATLAB function is not present in GNU Octave (<= 5.1.0).
 %
 %   Example:
 %
 %       verifyEqual ([], 1, 2)
 %
-%   See also demovsdp.
+%   See also testVSDP, testVSDP2006.
+%
 
-% Copyright 2016-2017 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 if (nargin == 3)
   assert(a, b);
