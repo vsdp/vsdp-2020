@@ -29,7 +29,7 @@ function [fU,X,lb] = vsdpup(varargin)
 %         lb   An n-vector, where lb(j) is a rigorous lower bound of the
 %              smallest eigenvalue of block X{j}.  lb > 0 means that all
 %              symmetric matrices within the interval matrix X are rigorously
-%              certified as positiv definite.  In this case, the existence of
+%              certified as positive definite.  In this case, the existence of
 %              strictly feasible solutions and strong duality is proved.
 %
 %   [...] = VSDPUP(...,yu)
