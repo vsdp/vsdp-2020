@@ -26,13 +26,13 @@ function x = cell_sub_blocks (X, blk)
 if (nargin == 2 && iscell (X) && iscell (blk))
   idx = find (strcmp (blk(:,1), 's') & (cellfun (@length, blk(:,2)) > 1));
   for j = 1:length (idx)
-    Xj = X{j};
+    Xj = X{idx(j)};
     % Create sub-block indices: [{1:3}, {4:5}, ...].
     subidx = mat2cell (1:length(Xj), 1, blk{idx(j),2});
     % Extract the sub blocks to cell array.
     Xj = cellfun(@(x) Xj(x,x), subidx, 'UniformOutput', false);
     % Vectorize and write back.
-    X{j} = cell2mat (cellfun (@(x) x(:), Xj(:), 'UniformOutput', false));
+    X{idx(j)} = cell2mat (cellfun (@(x) x(:), Xj(:), 'UniformOutput', false));
   end
   x = cell2mat (cellfun (@(x) x(:), X, 'UniformOutput', false));
 else
