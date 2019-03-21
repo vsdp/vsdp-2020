@@ -108,6 +108,7 @@ classdef vsdp < handle
     x = verify_uls (obj, A, b, x0);
     [vidx, midx, mlidx, vlidx] = sindex (K);
     [K, N, n] = validate_cone (K);
+    val = settings (id, key, val);
   end
   
   methods
