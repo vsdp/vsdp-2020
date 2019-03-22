@@ -3,15 +3,15 @@ classdef csdp < handle
   %
   %   For more information about CSDP, see:
   %
-  %     https://projects.coin-or.org/Csdp/
-  %     https://github.com/coin-or/Csdp
+  %      https://projects.coin-or.org/Csdp/
+  %      https://github.com/coin-or/Csdp
   %
   %   See also vsdp.solve.
   %
   
   % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
-  methods
+  methods (Static)
     function obj = solve (obj, sol_type)
       % SOLVE  Approximately solve conic problem instance with CSDP.
       %
@@ -20,7 +20,7 @@ classdef csdp < handle
       
       narginchk (1, 2);
       
-      solver.csdp.install ();
+      solver.csdp.install (1);  % Show errors
       
       % Check cones.
       if (sum (obj.K.q) > 0)
@@ -34,7 +34,8 @@ classdef csdp < handle
       [A, b, c] = obj.get_midpoint_problem_data (sol_type);
       
       % Should initial solution guess be taken into account?
-      if ((obj.options.USE_INITIAL_GUESS) && (~isempty (obj.solution('Initial'))))
+      if ((obj.options.USE_INITIAL_GUESS) ...
+          && (~isempty (obj.solution('Initial'))))
         isol = obj.solution('Initial');
         [x0, y0, z0] = deal (isol.x, isol.y, isol.z);
       else
@@ -54,7 +55,8 @@ classdef csdp < handle
       end
       
       % Prepare data for solver.
-      [b, c, x0, y0, z0] = deal (full (b), full (c), full (x0), full (y0), full (z0));
+      [b, c, x0, y0, z0] = deal (full (b), full (c), full (x0), full (y0), ...
+        full (z0));
       
       % Convert to SeDuMi-Format (same as CSDP format).
       A = vsdp.smat (obj, A, 1);
@@ -62,9 +64,9 @@ classdef csdp < handle
       K = obj.K;
       if (K.f > 0)
         warning('VSDP:solve_csdp:unsupportedCone', ...
-          ['solve_csdp: CSDP supports free variables (K.f) by converting them ' ...
-          'to the difference of positive variables.  The resulting problem is ', ...
-          'ill-posed.']);
+          ['solve_csdp: CSDP supports free variables (K.f) by converting ' ...
+          'them to the difference of positive variables.  The resulting ', ...
+          'problem is ill-posed.']);
         [A, b, c, K] = convertf (A, b, c, K);  % CSDP function.
       end
       
@@ -106,6 +108,30 @@ classdef csdp < handle
       end
       
       obj.add_solution (sol_type, x, y, z, f_objective, solver_info);
+    end
+    
+    function [f,l,q,s] = supported_cones ()
+      f = true;  % free   variables.
+      l = true;  % linear variables.
+      q = false; % second-order cones.
+      s = true;  % semidefinite cones.
+    end
+    
+    function spath = install (varargin)
+      % Returns the path to the installed and usable solver.  Otherwise return
+      % an empty array.  No error messages are thrown.
+      %
+      % By passing one or more arguments interactive installation actions
+      % happen and, in case of failures, error messages are thrown.
+      %
+      
+      sname          = 'csdp';
+      is_available   = @() exist (sname, 'file') == 2;
+      get_path       = @() fileparts (which (sname));
+      installer_file = [];
+      do_error       = (nargin > 0);
+      spath = solver.registry.generic_install (sname, is_available, ...
+        get_path, installer_file, do_error);
     end
   end
 end

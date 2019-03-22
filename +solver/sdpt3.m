@@ -1,7 +1,7 @@
 classdef sdpt3 < handle
   % SDPT3  Solver proxy class (not the acutal solver!).
   %
-  % For information about SDPT3, see:
+  %   For information about SDPT3, see:
   %
   %      http://www.math.nus.edu.sg/~mattohkc/sdpt3.html
   %      https://github.com/sqlp/sdpt3
@@ -9,7 +9,7 @@ classdef sdpt3 < handle
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
   methods (Static)
     function obj = solve (obj, sol_type)
@@ -20,7 +20,7 @@ classdef sdpt3 < handle
       
       narginchk (1, 2);
       
-      solver.sdpt3.install ();
+      solver.sdpt3.install (true);  % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';
@@ -93,67 +93,55 @@ classdef sdpt3 < handle
       s = true;  % semidefinite cones.
     end
     
-    function solver_path = install (varargin)
-      % Returns the path to the solver directory, if useable.  Otherwise return
-      % empty array.
+    function spath = install (varargin)
+      % Returns the path to the installed and usable solver.  Otherwise return
+      % an empty array.  No error messages are thrown.
+      %
+      % By passing one or more arguments interactive installation actions
+      % happen and, in case of failures, error messages are thrown.
       %
       
-      solver_path = vsdp.settings ('sdpt3', 'path');
-      is_available = @() exist ('sqlp', 'file') == 2;
+      sname          = 'sdpt3';
+      is_available   = @() exist ('sqlp', 'file') == 2;
+      get_path       = @() fileparts (which ('install_sdpt3'));
+      installer_file = 'install_sdpt3.m';
+      do_error       = false;
+      spath = solver.registry.generic_install (sname, is_available, ...
+        get_path, installer_file, do_error);
       
-      if (is_available ())
-        if (isempty (solver_path))  % Store solver path persistent.
-          solver_path = vsdp.settings ('sdpt3', 'path', ...
-            fileparts (which ('install_sdpt3')));
-        end
-        return;  % Nothing else to do.
-      end
-      
-      % Recovery 1: Check if VSDP knows a setup location.
-      if (~isempty (solver_path))
-        installer_file = fullfile (solver_path, 'install_sdpt3.m');
-        if (exist (installer_file, 'file') == 2)
-          run (installer_file);
-          % Final check.
-          if (exist ('sqlp', 'file') ~= 2)
-            solver_path = [];
-          end
-        else
-          solver_path = [];
-        end
-      end
-      
-      % Recovery 2: Install solver from the internet.
-      if (nargin == 0)
+      % Return on sucess or non-interactive silent mode.
+      if ((nargin == 0) || (~isempty (spath)))
         return;
       end
       
-      fprintf ('\nUnable to find the SDPT3 solver (GPLv2 license).\n\n');
+      % Interactive mode: Install solver from the internet.
+      fprintf ('\n  Unable to find the SDPT3 solver (GPLv2 license).\n\n');
       url = 'https://github.com/sqlp/sdpt3/archive/master.zip';
-      prompt = sprintf ('Install from ''%s'' [y/n]? ', url);
+      prompt = sprintf ('  Install from ''%s'' [y/n]? ', url);
       str = input (prompt, 's');
       if (str(1) ~= 'y' && str(1) ~= 'Y')
-        return;
+        error ('VSDP:SOLVER:sdpt3:installError', ...
+          'solver.sdpt3.install: sdpt3 is not available.');
       end
       download_path = fullfile (vsdp.settings ('vsdp', 'path'), 'download');
+      mkdir (download_path);
       zip_file = fullfile (download_path, 'sdpt3.zip');
       urlwrite (url, zip_file);
       if (exist (zip_file, 'file') ~= 2)
-        warning ('VSDP:SOLVER:sdpt3:installError', ...
+        error ('VSDP:SOLVER:sdpt3:installError', ...
           'solver.sdpt3.install: Could not download the sdpt3 installer');
       end
       unzip (zip_file, download_path);
       delete (zip_file);
-      solver_path = fullfile (download_path, 'sdpt3');
-      movefile (fullfile (download_path, 'sdpt3-master'), solver_path);
-      installer_file = fullfile (solver_path, 'install_sdpt3.m');
-      run (installer_file);
+      spath = fullfile (download_path, sname);
+      movefile (fullfile (download_path, 'sdpt3-master'), spath);
+      run (fullfile (spath, installer_file));
       % Final check.
-      if (exist ('sqlp', 'file') ~= 2)
-        solver_path = [];
-      else
-        solver_path = vsdp.settings ('sdpt3', 'path', solver_path);
+      if (~is_available ())
+        error ('VSDP:SOLVER:sdpt3:installError', ...
+          'solver.sdpt3.install: SDPT3 is not available.');
       end
+      spath = vsdp.settings (sname, 'path', spath);
     end
   end
 end
