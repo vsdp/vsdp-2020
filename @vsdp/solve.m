@@ -32,47 +32,44 @@ function obj = solve (obj, varargin)
 narginchk (1, 3);
 
 % Generate a list of by VSDP supported solvers.
-supported_solvers = methods (obj);
-supported_solvers = supported_solvers(strncmp (supported_solvers, 'solve_', 6));
-supported_solvers = cellfun (@(x) x(7:end), supported_solvers, ...
-  'UniformOutput', false);  % Strip 'solve_' prefix.
+solver_list = solver.registry.list_available ();
 
-supported_solvers_str = ['''', strjoin(supported_solvers, ''', '''), ''''];
+supported_solvers_str = ['''', strjoin(solver_list, ''', '''), ''''];
 
 if (~isempty (obj.options.SOLVER))
-  solver = obj.options.SOLVER;
+  use_solver = obj.options.SOLVER;
 elseif (nargin == 1)  % Interactive mode.
-  initial_value = find (strcmp (obj.options.SOLVER, supported_solvers));
+  initial_value = find (strcmp (obj.options.SOLVER, solver_list));
   if (isempty (initial_value))
-    initial_value = find (strcmp ('sdpt3', supported_solvers));
+    initial_value = find (strcmp ('sdpt3', solver_list));
   end
   idx = -1;
   % Prompt the user to choose between the supported solvers.
   % If 'obj.options.SOLVER' was set properly, the option is surrounded by braces
   % and chosen when just hitting enter.
-  while ((idx < 1) || (idx > length (supported_solvers)))
+  while ((idx < 1) || (idx > length (solver_list)))
     fprintf ('\n');
-    for i = 1:length (supported_solvers)
+    for i = 1:length (solver_list)
       if (i == initial_value)
-        fprintf ('  [%2d] %s\n', i, supported_solvers{i});
+        fprintf ('  [%2d] %s\n', i, solver_list{i});
       else
-        fprintf ('   %2d  %s\n', i, supported_solvers{i});
+        fprintf ('   %2d  %s\n', i, solver_list{i});
       end
     end
     fprintf ('\n');
     str = input (sprintf ('Choose one of the above solvers [1-%d]: ', ...
-      length (supported_solvers)), 's');
+      length (solver_list)), 's');
     if (isempty (str))
       idx = initial_value;
     else
       idx = str2double (str);
     end
   end
-  solver = supported_solvers{idx};
-  obj.options.SOLVER = solver;
+  use_solver = solver_list{idx};
+  obj.options.SOLVER = use_solver;
 else  % Non-interactive mode.
   try
-    solver = validatestring (varargin{1}, supported_solvers);
+    use_solver = validatestring (varargin{1}, solver_list);
   catch
     error ('VSDP:solve:unsupportedSolver', ...
       ['The solver ''%s'' is not supported by VSDP.  ', ...
@@ -80,11 +77,11 @@ else  % Non-interactive mode.
       varargin{1}, supported_solvers_str);
   end
   if (isempty (obj.options.SOLVER))
-    obj.options.SOLVER = solver;
+    obj.options.SOLVER = use_solver;
   end
 end
 
 % Dispatch to solver.
-obj = eval (['obj.solve_', solver, '(varargin{2:end})']);
+obj = eval (['solver.', use_solver, '.solve (obj, varargin{2:end});']);
 
 end
