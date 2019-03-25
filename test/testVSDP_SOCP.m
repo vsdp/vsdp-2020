@@ -6,6 +6,11 @@ end
 
 function SOCP_VSDP_2012_P13 (testCase)
 use_solvers = {'sedumi', 'sdpt3', 'mosek'};
+use_solvers = intersect (use_solvers, solver.registry.list_available ());
+if (isempty (use_solvers))
+  warning ('VSDP:testVSDP:noSolver', ...
+    'testVSDP_LP: skipping test, no solver available.');
+end
 
 A = [ ...
   -1, 0, 0,  0, 0,  0, 0,  0,  0,  0;
@@ -25,13 +30,7 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  try
-    obj.solve (obj.options.SOLVER);
-  catch
-    warning ('VSDP:testVSDP_SOCP:solverNotAvailable', ...
-      'testVSDP_SOCP: Solver %s not available.  Skip.', use_solvers{i});
-    continue;
-  end
+  obj.solve (obj.options.SOLVER);
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, ...

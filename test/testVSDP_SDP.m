@@ -8,6 +8,11 @@ end
 
 function SDP_VSDP_2012_P15 (testCase)
 use_solvers = {'sedumi', 'sdpt3', 'sdpa', 'csdp', 'mosek'};
+use_solvers = intersect (use_solvers, solver.registry.list_available ());
+if (isempty (use_solvers))
+  warning ('VSDP:testVSDP:noSolver', ...
+    'testVSDP_LP: skipping test, no solver available.');
+end
 
 A = [3, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0;
   0, 0, 0, 0, 3, 0, 1, 0, 4, 0, 1, 0, 5, 0, 0, 0, 1];
@@ -31,13 +36,7 @@ for i = 1:length(use_solvers)
   if (strcmp (use_solvers{i}, 'sdpa'))
     obj.options.ALPHA = 20;
   end
-  try
-    obj.solve (obj.options.SOLVER);
-  catch
-    warning ('VSDP:testVSDP_SDP:solverNotAvailable', ...
-      'testVSDP_SDP: Solver %s not available.  Skip.', use_solvers{i});
-    continue;
-  end
+  obj.solve (obj.options.SOLVER);
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   % May solvers have problems with x([4,7]), thus big tolerance 1e-4
@@ -73,6 +72,11 @@ end
 
 function SDP_Jansson2007a_P192 (testCase)
 use_solvers = {'sedumi', 'sdpt3', 'csdp', 'mosek'};
+use_solvers = intersect (use_solvers, solver.registry.list_available ());
+if (isempty (use_solvers))
+  warning ('VSDP:testVSDP:noSolver', ...
+    'testVSDP_LP: skipping test, no solver available.');
+end
 
 DELTA   = 1e-4;
 EPSILON = 2 * DELTA;
@@ -123,13 +127,7 @@ for i = 1:length(use_solvers)
   obj = vsdp (obj);
   obj.options.VERBOSE_OUTPUT = false;
   obj.options.SOLVER = use_solvers{i};
-  try
-    obj.solve (obj.options.SOLVER);
-  catch
-    warning ('VSDP:testVSDP_SDP:solverNotAvailable', ...
-      'testVSDP_SDP: Solver %s not available.  Skip.', use_solvers{i});
-    continue;
-  end
+  obj.solve (obj.options.SOLVER);
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, full (sol.x(1:3)), x_sol(1:3), 'RelTol', 1e-5);

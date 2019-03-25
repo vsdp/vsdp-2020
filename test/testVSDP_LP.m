@@ -4,11 +4,11 @@ LP_VSDP_2012_P11 (testCase);  % K.l = 2 and K.f = 1
 end
 
 function LP_VSDP_2012_P09 (testCase)
-use_solvers = {'sedumi', 'sdpt3', 'mosek'};
-if (exist ('OCTAVE_VERSION', 'builtin'))
-  use_solvers{end+1} = 'glpk';
-else
-  use_solvers{end+1} = 'linprog';
+use_solvers = {'sedumi', 'sdpt3', 'mosek', 'glpk', 'linprog'};
+use_solvers = intersect (use_solvers, solver.registry.list_available ());
+if (isempty (use_solvers))
+  warning ('VSDP:testVSDP:noSolver', ...
+    'testVSDP_LP: skipping test, no solver available.');
 end
 
 A = [-1, 2,  0, 1, 1;
@@ -25,13 +25,7 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  try
-    obj.solve (obj.options.SOLVER);
-  catch
-    warning ('VSDP:testVSDP_LP:solverNotAvailable', ...
-      'testVSDP_LP: Solver %s not available.  Skip.', use_solvers{i});
-    continue;
-  end
+  obj.solve (obj.options.SOLVER);
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, full (sol.x), x_sol, ...
@@ -62,11 +56,11 @@ end
 end
 
 function LP_VSDP_2012_P11 (testCase)
-use_solvers = {'sedumi', 'sdpt3', 'mosek'};
-if (exist ('OCTAVE_VERSION', 'builtin'))
-  use_solvers{end+1} = 'glpk';
-else
-  use_solvers{end+1} = 'linprog';
+use_solvers = {'sedumi', 'sdpt3', 'mosek', 'glpk', 'linprog'};
+use_solvers = intersect (use_solvers, solver.registry.list_available ());
+if (isempty (use_solvers))
+  warning ('VSDP:testVSDP:noSolver', ...
+    'testVSDP_LP: skipping test, no solver available.');
 end
 
 A = [2, 1, -1;
@@ -84,13 +78,7 @@ obj.options.VERBOSE_OUTPUT = false;
 
 for i = 1:length(use_solvers)
   obj.options.SOLVER = use_solvers{i};
-  try
-    obj.solve (obj.options.SOLVER);
-  catch
-    warning ('VSDP:testVSDP_LP:solverNotAvailable', ...
-      'testVSDP_LP: Solver %s not available.  Skip.', use_solvers{i});
-    continue;
-  end
+  obj.solve (obj.options.SOLVER);
   sol = obj.solutions.approximate;
   verifyEqual (testCase, sol.solver_info.termination, 'Normal termination');
   verifyEqual (testCase, full (sol.x), x_sol, ...
