@@ -11,7 +11,7 @@ classdef mosek < handle
   % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
   
   methods (Static)
-    function obj = solve_mosek (obj, sol_type)
+    function obj = solve (obj, sol_type)
       % SOLVE  Approximately solve conic problem instance with MOSEK.
       %
       %   See also vsdp.solve.
@@ -71,12 +71,12 @@ classdef mosek < handle
       if (sum (obj.K.s) > 0)
         prob.bardim = obj.K.s;
         [~, prob.barc.subj, ...
-          prob.barc.subk, prob.barc.subl, prob.barc.val] = to_mosek_fmt ( ...
-          obj, vsdp.smat (obj, c, 1));
+          prob.barc.subk, prob.barc.subl, prob.barc.val] = ...
+          solver.mosek.to_mosek_fmt (obj, vsdp.smat (obj, c, 1));
         
         [prob.bara.subi, prob.bara.subj, ...
-          prob.bara.subk, prob.bara.subl, prob.bara.val] = to_mosek_fmt ( ...
-          obj, vsdp.smat (obj, A, 1));
+          prob.bara.subk, prob.bara.subl, prob.bara.val] = ...
+          solver.mosek.to_mosek_fmt (obj, vsdp.smat (obj, A, 1));
       end
       
       % As the VSDP format support equality constraints only, we have to set
@@ -112,7 +112,8 @@ classdef mosek < handle
           x = res.sol.bas.xx(:);
           y = res.sol.bas.y(:);
         elseif (isfield (res, 'sol') && isfield (res.sol, 'itr'))
-          x = [res.sol.itr.xx(:); to_vsdp_fmt(obj, res.sol.itr.barx)];
+          x = [res.sol.itr.xx(:); solver.mosek.to_vsdp_fmt(obj, ...
+            res.sol.itr.barx)];
           y = res.sol.itr.y(:);
         else
           obj.add_solution (sol_type, [], [], [], nan(2,1), solver_info);
@@ -144,8 +145,8 @@ classdef mosek < handle
       %
       
       
-      [ltri, subk_all, subl_all] = cellfun(@mosek_idx, num2cell (obj.K.s), ...
-        'UniformOutput', false);
+      [ltri, subk_all, subl_all] = cellfun(@solver.mosek.index, ...
+        num2cell (obj.K.s), 'UniformOutput', false);
       ltri     = vertcat (ltri{:});   % lower triangular    indices (unshifted)
       subj_all = ones (size (ltri));  % all possible cone   indices (unshifted)
       subk_all = vertcat (subk_all{:});  % all possible row    indices
@@ -176,8 +177,8 @@ classdef mosek < handle
     end
     
     
-    function [ltri, subk, subl] = mosek_idx(N)
-      % MOSEK_IDX  Gen. indices for a MOSEK lower triangular vectorized matrix.
+    function [ltri, subk, subl] = index (N)
+      % INDEX  Gen. indices for a MOSEK lower triangular vectorized matrix.
       %
       %      ltri - lower triangular index of full Fortran vectorized matrix.
       %      subk - row    index
