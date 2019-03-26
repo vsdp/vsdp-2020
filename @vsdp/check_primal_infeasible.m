@@ -42,7 +42,7 @@ function obj = check_primal_infeasible (obj, y)
 %            vsdp.check_dual_infeasible.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 narginchk (1, 2);
 

@@ -43,7 +43,7 @@ function obj = from_sdpa_fmt (bLOCKsTRUCT, c, F, x0, X0, Y0)
 %
 %   See also from_sdpa_file.
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 narginchk(3, 6);
 if (isempty (bLOCKsTRUCT))

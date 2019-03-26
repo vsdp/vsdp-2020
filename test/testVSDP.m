@@ -9,7 +9,7 @@ function tests = testVSDP()
 %   See also vsdp.
 %
 
-% Copyright 2016-2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 tests = functiontests (localfunctions);
 end

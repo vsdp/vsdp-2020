@@ -60,7 +60,7 @@ function obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
 %   See also vsdp.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 narginchk(4, 7);
 

@@ -11,6 +11,8 @@ function val = settings (id, key, val)
 %      val = solver.util.settings ('id', 'key');
 %
 
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+
 persistent vsdp_settings;  % In memory copy of VSDP settings file.
 persistent settings_file;
 

@@ -56,7 +56,7 @@ function [fU,X,lb] = vsdpup(varargin)
 %   See also mysdps.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 obj = vsdp (varargin{1:7});
 obj.options.SOLVER = 'sdpt3';

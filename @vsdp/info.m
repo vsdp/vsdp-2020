@@ -4,7 +4,7 @@ function info (obj)
 %   See also vsdp.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 % Short conic programming theory.
 fprintf ('\n  VSDP conic programming problem in primal (P) dual (D) form:\n\n');

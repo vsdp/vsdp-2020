@@ -8,7 +8,7 @@ classdef glpk < handle
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
   methods (Static)
     function obj = solve (obj, sol_type)

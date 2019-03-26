@@ -45,7 +45,7 @@ function A = svec (obj, A, mu, param)
 %   See also vsdp, vsdp.sindex, vsdp.smat.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 
 narginchk(2, 4);

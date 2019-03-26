@@ -8,7 +8,7 @@ function y = round (x, n)
 %   See also round.
 %
 
-% Copyright 2018 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 if (nargin == 1)
   n = 0;

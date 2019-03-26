@@ -92,7 +92,7 @@ classdef vsdp_options < handle
       %
       %   See also vsdp.
       
-      % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+      % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
       
       narginchk (0, 1);
       

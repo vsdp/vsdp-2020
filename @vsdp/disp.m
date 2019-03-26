@@ -3,7 +3,7 @@ function disp (obj)
 %
 %   See also vsdp.info.
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 % Determine object name.
 obj_name = inputname(1);

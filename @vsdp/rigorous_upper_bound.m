@@ -22,7 +22,7 @@ function obj = rigorous_upper_bound (obj, ybnd)
 %   See also vsdp, vsdp.rigorous_lower_bound.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 % Validate dual upper bounds.
 if (nargin == 2)

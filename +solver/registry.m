@@ -1,4 +1,11 @@
 classdef registry < handle
+  % REGISTRY  Registry class for solver proxy classes.
+  %
+  %   See also vsdp.solve.
+  %
+  
+  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+  
   methods (Static)
     function slist = list_all ()
       % LIST_ALL  Return a list with all solvers supported by VSDP.
@@ -17,7 +24,7 @@ classdef registry < handle
       
       slist = {slist.name};
       idx = (cellfun (@length, slist) > 2);      % Strip items like '.' and '..'.
-      idx = idx & ~strcmp ('registry.m', slist); % Strip this function.
+      idx = idx & ~strcmp ('registry.m', slist); % Strip this class.
       slist = slist(idx);
       % Strip *.m suffix.
       [~, slist] = cellfun (@fileparts, slist, 'UniformOutput', false);

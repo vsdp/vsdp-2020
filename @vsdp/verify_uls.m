@@ -56,7 +56,7 @@ function x = verify_uls (obj, A, b, x0)
 %   See also vsdp, rigorous_lower_bound, rigorous_upper_bound,
 %            check_primal_infeasible, check_dual_infeasible.
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 narginchk (4, 4);
 

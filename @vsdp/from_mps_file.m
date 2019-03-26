@@ -13,7 +13,7 @@ function [obj, pd] = from_mps_file (fname)
 %   See also from_lp_solve_fmt.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 narginchk(1, 1);
 if (exist (fname, 'file') ~= 2)

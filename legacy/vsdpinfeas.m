@@ -48,7 +48,7 @@ function [isinfeas,X,Y] = vsdpinfeas(varargin)
 %   See also mysdps.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 obj = vsdp (varargin{1:4});
 obj.options.SOLVER = 'sdpt3';

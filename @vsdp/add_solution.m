@@ -6,7 +6,7 @@ function obj = add_solution (obj, varargin)
 %
 %   See also vsdp, vsdp_solution.
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 if (nargin == 2)
   if (~isa (varargin{1}, 'vsdp_solution'))

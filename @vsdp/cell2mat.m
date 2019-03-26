@@ -17,7 +17,7 @@ function x = cell2mat (X)
 %   See also vsdp.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 if (iscell (X))
   x = cell2mat (cellfun (@(x) x(:), X, 'UniformOutput', false));
