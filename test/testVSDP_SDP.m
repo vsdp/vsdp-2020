@@ -11,7 +11,7 @@ use_solvers = {'sedumi', 'sdpt3', 'sdpa', 'csdp', 'mosek'};
 use_solvers = intersect (use_solvers, solver.registry.list_available ());
 if (isempty (use_solvers))
   warning ('VSDP:testVSDP:noSolver', ...
-    'testVSDP_LP: skipping test, no solver available.');
+    'testVSDP_SDP: skipping test, no solver available.');
 end
 
 A = [3, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0;
@@ -75,7 +75,7 @@ use_solvers = {'sedumi', 'sdpt3', 'csdp', 'mosek'};
 use_solvers = intersect (use_solvers, solver.registry.list_available ());
 if (isempty (use_solvers))
   warning ('VSDP:testVSDP:noSolver', ...
-    'testVSDP_LP: skipping test, no solver available.');
+    'testVSDP_SDP: skipping test, no solver available.');
 end
 
 DELTA   = 1e-4;
