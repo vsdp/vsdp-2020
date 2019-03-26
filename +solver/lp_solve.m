@@ -19,14 +19,8 @@ classdef lp_solve < handle
       
       narginchk (1, 2);
       
-      solver.lp_solve.install (true);  % Show errors
-      
-      % Check cones.
-      if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
-        error ('VSDP:solve_lp_solve:unsupportedCones', ...
-          ['solve_lp_solve: Second-order cones (K.q) and semidefinite ', ...
-          'cones (K.s) are not supported by LP_SOLVE']);
-      end
+      solver.lp_solve.install (true);                   % Show errors
+      solver.registry.check_cones (obj, 'lp_solve', 1); % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';

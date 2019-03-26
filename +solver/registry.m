@@ -24,6 +24,7 @@ classdef registry < handle
       slist = slist(:);
     end
     
+    
     function slist = list_available ()
       % LIST_AVAILABLE  Return a list with all available solvers.
       %
@@ -36,6 +37,78 @@ classdef registry < handle
       slist = {slist.name}';
       slist = slist(~strcmp ('intlab', slist)); % INTLAB is no available solver.
     end
+    
+    
+    function slist = install_all (remove_unavailable_solver)
+      % INSTALL_ALL  Return a list with all available solvers.
+      %
+      %    Return a list of available solver and their installation path.
+      %
+      %       slist = solver.registry.install_all ()
+      %
+      
+      slist = solver.registry.list_all ();
+      plist = cell (size (slist));
+      for i = 1:length (slist)
+        plist{i} = eval (sprintf ('solver.%s.install ();', slist{i}));
+      end
+      idx = true (size (slist));
+      if ((nargin == 1) && logical (remove_unavailable_solver))
+        idx = ~cellfun (@isempty, plist);
+      end
+      slist = cell2struct ([slist(idx), plist(idx)]', {'name', 'path'});
+    end
+    
+    
+    function str = status ()
+      % STATUS  Display a short solver summary.
+      %
+      
+      slist = solver.registry.install_all ();
+      plist = {slist.path};
+      slist = {slist.name};
+      idx = cellfun (@isempty, plist);
+      plist(idx) = {'-- not available --'};
+      output = [slist; plist];
+      str = sprintf ('    %-10s (%s)\n', output{:});
+      str = sprintf ('\n  Solver detected by VSDP:\n\n%s', str);
+      if (nargout == 0)
+        disp (str);
+        str = [];
+      end
+    end
+    
+    
+    function bool = check_cones (vsdp_obj, solver_class, varargin)
+      % CHECK_CONES  Check if vsdp problem can be solved by a solver.
+      %
+      %    bool = check_cones (vsdp_obj, solver_class)
+      %              Check if 'vsdp_obj' can be solved by 'solver_class'.
+      %
+      %    bool = check_cones (..., show_errors)  Display errors.
+      %
+      
+      % Get cones of the conic problem.
+      vsdp_obj = [(vsdp_obj.K.f > 0), (vsdp_obj.K.l > 0), ...
+        (sum(vsdp_obj.K.q) > 0), (sum(vsdp_obj.K.s) > 0)];
+      
+      % Get cones supported by the solver.
+      [f,l,q,s] = eval (['solver.', solver_class, '.supported_cones ();']);
+      
+      cone_matches = ~(vsdp_obj & ~[f,l,q,s]);
+      bool = all (cone_matches);
+      
+      % Display error, if requested.
+      if (~bool && (nargin > 2))
+        error_str = {'free variables (K.f)', 'linear variables (K.l)', ...
+          'second-order cone variables (K.q)', 'semidefinite variables (K.s)'};
+        error_str = strjoin (error_str(~cone_matches), ', ');
+        error('VSDP:SOLVER:REGISTRY:check_cones:unsupportedCones', ...
+          'check_cones: %s are not supported by ''%s''.', ...
+          error_str, solver_class);
+      end
+    end
+    
     
     function spath = generic_install (sname, is_available, get_path, ...
         installer_file, do_error)
@@ -86,43 +159,6 @@ classdef registry < handle
         error ('VSDP:SOLVER:REGISTRY:generic_install:failed', ...
           'solver.registry.generic_install: ''%s'' is not available.', sname);
       end
-    end
-    
-    
-    function slist = install_all (remove_unavailable_solver)
-      % INSTALL_ALL  Return a list with all available solvers.
-      %
-      %    Return a list of available solver and their installation path.
-      %
-      %       slist = solver.registry.install_all ()
-      %
-      
-      slist = solver.registry.list_all ();
-      plist = cell (size (slist));
-      for i = 1:length (slist)
-        plist{i} = eval (sprintf ('solver.%s.install ();', slist{i}));
-      end
-      idx = true (size (slist));
-      if ((nargin == 1) && logical (remove_unavailable_solver))
-        idx = ~cellfun (@isempty, plist);
-      end
-      slist = cell2struct ([slist(idx), plist(idx)]', {'name', 'path'});
-    end
-    
-    function str = status ()
-      slist = solver.registry.install_all ();
-      plist = {slist.path};
-      slist = {slist.name};
-      idx = cellfun (@isempty, plist);
-      plist(idx) = {'-- not available --'};
-      output = [slist; plist];
-      str = sprintf ('    %-10s (%s)\n', output{:});
-      str = sprintf ('\n  Solver detected by VSDP:\n\n%s', str);
-      if (nargout == 0)
-        disp (str);
-        str = [];
-      end
-      
     end
   end
 end

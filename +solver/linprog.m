@@ -19,14 +19,8 @@ classdef linprog < handle
       
       narginchk (1, 2);
       
-      solver.linprog.install (true);  % Show errors
-      
-      % Check cones.
-      if ((sum (obj.K.q) > 0) || (sum (obj.K.s) > 0))
-        error ('VSDP:solve:unsupportedCones', ...
-          ['solve_linprog: Second-order cones (K.q) and semidefinite ', ...
-          'cones (K.s) are not supported by LINPROG.']);
-      end
+      solver.linprog.install (true);                   % Show errors
+      solver.registry.check_cones (obj, 'linprog', 1); % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';

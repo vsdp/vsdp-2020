@@ -20,13 +20,8 @@ classdef sedumi < handle
       
       narginchk (1, 2);
       
-      % Check solver availability.
-      if (exist ('sedumi', 'file') ~= 2)
-        error ('VSDP:solve_sedumi:notAvailable', ...
-          ['solve_sedumi: SeDuMi does not seem to be ready.  ', ...
-          'Did you run ''install_sedumi()'' inside the solver directory?\n\n', ...
-          'To select another solver, run:  %s.solve()'], inputname(1));
-      end
+      solver.sedumi.install (true);                   % Show errors
+      solver.registry.check_cones (obj, 'sedumi', 1); % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';

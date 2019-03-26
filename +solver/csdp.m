@@ -20,13 +20,8 @@ classdef csdp < handle
       
       narginchk (1, 2);
       
-      solver.csdp.install (1);  % Show errors
-      
-      % Check cones.
-      if (sum (obj.K.q) > 0)
-        error ('VSDP:solve_csdp:unsupportedCone', ...
-          'solve_csdp: Second-order cones (K.q) are not supported by CSDP.');
-      end
+      solver.csdp.install (1);                      % Show errors
+      solver.registry.check_cones (obj, 'csdp', 1); % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';

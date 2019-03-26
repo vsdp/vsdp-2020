@@ -19,7 +19,8 @@ classdef mosek < handle
       
       narginchk (1, 2);
       
-      solver.mosek.install (true);  % Show errors
+      solver.mosek.install (true);                   % Show errors
+      solver.registry.check_cones (obj, 'mosek', 1); % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';

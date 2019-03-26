@@ -20,14 +20,8 @@ classdef sdpa < handle
       
       narginchk (1, 2);
       
-      solver.sdpa.install (true);  % Show errors
-      
-      % Check cones
-      if ((obj.K.f > 0) || (sum(obj.K.q) > 0))
-        error('VSDP:solve_sdpa:unsupportedCones', ...
-          ['solve_sdpa: free variables (K.f) second-order cone variables ', ...
-          '(K.q) are not supported by SDPA.']);
-      end
+      solver.sdpa.install (true);                   % Show errors
+      solver.registry.check_cones (obj, 'sdpa', 1); % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';

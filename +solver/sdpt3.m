@@ -20,7 +20,8 @@ classdef sdpt3 < handle
       
       narginchk (1, 2);
       
-      solver.sdpt3.install (true);  % Show errors
+      solver.sdpt3.install (true);                   % Show errors
+      solver.registry.check_cones (obj, 'sdpt3', 1); % Show errors
       
       if (nargin == 1)
         sol_type = 'Approximate';
