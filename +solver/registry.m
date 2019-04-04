@@ -46,6 +46,25 @@ classdef registry < handle
     end
     
     
+    function slist = list_cone_support (obj)
+      % LIST_CONE_SUPPORT  Return a list with all solvers supporting 'obj'.
+      %
+      %    Return a cell array of strings with all solvers supporting the cones
+      %    of the problem instance 'obj'.
+      %
+      %       slist = solver.registry.list_cone_support (obj)
+      %
+      
+      slist = solver.registry.list_all ();
+      slist = slist(~strcmp ('intlab', slist));
+      idx = false(size (slist));
+      for i = 1:length (slist)
+        idx(i) = solver.registry.check_cones (obj, slist{i});
+      end
+      slist = slist(idx);
+    end
+    
+    
     function slist = install_all (remove_unavailable_solver)
       % INSTALL_ALL  Return a list with all available solvers.
       %
