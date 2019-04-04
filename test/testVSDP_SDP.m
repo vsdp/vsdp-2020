@@ -71,7 +71,7 @@ end
 
 
 function SDP_Jansson2007a_P192 (testCase)
-use_solvers = {'sedumi', 'sdpt3', 'csdp', 'mosek'};
+use_solvers = {'sedumi', 'sdpt3', 'mosek'};
 use_solvers = intersect (use_solvers, solver.registry.list_available ());
 if (isempty (use_solvers))
   warning ('VSDP:testVSDP:noSolver', ...
