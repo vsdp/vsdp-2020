@@ -3,9 +3,8 @@ function obj = solve (obj, varargin)
 %
 %   obj.SOLVE()  Let the user choose interactively the solver to be used.  A
 %                valid decision is saved in 'obj.options.SOLVER'.
-%   obj.SOLVE('solver')  Solve the problem instance with 'solver'.  This call
-%                        is identical to the call 'obj.solve_solver()'.  The
-%                        decision is not saved in 'obj.options.SOLVER'.
+%   obj.SOLVE('solver')  Solve the problem instance with 'solver'.  The
+%                        decision is saved in 'obj.options.SOLVER' if empty.
 %
 %   See 'help vsdp' for a description of the conic problem instance.
 %
@@ -31,57 +30,66 @@ function obj = solve (obj, varargin)
 
 narginchk (1, 3);
 
-% Generate a list of by VSDP supported solvers.
-solver_list = solver.registry.list_available ();
+% Get list of available solvers with appropriate cone support.
+slist_cs = solver.registry.list_cone_support (obj);
+slist = intersect (solver.registry.list_available (), slist_cs);
 
-supported_solvers_str = ['''', strjoin(solver_list, ''', '''), ''''];
-
-if (~isempty (obj.options.SOLVER))
-  use_solver = obj.options.SOLVER;
-elseif (nargin == 1)  % Interactive mode.
-  initial_value = find (strcmp (obj.options.SOLVER, solver_list));
-  if (isempty (initial_value))
-    initial_value = find (strcmp ('sdpt3', solver_list));
+% Treat foreseeable error due to cone support.
+if (isempty (slist) ...
+    || ((nargin > 1) && (isempty (intersect (slist, varargin{1})))))
+  if (isempty (slist_cs))
+    err_msg = 'VSDP is not working for this problem.';
+  elseif (nargin > 1)
+    err_msg = sprintf ('''%s'' does not support this problem.  %s %s.', ...
+      varargin{1}, ...
+      'Please use one of:', strjoin (slist_cs, ', '));
+  else
+    err_msg = sprintf ('No available solver supports this problem.  %s %s.', ...
+      'Please use one of:', strjoin (slist_cs, ', '));
   end
-  idx = -1;
-  % Prompt the user to choose between the supported solvers.
-  % If 'obj.options.SOLVER' was set properly, the option is surrounded by braces
-  % and chosen when just hitting enter.
-  while ((idx < 1) || (idx > length (solver_list)))
-    fprintf ('\n');
-    for i = 1:length (solver_list)
-      if (i == initial_value)
-        fprintf ('  [%2d] %s\n', i, solver_list{i});
-      else
-        fprintf ('   %2d  %s\n', i, solver_list{i});
-      end
-    end
-    fprintf ('\n');
-    str = input (sprintf ('Choose one of the above solvers [1-%d]: ', ...
-      length (solver_list)), 's');
-    if (isempty (str))
-      idx = initial_value;
-    else
-      idx = str2double (str);
-    end
-  end
-  use_solver = solver_list{idx};
-  obj.options.SOLVER = use_solver;
-else  % Non-interactive mode.
-  try
-    use_solver = validatestring (varargin{1}, solver_list);
-  catch
-    error ('VSDP:solve:unsupportedSolver', ...
-      ['The solver ''%s'' is not supported by VSDP.  ', ...
-      'Choose one of:\n\n    %s\n\nand set ''obj.options.SOLVER''.'], ...
-      varargin{1}, supported_solvers_str);
-  end
-  if (isempty (obj.options.SOLVER))
-    obj.options.SOLVER = use_solver;
-  end
+  error ('VSDP:solve:unsupportedSolver', 'solve: %s', err_msg);
 end
 
-% Dispatch to solver.
-obj = eval (['solver.', use_solver, '.solve (obj, varargin{2:end});']);
+if (nargin == 1)
+  sol = select_solver_by_menu (obj, slist);
+else
+  sol = varargin{1};
+end
 
+% Dispatch to solver
+obj = eval (['solver.', sol, '.solve (obj, varargin{2:end});']);
+if (isempty (obj.options.SOLVER))
+  obj.options.SOLVER = sol;
+end
+end
+
+
+function sol = select_solver_by_menu (obj, slist)
+% SELECT_SOLVER_BY_MENU  Display a cmd user dialog to select a solver.
+
+sidx = find (strcmp (obj.options.SOLVER, slist));
+if (isempty (sidx))
+  sidx = 1;
+end
+idx = -1;
+% Prompt the user to choose and available and supported solver.
+while ((idx < 1) || (idx > length (slist)))
+  fprintf ('\n');
+  for i = 1:length (slist)
+    if (i == sidx)
+      fprintf ('  [%2d] %s\n', i, slist{i});
+    else
+      fprintf ('   %2d  %s\n', i, slist{i});
+    end
+  end
+  fprintf ('\n');
+  str = input (sprintf ('Choose one of the above solvers [1-%d]: ', ...
+    length (slist)), 's');
+  if (isempty (str))
+    idx = sidx;
+  else
+    idx = str2double (str);
+  end
+end
+sol = slist{idx};
 end
