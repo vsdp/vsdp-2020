@@ -12,10 +12,6 @@ function tests = testVSDP2006()
 
 % Copyright 2016-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
-if (exist ('OCTAVE_VERSION', 'builtin'))
-  addpath (fullfile (pwd (), '..', 'octave'));
-end
-
 tests = functiontests(localfunctions);
 end
 
@@ -156,7 +152,7 @@ function testVSDPUP_example_DELTA_feasible(testCase)
 [fU,X,lb] = vsdpup(blk,A,C,b,Xt,yt,Zt);
 verifyEqual(testCase, fU >= -0.5, true)
 midX = [2*DELTA, -1, 0; -1, 1/(2*DELTA), 0; 0, 0, DELTA];
-verifyEqual(testCase, all (all (in (X{1}, midrad(midX,DELTA)))), true)
+verifyEqual(testCase, all (all (in (X{1}, midrad(midX,2*DELTA)))), true)
 verifyEqual(testCase, all (lb >= 0), true)
 end
 

@@ -56,7 +56,7 @@ obj.options.VERBOSE_OUTPUT = false;
 
 % If no approximate certificate is given.
 if (nargin <= 5)
-  obj.solve ();
+  obj.solve (obj.options.SOLVER);
 end
 
 switch (varargin{5})
