@@ -1,4 +1,4 @@
-function obj = filter (obj, varargin)
+function filter (obj, varargin)
 % FILTER  Index subset of the VSDP benchmark object 'obj'.
 %
 %   The whole set of benchmarks is in the variable 'obj.BENCHMARK'.

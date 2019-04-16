@@ -9,7 +9,7 @@ function disp (obj, item)
 %   See also vsdp_benchmark.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 if (nargin > 1)
   item = validatestring (item, {'system', 'solver', 'benchmark'});

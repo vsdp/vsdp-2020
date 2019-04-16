@@ -41,11 +41,7 @@ classdef vsdp_benchmark < handle
   end
   
   methods
-    function obj = vsdp_benchmark (dir)
-      if (nargin > 0)
-        obj.RESULT_DIR = dir;
-      end
-      
+    function obj = vsdp_benchmark ()
       % Create temprorary directory.
       tmp_dir = tempname ();
       mkdir (tmp_dir);
@@ -60,6 +56,8 @@ classdef vsdp_benchmark < handle
     
     function set.RESULT_DIR (obj, p)
       obj.RESULT_DIR = obj.check_dir (p);
+      [~,~] = mkdir (fullfile (p, 'data'));
+      [~,~] = mkdir (fullfile (p, 'log'));
     end
     
     

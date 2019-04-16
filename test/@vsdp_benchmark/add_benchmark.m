@@ -1,4 +1,4 @@
-function obj = add_benchmark (obj, name, dir_pattern, name_fun)
+function add_benchmark (obj, name, dir_pattern, name_fun)
 % ADD_BENCHMARK  Generates a list of jobs for a benchmark.
 %
 %   name         The name of the benchmark library.
