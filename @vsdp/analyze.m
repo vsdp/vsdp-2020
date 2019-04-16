@@ -1,4 +1,4 @@
-function obj = analyze (obj, yes_to_all)
+function obj = analyze (obj, yes_to_all, output)
 % ANALYZE  Analyze the conic program for typical problems.
 %
 %   obj = obj.ANALYZE ()       Interactive mode.  If a typical problem is
@@ -7,6 +7,8 @@ function obj = analyze (obj, yes_to_all)
 %
 %   obj = obj.ANALYZE (true)   Automatically fix all typical problems.
 %   obj = obj.ANALYZE (false)  Only report typical problems.
+%
+%   obj = obj.ANALYZE (..., output)  Control output.
 %
 %   Typical problems:
 %
@@ -22,7 +24,7 @@ function obj = analyze (obj, yes_to_all)
 
 % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
-narginchk (1, 2);
+narginchk (1, 3);
 if (nargout ~= 1)
   % Determine object name.
   obj_name = inputname(1);
@@ -33,17 +35,23 @@ if (nargout ~= 1)
     ['analyze: Call this function by ''%s = %s.analyse()'' to avoid ', ...
     'stale object handles.'], obj_name, obj_name);
 end
-if (nargin == 1)
-  interactive = true;
-  yes_to_all = false;
-else
-  interactive = false;
+switch (nargin)
+  case 1
+    interactive = true;
+    yes_to_all = false;
+    output = true;
+  case 2
+    interactive = false;
+    output = true;
+  case 3
+    interactive = false;
 end
-obj = pattern1 (obj, yes_to_all, interactive);  % Check for diagonal SDP blocks.
+% Check for diagonal SDP blocks.
+obj = pattern1 (obj, yes_to_all, interactive, output);
 end
 
 
-function obj = pattern1 (obj, yes_to_all, interactive)
+function obj = pattern1 (obj, yes_to_all, interactive, output)
 % PATTERN1  Check for diagonal only SDP blocks ==> LP blocks.
 
 At = vsdp_indexable (obj.At, obj);
@@ -60,10 +68,14 @@ for i = 1:length(obj.K.s)
   % If the number of non-zero elements of the matrix and the diagonal match,
   % it must be a diagonal matrix, thus a LP matrix.
   if ((nnz (Al) == nnz (As)) && (nnz (cl) == nnz (cs)))
-    warning ('VDSP:analyze:possibleLpCone', ...
-      'analyze: K.s(%d) seems to only have diagonal elements.  ', i);
+    if (output)
+      warning ('VDSP:analyze:possibleLpCone', ...
+        'analyze: K.s(%d) seems to only have diagonal elements.  ', i);
+    end
     if (yes_to_all)
-      fprintf(' --> Convert it to LP block.\n');
+      if (output)
+        fprintf(' --> Convert it to LP block.\n');
+      end
     elseif (interactive)
       answer = input ('Convert it to LP block? [y/n] ', 's');
       if (isempty (answer) || (answer ~= 'y'))
