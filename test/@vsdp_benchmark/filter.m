@@ -1,39 +1,34 @@
-function f = filter (obj, varargin)
+function obj = filter (obj, varargin)
 % FILTER  Index subset of the VSDP benchmark object 'obj'.
 %
-%   The whole set of benchmarks is in the variable 'obj.BENCHMARK' and the
-%   whole set of solvers in the variable 'obj.SOLVER(3:end).name'.
+%   The whole set of benchmarks is in the variable 'obj.BENCHMARK'.
 %
-%   f = obj.filter ()  Return indices for all benchmarks and solvers in
-%     'f.benchmark' and 'f.solver', respectively.  This is equivalent to:
+%   obj.filter ()  Leaves this variable untouched.  This is equivalent to:
 %
-%       obj.filter ([], [], [])
-%       obj.filter ('.*', '.*', '.*')
+%       obj.filter ([], [])
+%       obj.filter ('.*', '.*')
 %
-%   f = obj.filter (bm_library, name, solver)  Optionally, the returned solver
-%     and benchmark indices can be reduced to a subset of the data by applying
-%     filters, i.e. regular expressions machted with the "regexp()" function.
-%     To filter the benchmark library provide a string for 'bm_library', for
-%     the test case name set 'name', and for the solver set 'solver'.
+%   obj.filter (bm_library, name)  Optionally, the benchmark can be reduced to
+%     a subset of the data by applying filters, i.e. regular expressions
+%     machted with the "regexp()" function.  To filter the benchmark library
+%     provide a string for 'bm_library' and for the test case name set 'name'.
 %
 %   Example:
 %
-%     f = obj.filter ('SDPL.*', 'arch.*');
-%     obj.BENCHMARK(f.benchmark).name
+%     obj.filter ('SDPL.*', 'arch.*');
 %
 %   See also vsdp_benchmark.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
-f.benchmark = 1:length(obj.BENCHMARK);
-f.solver    = 3:length(obj.SOLVER);  % Ignore VSDP and INTLAB.
+idx = true (size (obj.BENCHMARK(:,1)));
 
 % Filter benchmark librariess.
 if ((nargin > 1) && ~isempty (varargin{1}))
   bm_library  = varargin{1};
-  f.benchmark = find (cellfun ( ...
-    @(x) ~isempty (regexp (x, bm_library, 'once')), {obj.BENCHMARK.lib}));
+  idx = idx & cellfun (@(x) ~isempty (regexp (x, bm_library, 'once')), ...
+    obj.BENCHMARK(:,1));
 else
   bm_library = '.*';
 end
@@ -41,28 +36,17 @@ end
 % Filter benchmark names.
 if ((nargin > 2) && ~isempty (varargin{2}))
   name = varargin{2};
-  idx = cellfun (@(x) ~isempty (regexp (x, name, 'once')), ...
-    {obj.BENCHMARK(f.benchmark).name});
-  f.benchmark = f.benchmark(idx);
+  idx = idx & cellfun (@(x) ~isempty (regexp (x, name, 'once')), ...
+    obj.BENCHMARK(:,2));
 else
   name = '.*';
 end
-if (isempty (f.benchmark))
+if (~any (idx))
   error ('VSDP_BENCHMARK:filter:noMatch', ...
     ['filter: bm_library = ''%s'' and name = ''%s'' do not match ', ...
     'any benchmark test case.'], bm_library, name);
-end
-
-% Filter solver.
-if ((nargin > 3) && ~isempty (varargin{3}))
-  solver = varargin{3};
-  idx = cellfun (@(x) ~isempty (regexp (x, solver, 'once')), ...
-    {obj.SOLVER(f.solver).name});
-  f.solver = f.solver(idx);
-  if (isempty (f.solver))
-    error ('VSDP_BENCHMARK:filter:noMatch', ...
-      'filter: solver = ''%s'' does not match any solver.', solver);
-  end
+else
+  obj.BENCHMARK = obj.BENCHMARK(idx,:);
 end
 
 end

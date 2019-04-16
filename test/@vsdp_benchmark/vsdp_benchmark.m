@@ -7,68 +7,31 @@ classdef vsdp_benchmark < handle
   % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
   
   properties
-    % A structure array with cached values about the VSDP benchmark:
+    % A cell array of strings with VSDP benchmarks to run.  The columns are:
     %
-    %   lib     Benchmark library name.
-    %   name    Short name for the test case.
-    %   file    System dependend full path of the original test case data.
-    %   m       Number of constraints.
-    %   n       Number of cone variables.
-    %   K_f     Has free variables.
-    %   K_l     Has LP   variables.
-    %   K_q     Has SOCP variables.
-    %   K_s     Has SDP  variables.
-    %   values  A structure array with solutions for each solver:
-    %     name  Name of the approximate solver.
-    %     fp    Primal approximate solution.
-    %     fd    Dual   approximate solution.
-    %     ts    Time for approximate solution.
-    %     fL    Rigorous lower bound.
-    %     tL    Time for rigorous lower bound.
-    %     fU    Rigorous upper bound.
-    %     tU    Time for rigorous upper bound.
+    %   obj.BENCHMARK(:,1)  Benchmark library name.
+    %   obj.BENCHMARK(:,2)  Short name for the test case.
+    %   obj.BENCHMARK(:,3)  System dependend full path of the original test
+    %                       case data.
     %
-    % The data corresponding to the cached solution is for test case "j" and
-    % solver "i":
-    %
-    %   % Test case data to create a VSDP object in various formats.
-    %   obj.BENCHMARK(j).file
-    %
-    % The remaining data files are located inside subdirectory "data" of the
-    % directory "RESULT_DIR", identified by a common ID prefix for "i" and "j":
-    %
-    %   ID = fprintf('%s_%s_%s', obj.BENCHMARK(j).lib, ...
-    %     obj.BENCHMARK(j).name, obj.BENCHMARK(j).values(i).name);
-    %
-    %   % Data for "vsdp.add_solution('approximate', ...);".
-    %   fprintf('%s_approximate_solution.mat', ID);
-    %
-    %   % Data for "vsdp.add_solution('Rigorous lower bound', ...);".
-    %   fprintf('%s_%s_%s_rigorous_lower_bound.mat', ID);
-    %
-    %   % Data for "vsdp.add_solution('Rigorous upper bound', ...);".
-    %   fprintf('%s_%s_%s_rigorous_upper_bound.mat', ID);
-    %
-    % Default: [].
-    BENCHMARK
+    %  Default: cell (0, 3).
+    BENCHMARK = cell (0, 3);
     
-    % A structure array of initialized solver strings.
+    % A cell array of strings with solvers to use for this benchmark.
     %
-    % The benchmark programm assumes, that all solver
+    % Default: {}.
+    SOLVER = {}
+    
+    % Absolute path to the benchmark directory of
     %
-    % Default: structure with fields
-    %
-    %   name    = {'intlab', 'vsdp', 'csdp', 'mosek', 'sdpa', 'sdpt3', 'sedumi'}
-    %   check_fun = { for each 'name' a function string to check functionality }
-    %   setup_dir = { for each 'name' a setup directory       }
-    %   setup_fun = { for each 'name' a setup function string }
+    %   https://github.com/vsdp/vsdp.github.io.
     %
     % Default: [].
-    SOLVER
+    BENCHMARK_DIR
     
     % Absolute directory path for persistent data storage.
     %
-    % Default: Subdirectory 'result' of current directory.
+    % Default: [].
     RESULT_DIR
     
     % Temporary absolute directory path for data storage.
@@ -81,32 +44,26 @@ classdef vsdp_benchmark < handle
     function obj = vsdp_benchmark (dir)
       if (nargin > 0)
         obj.RESULT_DIR = dir;
-      else
-        obj.RESULT_DIR = 'result';
       end
       
       % Create temprorary directory.
-      obj.TMP_DIR = tempname ();
-      
-      % Add directory of this class to load path.
-      addpath (fileparts (fileparts (mfilename ('fullpath'))));
+      tmp_dir = tempname ();
+      mkdir (tmp_dir);
+      obj.TMP_DIR = tmp_dir;
+    end
+    
+    
+    function set.BENCHMARK_DIR (obj, p)
+      obj.BENCHMARK_DIR = obj.check_dir (p);
     end
     
     
     function set.RESULT_DIR (obj, p)
-      % Create result directory with "data" subdirectory.
-      if (~isdir (fullfile (p, 'data')))
-        mkdir (fullfile (p, 'data'));
-      end
       obj.RESULT_DIR = obj.check_dir (p);
-      obj.load_state ();
     end
     
     
     function set.TMP_DIR (obj, p)
-      if (~isdir (p))
-        mkdir (p);
-      end
       obj.TMP_DIR = obj.check_dir (p);
     end
     

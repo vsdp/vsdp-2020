@@ -40,7 +40,7 @@ function obj = run (obj, f, options)
 %   See also vsdp_benchmark, vsdp_benchmark.filter.
 %
 
-% Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 % If no filter is applied, get all available indices.
 if ((nargin < 2) || isempty (f))

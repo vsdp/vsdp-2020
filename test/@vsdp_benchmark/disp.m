@@ -21,12 +21,13 @@ switch (item)
   case 'all'
     fprintf ('  VSDP benchmark\n');
     fprintf ('  --------------\n\n');
+    fprintf ('%16s: ''%s''\n', 'BENCHMARK_DIR', obj.BENCHMARK_DIR);
     fprintf ('%16s: ''%s''\n', 'RESULT_DIR', obj.RESULT_DIR);
     fprintf ('%16s: ''%s''\n\n',  'TMP_DIR', obj.TMP_DIR);
     disp_system ();
     fprintf ('\n');
-    disp_solver (obj);
-    fprintf ('\n');
+    fprintf ('  Solver used:\n\n');
+    fprintf ('    %s\n\n', strjoin (obj.SOLVER, ', '));
     disp_benchmark (obj);
     fprintf ('\n\n');
   otherwise
@@ -82,23 +83,13 @@ end
 end
 
 
-function disp_solver (obj)
-% Information about the solvers.
-
-fprintf ('  Solver information:\n\n');
-for i = 1:length (obj.SOLVER)
-  fprintf ('%16s: ''%s''\n', obj.SOLVER(i).name, obj.SOLVER(i).setup_dir);
-end
-end
-
-
 function disp_benchmark (obj)
 % Information about the benchmarks.
 
 fprintf ('  Benchmark information (%3d test cases):\n\n', ...
   length (obj.BENCHMARK));
 if (~isempty (obj.BENCHMARK))
-  bms = {obj.BENCHMARK.lib};
+  bms = obj.BENCHMARK(:,1);
   bm_unique = unique(bms);
   for i = 1:length (bm_unique)
     fprintf ('%16s: %3d test cases\n', bm_unique{i}, ...
