@@ -5,7 +5,7 @@ function cdata = get_test_cases (obj)
 
 % Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
-file_list = dir ([obj.data_dir, filesep(), '*.mat']);
+file_list = dir (fullfile (obj.RESULT_DIR, 'data', '*.mat'));
 idx = {file_list.name}';
 
 % Strip solution type appendix.

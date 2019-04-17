@@ -3,6 +3,7 @@ function obj = get_data (obj)
 
 % Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
+obj.cdata{1,16} = [];  % Preallocate width
 len = size (obj.cdata, 1);
 for i = 1:len
   fprintf ('  (%3d/%3d) %-10s %-10s %-10s\n', i, len, obj.cdata{i,1:3});
@@ -46,9 +47,10 @@ if (strcmp (lib, last_lib) && strcmp (name, last_name) ...
 elseif (strcmp (lib, last_lib) && strcmp (name, last_name))
   obj = vsdp (last_obj);  % Make a clean copy.
 else
+  bench_dir = fullfile (obj.BENCHMARK_DIR, lib, 'data');
   switch (lib)
     case 'DIMACS'
-      src_file = dir (fullfile (lib, 'data', '**',[name, '.mat.gz']));
+      src_file = dir (fullfile (bench_dir, '**',[name, '.mat.gz']));
       if (length (src_file) > 1)
         error ('VSDP:vsdp_benchmark_exporter', ...
           'vsdp_benchmark_exporter: ''%s'' and ''%s'' is not unique.', ...
@@ -66,11 +68,11 @@ else
       end
     case {'ESC', 'RDM', 'SPARSE_SDP'}
       if (strcmp (lib, 'ESC'))
-        src_file = dir (fullfile (lib, 'data', [name, '_*.dat-s.gz']));
+        src_file = dir (fullfile (bench_dir, [name, '_*.dat-s.gz']));
       elseif (strcmp (lib, 'RDM'))
-        src_file = dir (fullfile (lib, 'data', [name, '.*.dat-s.gz']));
+        src_file = dir (fullfile (bench_dir, [name, '.*.dat-s.gz']));
       else
-        src_file = dir (fullfile (lib, 'data', [name, '*.dat-s.gz']));
+        src_file = dir (fullfile (bench_dir, [name, '*.dat-s.gz']));
       end
       if (length (src_file) > 1)
         error ('VSDP:vsdp_benchmark_exporter', ...
@@ -81,7 +83,7 @@ else
         fullfile (src_file.folder, src_file.name));
       obj = vsdp.from_sdpa_file (tmp_file);
     case 'SDPLIB'
-      obj = vsdp.from_sdpa_file (fullfile (lib, 'data', [name, '.dat-s']));
+      obj = vsdp.from_sdpa_file (fullfile (bench_dir, [name, '.dat-s']));
   end
   
   % Finally, delete temporary files.
@@ -101,7 +103,7 @@ end
 function get_vsdp_solutions (obj, lib_name_solver, vsdp_obj)
 % Try to add approximate solution.
 try
-  load (fullfile (obj.data_dir, [strjoin([lib_name_solver, ...
+  load (fullfile (obj.RESULT_DIR, 'data', [strjoin([lib_name_solver, ...
     {'approximate_solution'}], '__'), '.mat']), 'app_sol');
   vsdp_obj.add_solution (app_sol.sol_type, app_sol.x, app_sol.y, ...
     app_sol.z, app_sol.f_objective, app_sol.solver_info);
@@ -110,7 +112,7 @@ catch
 end
 % Try to add rigorous lower bound.
 try
-  load (fullfile (obj.data_dir, [strjoin([lib_name_solver, ...
+  load (fullfile (obj.RESULT_DIR, 'data', [strjoin([lib_name_solver, ...
     {'rigorous_lower_bound'}], '__'), '.mat']), 'rig_lbd');
   vsdp_obj.add_solution (rig_lbd.sol_type, rig_lbd.x, rig_lbd.y, ...
     rig_lbd.z, rig_lbd.f_objective, rig_lbd.solver_info);
@@ -119,7 +121,7 @@ catch
 end
 % Try to add rigorous upper bound.
 try
-  load (fullfile (obj.data_dir, [strjoin([lib_name_solver, ...
+  load (fullfile (obj.RESULT_DIR, 'data', [strjoin([lib_name_solver, ...
     {'rigorous_upper_bound'}], '__'), '.mat']), 'rig_ubd');
   vsdp_obj.add_solution (rig_ubd.sol_type, rig_ubd.x, rig_ubd.y, ...
     rig_ubd.z, rig_ubd.f_objective, rig_ubd.solver_info);

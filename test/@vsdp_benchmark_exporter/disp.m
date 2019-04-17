@@ -4,7 +4,11 @@ function disp (obj)
 % Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 fprintf ('\n VSDP Benchmark Export\n\n');
-fprintf ('  Data directory:\n    %s\n\n', obj.data_dir);
+fprintf ('   obj.RESULT_DIR =\n\n     ''%s''\n\n', obj.RESULT_DIR);
+
+if (isempty (obj.cdata_view))
+  return;
+end
 
 if (any (strcmp (obj.cdata_view(1,:), 'lib')))
   benchmarks = unique (obj.columns ({'lib'}).cdata_view(2:end));
