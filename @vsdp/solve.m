@@ -51,7 +51,11 @@ if (isempty (slist) ...
 end
 
 if (nargin == 1)
-  sol = select_solver_by_menu (obj, slist);
+  if (isempty (obj.options.SOLVER))
+    sol = select_solver_by_menu (obj, slist);
+  else
+    sol = obj.options.SOLVER;
+  end
 else
   sol = varargin{1};
 end
