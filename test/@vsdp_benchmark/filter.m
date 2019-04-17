@@ -1,4 +1,4 @@
-function filter (obj, varargin)
+function obj = filter (obj, varargin)
 % FILTER  Index subset of the VSDP benchmark object 'obj'.
 %
 %   The whole set of benchmarks is in the variable 'obj.BENCHMARK'.
@@ -23,6 +23,9 @@ function filter (obj, varargin)
 % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
 
 idx = true (size (obj.BENCHMARK(:,1)));
+if (isempty (idx))
+  return,
+end
 
 % Filter benchmark librariess.
 if ((nargin > 1) && ~isempty (varargin{1}))

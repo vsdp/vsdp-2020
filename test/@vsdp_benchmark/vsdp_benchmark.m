@@ -1,4 +1,4 @@
-classdef vsdp_benchmark < handle
+classdef vsdp_benchmark
   % VSDP_BENCHMARK Benchmark class for VSDP.
   %
   %   See also vsdp.
@@ -21,7 +21,10 @@ classdef vsdp_benchmark < handle
     %
     % Default: {}.
     SOLVER = {}
-    
+  end
+  
+  
+  properties (GetAccess = public, SetAccess = protected)
     % Absolute path to the benchmark directory of
     %
     %   https://github.com/vsdp/vsdp.github.io.
@@ -40,29 +43,44 @@ classdef vsdp_benchmark < handle
     TMP_DIR
   end
   
+  
   methods
-    function obj = vsdp_benchmark ()
-      % Create temprorary directory.
-      tmp_dir = tempname ();
-      mkdir (tmp_dir);
-      obj.TMP_DIR = tmp_dir;
-    end
-    
-    
-    function set.BENCHMARK_DIR (obj, p)
-      obj.BENCHMARK_DIR = obj.check_dir (p);
-    end
-    
-    
-    function set.RESULT_DIR (obj, p)
-      obj.RESULT_DIR = obj.check_dir (p);
-      [~,~] = mkdir (fullfile (p, 'data'));
-      [~,~] = mkdir (fullfile (p, 'log'));
-    end
-    
-    
-    function set.TMP_DIR (obj, p)
-      obj.TMP_DIR = obj.check_dir (p);
+    function obj = vsdp_benchmark (b_dir, r_dir, sol, t_dir)
+      % VSDP_BENCHMARK Constructor for VSDP benchmarks.
+      %
+      %   obj = vsdp_benchmark (b_dir, r_dir)
+      %
+      %      Where 'b_dir' is the benchmark directory (obj.BENCHMARK_DIR) of
+      %
+      %         https://github.com/vsdp/vsdp.github.io.
+      %
+      %      and 'r_dir' the result directory (obj.RESULT_DIR).
+      %
+      %   obj = vsdp_benchmark (..., sol)  The thrid optional parameter sets
+      %                                    the obj.SOLVER list.
+      %
+      %   obj = vsdp_benchmark (..., t_dir)  The fourth optional parameter sets
+      %                                      the obj.TMP_DIR directory.
+      %
+      %   See also vsdp, vsdp_benchmark_exporter.
+      %
+      
+      narginchk (2, 4);
+      obj.BENCHMARK_DIR = obj.check_dir (b_dir);
+      obj.RESULT_DIR    = obj.check_dir (r_dir);
+      [~,~] = mkdir (fullfile (obj.RESULT_DIR, 'data'));
+      [~,~] = mkdir (fullfile (obj.RESULT_DIR, 'log'));
+      
+      if (nargin > 2)
+        obj.SOLVER = sol;
+      end
+      if (nargin > 3)
+        obj.TMP_DIR = obj.check_dir (t_dir);
+      else
+        tmp_dir = tempname ();
+        mkdir (tmp_dir);
+        obj.TMP_DIR = tmp_dir;
+      end
     end
     
     
@@ -75,9 +93,8 @@ classdef vsdp_benchmark < handle
         p = what (p);  % Get absolute path.
         p = p.path;
       else
-        warning ('VSDP_BENCHMARK:check_dir:noDir', ...
+        error ('VSDP_BENCHMARK:check_dir:noDir', ...
           'check_dir: The directory ''%s'' does not exist', p);
-        p = '';
       end
     end
   end

@@ -1,4 +1,4 @@
-function run (obj, options)
+function obj = run (obj, options)
 % RUN  Run the VSDP benchmark.
 %
 %   obj.run ()  Runs all benchmarks, specified in obj.BENCHMARK with all
@@ -71,7 +71,7 @@ for j = 1:size (obj.BENCHMARK, 1)
     
     % Check if other worker is already on this test case.
     if (options.skip_log_exists && (exist (log_file, 'file') == 2))
-      fprintf ('\n  >>> Skipping, log file exists.\n');
+      fprintf ('\n  >>> Skipping, log file exists.\n\n');
       continue;
     end
     

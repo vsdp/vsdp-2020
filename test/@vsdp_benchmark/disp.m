@@ -87,7 +87,7 @@ function disp_benchmark (obj)
 % Information about the benchmarks.
 
 fprintf ('  Benchmark information (%3d test cases):\n\n', ...
-  length (obj.BENCHMARK));
+  size (obj.BENCHMARK, 1));
 if (~isempty (obj.BENCHMARK))
   bms = obj.BENCHMARK(:,1);
   bm_unique = unique(bms);

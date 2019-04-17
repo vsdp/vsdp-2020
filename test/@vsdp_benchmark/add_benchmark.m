@@ -1,4 +1,4 @@
-function add_benchmark (obj, name, dir_pattern, name_fun)
+function obj = add_benchmark (obj, name, dir_pattern, name_fun)
 % ADD_BENCHMARK  Generates a list of jobs for a benchmark.
 %
 %   name         The name of the benchmark library.
@@ -23,18 +23,18 @@ if (nargin == 2)
   end
   switch (name)
     case 'all'
-      obj.add_benchmark ('DIMACS');
-      obj.add_benchmark ('ESC');
-      obj.add_benchmark ('RDM');
-      obj.add_benchmark ('SDPLIB');
-      obj.add_benchmark ('SPARSE_SDP');
+      obj = obj.add_benchmark ('DIMACS');
+      obj = obj.add_benchmark ('ESC');
+      obj = obj.add_benchmark ('RDM');
+      obj = obj.add_benchmark ('SDPLIB');
+      obj = obj.add_benchmark ('SPARSE_SDP');
     case 'DIMACS'
-      obj.add_benchmark ('DIMACS', ...
+      obj = obj.add_benchmark ('DIMACS', ...
         fullfile (obj.BENCHMARK_DIR, 'DIMACS', 'data', '**', '*.mat.gz'), ...
         @(str) str(1:end - length('.mat.gz')));
     case 'ESC'
       S = warning ('off', 'VSDP_BENCHMARK:add_benchmark:notUniqueNames');
-      obj.add_benchmark ('ESC', ...
+      obj = obj.add_benchmark ('ESC', ...
         fullfile (obj.BENCHMARK_DIR, 'ESC', 'data', '*.dat-s.gz'), ...
         @(str) strtok (str, "_"));
       % Fix not unique test cases 'CH2'.
@@ -46,15 +46,15 @@ if (nargin == 2)
       end
       warning (S);
     case 'RDM'
-      obj.add_benchmark ('RDM', ...
+      obj = obj.add_benchmark ('RDM', ...
         fullfile (obj.BENCHMARK_DIR, 'RDM', 'data', '*.dat-s.gz'), ...
         @(str) strtok (str, "."));
     case 'SDPLIB'
-      obj.add_benchmark ('SDPLIB', ...
+      obj = obj.add_benchmark ('SDPLIB', ...
         fullfile (obj.BENCHMARK_DIR, 'SDPLIB', 'data', '*.dat-s'), ...
         @(str) str(1:end - length('.dat-s')));
     case 'SPARSE_SDP'
-      obj.add_benchmark ('SPARSE_SDP', ...
+      obj = obj.add_benchmark ('SPARSE_SDP', ...
         fullfile (obj.BENCHMARK_DIR, 'SPARSE_SDP', 'data', '*.dat-s.gz'), ...
         @(str) str(1:end - length('.dat-s.gz')));
   end
