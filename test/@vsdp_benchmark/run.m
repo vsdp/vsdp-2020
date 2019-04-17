@@ -173,7 +173,7 @@ for j = 1:size (obj.BENCHMARK, 1)
           app_sol.z, app_sol.f_objective, app_sol.solver_info);
         fprintf ('>>> cached <<<');
       end
-      fprintf ('\n>>> done <<<\n');
+      fprintf ('\n>>> done   <<<\n');
       
       % Compute rigorous lower bound, if not already computed.
       print_header ('Rigorous lower bound');
@@ -194,7 +194,7 @@ for j = 1:size (obj.BENCHMARK, 1)
           rig_lbd.z, rig_lbd.f_objective, rig_lbd.solver_info);
         fprintf ('>>> cached <<<');
       end
-      fprintf ('\n>>> done <<<\n');
+      fprintf ('\n>>> done   <<<\n');
       
       % Compute rigorous upper bound, if not already computed.
       print_header ('Rigorous upper bound');
@@ -215,7 +215,16 @@ for j = 1:size (obj.BENCHMARK, 1)
           rig_ubd.z, rig_ubd.f_objective, rig_ubd.solver_info);
         fprintf ('>>> cached <<<');
       end
-      fprintf ('\n>>> done <<<\n');
+      fprintf ('\n>>> done   <<<\n');
+      
+      % Compute rigorous upper bound with a priori bounds, if not already
+      % computed.
+      if ((strcmp (obj.BENCHMARK{j,1}, 'ESC') ...
+          || strcmp (obj.BENCHMARK{j,1}, 'RDM')) ...
+          && (exist ('esc_rdm_a_priori_bounds', 'file') == 2))
+        esc_rdm_a_priori_bounds (vsdp_obj, obj.BENCHMARK{j,1}, ...
+          obj.BENCHMARK{j,2}, obj.SOLVER{i}, options);
+      end
     catch err
       fprintf (2, '\n\n%s\n\n', err.message);
       continue;
