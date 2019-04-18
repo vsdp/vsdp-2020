@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VSDP Benchmark RDM (System 2)</title>
+<meta charset='UTF-8'>
+<link   rel="stylesheet"      href="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/fh-3.1.4/sl-1.3.0/datatables.min.css">
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/fh-3.1.4/sl-1.3.0/datatables.min.js"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']] },
+});
+</script>
+<script type="text/javascript" async 
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+</head>
+<body>
+<table id="main_tab" class="display" style="width:100%">
+<thead>
+<tr>
+  <th>Name</th>
+  <th>$m$</th>
+  <th>$n$</th>
+  <th>Solver</th>
+  <th>$\underline{E_2}$</th>
+  <th>$\underline{E}$ - $\underline{E_2}$</th>
+  <th>$\overline{E}$</th>
+  <th>$\mu(\overline{E}, \underline{E_2})$</th>
+  <th>$\mu(\overline{E}, \underline{E})$</th>
+  <th>$t_s$</th>
+  <th>$\underline{t_2}/t_s$</th>
+  <th>$\underline{t}/t_s$</th>
+  <th>$\overline{t}/t_s$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>CH</td>
+  <td>15018</td>
+  <td>7811142</td>
+  <td>mosek</td>
+  <td>-3.83376862e+01</td>
+  <td>-1.07e-04</td>
+  <td>Inf</td>
+  <td>NaN</td>
+  <td>NaN</td>
+  <td>50513.03</td>
+  <td>9.75e-05</td>
+  <td>1.14e+00</td>
+  <td>1.23e+00</td>
+</tr>
+<tr>
+  <td>C</td>
+  <td>7230</td>
+  <td>2598370</td>
+  <td>mosek</td>
+  <td>-3.77365930e+01</td>
+  <td>-6.22e-05</td>
+  <td>-3.77365815e+01</td>
+  <td>3.03e-07</td>
+  <td>1.95e-06</td>
+  <td>6459.24</td>
+  <td>2.08e-04</td>
+  <td>9.48e-01</td>
+  <td>1.92e+00</td>
+</tr>
+<tr>
+  <td>F-</td>
+  <td>20709</td>
+  <td>12665715</td>
+  <td>mosek</td>
+  <td>-9.95974583e+01</td>
+  <td>-3.53e-04</td>
+  <td>Inf</td>
+  <td>NaN</td>
+  <td>NaN</td>
+  <td>115674.27</td>
+  <td>8.09e-05</td>
+  <td>8.92e-01</td>
+  <td>1.49e+00</td>
+</tr>
+<tr>
+  <td>H2O</td>
+  <td>27888</td>
+  <td>19814462</td>
+  <td>mosek</td>
+  <td>-7.61562046e+01</td>
+  <td>-2.61e-04</td>
+  <td>Inf</td>
+  <td>NaN</td>
+  <td>NaN</td>
+  <td>256284.43</td>
+  <td>6.73e-05</td>
+  <td>9.98e-01</td>
+  <td>1.14e+00</td>
+</tr>
+<tr>
+  <td>H2O</td>
+  <td>27888</td>
+  <td>19814462</td>
+  <td>sdpt3</td>
+  <td>-7.61561731e+01</td>
+  <td>5.27e-09</td>
+  <td>-7.61561724e+01</td>
+  <td>9.39e-09</td>
+  <td>9.32e-09</td>
+  <td>1332226.23</td>
+  <td>1.31e-05</td>
+  <td>9.19e-01</td>
+  <td>1.79e-05</td>
+</tr>
+<tr>
+  <td>HF</td>
+  <td>15018</td>
+  <td>7811142</td>
+  <td>mosek</td>
+  <td>-1.00160627e+02</td>
+  <td>-2.42e-04</td>
+  <td>Inf</td>
+  <td>NaN</td>
+  <td>NaN</td>
+  <td>44933.73</td>
+  <td>1.09e-04</td>
+  <td>1.05e+00</td>
+  <td>1.32e+00</td>
+</tr>
+<tr>
+  <td>NH</td>
+  <td>15018</td>
+  <td>7811142</td>
+  <td>mosek</td>
+  <td>-5.49648642e+01</td>
+  <td>-1.41e-05</td>
+  <td>-5.49648595e+01</td>
+  <td>8.63e-08</td>
+  <td>3.42e-07</td>
+  <td>47206.22</td>
+  <td>1.04e-04</td>
+  <td>1.00e+00</td>
+  <td>1.99e+00</td>
+</tr>
+<tr>
+  <td>Ne</td>
+  <td>7230</td>
+  <td>2598370</td>
+  <td>mosek</td>
+  <td>-1.28638999e+02</td>
+  <td>-1.17e-04</td>
+  <td>Inf</td>
+  <td>NaN</td>
+  <td>NaN</td>
+  <td>5718.28</td>
+  <td>2.16e-04</td>
+  <td>1.01e+00</td>
+  <td>1.26e+00</td>
+</tr>
+<tr>
+  <td>O2+</td>
+  <td>7230</td>
+  <td>2598370</td>
+  <td>mosek</td>
+  <td>-1.48795451e+02</td>
+  <td>-9.16e-05</td>
+  <td>Inf</td>
+  <td>NaN</td>
+  <td>NaN</td>
+  <td>6065.10</td>
+  <td>2.28e-04</td>
+  <td>1.00e+00</td>
+  <td>1.57e+00</td>
+</tr>
+</tbody>
+</table>
+<script type='text/javascript'>$(document).ready( function () {
+$('#main_tab').DataTable( {
+  select: true,
+  fixedHeader: true,
+  "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+  } );
+} );
+</script>
+</body>
+</html>
