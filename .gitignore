@@ -1,3 +1,6 @@
 *.asv
+.ipynb_checkpoints
 vsdp_settings_*.mat
+doc/markdown/*
+doc/latex/*
 download/*
