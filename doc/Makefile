@@ -14,3 +14,5 @@ markdown/%.md: %.ipynb
 	jupyter nbconvert --output-dir=markdown --to markdown $^
 	# GitHub pages does not support Octave syntax highlighting.
 	sed -i -e 's/^```octave/```matlab/g' $@
+	# Fix URLs, later displayed in browser.
+	sed -i -e 's/\.ipynb/.html/g' $@
