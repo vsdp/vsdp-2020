@@ -3,12 +3,12 @@ function val = settings (id, key, val)
 %
 %   Store solver setting:
 %
-%      solver.util.settings ('id', 'key', 'val');
-%      solver.util.settings ('vsdp', 'path', '/path/to/vsdp');
+%      vsdp.settings ('id', 'key', 'val');
+%      vsdp.settings ('vsdp', 'path', '/path/to/vsdp');
 %
 %   Load solver setting:
 %
-%      val = solver.util.settings ('id', 'key');
+%      val = vsdp.settings ('id', 'key');
 %
 
 % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)

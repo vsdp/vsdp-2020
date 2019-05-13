@@ -29,7 +29,7 @@ new_col = cell (size (obj.cdata_view, 1), 1);
 new_col{1,1} = col;
 
 if (strncmp (col, 'mu_', 3))
-  % Compute accuracy mu <https://vsdp.github.io/references.html#Jansson2006>,
+  % Compute accuracy mu <https://vsdp.github.io/s10_references.html#Jansson2006>,
   % that is 'mu_<op1>_<op2>'.
   cols = strsplit (col(4:end), '_');
   fop = @(a, b) (a - b) ./ max (1, (abs (a) + abs (b)) ./ 2);

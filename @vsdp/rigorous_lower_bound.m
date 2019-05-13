@@ -79,7 +79,7 @@ while (iter <= obj.options.ITER_MAX)
   % If infinite upper bounds for free variables are given.  Ensure, that
   % the approximate dual solution 'y' solves the free variable part, see
   %
-  %   https://vsdp.github.io/references.html#Anjos2007
+  %   https://vsdp.github.io/s10_references.html#Anjos2007
   %
   % for details.
   if (any (isinf (xbnd(1:obj.K.f))))

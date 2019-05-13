@@ -11,7 +11,7 @@ classdef vsdp < handle
   %      (K.f), LP (K.l), SOCP (K.q), and SDP (K.s).  K^* is the dual cone.
   %      For a theoretical introduction into verified conic programming see
   %
-  %         https://vsdp.github.io/references#Jansson2009
+  %         https://vsdp.github.io/s10_references.html#Jansson2009
   %
   %      The problem data of the block-diagonal structure:
   %

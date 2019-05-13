@@ -17,7 +17,7 @@ function x = verify_uls (obj, A, b, x0)
 %   (i)  for all A in [A], for all b in [b] exists some x in [x] : Ax = b.
 %
 %   For the computation of enclosures in the case of large linear systems, we
-%   refer to <https://vsdp.github.io/references.html#Rump2013a>.
+%   refer to Rump 2013 <https://doi.org/10.1016/j.cam.2012.09.024>.
 %
 %   The computation of rigorous lower and upper bounds for the optimal value
 %   requires considering a modified problem.  There, a non-square interval
@@ -38,13 +38,13 @@ function x = verify_uls (obj, A, b, x0)
 %     2. Set [b] := [b] - [A(:,~I)] * x0(~I), where ~I := {1:n} \ I.
 %     3. set [A] := [A(:,I)].
 %     4. Compute an enclosure [x] of the solution set with square interval
-%        matrix and right-hand side such that  SolSet([A],[b]) in [x]  by using
+%        matrix and right-hand side such that  SolSet([A],[b]) in [x] by using
 %        an algorithm for square linear interval systems.
 %
 %   For more theoretical background, see:
 %
-%     [1] https://vsdp.github.io/references.html#Jansson2004
-%     [2] https://vsdp.github.io/references.html#Jansson2007a
+%     [1] https://vsdp.github.io/s10_references.html#Jansson2004
+%     [2] https://vsdp.github.io/s10_references.html#Jansson2007a
 %
 %   Example:
 %

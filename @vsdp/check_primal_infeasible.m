@@ -9,7 +9,7 @@ function obj = check_primal_infeasible (obj, y)
 %                                   infeasible by using 'y'.
 %
 %       Use a theorem of alternatives to claim a conic program to be primal
-%       infeasible (see https://vsdp.github.io/references.html#Jansson2007
+%       infeasible (see https://vsdp.github.io/s10_references.html#Jansson2007
 %       for proofs and details):
 %
 %       Let 'y' satisfy
@@ -79,7 +79,7 @@ cpi = tic;
 % Ensure, that the approximate dual solution 'y' solves the free variable part,
 % see
 %
-%   https://vsdp.github.io/references.html#Anjos2007
+%   https://vsdp.github.io/s10_references.html#Anjos2007
 %
 % for details.
 if (obj.K.f > 0)

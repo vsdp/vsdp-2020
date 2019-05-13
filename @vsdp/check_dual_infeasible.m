@@ -8,7 +8,7 @@ function obj = check_dual_infeasible (obj, x)
 %                                 by using 'x'.
 %
 %       Use a theorem of alternatives to claim a conic program to be primal
-%       infeasible (see https://vsdp.github.io/references.html#Jansson2007
+%       infeasible (see https://vsdp.github.io/s10_references.html#Jansson2007
 %       for proofs and details):
 %
 %       Let 'x' satisfy

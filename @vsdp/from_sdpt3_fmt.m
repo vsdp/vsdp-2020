@@ -52,10 +52,10 @@ function obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
 %       obj = vsdp.from_sdpt3_fmt (blk, At, b, C);
 %
 %
-% For more information on the SDPT3-4.0 format, see:
+%   For more information on the SDPT3-4.0 format, see:
 %
-%   [1] http://www.math.nus.edu.sg/~mattohkc/sdpt3/guide4-0-draft.pdf
-%   [2] http://www.math.nus.edu.sg/~mattohkc/sdpt3/sdpexample.html
+%     [1] http://www.math.nus.edu.sg/~mattohkc/sdpt3/guide4-0-draft.pdf
+%     [2] http://www.math.nus.edu.sg/~mattohkc/sdpt3/sdpexample.html
 %
 %   See also vsdp.
 %

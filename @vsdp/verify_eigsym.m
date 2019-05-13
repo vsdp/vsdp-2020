@@ -8,7 +8,7 @@ function E = verify_eigsym (A)
 %
 %   For more theoretical background, see:
 %
-%     https://vsdp.github.io/references.html#Jansson2007 (p. 19)
+%     https://vsdp.github.io/s10_references.html#Jansson2007 (p. 19)
 %
 %   Example:
 %

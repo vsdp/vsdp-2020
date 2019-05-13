@@ -13,7 +13,7 @@ narginchk (1, 1);
 % size.
 [obj.K, obj.N, obj.n] = vsdp.validate_cone (obj.K);
 
-% Prepare vector `b`.
+% Prepare vector 'b'.
 if (~isfloat (obj.b) && ~isintval (obj.b))
   error ('VSDP:validate:badTypeB', ...
     'validate: Vector ''b'' must be numeric or an interval.');
@@ -33,13 +33,13 @@ if (~isfloat (obj.At) && ~isintval (obj.At))
     'validate: Constraint matrix ''At'' must be numeric or an interval.');
 end
 
-% Check if any dimension of matrix ''At'' matches the number of constraints,
-% that is the length of vector ''b''.
+% Check if any dimension of matrix 'At' matches the number of constraints,
+% that is the length of vector 'b'.
 if (~any (size (obj.At) == obj.m))
   error ('VSDP:validate:badConstraintDimesionAt', ...
     'validate: No dimension of ''At'' matches the length of vector ''b''.');
 end
-% Ensure transposed format for ''At'' (n x m).
+% Ensure transposed format for 'At' (n x m).
 if (size (obj.At, 2) ~= obj.m)
   obj.At = obj.At';
 end

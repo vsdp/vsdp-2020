@@ -1,8 +1,9 @@
 function testVSDP_SDP (testCase)
-% Original problem in https://vsdp.github.io/references#Borchers2017 (pages
-% 8 -- 14).
+% Original problem in <https://vsdp.github.io/s10_references.html#Borchers2017>
+% (pages 8 -- 14).
 SDP_VSDP_2012_P15 (testCase);      % K.s = [2; 3; 2]
-% Original problem in https://vsdp.github.io/references#Jansson2007a (page 192).
+% Original problem in <https://vsdp.github.io/s10_references.html#Jansson2007a>
+% (page 192).
 SDP_Jansson2007a_P192 (testCase);  % K.s = 3
 end
 
