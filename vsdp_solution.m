@@ -52,8 +52,8 @@ classdef vsdp_solution < handle
       %
       %   See also vsdp.
       
-      % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
       
+      % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
       narginchk (4, 6);
       
       obj.sol_type = validatestring (sol_type, {'Initial', ...
@@ -235,7 +235,7 @@ classdef vsdp_solution < handle
       % TO_2006_FMT  Export conic problem solution to VSDP 2006 format.
       %
       %   [X0, y0, Z0] = sol.to_2006_fmt (obj);  Export the solution 'sol' of
-      %      a VSDP 2018 conic problem 'obj' to VSDP 2006 format.
+      %      a VSDP 2020 conic problem 'obj' to VSDP 2006 format.
       %
       %   See also vsdp, vsdp_solution.
       %

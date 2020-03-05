@@ -13,7 +13,7 @@ function obj = add_benchmark (obj, name, dir_pattern, name_fun)
 %   See also vsdp_benchmark.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 % Recursive call with well-known benchmarks.
 if (nargin == 2)

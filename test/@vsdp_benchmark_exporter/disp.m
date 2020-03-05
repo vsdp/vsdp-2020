@@ -1,7 +1,7 @@
 function disp (obj)
 % DISP  Display short export overview.
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 fprintf ('\n VSDP Benchmark Export\n\n');
 fprintf ('   obj.RESULT_DIR =\n\n     ''%s''\n\n', obj.RESULT_DIR);

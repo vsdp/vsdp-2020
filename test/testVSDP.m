@@ -1,5 +1,5 @@
 function tests = testVSDP()
-% TESTVSDP  Runs a testsuite for VSDP (version 2018).
+% TESTVSDP  Runs a testsuite for VSDP (version 2020).
 %
 %   Example:
 %
@@ -9,7 +9,7 @@ function tests = testVSDP()
 %   See also vsdp.
 %
 
-% Copyright 2016-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 tests = functiontests (localfunctions);
 end

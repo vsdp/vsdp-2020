@@ -4,14 +4,14 @@ classdef vsdp_benchmark
   %   See also vsdp.
   %
   
-  % Copyright 2004-2018 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   properties
     % A cell array of strings with VSDP benchmarks to run.  The columns are:
     %
     %   obj.BENCHMARK(:,1)  Benchmark library name.
     %   obj.BENCHMARK(:,2)  Short name for the test case.
-    %   obj.BENCHMARK(:,3)  System dependend full path of the original test
+    %   obj.BENCHMARK(:,3)  System dependent full path of the original test
     %                       case data.
     %
     %  Default: cell (0, 3).
@@ -87,8 +87,8 @@ classdef vsdp_benchmark
     function p = check_dir (~, p)
       % CHECK_DIR  Check 'p' to be an existing directory.
       %
-      %   Return the absolute path 'p' or an emtpy char array.
       
+      %   Return the absolute path 'p' or an empty char array.
       if (exist (p, "dir") == 7)
         p = what (p);  % Get absolute path.
         p = p.path;

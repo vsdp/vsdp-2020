@@ -4,7 +4,7 @@ function obj = to_cell_strings (obj, use_columns)
 %   The second input 'use_columns' determines the string conversion.
 %
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 if (all (all (cellfun (@ischar, obj.cdata_view))))
   return;  % All done.

@@ -35,7 +35,7 @@ function obj = run (obj, options)
 %   See also vsdp_benchmark, vsdp_benchmark.filter.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 if (isempty (obj.RESULT_DIR))
   error ('VSDP_BENCHMARK:run:resultDirUnknown', ...

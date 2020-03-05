@@ -1,7 +1,7 @@
 function obj = get_data (obj)
 % GET_DATA  Get the data for the listed test cases.
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 obj.cdata{1,16} = [];  % Preallocate width
 len = size (obj.cdata, 1);

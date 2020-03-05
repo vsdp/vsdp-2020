@@ -92,8 +92,8 @@ classdef vsdp_options < handle
       %
       %   See also vsdp.
       
-      % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
       
+      % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
       narginchk (0, 1);
       
       % Check for default solver by explicitly setting it again.

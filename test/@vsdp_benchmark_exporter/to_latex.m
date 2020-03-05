@@ -1,7 +1,7 @@
 function str = to_latex (obj, body_only)
 % TO_LATEX  Export 'obj.cdata_view' to LaTeX markup (longtable environment).
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 % Ensure string entries.
 cdata = obj.to_cell_strings ().cdata_view;

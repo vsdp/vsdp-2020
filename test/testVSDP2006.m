@@ -10,7 +10,7 @@ function tests = testVSDP2006()
 %   See also demovsdp.
 %
 
-% Copyright 2016-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 tests = functiontests(localfunctions);
 end

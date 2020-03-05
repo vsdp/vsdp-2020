@@ -10,7 +10,7 @@ function obj = filter (obj, varargin)
 %
 %   obj.filter (bm_library, name)  Optionally, the benchmark can be reduced to
 %     a subset of the data by applying filters, i.e. regular expressions
-%     machted with the "regexp()" function.  To filter the benchmark library
+%     matched with the "regexp()" function.  To filter the benchmark library
 %     provide a string for 'bm_library' and for the test case name set 'name'.
 %
 %   Example:
@@ -20,7 +20,7 @@ function obj = filter (obj, varargin)
 %   See also vsdp_benchmark.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 idx = true (size (obj.BENCHMARK(:,1)));
 if (isempty (idx))

@@ -1,5 +1,5 @@
 classdef vsdp_indexable < handle
-  % VSDP_INDEXABLE  A quantity that can be separated into differrent cones.
+  % VSDP_INDEXABLE  A quantity that can be separated into different cones.
   %
   %   Example:
   %
@@ -11,8 +11,8 @@ classdef vsdp_indexable < handle
   %   See also vsdp.
   %
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   properties
     value
     vsdp_obj

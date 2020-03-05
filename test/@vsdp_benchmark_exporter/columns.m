@@ -1,7 +1,7 @@
 function obj = columns (obj, names)
 % COLUMNS  Use specified columns by header names or indices.
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 if (isnumeric (names) || islogical (names))
   obj.cdata_view = obj.cdata_view(:,names);

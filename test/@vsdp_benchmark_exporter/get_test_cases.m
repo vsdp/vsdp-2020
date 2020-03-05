@@ -3,7 +3,7 @@ function cdata = get_test_cases (obj)
 %                 with format {'lib', 'test case', 'solver'}.
 %
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 file_list = dir (fullfile (obj.RESULT_DIR, 'data', '*.mat'));
 idx = {file_list.name}';

@@ -4,8 +4,8 @@ classdef vsdp_benchmark_exporter
   %   Helper class to export benchmarks.
   %
   
-  % Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
   
+  % Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
   properties
     % Current view of the data to be exported.
     %
@@ -111,8 +111,8 @@ classdef vsdp_benchmark_exporter
     function p = check_dir (~, p)
       % CHECK_DIR  Check 'p' to be an existing directory.
       %
-      %   Return the absolute path 'p' or an emtpy char array.
       
+      %   Return the absolute path 'p' or an empty char array.
       if (exist (p, "dir") == 7)
         p = what (p);  % Get absolute path.
         p = p.path;

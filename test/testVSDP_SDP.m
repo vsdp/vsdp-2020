@@ -112,7 +112,7 @@ xu = 1e5;
 yu = 1e5 * [1 1 1 1]';
 
 % An evaluation of Jansson2007a (p. 193) yields for EPSILON = 2e-4
-% the values X_22 = 5000, X_33 = 0 and y, repectivly.
+% the values X_22 = 5000, X_33 = 0 and y, respectively.
 x_sol = [ EPSILON;        -1; 0;
                -1; 1/EPSILON; 0;
                 0;         0; 0 ];

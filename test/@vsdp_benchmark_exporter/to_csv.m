@@ -1,7 +1,7 @@
 function str = to_csv (obj)
 % TO_CSV  Export 'obj.cdata_view' to comma separated values (CSV).
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 % Ensure string entries.
 cdata = obj.to_cell_strings ().cdata_view;

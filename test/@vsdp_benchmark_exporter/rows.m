@@ -5,7 +5,7 @@ function obj = rows (obj, op)
 %    regular expression to be matched.
 %
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 if (isnumeric (op) || islogical (op))
   obj.cdata_view = obj.cdata_view(op,:);

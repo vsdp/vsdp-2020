@@ -1,7 +1,7 @@
 function str = to_html (obj, html_title)
 % TO_HTML  Export 'cdata' to rich HTML markup (MathJax, jQuery, dataTables).
 
-% Copyright 2018-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2018-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 % Ensure string entries.
 cdata = obj.to_cell_strings ().cdata_view;
@@ -24,7 +24,7 @@ html_title = 'VSDP Benchmark Results';
 end
 
 datatables_url = ...
-  'https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.18/fh-3.1.4/sl-1.3.0/datatables.min';
+  'https://cdn.datatables.net/v/dt/jq-3.3.1/dt-1.10.20/fh-3.1.6/sl-1.3.1/datatables.min';
 
 header = strjoin ({ ...
   '<!DOCTYPE html>', ...
