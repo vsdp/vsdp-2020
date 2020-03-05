@@ -4,7 +4,7 @@ function install_vsdp ()
 %   See also vsdp.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 % Check whether path already exists and add path if necessary.
 vsdp_path = fullfile (fileparts (which ('install_vsdp')));

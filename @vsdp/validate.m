@@ -4,7 +4,7 @@ function obj = validate (obj)
 %   See also vsdp.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 narginchk (1, 1);
 

@@ -1,5 +1,5 @@
 classdef sdpa < handle
-  % SDPA  Solver proxy class (not the acutal solver!).
+  % SDPA  Solver proxy class (not the actual solver!).
   %
   %   For more information on the SDPA-M format, see:
   %
@@ -9,8 +9,8 @@ classdef sdpa < handle
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   methods (Static)
     function obj = solve (obj, sol_type)
       % SOLVE  Approximately solve conic problem instance with SDPA.

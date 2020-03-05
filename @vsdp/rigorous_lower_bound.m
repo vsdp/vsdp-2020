@@ -32,7 +32,7 @@ function obj = rigorous_lower_bound (obj, xbnd)
 %   See also vsdp, vsdp.rigorous_upper_bound.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 narginchk (1, 2);
 

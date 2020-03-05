@@ -1,4 +1,4 @@
-# VSDP: Verified SemiDefinite-quadratic-linear Programming (Version 2018)
+# VSDP: Verified SemiDefinite-quadratic-linear Programming (Version 2020)
 
 > This is the latest version of VSDP.
 

@@ -39,7 +39,7 @@ function obj = from_2006_fmt (blk, A, C, b, X0, y0, Z0)
 %
 %   See also vsdp.
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 narginchk (4, 7);
 

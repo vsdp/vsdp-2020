@@ -21,7 +21,7 @@ function x = cell_sub_blocks (X, blk)
 %   See also vsdp, vsdp.cell2mat.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 if (nargin == 2 && iscell (X) && iscell (blk))
   idx = find (strcmp (blk(:,1), 's') & (cellfun (@length, blk(:,2)) > 1));

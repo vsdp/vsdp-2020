@@ -13,7 +13,7 @@ function [obj, pd] = from_mps_file (fname)
 %   See also from_lp_solve_fmt.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 narginchk(1, 1);
 if (exist (fname, 'file') ~= 2)
@@ -110,7 +110,7 @@ function problem = read_mps(filename)
 %                  columns i, j and k are in an SOS2 set
 %
 
-% Copyright 2004-2012 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 % initialize default output
 problem.name = '';

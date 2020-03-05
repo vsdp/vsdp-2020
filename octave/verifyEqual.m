@@ -10,7 +10,7 @@ function verifyEqual (~, a, b, varargin)
 %   See also testVSDP, testVSDP2006.
 %
 
-% Copyright 2016-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 if (nargin == 3)
   assert(a, b);

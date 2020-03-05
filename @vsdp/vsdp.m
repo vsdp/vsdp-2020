@@ -62,8 +62,8 @@ classdef vsdp < handle
   %             VSDP.from_sdpt3_fmt,    VSDP.from_sdpa_file,
   %             VSDP.from_mps_file,     VSDP.from_2006_fmt.
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   properties
     options  % Options for this problem instance.
   end

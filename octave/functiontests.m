@@ -13,7 +13,7 @@ function tests = functiontests(localfcns)
 %   See also testVSDP, testVSDP2006.
 %
 
-% Copyright 2016-2019 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
+% Copyright 2016-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
 j = 1;
 for i = 1:length(localfcns)

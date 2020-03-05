@@ -32,7 +32,7 @@ function A = smat (obj, a, mu)
 %   See also vsdp, vsdp.sindex, vsdp.svec.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 narginchk(2, 3);
 if (~isfloat (a) && ~isintval (a))

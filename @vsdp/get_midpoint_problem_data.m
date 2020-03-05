@@ -4,7 +4,7 @@ function [At, b, c] = get_midpoint_problem_data (obj, sol_type)
 %   See also vsdp.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 [At, b, c] = deal (mid (obj.At), mid (obj.b), mid (obj.c));
 if ((nargin > 1) && ~strcmp (sol_type, "Approximate"))

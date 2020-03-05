@@ -84,7 +84,7 @@ function [vidx, midx, mlidx, vlidx] = sindex (obj)
 %   See also vsdp, vsdp.svec, vsdp.smat.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 if (isa (obj, 'vsdp'))
   K = obj.K;

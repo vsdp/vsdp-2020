@@ -1,5 +1,5 @@
 classdef mosek < handle
-  % MOSEK  Solver proxy class (not the acutal solver!).
+  % MOSEK  Solver proxy class (not the actual solver!).
   %
   %   For more information on the MOSEK format, see:
   %
@@ -8,8 +8,8 @@ classdef mosek < handle
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   methods (Static)
     function obj = solve (obj, sol_type)
       % SOLVE  Approximately solve conic problem instance with MOSEK.

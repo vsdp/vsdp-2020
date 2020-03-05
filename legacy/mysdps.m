@@ -52,7 +52,7 @@ function [obj,X,y,Z,info] = mysdps(varargin)
 %   See also vsdpcheck, vsdplow, vsdpup, vsdpinfeas.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 vobj = vsdp (varargin{:});
 vobj.options.VERBOSE_OUTPUT = false;

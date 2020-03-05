@@ -34,7 +34,7 @@ function [lb, n, vidx, sdp_matrix] = rigorous_lower_cone_bound (obj, x, mu, weig
 %   See also vsdp, vsdp.rigorous_lower_bound, vsdp.rigorous_upper_bound.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 n  = obj.K.f + obj.K.l + length (obj.K.q) + length (obj.K.s);
 

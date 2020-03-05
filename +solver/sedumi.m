@@ -1,5 +1,5 @@
 classdef sedumi < handle
-  % SEDUMI  Solver proxy class (not the acutal solver!).
+  % SEDUMI  Solver proxy class (not the actual solver!).
   %
   %   For information about SeDuMi, see:
   %
@@ -9,8 +9,8 @@ classdef sedumi < handle
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   methods (Static)
     function obj = solve (obj, sol_type)
       % SOLVE  Approximately solve conic problem instance with SeDuMi.
@@ -101,7 +101,7 @@ classdef sedumi < handle
       spath = solver.registry.generic_install (sname, is_available, ...
         get_path, installer_file, do_error);
       
-      % Return on sucess or non-interactive silent mode.
+      % Return on success or non-interactive silent mode.
       if ((nargin == 0) || (~isempty (spath)))
         return;
       end

@@ -1,16 +1,15 @@
 classdef csdp < handle
-  % CSDP  Solver proxy class (not the acutal solver!).
+  % CSDP  Solver proxy class (not the actual solver!).
   %
   %   For more information about CSDP, see:
   %
-  %      https://projects.coin-or.org/Csdp/
   %      https://github.com/coin-or/Csdp
   %
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   methods (Static)
     function obj = solve (obj, sol_type)
       % SOLVE  Approximately solve conic problem instance with CSDP.

@@ -19,7 +19,7 @@ function [m,n] = vsdpcheck(varargin)
 %   See also mysdps.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 obj = vsdp (varargin{:});
 m = obj.m;

@@ -11,7 +11,7 @@ function val = settings (id, key, val)
 %      val = vsdp.settings ('id', 'key');
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 persistent vsdp_settings;  % In memory copy of VSDP settings file.
 persistent settings_file;
@@ -51,5 +51,5 @@ function val = sys_hash ()
 % SYS_HASH  Compute a system unique hash value.
 %
 
-val = sum (double ([computer(), '_vsdp_2018_', version()]));
+val = sum (double ([computer(), '_vsdp_2020_', version()]));
 end

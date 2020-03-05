@@ -1,5 +1,5 @@
 classdef linprog < handle
-  % LINPROG  Solver proxy class (not the acutal solver!).
+  % LINPROG  Solver proxy class (not the actual solver!).
   %
   %   For more information about LINPROG, see:
   %
@@ -8,8 +8,8 @@ classdef linprog < handle
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   methods (Static)
     function obj = solve (obj, sol_type)
       % SOLVE  Approximately solve conic problem instance with LINPROG.

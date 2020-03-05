@@ -53,7 +53,7 @@ function [fL,Y,dl] = vsdplow(varargin)
 %   See also mysdps.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 obj = vsdp (varargin{1:7});
 obj.options.SOLVER = 'sdpt3';

@@ -22,7 +22,7 @@ function obj = analyze (obj, yes_to_all, output)
 %   See also vsdp.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 narginchk (1, 3);
 if (nargout ~= 1)

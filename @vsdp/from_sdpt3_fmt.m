@@ -54,13 +54,12 @@ function obj = from_sdpt3_fmt (blk, At, b, c, x0, y0, z0)
 %
 %   For more information on the SDPT3-4.0 format, see:
 %
-%     [1] http://www.math.nus.edu.sg/~mattohkc/sdpt3/guide4-0-draft.pdf
-%     [2] http://www.math.nus.edu.sg/~mattohkc/sdpt3/sdpexample.html
+%     https://blog.nus.edu.sg/mattohkc/files/2019/10/guide4-0-draft.pdf
 %
 %   See also vsdp.
 %
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 narginchk(4, 7);
 

@@ -1,5 +1,5 @@
 classdef intlab < handle
-  % INTLAB  Solver proxy class (not the acutal solver!).
+  % INTLAB  Solver proxy class (not the actual solver!).
   %
   % For information about INTLAB, see:
   %
@@ -8,8 +8,8 @@ classdef intlab < handle
   %   See also vsdp.solve.
   %
   
-  % Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
   
+  % Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
   methods (Static)
     function spath = install (varargin)
       % Returns the path to the installed and usable solver.  Otherwise return

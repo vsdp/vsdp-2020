@@ -22,7 +22,7 @@ function E = verify_eigsym (A)
 %   See also vsdp, rigorous_lower_bound, rigorous_upper_bound,
 %            check_primal_infeasible, check_dual_infeasible.
 
-% Copyright 2004-2019 Christian Jansson (jansson@tuhh.de)
+% Copyright 2004-2020 Christian Jansson (jansson@tuhh.de)
 
 if (~issymmetric (mid (A)))
   error ('VSDP:verify_eigsym:notSymmetric', ...
