@@ -1,0 +1,461 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Conic solvers &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="s11_references.html" />
+    <link rel="prev" title="Numerical Results" href="s09_numerical_results.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s00_getting_started.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s02_conic_programming.html">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s03_linear_programming.html">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s05_semidefinite_programming.html">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s07_certificates_of_infeasibility.html">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s09_numerical_results.html">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s10_conic_solvers.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#csdp">
+   CSDP
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#glpk">
+   GLPK
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linprog">
+   LINPROG
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#lp-solve">
+   lp_solve
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mosek">
+   MOSEK
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sdpa">
+   SDPA
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sdpt3">
+   SDPT3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sedumi">
+   SeDuMi
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="conic-solvers">
+<h1>Conic solvers<a class="headerlink" href="#conic-solvers" title="Permalink to this headline">¶</a></h1>
+<p>In this section we provide some notes about our usage experience with VSDP
+and the following approximate conic solvers.</p>
+<p>For our tests we tried the following four combinations to run the conic solver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+-------------------------------------------------------+</span>
+<span class="o">|</span>                      <span class="o">&lt;</span><span class="n">conic</span> <span class="n">solver</span><span class="o">&gt;</span>                   <span class="o">|</span>
+<span class="o">+-------------------------------------------------------+</span>
+<span class="o">|</span>                      <span class="n">VSDP</span> <span class="o">&amp;</span> <span class="n">INTLAB</span>                    <span class="o">|</span>
+<span class="o">+------------+--------------+------------+--------------+</span>
+<span class="o">|</span>   <span class="n">MATLAB</span>   <span class="o">|</span>  <span class="n">GNU</span> <span class="n">Octave</span>  <span class="o">|</span>   <span class="n">MATLAB</span>   <span class="o">|</span>  <span class="n">GNU</span> <span class="n">Octave</span>  <span class="o">|</span>
+<span class="o">+------------+--------------+------------+--------------+</span>
+<span class="o">|</span>       <span class="n">MS</span> <span class="n">Windows</span>          <span class="o">|</span>        <span class="n">GNU</span><span class="o">/</span><span class="n">Linux</span>          <span class="o">|</span>
+<span class="o">+---------------------------+---------------------------+</span>
+</pre></div>
+</div>
+<div class="section" id="csdp">
+<h2>CSDP<a class="headerlink" href="#csdp" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="https://github.com/coin-or/Csdp">https://github.com/coin-or/Csdp</a></p></li>
+<li><p>Documentation: <a class="reference external" href="https://github.com/coin-or/Csdp/blob/master/doc/csdpuser.pdf">https://github.com/coin-or/Csdp/blob/master/doc/csdpuser.pdf</a></p></li>
+<li><p><em>Cones</em>: (Free variables), LP, SDP</p></li>
+<li><p><em>Installation</em>: Binary distributions for Windows and Linux on the website.
+Extract binary distribution to arbitrary location and use <code class="docutils literal notranslate"><span class="pre">addpath</span></code> within
+Octave or MATLAB to add the <code class="docutils literal notranslate"><span class="pre">bin</span></code> (solver executables) and <code class="docutils literal notranslate"><span class="pre">matlab</span></code>
+(interface routines) subdirectories.</p></li>
+<li><p><em>Invocation</em>: Call <code class="docutils literal notranslate"><span class="pre">csdp</span></code> from the Octave or MATLAB command prompt.</p></li>
+<li><p><em>Notes</em>: Free variables are only supported as difference of LP variables.
+The resulting problem is ill-posed.</p></li>
+</ul>
+</div>
+<div class="section" id="glpk">
+<h2>GLPK<a class="headerlink" href="#glpk" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="https://www.gnu.org/software/glpk">https://www.gnu.org/software/glpk</a></p></li>
+<li><p>Documentation: Part of the source code archive available from the website.</p></li>
+<li><p><em>Cones</em>: Free variables, LP</p></li>
+<li><p><em>Installation</em>: Built-in solver of GNU Octave.</p></li>
+<li><p><em>Invocation</em>: Call <code class="docutils literal notranslate"><span class="pre">glpk</span></code> from the Octave command prompt.</p></li>
+<li><p><em>Notes</em>: Not available for MATLAB.</p></li>
+</ul>
+</div>
+<div class="section" id="linprog">
+<h2>LINPROG<a class="headerlink" href="#linprog" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="https://www.mathworks.com/help/optim/ug/linprog.html">https://www.mathworks.com/help/optim/ug/linprog.html</a></p></li>
+<li><p>Documentation: See website.</p></li>
+<li><p><em>Cones</em>: Free variables, LP</p></li>
+<li><p><em>Installation</em>: Built-in solver of MATLAB.</p></li>
+<li><p><em>Invocation</em>: Call <code class="docutils literal notranslate"><span class="pre">linprog</span></code> from the MATLAB command prompt.</p></li>
+<li><p><em>Notes</em>: Not available for GNU Octave.</p></li>
+</ul>
+</div>
+<div class="section" id="lp-solve">
+<h2>lp_solve<a class="headerlink" href="#lp-solve" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="http://lpsolve.sourceforge.net/5.5/index.htm">http://lpsolve.sourceforge.net/5.5/index.htm</a></p></li>
+<li><p>Documentation: See website.</p></li>
+<li><p><em>Cones</em>: Free variables, LP</p></li>
+<li><p><em>Installation</em>: Binary distributions for Windows and Linux are available
+from <a class="reference external" href="https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.5">https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.5</a>.
+For Linux it is easier to install the binary solver files from the
+respective distribution package manager.  The Octave and MATLAB interface
+is available from <a class="reference external" href="https://github.com/vsdp/lp_solve">https://github.com/vsdp/lp_solve</a> or
+<a class="reference external" href="https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.5">https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.5</a>.
+Inside the <code class="docutils literal notranslate"><span class="pre">extra/octave/lpsolve</span></code> or <code class="docutils literal notranslate"><span class="pre">extra/matlab/lpsolve</span></code> subdirectory
+one has to follow the build instructions and has to use <code class="docutils literal notranslate"><span class="pre">addpath</span></code> within
+Octave or MATLAB to make it work.</p></li>
+<li><p><em>Invocation</em>: Call <code class="docutils literal notranslate"><span class="pre">lp_solve</span></code> from the Octave or MATLAB command prompt.</p></li>
+</ul>
+</div>
+<div class="section" id="mosek">
+<h2>MOSEK<a class="headerlink" href="#mosek" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="https://www.mosek.com/">https://www.mosek.com/</a></p></li>
+<li><p>Documentation: <a class="reference external" href="https://www.mosek.com/documentation/">https://www.mosek.com/documentation/</a></p></li>
+<li><p><em>Cones</em>: Free variables, LP, SOCP, SDP</p></li>
+<li><p><em>Installation</em>: Binary distributions for Windows and Linux on the website.
+Very good description is given at
+<a class="reference external" href="https://docs.mosek.com/8.1/install/installation.html">https://docs.mosek.com/8.1/install/installation.html</a></p></li>
+<li><p><em>Invocation</em>: Call <code class="docutils literal notranslate"><span class="pre">mosekopt</span></code> from the Octave or MATLAB command prompt.</p></li>
+<li><p><em>Notes</em>: One has to obtain a <em>license</em>, which is gratis for personal and academic use.
+<em>No Octave.</em>  There is some no longer maintained
+&lt;https://github.com/MOSEK/octmosek octmosek&gt; Octave package,
+that does notes work for recent Octave versions.</p></li>
+</ul>
+</div>
+<div class="section" id="sdpa">
+<h2>SDPA<a class="headerlink" href="#sdpa" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="http://sdpa.sourceforge.net">http://sdpa.sourceforge.net</a></p></li>
+<li><p>GitHub: <a class="reference external" href="https://github.com/vsdp/sdpa">https://github.com/vsdp/sdpa</a></p></li>
+<li><p>Documentation:
+<a class="reference external" href="https://sourceforge.net/projects/sdpa/files/sdpa/sdpa.7.1.1.manual.20080618.pdf">https://sourceforge.net/projects/sdpa/files/sdpa/sdpa.7.1.1.manual.20080618.pdf</a></p></li>
+<li><p>Cones: LP, SDP</p></li>
+<li><p>Installation (Windows): Binary distributions can be obtained from
+<a class="reference external" href="http://sdpa.sourceforge.net/download.html">http://sdpa.sourceforge.net/download.html</a> (use the <em>SDPA-M</em> version).
+Extract binary distribution to arbitrary location and use <code class="docutils literal notranslate"><span class="pre">addpath</span></code> within
+MATLAB to add the solver and interface routines.</p></li>
+<li><p><em>Invocation</em>: Call <code class="docutils literal notranslate"><span class="pre">mexsdpa</span></code> from the Octave or MATLAB command prompt.</p></li>
+<li><p><em>Notes</em>: The “native” installation for Windows and MATLAB is the most reliable.
+The other three combinations worked partially or not at all.
+Some of the Linux efforts are reflected in the GitHub repository.</p></li>
+</ul>
+</div>
+<div class="section" id="sdpt3">
+<h2>SDPT3<a class="headerlink" href="#sdpt3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="https://blog.nus.edu.sg/mattohkc/softwares/sdpt3/">https://blog.nus.edu.sg/mattohkc/softwares/sdpt3/</a></p></li>
+<li><p>GitHub: <a class="reference external" href="https://github.com/sqlp/sdpt3">https://github.com/sqlp/sdpt3</a> (preferred) or
+<a class="reference external" href="https://github.com/Kim-ChuanToh/SDPT3">https://github.com/Kim-ChuanToh/SDPT3</a></p></li>
+<li><p>Documentation: <a class="reference external" href="https://blog.nus.edu.sg/mattohkc/files/2019/10/guide4-0-draft.pdf">https://blog.nus.edu.sg/mattohkc/files/2019/10/guide4-0-draft.pdf</a></p></li>
+<li><p>Cones: Free variables, LP, SOCP, SDP</p></li>
+<li><p>Installation: Download the files from the preferred GitHub repository
+extracted to an arbitrary location and run <code class="docutils literal notranslate"><span class="pre">install_sdpt3</span></code> from the Octave
+or MATLAB command prompt.</p></li>
+<li><p>Invocation: Call <code class="docutils literal notranslate"><span class="pre">sqlp</span></code> from the Octave or MATLAB command prompt.</p></li>
+<li><p>Notes: In case of errors with the MEX-Interface,
+run <code class="docutils literal notranslate"><span class="pre">install_sdpt3</span> <span class="pre">-rebuild</span></code> from the Octave or MATLAB command prompt.
+The SDPT3 function <code class="docutils literal notranslate"><span class="pre">randmat</span></code> is in conflict with the INTLAB function <code class="docutils literal notranslate"><span class="pre">randmat</span></code>.
+To resolve that conflict, we chose to rename the INTLAB function.</p></li>
+</ul>
+</div>
+<div class="section" id="sedumi">
+<h2>SeDuMi<a class="headerlink" href="#sedumi" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Website: <a class="reference external" href="http://sedumi.ie.lehigh.edu">http://sedumi.ie.lehigh.edu</a></p></li>
+<li><p>GitHub: <a class="reference external" href="https://github.com/sqlp/sedumi">https://github.com/sqlp/sedumi</a> (preferred)</p></li>
+<li><p>Documentation:
+<a class="reference external" href="http://sedumi.ie.lehigh.edu/sedumi/files/sedumi-downloads/SeDuMi_Guide_11.pdf">http://sedumi.ie.lehigh.edu/sedumi/files/sedumi-downloads/SeDuMi_Guide_11.pdf</a>
+and <a class="reference external" href="http://sedumi.ie.lehigh.edu/sedumi/files/sedumi-downloads/usrguide.ps">http://sedumi.ie.lehigh.edu/sedumi/files/sedumi-downloads/usrguide.ps</a></p></li>
+<li><p>Cones: Free variables, LP, SOCP, SDP</p></li>
+<li><p>Installation: Download the files from the preferred GitHub repository
+extracted to an arbitrary location and run <code class="docutils literal notranslate"><span class="pre">install_sedumi</span></code> from the Octave
+or MATLAB command prompt.</p></li>
+<li><p>Invocation: Call <code class="docutils literal notranslate"><span class="pre">sedumi</span></code> from the Octave or MATLAB command prompt.</p></li>
+<li><p>Notes: In case of errors with the MEX-Interface,
+run <code class="docutils literal notranslate"><span class="pre">install_sedumi</span> <span class="pre">-rebuild</span></code> from the Octave or MATLAB command prompt.</p></li>
+</ul>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="s09_numerical_results.html" title="previous page">Numerical Results</a>
+    <a class='right-next' id="next-link" href="s11_references.html" title="next page">References</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

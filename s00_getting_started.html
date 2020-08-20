@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Getting started &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="s01_installation.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="#">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s02_conic_programming.html">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s03_linear_programming.html">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s05_semidefinite_programming.html">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s07_certificates_of_infeasibility.html">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s09_numerical_results.html">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s10_conic_solvers.html">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s00_getting_started.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#available-vsdp-versions">
+   Available VSDP versions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#contributors">
+   Contributors
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p><strong>VSDP (Verified SemiDefinite-quadratic-linear Programming)</strong> is a software
+package for the computation of verified results in conic programming.
+It supports the constraint cone consisting of the product of semidefinite cones,
+second-order cones, and the non-negative orthant.
+VSDP provides functions for computing rigorous error bounds of the true optimal value,
+verified enclosures of epsilon-optimal  solutions, and verified certificates of infeasibility.
+All rounding errors due to floating-point arithmetic are taken into account.</p>
+<p>The software is completely written in <a class="reference external" href="https://www.mathworks.com">MATLAB</a> /
+<a class="reference external" href="https://www.gnu.org/software/octave">GNU Octave</a> and requires the interval
+toolbox <a class="reference external" href="http://www.ti3.tuhh.de/rump/intlab">INTLAB</a>.  Thus interval input is
+supported as well.</p>
+<p><img alt="VSDP workflow" src="_images/vsdp_workflow.svg" /></p>
+<p>The latest version of VSDP provides easy access to the
+<span class="xref myst">conic solvers</span>:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/coin-or/Csdp">CSDP</a>,
+<a class="reference external" href="https://www.gnu.org/software/glpk">GLPK</a>,
+<a class="reference external" href="https://www.mathworks.com/help/optim/ug/linprog.html">LINPROG</a>,
+<a class="reference external" href="https://lpsolve.sourceforge.io">lp_solve</a>,
+<a class="reference external" href="https://www.mosek.com">MOSEK</a>,
+<a class="reference external" href="https://sdpa.sourceforge.io">SDPA</a>,
+<a class="reference external" href="https://github.com/sqlp/sdpt3">SDPT3</a>, and
+<a class="reference external" href="https://github.com/sqlp/sedumi">SeDuMi</a>.</p></li>
+</ul>
+<div class="section" id="available-vsdp-versions">
+<h2>Available VSDP versions<a class="headerlink" href="#available-vsdp-versions" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>The VSDP versions numbers reflect the release date:</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/vsdp/vsdp-2020">VSDP 2020</a></p>
+<ul>
+<li><p>Improvements: solver support and detection, workflow, testing, and
+documentation.</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/vsdp/vsdp-2012">VSDP 2012</a></p>
+<ul>
+<li><p>Improvements: additional support of second-order cones, linear cones, and
+free variables, vectorized internal structure.
+See <a class="reference external" href="s10_references.ipynb#H%C3%A4rter2012">[Härter2012]</a>.</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://github.com/vsdp/vsdp-2006">VSDP 2006</a></p>
+<ul>
+<li><p>Support for large scale semidefinite problems, comprehensible code.
+See <a class="reference external" href="s10_references.ipynb#Jansson2006">[Jansson2006]</a>.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.ti3.tuhh.de/jansson/">Christian Jansson</a> (<a class="reference external" href="mailto:jansson&#37;&#52;&#48;tuhh&#46;de">mailto:jansson<span>&#64;</span>tuhh<span>&#46;</span>de</a>)</p></li>
+<li><p>Marko Lange (<a class="reference external" href="mailto:m&#46;lange&#37;&#52;&#48;tuhh&#46;de">mailto:m<span>&#46;</span>lange<span>&#64;</span>tuhh<span>&#46;</span>de</a>)</p></li>
+<li><p>Viktor Härter</p></li>
+<li><p>Kai Torben Ohlhus (<a class="reference external" href="mailto:kai&#46;ohlhus&#37;&#52;&#48;tuhh&#46;de">mailto:kai<span>&#46;</span>ohlhus<span>&#64;</span>tuhh<span>&#46;</span>de</a>)</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='right-next' id="next-link" href="s01_installation.html" title="next page">Installation</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

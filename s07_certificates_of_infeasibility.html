@@ -1,0 +1,806 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Rigorous Certificates of Infeasibility &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Free Variables" href="s08_free_variables.html" />
+    <link rel="prev" title="A Priori Bounds" href="s06_a_priori_bounds.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s00_getting_started.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s02_conic_programming.html">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s03_linear_programming.html">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s05_semidefinite_programming.html">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s09_numerical_results.html">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s10_conic_solvers.html">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s07_certificates_of_infeasibility.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#theorems-of-alternatives">
+   Theorems of alternatives
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-primal-infeasible-socp">
+   Example: primal infeasible SOCP
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-primal-infeasible-sdp">
+   Example: primal infeasible SDP
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="rigorous-certificates-of-infeasibility">
+<h1>Rigorous Certificates of Infeasibility<a class="headerlink" href="#rigorous-certificates-of-infeasibility" title="Permalink to this headline">¶</a></h1>
+<p>The functions <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_lower_bound</span></code> and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_upper_bound</span></code>
+prove strict feasibility and compute rigorous error bounds.
+For the verification of infeasibility the functions
+<code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code> and <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code> can be applied.
+In this section we show how to use these functions.</p>
+<div class="section" id="theorems-of-alternatives">
+<h2>Theorems of alternatives<a class="headerlink" href="#theorems-of-alternatives" title="Permalink to this headline">¶</a></h2>
+<p>Both functions are based upon a theorem of alternatives
+<a class="reference external" href="s10_references.ipynb#Jansson2007">[Jansson2007]</a>.
+Such a theorem states that for two systems of equations or inequalities,
+one or the other system has a solution,
+but not both.
+A solution of one of the systems is called a certificate of infeasibility for the other
+which has no solution.</p>
+<p>For a conic program those two theorems of alternatives are as follows:</p>
+<ol class="simple">
+<li><p>Suppose that some <span class="math notranslate nohighlight">\(\tilde{y}\)</span> satisfies
+<span class="math notranslate nohighlight">\(-A^{T}y \in \mathcal{K}^{*}\)</span> and <span class="math notranslate nohighlight">\(b^{T}\tilde{y} &gt; 0\)</span>.
+Then the system of primal constraints
+<span class="math notranslate nohighlight">\(Ax = b\)</span> with <span class="math notranslate nohighlight">\(x \in \mathcal{K}\)</span> has no solution.</p></li>
+<li><p>Suppose that some <span class="math notranslate nohighlight">\(\tilde{x} \in \mathcal{K}\)</span> satisfies
+<span class="math notranslate nohighlight">\(A\tilde{x} = 0\)</span> and <span class="math notranslate nohighlight">\(c^{T}\tilde{x} &lt; 0\)</span>.
+Then the system of dual constraints
+<span class="math notranslate nohighlight">\(c - A^{T}y \in \mathcal{K}^{*}\)</span> has no solution.</p></li>
+</ol>
+<p>The first theorem is the foundation of <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>
+and the second of <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code>.
+For a proof, see <a class="reference external" href="s10_references.ipynb#Jansson2007">[Jansson2007]</a>.</p>
+</div>
+<div class="section" id="example-primal-infeasible-socp">
+<h2>Example: primal infeasible SOCP<a class="headerlink" href="#example-primal-infeasible-socp" title="Permalink to this headline">¶</a></h2>
+<p>We consider a slightly modified second-order cone problem from
+<a class="reference external" href="s10_references.ipynb#Ben-Tal2001">[Ben-Tal2001]</a> (Example 2.4.2)</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{minimize} &amp; \begin{pmatrix} 0 &amp; 0 &amp; 0 \end{pmatrix} x, \\
+\text{subject to}
+&amp; \begin{pmatrix} 1 &amp; 0 &amp; 0.5 \\ 0 &amp; 1 &amp; 0 \end{pmatrix}
+  x = \begin{pmatrix} 0 \\ 1 \end{pmatrix}, \\
+&amp; x \in \mathbb{L}^{3},
+\end{array}
+\end{split}\]</div>
+<p>with its dual problem</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{maximize} &amp; \begin{pmatrix} 0 &amp; 1 \end{pmatrix} y, \\
+\text{subject to}
+&amp; \begin{pmatrix} 0 \\ 0 \\ 0 \end{pmatrix} -
+  \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 1 \\ 0.5 &amp; 0 \end{pmatrix}
+  y \in \mathbb{L}^{3}.
+\end{array}
+\end{split}\]</div>
+<p>The primal problem is infeasible, while the dual problem is unbounded.
+One can easily prove this fact by assuming that there exists a primal feasible point <span class="math notranslate nohighlight">\(x\)</span>.
+This point has to satisfy <span class="math notranslate nohighlight">\(x_{3} = -2x_{1}\)</span>
+and therefore <span class="math notranslate nohighlight">\(x_{1} \geq \sqrt{x_{2}^{2} + (-2x_{1})^{2}}\)</span>.
+From the second equality constraint we get <span class="math notranslate nohighlight">\(x_{2} = 1\)</span>
+yielding the contradiction <span class="math notranslate nohighlight">\(x_{1} \geq \sqrt{1 + 4x_{1}^{2}}\)</span>.
+Thus, the primal problem has no feasible solution.</p>
+<p>The set of dual feasible points is given by <span class="math notranslate nohighlight">\(y_{1} \leq 0\)</span> and <span class="math notranslate nohighlight">\(y_{2} = -\frac{\sqrt{3}}{2}y_{1}\)</span>.
+Thus the maximization of the dual problem yields <span class="math notranslate nohighlight">\(\hat{f}_{p} = +\infty\)</span> for
+<span class="math notranslate nohighlight">\(y = \alpha\begin{pmatrix} -1 &amp; \sqrt{3}/2 \end{pmatrix}^{T}\)</span> with <span class="math notranslate nohighlight">\(\alpha \to +\infty\)</span>.</p>
+<p>To show primal infeasibility using VSDP, one first has to specify the input data:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">;</span>
+     <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span>
+<span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">K</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Using the approximate solver SDPT3,
+we obtain a rigorous certificate of infeasibility with the routine
+<code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">K</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
+                   <span class="o">.</span><span class="n">check_primal_infeasible</span> <span class="p">()</span> <span class="o">...</span>
+                   <span class="o">.</span><span class="n">check_dual_infeasible</span> <span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>
+ num. of constraints =  2
+ dim. of socp   var  =  3,   num. of socp blk  =  1
+*******************************************************************
+   SDPT3: Infeasible path-following algorithms
+*******************************************************************
+ version  predcorr  gam  expon  scale_data
+    NT      1      0.000   1        0    
+it pstep dstep pinfeas dinfeas  gap      prim-obj      dual-obj    cputime
+-------------------------------------------------------------------
+ 0|0.000|0.000|1.0e+00|2.1e+00|3.7e+00| 0.000000e+00  0.000000e+00| 0:0:00| chol  1  1 
+ 1|0.640|1.000|3.6e-01|1.0e-01|3.0e-01| 0.000000e+00  1.979648e+00| 0:0:00| chol  1  1 
+ 2|0.066|0.638|3.4e-01|4.3e-02|2.4e+00| 0.000000e+00  2.346369e+02| 0:0:00| chol  1  1 
+ 3|0.004|1.000|3.4e-01|1.0e-03|2.9e+04| 0.000000e+00  2.170266e+06| 0:0:00| chol  2  2 
+ 4|0.005|1.000|3.4e-01|9.9e-05|2.1e+08| 0.000000e+00  1.165746e+10| 0:0:00| chol  2  2 
+ 5|0.004|1.000|3.4e-01|0.0e+00|5.3e+11| 0.000000e+00  3.618635e+13| 0:0:00| chol  1  1 
+ 6|0.002|1.000|3.4e-01|0.0e+00|2.2e+15| 0.000000e+00  1.736991e+17| 0:0:00|
+  sqlp stop: primal or dual is diverging, 9.1e+16
+-------------------------------------------------------------------
+ number of iterations   =  6
+ Total CPU time (secs)  = 0.22  
+ CPU time per iteration = 0.04  
+ termination code       =  3
+ DIMACS: 3.4e-01  0.0e+00  0.0e+00  0.0e+00  -1.0e+00  1.3e-02
+-------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>The output of the solver is quite verbose and can be suppressed by
+setting <code class="docutils literal notranslate"><span class="pre">obj.options.VERBOSE_OUTPUT</span></code> to <code class="docutils literal notranslate"><span class="pre">false</span></code>.
+Important is the message of the SDPT3 solver:</p>
+<blockquote>
+<div><p>sqlp stop: primal or dual is diverging</p>
+</div></blockquote>
+<p>which supports the theoretical consideration about the unboundedness of the dual problem.
+As expected,
+<code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code> proves the infeasiblity of the primal problem</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+      Normal termination, 0.0 seconds.
+
+      A certificate of primal infeasibility &#39;y&#39; was found.
+      The conic problem is primal infeasible.
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>while dual infeasibility cannot be shown:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_dual_infeasibility</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+      Normal termination, 0.0 seconds.
+
+      NO certificate of dual infeasibility was found.
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>The interval quantity <code class="docutils literal notranslate"><span class="pre">y</span></code>, the rigorous certificate of primal infeasiblity,
+matches the theoretical considerations.
+It diverges to infinite values:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval y = 
+  1.0e+017 *
+   -2.0060
+    1.7369
+</pre></div>
+</div>
+</div>
+</div>
+<p>and the first entry of <code class="docutils literal notranslate"><span class="pre">y</span></code> multiplied by <span class="math notranslate nohighlight">\(-\sqrt{3}/2\)</span> is almost the second entry of <code class="docutils literal notranslate"><span class="pre">y</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval ans = 
+  1.0e+017 *
+    1.7372
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following check is already done by <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>,
+but for illustration we evaluate the conditions to prove primal infeasibility
+from the first theorem of alternatives <span class="math notranslate nohighlight">\(-A^{T}y \in \mathcal{K}^{*}\)</span> and <span class="math notranslate nohighlight">\(b^{T}\tilde{y} &gt; 0\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="s1">&#39; * y;</span>
+<span class="n">z</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">norm</span> <span class="p">(</span><span class="n">z</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="n">end</span><span class="p">))</span>  <span class="o">%</span> <span class="n">Check</span> <span class="n">z</span> <span class="n">to</span> <span class="n">be</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">cone</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sa">b</span><span class="s1">&#39; * y &gt; 0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that the rigorous certificate of infeasiblity is not necessarily unique.
+Thus VSDP might proof a different <code class="docutils literal notranslate"><span class="pre">y</span></code>,
+when used with another approximate solver.
+Compare for example the certificate computed by SeDuMi:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">K</span><span class="p">);</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sedumi&#39;</span><span class="p">)</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">check_primal_infeasible</span> <span class="p">();</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval y = 
+   -2.3924
+    1.0000
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="s1">&#39; * y;</span>
+<span class="n">z</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">norm</span> <span class="p">(</span><span class="n">z</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="n">end</span><span class="p">))</span>  <span class="o">%</span> <span class="n">Check</span> <span class="n">z</span> <span class="n">to</span> <span class="n">be</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">cone</span><span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sa">b</span><span class="s1">&#39; * y &gt; 0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+</pre></div>
+</div>
+</div>
+</div>
+<p>which is also perfectly valid.</p>
+</div>
+<div class="section" id="example-primal-infeasible-sdp">
+<h2>Example: primal infeasible SDP<a class="headerlink" href="#example-primal-infeasible-sdp" title="Permalink to this headline">¶</a></h2>
+<p>In the following we consider another conic optimization problem from
+<a class="reference external" href="s10_references.ipynb#Jansson2006">[Jansson2006]</a>.
+The two SDP constraints of that problem
+depend on two arbitrary fixed chosen parameters
+<span class="math notranslate nohighlight">\(\delta = 0.1\)</span> and <span class="math notranslate nohighlight">\(\varepsilon = -0.01\)</span>.</p>
+<p>\begin{equation}
+\begin{array}{ll}
+\text{minimize} &amp;
+\left\langle \begin{pmatrix} 0 &amp; 0 \ 0 &amp; 0 \end{pmatrix}, X \right\rangle \
+\text{subject to}
+&amp; \left\langle \begin{pmatrix} 1 &amp; 0 \ 0 &amp; 0 \end{pmatrix}, X \right\rangle
+= \varepsilon, \
+&amp; \left\langle \begin{pmatrix} 0 &amp; 1 \ 1 &amp; \delta \end{pmatrix},
+X \right\rangle = 1, \
+&amp; X \in \mathbb{S}_{+}^{2}.
+\end{array}
+\end{equation}</p>
+<p>The problem data is entered in the VSDP 2006 format:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clear</span> <span class="nb">all</span><span class="p">;</span>
+<span class="n">EPSILON</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">;</span>
+<span class="n">DELTA</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+<span class="n">blk</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">;</span> <span class="mi">2</span><span class="p">};</span>
+<span class="n">C</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">A</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">A</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">1</span> <span class="n">DELTA</span><span class="p">];</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="n">EPSILON</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">blk</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The first constraint yields <span class="math notranslate nohighlight">\(x_1 = \varepsilon &lt; 0\)</span>.
+This is a contradiction to <span class="math notranslate nohighlight">\(X \in \mathbb{S}_{+}^{2}\)</span>,
+thus the problem is primal infeasible.
+The dual problem is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{maximize} &amp; \varepsilon y_{1} + y_{2} \\
+\text{subject to}
+&amp; \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}
+-y_{1} \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}
+-y_{2} \begin{pmatrix} 0 &amp; 1 \\ 1 &amp; \delta \end{pmatrix}
+= \begin{pmatrix} -y_{1} &amp; -y_{2} \\ -y_{2} &amp; -\delta y_{2} \end{pmatrix}
+\in \mathbb{S}_{+}^{2}, \\
+&amp; y_{1}, y_{2} \in \mathbb{R}.
+\end{array}
+\end{split}\]</div>
+<p>For dual feasibility
+the first principal minor of the dual constraint
+must fulfill <span class="math notranslate nohighlight">\(-y_{1} \geq 0\)</span>
+and the entire matrix <span class="math notranslate nohighlight">\(y_{2}(\delta y_{1} - y_{2}) \geq 0\)</span>.
+The objective function goes to <span class="math notranslate nohighlight">\(+\infty\)</span>
+for <span class="math notranslate nohighlight">\(y_{1} \to -\infty\)</span> and <span class="math notranslate nohighlight">\(y_{2} = 0\)</span>.
+Thus the dual problem is unbounded
+and each point <span class="math notranslate nohighlight">\(\hat{y} = (y_{1}, 0)\)</span> with <span class="math notranslate nohighlight">\(y_{1} \leq 0\)</span>
+is a certificate of primal infeasibility.</p>
+<p>To compute a rigorous certificate of primal infeasiblity using VSDP,
+one can make use of the <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>-function:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
+         <span class="o">.</span><span class="n">rigorous_upper_bound</span> <span class="p">()</span> <span class="o">...</span>
+         <span class="o">.</span><span class="n">check_primal_infeasible</span> <span class="p">()</span> <span class="o">...</span>
+         <span class="o">.</span><span class="n">check_dual_infeasible</span> <span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>warning: rigorous_upper_bound: Conic solver could not find a solution for perturbed problem
+warning: called from
+    rigorous_upper_bound&gt;rigorous_upper_bound_infinite_bounds at line 191 column 5
+    rigorous_upper_bound at line 58 column 7
+obj =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 3 variables
+       m  = 2 constraints
+
+  and cones:
+
+     K.s = [ 2 ]
+
+  obj.solutions.approximate:
+
+      Solver &#39;sdpt3&#39;: Primal infeasible, 0.4 seconds.
+
+        c&#39;*x = 0.000000000000000e+00
+        b&#39;*y = 1.000000000000000e+00
+
+
+  Compute a rigorous lower bound:
+
+    &#39;obj = obj.rigorous_lower_bound()&#39;
+  obj.solutions.rigorous_upper_bound:
+
+      Solver &#39;sdpt3&#39;: Unknown, 0.4 seconds, 1 iterations.
+
+          fU = Inf
+
+
+  obj.solutions.certificate_primal_infeasibility:
+
+      Normal termination, 0.0 seconds.
+
+      A certificate of primal infeasibility &#39;y&#39; was found.
+      The conic problem is primal infeasible.
+
+
+  obj.solutions.certificate_dual_infeasibility:
+
+      Normal termination, 0.0 seconds.
+
+      NO certificate of dual infeasibility was found.
+
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>While computing an approximate solution to this problem,
+SDPT3 already detects potential primal infeasibility.
+Trying to compute a rigorous upper error bound by <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_upper_bound</span></code> fails.
+This emphasizes the warning at the beginning of the output
+and the upper error bound is set to infinity (<code class="docutils literal notranslate"><span class="pre">fU</span> <span class="pre">=</span> <span class="pre">Inf</span></code>).</p>
+<p>Using the approximate dual solution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yt</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>yt =
+  -100.007983163
+    -0.000079832
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>the VSDP-function <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code> tries to prove
+a rigorous certificate of primal infeasibility.
+This is done by a rigorous evaluation of the theorem of alternatives
+using interval arithmetic:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">infsup</span>
+<span class="n">yy</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval yy = 
+[ -100.0080, -100.0079] 
+[   -0.0001,   -0.0000] 
+</pre></div>
+</div>
+</div>
+</div>
+<p>According to the <a class="reference external" href="#Theorems-of-alternatives">theorem of alternatives</a>
+<span class="math notranslate nohighlight">\(\langle \tilde{y}, b \rangle\)</span> is positive:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="sa">b</span><span class="s1">&#39; * yy</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval ans = 
+[    1.0000,    1.0000] 
+</pre></div>
+</div>
+</div>
+</div>
+<p>and <span class="math notranslate nohighlight">\(-A^{*}\tilde{y}\)</span> lies in the cone
+of symmetric positive semidefinite matrices <span class="math notranslate nohighlight">\(\mathbb{S}_{+}^{2}\)</span>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">yy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">-</span> <span class="n">yy</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval ans = 
+[  100.0079,  100.0080] [    0.0000,    0.0001] 
+[    0.0000,    0.0001] [    0.0000,    0.0001] 
+</pre></div>
+</div>
+</div>
+</div>
+<p>It was shown,
+that the problem is unbounded,
+but not infeasible.
+Therefore it is clear,
+that VSDP cannot prove a rigorous certificate of dual infeasiblity
+by <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_dual_infeasibility</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+      Normal termination, 0.0 seconds.
+
+      NO certificate of dual infeasibility was found.
+
+
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="s06_a_priori_bounds.html" title="previous page">A Priori Bounds</a>
+    <a class='right-next' id="next-link" href="s08_free_variables.html" title="next page">Free Variables</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

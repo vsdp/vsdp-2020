@@ -1,0 +1,482 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>References &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Conic solvers" href="s10_conic_solvers.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s00_getting_started.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s02_conic_programming.html">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s03_linear_programming.html">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s05_semidefinite_programming.html">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s07_certificates_of_infeasibility.html">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s09_numerical_results.html">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s10_conic_solvers.html">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s11_references.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="references">
+<h1>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>[Alizadeh2003]<a id="Alizadeh2003"></a>
+<em>F. Alizadeh and D. Goldfarb</em>
+<strong>“Second-order cone programming”</strong>
+(2003).
+DOI: <a class="reference external" href="https://doi.org/10.1007/s10107-002-0339-5">10.1007/s10107-002-0339-5</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Andersen2002]<a id="Andersen2002"></a>
+<em>E. D. Andersen</em>
+<strong>“Handling free variables in primal-dual interior-point methods using a quadratic cone”</strong>
+(2002).
+URL: <a class="reference external" href="http://meetings.siam.org/sess/dsp_talk.cfm?p=3815">http://meetings.siam.org/sess/dsp_talk.cfm?p=3815</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Anjos2007]<a id="Anjos2007"></a>
+<em>M. F. Anjos and S. Burer</em>
+<strong>“On Handling Free Variables in Interior-Point Methods for Conic Linear Optimization”</strong>
+(2007).
+DOI: <a class="reference external" href="https://doi.org/10.1137/06066847X">10.1137/06066847X</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Ben-Tal2000]<a id="Ben-Tal2000"></a>
+<em>A. Ben-Tal, M. Kovara, A. Nemirovski, and J. Zowe</em>
+<strong>“Free Material Design via Semidefinite Programming: The Multiload Case with Contact Conditions”</strong>
+(2000).
+DOI: <a class="reference external" href="https://doi.org/10.1137/S0036144500372081">10.1137/S0036144500372081</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Ben-Tal2001]<a id="Ben-Tal2001"></a>
+<em>A. Ben-Tal and A. Nemirovski</em>
+<strong>“Lectures on Modern Convex Optimization”</strong>
+(2001).
+DOI: <a class="reference external" href="https://doi.org/10.1137/1.9780898718829">10.1137/1.9780898718829</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Borchers1999]<a id="Borchers1999"></a>
+<em>B. Borchers</em>
+<strong>“SDPLIB 1.2, a library of semidefinite programming test problems”</strong>
+(1999).
+DOI: <a class="reference external" href="https://doi.org/10.1080/10556789908805769">10.1080/10556789908805769</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Borchers2017]<a id="Borchers2017"></a>
+<em>B. Borchers</em>
+<strong>“CSDP 6.2.0 User’s Guide”</strong>
+(2017).
+URL: <a class="reference external" href="https://github.com/coin-or/Csdp/blob/master/doc/csdpuser.pdf">https://github.com/coin-or/Csdp/blob/master/doc/csdpuser.pdf</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Chaykin2016]<a id="Chaykin2016"></a>
+<em>D. Chaykin, C. Jansson, F. Keil, M. Lange, K. T. Ohlhus, and S. M. Rump</em>
+<strong>“Rigorous Results in Electronic Structure Calculations”</strong>
+(2016).
+URL: <a class="reference external" href="http://www.optimization-online.org/DB_HTML/2016/11/5730.html">http://www.optimization-online.org/DB_HTML/2016/11/5730.html</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[ElGhaoui1997]<a id="ElGhaoui1997"></a>
+<em>L. El Ghaoui and H. Lebret</em>
+<strong>“Robust Solutions to Least-Squares Problems with Uncertain Data”</strong>
+(1997).
+DOI: <a class="reference external" href="https://doi.org/10.1137/S0895479896298130">10.1137/S0895479896298130</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Freund2007]<a id="Freund2007"></a>
+<em>R. M. Freund, F. Ordóñez, and K.-C. Toh</em>
+<strong>“Behavioral measures and their correlation with IPM iteration counts on semi-definite programming problems”</strong>
+(2007).
+DOI: <a class="reference external" href="https://doi.org/10.1007/s10107-006-0035-y">10.1007/s10107-006-0035-y</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Härter2012]<a id="Härter2012"></a>
+<em>V. Härter, C. Jansson, and M. Lange</em>
+<strong>VSDP: A Matlab toolbox for verified semidefinite-quadratic-linear programming</strong>
+(2012).
+URL: <a class="reference external" href="http://www.optimization-online.org/DB_HTML/2013/01/3724.html">http://www.optimization-online.org/DB_HTML/2013/01/3724.html</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Jansson2004]<a id="Jansson2004"></a>
+<em>C. Jansson</em>
+<strong>“Rigorous Lower and Upper Bounds in Linear Programming”</strong>
+(2004).
+DOI: <a class="reference external" href="https://doi.org/10.1137/S1052623402416839">10.1137/S1052623402416839</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Jansson2006]<a id="Jansson2006"></a>
+<em>C. Jansson</em>
+<strong>“VSDP: Verified SemiDefinite Programming”</strong>
+(2006).
+URL: <a class="reference external" href="http://www.optimization-online.org/DB_HTML/2006/12/1547.html">http://www.optimization-online.org/DB_HTML/2006/12/1547.html</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Jansson2007]<a id="Jansson2007"></a>
+<em>C. Jansson</em>
+<strong>“Guaranteed Accuracy for Conic Programming Problems in Vector Lattices”</strong>
+(2007).
+URL: <a class="reference external" href="https://arxiv.org/abs/0707.4366">https://arxiv.org/abs/0707.4366</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Jansson2007a]<a id="Jansson2007a"></a>
+<em>C. Jansson, D. Chaykin, and C. Keil</em>
+<strong>“Rigorous Error Bounds for the Optimal Value in Semidefinite Programming”</strong>
+(2007).
+DOI: <a class="reference external" href="https://doi.org/10.1137/050622870">10.1137/050622870</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Jansson2009]<a id="Jansson2009"></a>
+<em>C. Jansson</em>
+<strong>“On verified numerical computations in convex programming”</strong>
+(2009).
+DOI: <a class="reference external" href="https://doi.org/10.1007/BF03186539">10.1007/BF03186539</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Kobayashi2007]<a id="Kobayashi2007"></a>
+<em>K. Kobayashi, K. Nakata, and M. Kojima</em>
+<strong>“A conversion of an SDP having free variables into the standard form SDP”</strong>
+(2007).
+DOI: <a class="reference external" href="https://doi.org/10.1007/s10589-006-9002-z">10.1007/s10589-006-9002-z</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Kocvara2002]<a id="Kocvara2002"></a>
+<em>M. Kočvara</em>
+<strong>“On the modelling and solving of the truss design problem with global stability constraints”</strong>
+(2002).
+DOI: <a class="reference external" href="https://doi.org/10.1007/s00158-002-0177-3">10.1007/s00158-002-0177-3</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Meszaros1998]<a id="Meszaros1998"></a>
+<em>C. Mészáros</em>
+<strong>“On free variables in interior point methods”</strong>
+(1998).
+DOI: <a class="reference external" href="https://doi.org/10.1080/10556789808805689">10.1080/10556789808805689</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Meyer2001]<a id="Meyer2001"></a>
+<em>R. Meyer</em>
+<strong>“When Good Computers Make Bad Calculations: A Cautionary Tale”</strong>
+(2001).
+URL: <a class="reference external" href="http://www.nag.com/IndustryArticles/when_good_computers.pdf">http://www.nag.com/IndustryArticles/when_good_computers.pdf</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Nakata2008]<a id="Nakata2008"></a>
+<em>M. Nakata, B. J. Braams, K. Fujisawa, M. Fukuda, J. K. Percus, M. Yamashita, and Z. Zhao</em>
+<strong>“Variational Calculation of Second-Order Reduced Density Matrices by Strong {{N}}-Representability Conditions and an Accurate Semidefinite Programming Solver”</strong>
+(2008).
+DOI: <a class="reference external" href="https://doi.org/10.1063/1.2911696">10.1063/1.2911696</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Ordonez2003]<a id="Ordonez2003"></a>
+<em>F. Ordóñez and R. M. Freund</em>
+<strong>“Computational Experience and the Explanatory Value of Condition Measures for Linear Optimization”</strong>
+(2003).
+DOI: <a class="reference external" href="https://doi.org/10.1137/S1052623402401804">10.1137/S1052623402401804</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Pataki2002]<a id="Pataki2002"></a>
+<em>G. Pataki and S. H. Schmieta</em>
+<strong>“The DIMACS library of mixed semidefinite-quadratic-linear programs”</strong>
+(2002).
+URL: <a class="reference external" href="http://dimacs.rutgers.edu/Challenges/Seventh/Instances/">http://dimacs.rutgers.edu/Challenges/Seventh/Instances/</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Renegar1994] <a id="Renegar1994"></a>
+<em>J. Renegar</em>
+<strong>“Some perturbation theory for linear programming”</strong>
+(1994).
+DOI: <a class="reference external" href="https://doi.org/10.1007/BF01581690">10.1007/BF01581690</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Rump1999]<a id="Rump1999"></a>
+<em>S. M. Rump</em>
+<strong>“INTLAB - INTerval LABoratory”</strong>
+(1999).
+DOI: <a class="reference external" href="https://doi.org/10.1007/978-94-017-1247-7_7">10.1007/978-94-017-1247-7_7</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Rump2010]<a id="Rump2010"></a>
+<em>S. M. Rump</em>
+<strong>“Verification methods: Rigorous results using floating-point arithmetic”</strong>
+(2010).
+DOI: <a class="reference external" href="https://doi.org/10.1017/S096249291000005X">10.1017/S096249291000005X</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Vandenberghe1996]<a id="Vandenberghe1996"></a>
+<em>L. Vandenberghe and S. Boyd</em>
+<strong>“Semidefinite Programming”</strong>
+(1996).
+DOI: <a class="reference external" href="https://doi.org/10.1137/1038003">10.1137/1038003</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Zhao2004]<a id="Zhao2004"></a>
+<em>Z. Zhao, B. J. Braams, M. Fukuda, M. L. Overton, and J. K. Percus</em>
+<strong>“The Reduced Density Matrix Method for Electronic Structure Calculations and the Role of Three-Index Representability Conditions”</strong>
+(2004).
+DOI: <a class="reference external" href="https://doi.org/10.1063/1.1636721">10.1063/1.1636721</a></p></li>
+</ul>
+<ul class="simple">
+<li><p>[Zowe1997]<a id="Zowe1997"></a>
+<em>J. Zowe, M. Kočvara, and M. P. Bendsøe</em>
+<strong>“Free material optimization via mathematical programming”</strong>
+(1997).
+DOI: <a class="reference external" href="https://doi.org/10.1007/BF02614328">10.1007/BF02614328</a></p></li>
+</ul>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="s10_conic_solvers.html" title="previous page">Conic solvers</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,580 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Conic Programming &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Linear Programming" href="s03_linear_programming.html" />
+    <link rel="prev" title="Installation" href="s01_installation.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s00_getting_started.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s03_linear_programming.html">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s05_semidefinite_programming.html">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s07_certificates_of_infeasibility.html">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s09_numerical_results.html">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s10_conic_solvers.html">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s02_conic_programming.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#primal-and-dual-form">
+   Primal and dual form
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#condensed-form">
+   Condensed form
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#interval-arithmetic">
+   Interval arithmetic
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="conic-programming">
+<h1>Conic Programming<a class="headerlink" href="#conic-programming" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="primal-and-dual-form">
+<h2>Primal and dual form<a class="headerlink" href="#primal-and-dual-form" title="Permalink to this headline">¶</a></h2>
+<p>VSDP can handle three self dual convex cones,
+that often occur in practical applications.
+These are:</p>
+<ul class="simple">
+<li><p>The non-negative orthant:
+<span class="math notranslate nohighlight">\($
+\mathbb{R}^{n}_{+} := \{ x \in \mathbb{R}^{n} \colon\; x_{i} \geq 0, \; i = 1, \ldots, n \}.
+$\)</span></p></li>
+<li><p>The Lorentz cone (see <a class="reference external" href="s10_references.ipynb#Alizadeh2003">[Alizadeh2003]</a>):
+<span class="math notranslate nohighlight">\($
+\mathbb{L}^{n} := \{ x \in \mathbb{R}^{n} \colon x_{1}
+\geq \|x_{2:n}\|_{2}\}.
+$\)</span></p></li>
+<li><p>The cone of symmetric positive semidefinite matrices:
+<span class="math notranslate nohighlight">\($
+\mathbb{S}^{n}_{+} := \left\{ X \in \mathbb{R}^{n \times n} \colon\;
+X = X^{T},\; v^{T} X v \geq 0,\; \forall v \in \mathbb{R}^{n} \right\}.
+$\)</span></p></li>
+</ul>
+<p>If a quantity is in the interior of one of the above cones,
+the definitions above must hold with strict inequalities.</p>
+<p>By <span class="math notranslate nohighlight">\(\langle c, x \rangle := c^{T} x\)</span>
+the usual Euclidean inner product of vectors in <span class="math notranslate nohighlight">\(\mathbb{R}^{n}\)</span> is denoted.
+For symmetric matrices <span class="math notranslate nohighlight">\(X, Y \in \mathbb{S}^{n}\)</span> the inner product is given by
+<span class="math notranslate nohighlight">\(\langle X,Y \rangle := \text{trace}(XY)\)</span>.</p>
+<p>Let <span class="math notranslate nohighlight">\(A^{f}\)</span> and <span class="math notranslate nohighlight">\(A^{l}\)</span> be a <span class="math notranslate nohighlight">\(m \times n_{f}\)</span> and a <span class="math notranslate nohighlight">\(m \times n_{l}\)</span> matrix,
+respectively,
+and let <span class="math notranslate nohighlight">\(A_{i}^{q}\)</span> be <span class="math notranslate nohighlight">\(m \times q_{i}\)</span> matrices for <span class="math notranslate nohighlight">\(i = 1,\ldots,n_{q}\)</span>.
+Let <span class="math notranslate nohighlight">\(c^{f} \in \mathbb{R}^{n_{f}}\)</span>,
+<span class="math notranslate nohighlight">\(c^{l} \in \mathbb{R}^{n_{l}}\)</span>,
+<span class="math notranslate nohighlight">\(c_{i}^{q} \in \mathbb{R}^{q_i}\)</span>, and
+<span class="math notranslate nohighlight">\(b \in \mathbb{R}^{m}\)</span>.
+Moreover, let <span class="math notranslate nohighlight">\(A_{1,j}^{s}, \ldots, A_{m,j}^{s}\)</span>, <span class="math notranslate nohighlight">\(C_{j}^{s}\)</span>, <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span>
+be symmetric <span class="math notranslate nohighlight">\(s_{j} \times s_{j}\)</span> matrices for <span class="math notranslate nohighlight">\(j = 1, \ldots, n_{s}\)</span>.</p>
+<p>Now we can define the conic semidefinite-quadratic-linear programming problem in primal standard form
+<span class="math notranslate nohighlight">\($
+\begin{array}{ll}
+\text{minimize} &amp;
+\langle c^{f}, x^{f} \rangle + \langle c^{l}, x^{l} \rangle +
+\sum_{i=1}^{n_{q}} \langle c_{i}^{q}, x_{i}^{q} \rangle +
+\sum_{j=1}^{n_{s}} \langle C_{j}^{s}, X_{j}^{s} \rangle \\
+\text{subject to} &amp;
+A^{f} x^{f} + A^{l} x^{l} + \sum_{i=1}^{n_{q}} A_{i}^{q} x_{i}^{q} +
+\sum_{j=1}^{n_{s}}\mathcal{A}_{j}^{s}(X_{j}^{s}) = b, \\
+&amp; x^{f} \in \mathbb{R}^{n_{f}}, \\
+&amp; x^{l} \in \mathbb{R}^{n_{l}}_{+}, \\
+&amp; x_{i}^{q} \in \mathbb{L}^{q_i}, \quad i = 1, \ldots, n_{q}, \\
+&amp; X_{j}^{s} \in \mathbb{S}^{s_{j}}_{+}, \quad j = 1, \ldots, n_{s},
+\end{array}
+$\)</span>
+where <span class="math notranslate nohighlight">\(x^{f}\)</span> are “free variables”,
+<span class="math notranslate nohighlight">\(x^{l}\)</span> are “non-negative variables”,
+<span class="math notranslate nohighlight">\(x_{i}^{q}\)</span> are “second-order cone (SOCP) variables”,
+and finally <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span> are “positive semidefinite (SDP) variables”.
+The linear operator
+<span class="math notranslate nohighlight">\($
+\mathcal{A}_{j}^{s}(X_{j}^{s}) :=
+\begin{pmatrix}
+\langle A_{1j}^{s}, X_{j}^{s} \rangle \\
+\vdots \\
+\langle A_{mj}^{s}, X_{j}^{s} \rangle
+\end{pmatrix}\)</span>$
+maps the symmetric matrices <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span> to <span class="math notranslate nohighlight">\(\mathbb{R}^{m}\)</span>.
+The adjoint linear operator is
+<span class="math notranslate nohighlight">\($
+(\mathcal{A}_{j}^{s})^{*} y := \sum_{k=1}^{m} A_{kj}^{s} y_{k}.
+$\)</span></p>
+<p>The dual problem associated with the primal standard form is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{maximize} &amp; b^{T} y \\
+\text{subject to}
+&amp; (A^{f})^{T} y + z^{f} = c^{f}, \\
+&amp; (A^{l})^{T} y + z^{l} = c^{l}, \\
+&amp; (A_{i}^{q})^{T} y + z_{i}^{q} = c_{i}^{q}, \\
+&amp; (\mathcal{A}_{j}^{s})^{*} y + Z_{j}^{s} = C_{j}^{s},
+\end{array}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(z^{f} \in \lbrace 0 \rbrace^{n_{f}}\)</span>,
+<span class="math notranslate nohighlight">\(z^{l} \in \mathbb{R}^{n_{l}}_{+}\)</span>,
+<span class="math notranslate nohighlight">\(z_{i}^{q} \in \mathbb{L}^{q_i}\)</span>, <span class="math notranslate nohighlight">\(i = 1, \ldots, n_{q}\)</span>, and
+<span class="math notranslate nohighlight">\(Z_{j}^{s} \in \mathbb{S}^{s_{j}}_{+}\)</span>, <span class="math notranslate nohighlight">\(j = 1, \ldots, n_{s}\)</span>.</p>
+<p>The objective functions and equality constraints of the primal and dual problem are linear.
+Thus conic programming can be seen as an extension of linear programming
+with additional conic constraints.</p>
+<p>By definition the vector <span class="math notranslate nohighlight">\(x^{f}\)</span> contains all unconstrained or free variables,
+whereas all other variables are bounded by conic constraints.
+In several applications some solvers (for example SDPA or CSDP) require that
+free variables are converted into the difference of non-negative variables.
+Besides the major disadvantage that this transformation is numerical unstable,
+it also increases the number of variables of the particular problems.
+In VSDP <span class="xref myst">free variables</span>
+can be handled in a numerical stable manner.</p>
+</div>
+<div class="section" id="condensed-form">
+<h2>Condensed form<a class="headerlink" href="#condensed-form" title="Permalink to this headline">¶</a></h2>
+<p>Occasionally, it is useful to represent the conic programming problem in a
+more compact form by using the symmetric vectorization operator.
+This operator maps a symmetric matrix <span class="math notranslate nohighlight">\(X \in \mathbb{S}^{n}\)</span>
+to an <span class="math notranslate nohighlight">\(n(n + 1)/2\)</span>-dimensional vector
+<span class="math notranslate nohighlight">\($
+svec(X, \alpha) :=
+\begin{pmatrix}
+X_{11} &amp; \alpha X_{12} &amp; X_{22} &amp; \alpha X_{13} &amp; \cdots &amp;  X_{nn}
+\end{pmatrix}^{T},
+$\)</span>
+where <span class="math notranslate nohighlight">\(\alpha\)</span> is a scaling factor for the off diagonal elements.
+The inverse operation is denoted by <span class="math notranslate nohighlight">\(smat\)</span> such that
+<span class="math notranslate nohighlight">\(smat(svec(X, \alpha), 1/\alpha) = X\)</span>.
+For a vectorized quantity <span class="math notranslate nohighlight">\(x\)</span>, scaled by <span class="math notranslate nohighlight">\(\alpha\)</span>,
+we often write <span class="math notranslate nohighlight">\(x \in \mathbb{S}^{n}\)</span> as abbreviation for
+<span class="math notranslate nohighlight">\(smat(x, 1/\alpha) \in \mathbb{S}^{n}\)</span>.</p>
+<p>By using <span class="math notranslate nohighlight">\(svec\)</span> it is possible to map each symmetric matrix to a vector
+quantity.  Additionally, by using the scaling factor <span class="math notranslate nohighlight">\(\alpha = 1\)</span> for all
+<span class="math notranslate nohighlight">\(A_{kj}^{s}\)</span>, <span class="math notranslate nohighlight">\(C_{j}^{s}\)</span>, and <span class="math notranslate nohighlight">\(Z_{j}^{s}\)</span> and the scaling factor
+<span class="math notranslate nohighlight">\(\alpha = 2\)</span> for all <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span>, the inner product of symmetric matrices
+reduces to a simple scalar product of two vectors.  Thus all cones can be
+treated equally.</p>
+<p>The condensed quantities <span class="math notranslate nohighlight">\(c\)</span>, <span class="math notranslate nohighlight">\(x\)</span>, and <span class="math notranslate nohighlight">\(z\)</span> are <span class="math notranslate nohighlight">\(n \times 1\)</span>-vectors:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+c :=
+\begin{pmatrix}
+c^{f} \\ c^{l} \\ c_{1}^{q} \\ \vdots \\ c_{n_{q}}^{q} \\
+svec(C_{1}^{s},1) \\ \vdots \\ svec(C_{n_{s},1}^{s}) \\
+\end{pmatrix},
+x :=
+\begin{pmatrix}
+x^{f} \\ x^{l} \\ x_{1}^{q} \\ \vdots \\ x_{n_{q}}^{q} \\
+svec(X_{1}^{s},2) \\ \vdots \\ svec(X_{n_{s},2}^{s})
+\end{pmatrix},
+z :=
+\begin{pmatrix}
+z^{f} \\ z^{l} \\ z_{1}^{q} \\ \vdots \\ z_{n_{q}}^{q} \\
+svec(Z_{1}^{s},1) \\ \vdots \\ svec(Z_{n_{s}}^{s},1) \\
+\end{pmatrix},
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(n = n_{f} + n_{l} + \sum_{i = 1}^{n_{q}} q_{i} + \sum_{j = 1}^{n_{s}} s_{j}(s_{j} + 1)/2\)</span>.
+<span class="math notranslate nohighlight">\(A^{T}\)</span> becomes an <span class="math notranslate nohighlight">\(n \times m\)</span> matrix</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+A^{T} :=
+\begin{pmatrix}
+&amp; A^{f} &amp; \\
+&amp; A^{l} &amp; \\
+&amp; A_{1}^{q} &amp; \\
+&amp; \vdots &amp; \\
+&amp; A_{n_{q}}^{q} &amp; \\
+svec(A_{11}^{s},1) &amp; \cdots &amp; svec(A_{1m}^{s},1) \\
+\vdots &amp; &amp; \vdots \\
+svec(A_{n_{s}1}^{s},1) &amp; \cdots &amp; svec(A_{n_{s}m}^{s},1)
+\end{pmatrix}
+\end{split}\]</div>
+<p>Let the constraint cone <span class="math notranslate nohighlight">\(K\)</span> and its dual cone <span class="math notranslate nohighlight">\(K^{*}\)</span> be</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align}
+\mathcal{K} &amp;:=&amp;
+\mathbb{R}^{n_{f}} &amp;\times
+\mathbb{R}^{n_{l}}_{+} \times
+\mathbb{L}^{q_{1}} \times \ldots \times \mathbb{L}^{q_{n_{q}}} \times
+\mathbb{S}^{s_{1}}_{+} \times \ldots \times \mathbb{S}^{s_{n_{s}}}_{+}, \\
+\mathcal{K}^{*} &amp;:=&amp;
+\{0\}^{n_{f}} &amp;\times
+\mathbb{R}^{n_{l}}_{+} \times
+\mathbb{L}^{q_{1}} \times \ldots \times \mathbb{L}^{q_{n_{q}}} \times
+\mathbb{S}^{s_{1}}_{+} \times \ldots \times \mathbb{S}^{s_{n_{s}}}_{+}.
+\end{align}
+\end{split}\]</div>
+<p>With these abbreviations we obtain the following block form of the conic problem:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{minimize}   &amp; c^{T} x, \\
+\text{subject to} &amp; Ax = b, \\
+                  &amp; x \in \mathcal{K},
+\end{array}
+\end{split}\]</div>
+<p>with optimal value <span class="math notranslate nohighlight">\(\hat{f}_{p}\)</span> and the corresponding dual problem</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{maximize}   &amp; b^{T} y, \\
+\text{subject to} &amp; z = c - (A)^{T} y \in \mathcal{K}^{*},
+\end{array}
+\end{split}\]</div>
+<p>with optimal value <span class="math notranslate nohighlight">\(\hat{f}_{d}\)</span>.
+In VSDP each conic problem is fully described by the four variables <code class="docutils literal notranslate"><span class="pre">(A,</span> <span class="pre">b,</span> <span class="pre">c,</span> <span class="pre">K)</span></code>.
+The first two quantities represent the affine constraints <span class="math notranslate nohighlight">\(Ax = b\)</span>.
+The third is the primal objective vector <code class="docutils literal notranslate"><span class="pre">c</span></code>,
+and the last describes the underlying cone.
+The cone <code class="docutils literal notranslate"><span class="pre">K</span></code> is a structure with four fields: <code class="docutils literal notranslate"><span class="pre">K.f</span></code>, <code class="docutils literal notranslate"><span class="pre">K.l</span></code>, <code class="docutils literal notranslate"><span class="pre">K.q</span></code>, and <code class="docutils literal notranslate"><span class="pre">K.s</span></code>.
+The field <code class="docutils literal notranslate"><span class="pre">K.f</span></code> stores the number of free variables <span class="math notranslate nohighlight">\(n_{f}\)</span>,
+the field <code class="docutils literal notranslate"><span class="pre">K.l</span></code> stores the number of non-negative variables <span class="math notranslate nohighlight">\(n_{l}\)</span>,
+the field <code class="docutils literal notranslate"><span class="pre">K.q</span></code> stores the dimensions <span class="math notranslate nohighlight">\(q_{1}, \ldots, q_{n_{q}}\)</span> of the second order cones,
+and similarly <code class="docutils literal notranslate"><span class="pre">K.s</span></code> stores the dimensions <span class="math notranslate nohighlight">\(s_{1}, \ldots, s_{n_{s}}\)</span> of the semidefinite cones.
+If a component of <code class="docutils literal notranslate"><span class="pre">K</span></code> is empty,
+then it is assumed that the corresponding cone does not occur.</p>
+<p>It is well known that for linear programming problems strong duality
+<span class="math notranslate nohighlight">\(\hat{f}_{p} = \hat{f}_{d}\)</span> holds without any constraint qualifications.
+General conic programs satisfy only the weak duality condition <span class="math notranslate nohighlight">\(\hat{f}_{d} \leq \hat{f}_{p}\)</span>.
+Strong duality requires additional constraint qualifications,
+such as <em>Slater’s constraint qualifications</em>
+(see <a class="reference external" href="s10_references.ipynb#Vandenberghe1996">[Vandenberghe1996]</a>
+and <a class="reference external" href="s10_references.ipynb#Ben-Tal2001">[Ben-Tal2001]</a>).</p>
+<p><strong>Strong Duality Theorem</strong></p>
+<ul class="simple">
+<li><p>If the primal problem is strictly feasible (i.e. there exists a primal
+feasible point <span class="math notranslate nohighlight">\(x\)</span> in the interior of <span class="math notranslate nohighlight">\(K\)</span>) and <span class="math notranslate nohighlight">\(\hat{f}_{p}\)</span> is finite,
+then <span class="math notranslate nohighlight">\(\hat{f}_{p} = \hat{f}_{d}\)</span> and the dual supremum is attained.</p></li>
+<li><p>If the dual problem is strictly feasible (i.e. there exists some <span class="math notranslate nohighlight">\(y\)</span> such
+that <span class="math notranslate nohighlight">\(z = c - (A)^{T} y\)</span> is in the interior of <span class="math notranslate nohighlight">\(K^{*}\)</span>) and <span class="math notranslate nohighlight">\(\hat{f}_{d}\)</span>
+is finite, then <span class="math notranslate nohighlight">\(\hat{f}_{d} = \hat{f}_{p}\)</span>, and the primal infimum is
+attained.</p></li>
+</ul>
+<p>In general, the primal or dual problem formulation may have optimal solutions
+while its respective dual problem is infeasible, or the duality gap may be
+positive at optimality.</p>
+<p>Duality theory is central to the study of optimization.
+Firstly, algorithms are frequently based on duality
+(like primal-dual interior-point methods),
+secondly, they enable one to check whether or not a given feasible point is optimal,
+and thirdly, it allows one to compute verified results efficiently.</p>
+</div>
+<div class="section" id="interval-arithmetic">
+<h2>Interval arithmetic<a class="headerlink" href="#interval-arithmetic" title="Permalink to this headline">¶</a></h2>
+<p>For the usage of VSDP a knowledge of interval arithmetic is not required,
+but some error bound outputs are intervals.
+Therefore we give a very brief introduction to interval formats.
+An interval vector or an interval matrix is defined as a set of vectors or matrices
+that vary between a lower and an upper vector or matrix,
+respectively.
+In other words,
+these are quantities with interval components.</p>
+<p>In INTLAB <a class="reference external" href="s10_references.ipynb#Rump1999">[Rump1999]</a> these interval quantities
+can be initialized with the <code class="docutils literal notranslate"><span class="pre">infsup</span></code>-function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">infsup</span> <span class="n">short</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">infsup</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval x = 
+[   -1.0000,    2.0000] 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Equivalently,
+these quantities can be defined by a midpoint-radius representation,
+using the <code class="docutils literal notranslate"><span class="pre">midrad</span></code>-function.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">midrad</span> <span class="n">short</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">midrad</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="nb">format</span> <span class="n">infsup</span> <span class="n">short</span>
+<span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval y = 
+&lt;    0.5000,   1.5000&gt; 
+intval y = 
+[   -1.0000,    2.0000] 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="s01_installation.html" title="previous page">Installation</a>
+    <a class='right-next' id="next-link" href="s03_linear_programming.html" title="next page">Linear Programming</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

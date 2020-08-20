@@ -1,0 +1,939 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Semidefinite Programming &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="A Priori Bounds" href="s06_a_priori_bounds.html" />
+    <link rel="prev" title="Second-order Cone Programming" href="s04_second_order_cone_programming.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s00_getting_started.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s02_conic_programming.html">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s03_linear_programming.html">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s07_certificates_of_infeasibility.html">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s09_numerical_results.html">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s10_conic_solvers.html">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s05_semidefinite_programming.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#first-sdp-example">
+   First SDP-Example
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#second-sdp-example">
+   Second SDP-Example
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="semidefinite-programming">
+<h1>Semidefinite Programming<a class="headerlink" href="#semidefinite-programming" title="Permalink to this headline">¶</a></h1>
+<p>The primal standard form of a conic program with <span class="math notranslate nohighlight">\(n_{s}\)</span> symmetric positive semidefinite cones
+<span class="math notranslate nohighlight">\($
+\mathbb{S}^{s_{j}}_{+} := \left\{ X \in \mathbb{R}^{s_{j} \times s_{j}}
+\colon\; X = X^{T},\; v^{T} X v \geq 0,\; \forall v \in \mathbb{R}^{s_{j}}
+\right\},\quad j = 1,\ldots,n_{s}.
+$\)</span>
+is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{lll}
+\text{minimize}
+&amp; \sum_{j=1}^{n_{s}} \langle C_{j}, X_{j} \rangle &amp; \\
+\text{subject to}
+&amp; \sum_{j=1}^{n_{s}} \langle A_{ij}, X_{j} \rangle = b_{i},
+&amp; i = 1,\ldots,m, \\
+&amp; X_{j} \in \mathbb{S}^{s_{j}}_{+},
+&amp; j = 1,\ldots,n_{s},
+\end{array}
+\end{split}\]</div>
+<p>with symmetric <span class="math notranslate nohighlight">\(s_{j} \times s_{j}\)</span> matrices <span class="math notranslate nohighlight">\(A_{ij}\)</span> and <span class="math notranslate nohighlight">\(C_{j}\)</span>.
+The dual problem form is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{maximize} &amp; b^{T} y \\
+\text{subject to}
+&amp; Z_{j} := C_{j} - \sum_{i=1}^{m} y_{i} A_{ij}
+  \in \mathbb{S}^{s_{j}}_{+},\quad j = 1, \ldots, n_{s}.
+\end{array}
+\end{split}\]</div>
+<div class="section" id="first-sdp-example">
+<h2>First SDP-Example<a class="headerlink" href="#first-sdp-example" title="Permalink to this headline">¶</a></h2>
+<p>We consider an example from the CSDP User’s Guide
+<a class="reference external" href="s10_references.ipynb#Borchers2017">[Borchers2017]</a>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{lll}
+\text{minimize}
+&amp; \sum_{j=1}^{3} \langle C_{j}, X_{j} \rangle &amp; \\
+\text{subject to}
+&amp; \sum_{j=1}^{3} \langle A_{ij}, X_{j} \rangle = b_{i},\quad
+     i = 1,2, \\
+&amp; X_{1} \in \mathbb{S}^{2}_{+}, \\
+&amp; X_{2} \in \mathbb{S}^{3}_{+}, \\
+&amp; X_{3} \in \mathbb{S}^{2}_{+},
+\end{array}
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(b = \begin{pmatrix} 1 \\ 2 \end{pmatrix}\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ccc}
+  C^{s_{1}}_{1} = \begin{pmatrix} -2 &amp; -1 \\ -1 &amp; -2 \end{pmatrix},
+&amp; C^{s_{2}}_{2} =
+  \begin{pmatrix} -3 &amp; 0 &amp; -1 \\ 0 &amp; -2 &amp; 0 \\ -1 &amp; 0 &amp; -3 \end{pmatrix},
+&amp; C^{s_{3}}_{3} = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}, \\
+  A^{s_{1}}_{1,1} = \begin{pmatrix} 3 &amp; 1 \\ 1 &amp; 3 \end{pmatrix},
+&amp; A^{s_{2}}_{1,2} =
+  \begin{pmatrix} 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 \end{pmatrix},
+&amp; A^{s_{3}}_{1,3} = \begin{pmatrix} 1 &amp; 0 \\ 0 &amp; 0 \end{pmatrix}, \\
+  A^{s_{1}}_{2,1} = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 0 \end{pmatrix},
+&amp; A^{s_{2}}_{2,2} =
+  \begin{pmatrix} 3 &amp; 0 &amp; 1 \\ 0 &amp; 4 &amp; 0 \\ 1 &amp; 0 &amp; 5 \end{pmatrix},
+&amp; A^{s_{3}}_{2,3} = \begin{pmatrix} 0 &amp; 0 \\ 0 &amp; 1 \end{pmatrix}.
+\end{array}
+\end{split}\]</div>
+<p>In the vectorized format the corresponding coefficient matrix <code class="docutils literal notranslate"><span class="pre">At</span></code>
+and the primal objective vector <code class="docutils literal notranslate"><span class="pre">c</span></code> are</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+          <span class="mi">1</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">3</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">4</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">5</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span> <span class="p">];</span>
+<span class="n">At</span> <span class="o">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="mi">2</span> <span class="p">];</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="p">[</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> 
+      <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>
+      <span class="o">-</span><span class="mi">3</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+       <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>
+      <span class="o">-</span><span class="mi">1</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>
+       <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>
+       <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>And the cone structure <code class="docutils literal notranslate"><span class="pre">K</span></code> for this problem is</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">K</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">2</span><span class="p">];</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Before one starts with approximately solving the SDP,
+one can check for diagonal only SDP cones and convert them
+to linear cones.
+This is beneficial for two reasons:
+Firstly,
+storing linear cones requires less memory,
+and secondly,
+VSDP does not have to compute eigenvalues for the cone verification.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">analyze</span> <span class="p">(</span><span class="n">true</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>warning: analyze: K.s(3) seems to only have diagonal elements.  
+warning: called from
+    analyze&gt;pattern1 at line 72 column 7
+    analyze at line 50 column 5
+ --&gt; Convert it to LP block.
+</pre></div>
+</div>
+</div>
+</div>
+<p>When calling <code class="docutils literal notranslate"><span class="pre">vsdp.analyze</span></code> with the argument <code class="docutils literal notranslate"><span class="pre">true</span></code>,
+all possible optimization are applied.
+Note that in the original example by Borchers
+<a class="reference external" href="s10_references.ipynb#Borchers2017">[Borchers2017]</a>
+the last cone was already marked as diagonal only.
+This was only changed for the sake of demonstration.</p>
+<p>Now we compute approximate solutions by using <code class="docutils literal notranslate"><span class="pre">vsdp.solve</span></code>
+and then rigorous error bounds by using <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_lower_bound</span></code>
+and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_upper_bound</span></code>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="p">()</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 11 variables
+       m  =  2 constraints
+
+  and cones:
+
+     K.l = 2
+     K.s = [ 2, 3 ]
+
+  obj.solutions.approximate:
+
+      Solver &#39;sdpt3&#39;: Normal termination, 0.5 seconds.
+
+        c&#39;*x = -2.749999966056186e+00
+        b&#39;*y = -2.750000014595577e+00
+
+
+  obj.solutions.rigorous_lower_bound:
+
+      Normal termination, 0.0 seconds, 0 iterations.
+
+          fL = -2.750000014595577e+00
+
+  obj.solutions.rigorous_upper_bound:
+
+      Normal termination, 0.0 seconds, 0 iterations.
+
+          fU = -2.749999966061941e+00
+
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>Those approximations match the true primal and dual optimal objective function value
+<span class="math notranslate nohighlight">\(\hat{f}_{d} = \hat{f}_{d} = -2.75\)</span>.</p>
+<p>To compare the approximate solution <code class="docutils literal notranslate"><span class="pre">X</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, and <code class="docutils literal notranslate"><span class="pre">Z</span></code>
+with the unique solution <span class="math notranslate nohighlight">\(\hat{X}\)</span>, <span class="math notranslate nohighlight">\(\hat{y}\)</span>, and <span class="math notranslate nohighlight">\(\hat{Z}\)</span> from
+<a class="reference external" href="s10_references.ipynb#Borchers2017">[Borchers2017]</a>,
+the vectorized solution quantities <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code>
+have to be transformed back to matrices by using <code class="docutils literal notranslate"><span class="pre">vsdp.smat</span></code>
+and the appropriate scaling factor <code class="docutils literal notranslate"><span class="pre">alpha</span></code>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{X} = \begin{pmatrix}
+0.125 &amp; 0.125 &amp; &amp; &amp; &amp; &amp; \\
+0.125 &amp; 0.125 &amp; &amp; &amp; &amp; &amp; \\
+&amp; &amp; 2/3 &amp; 0 &amp; 0 &amp; \\
+&amp; &amp; 0 &amp; 0 &amp; 0 &amp; \\
+&amp; &amp; 0 &amp; 0 &amp; 0 &amp; \\
+&amp; &amp; &amp; &amp; &amp; 0 &amp; \\
+&amp; &amp; &amp; &amp; &amp; &amp; 0 \\
+\end{pmatrix}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">short</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>  <span class="o">%</span> <span class="n">Invert</span> <span class="n">scaling</span> <span class="n">by</span> <span class="s2">&quot;vdsp.svec&quot;</span> 
+
+<span class="n">x</span>  <span class="o">=</span> <span class="n">vsdp_indexable</span> <span class="p">(</span><span class="n">full</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="n">obj</span><span class="p">);</span>
+<span class="n">X1</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">x</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">1</span>
+<span class="n">X2</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">x</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">2</span>
+<span class="n">X3</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">l</span>                           <span class="o">%</span> <span class="n">LP</span>  <span class="n">Block</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>X1 =
+   0.12500   0.12500
+   0.12500   0.12500
+
+X2 =
+   0.66668   0.00000  -0.00002
+   0.00000   0.00000   0.00000
+  -0.00002   0.00000   0.00000
+
+X3 =
+   0.0000000090495
+   0.0000000067871
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{y} = \begin{pmatrix} -0.75 \\ -1 \end{pmatrix},
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>y =
+  -0.75000
+  -1.00000
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{Z} = \begin{pmatrix}
+0.25 &amp; -0.25 &amp; &amp; &amp; &amp; &amp; \\
+-0.25 &amp; 0.25 &amp; &amp; &amp; &amp; &amp; \\
+&amp; &amp; 0 &amp; 0 &amp; 0 &amp; \\
+&amp; &amp; 0 &amp; 2 &amp; 0 &amp; \\
+&amp; &amp; 0 &amp; 0 &amp; 2 &amp; \\
+&amp; &amp; &amp; &amp; &amp; 0.75 &amp; \\
+&amp; &amp; &amp; &amp; &amp; &amp; 1 \\
+\end{pmatrix}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="o">%</span> <span class="n">Invert</span> <span class="n">scaling</span> <span class="n">by</span> <span class="s2">&quot;vdsp.svec&quot;</span> 
+
+<span class="n">z</span>  <span class="o">=</span> <span class="n">vsdp_indexable</span> <span class="p">(</span><span class="n">full</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">z</span><span class="p">),</span> <span class="n">obj</span><span class="p">);</span>
+<span class="n">Z1</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">z</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">1</span>
+<span class="n">Z2</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">z</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">2</span>
+<span class="n">Z3</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">l</span>                           <span class="o">%</span> <span class="n">LP</span>  <span class="n">Block</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Z1 =
+   0.25000  -0.25000
+  -0.25000   0.25000
+
+Z2 =
+   0.00000   0.00000   0.00000
+   0.00000   2.00000   0.00000
+   0.00000   0.00000   2.00000
+
+Z3 =
+   0.0000000090495
+   0.0000000067871
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>The computation of the rigorous lower bounds
+involves the computation of the smallest eigenvalues
+<code class="docutils literal notranslate"><span class="pre">Zl(j)</span></code> <span class="math notranslate nohighlight">\(= \lambda_{\min}([Z_{j}])\)</span> for <span class="math notranslate nohighlight">\(j = 1,2,3\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Zl</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">z</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Zl =
+   0.75000   1.00000   0.00000   0.00000
+
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Y</span>  <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval Y = 
+   -0.7500
+   -1.0000
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since all <code class="docutils literal notranslate"><span class="pre">Zl</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code>
+it is proven that all matrices <span class="math notranslate nohighlight">\(Z_{j}\)</span> are in the interior of the cone <span class="math notranslate nohighlight">\(\mathcal{K}\)</span>
+and <code class="docutils literal notranslate"><span class="pre">Y</span></code> is a rigorous enclosure of a dual strict feasible (near optimal) solution.</p>
+<p>Analogous computations are performed for the rigorous upper bound.
+Here lower bounds on the smallest eigenvalue of the primal solution are computed
+<code class="docutils literal notranslate"><span class="pre">Xl(j)</span></code> <span class="math notranslate nohighlight">\(= \lambda_{\min}([X_{j}])\)</span> for <span class="math notranslate nohighlight">\(j = 1,2,3\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Xl</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">z</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Xl =
+   0.0000000090495   0.0000000067871   0.0000000135747   0.0000000029910
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>The matrix <code class="docutils literal notranslate"><span class="pre">X</span></code> is a rigorous enclosure of a primal strict feasible (near optimal) solution
+and can be restored from the vectorized quantity
+<code class="docutils literal notranslate"><span class="pre">obj.solutions.rigorous_upper_bound.x</span></code> as shown for the approximate solution.
+We omit the display of the interval matrix <code class="docutils literal notranslate"><span class="pre">X</span></code> for brevity.</p>
+<p>Since all <code class="docutils literal notranslate"><span class="pre">Xl</span></code> are non-negative,
+strict feasibility for the primal problem is proved.
+Thus strong duality holds for this example.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clear</span> <span class="nb">all</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="second-sdp-example">
+<h2>Second SDP-Example<a class="headerlink" href="#second-sdp-example" title="Permalink to this headline">¶</a></h2>
+<p>Now we consider the following example
+(see <a class="reference external" href="s10_references.ipynb#Jansson2007a">[Jansson2007a]</a>):</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{minimize} &amp; \langle C(\delta), X \rangle \\
+\text{subject to}
+&amp; \langle A_{1}, X \rangle = 1, \\
+&amp; \langle A_{2}, X \rangle = \varepsilon, \\
+&amp; \langle A_{3}, X \rangle = 0, \\
+&amp; \langle A_{4}, X \rangle = 0, \\
+&amp; X \in \mathbb{S}^{3}_{+},
+\end{array}
+\end{split}\]</div>
+<p>with Lagrangian dual</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{ll}
+\text{maximize} &amp; y_{1} + \varepsilon y_{2} \\
+\text{subject to}
+&amp; Z(\delta) := C(\delta) - \sum_{i = 1}^{4} A_{i} y_{i}
+  \in \mathbb{S}^{3}_{+}, \\
+&amp; y \in \mathbb{R}^{4},
+\end{array}
+\end{split}\]</div>
+<p>where</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="o">@</span><span class="p">(</span><span class="n">DELTA</span><span class="p">)</span> <span class="o">...</span>
+    <span class="p">[</span>  <span class="mi">0</span><span class="p">;</span>   <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>    <span class="mi">0</span><span class="p">;</span>
+      <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="n">DELTA</span><span class="p">;</span>   <span class="mi">0</span><span class="p">;</span>
+       <span class="mi">0</span><span class="p">;</span>    <span class="mi">0</span><span class="p">;</span>   <span class="n">DELTA</span> <span class="p">];</span>
+
+<span class="n">At</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span>   <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span> <span class="p">];</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">4</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+          <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
+<span class="n">At</span> <span class="o">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="o">@</span><span class="p">(</span><span class="n">EPSILON</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="n">EPSILON</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+
+<span class="n">K</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The linear constraints of the primal problem form imply</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+X(\varepsilon) = \begin{pmatrix}
+\varepsilon &amp; -1 &amp; 0 \\ -1 &amp; X_{22} &amp; 0 \\ 0 &amp; 0 &amp; X_{33}
+\end{pmatrix} \in \mathbb{S}^{3}_{+}
+\end{split}\]</div>
+<p>iff <span class="math notranslate nohighlight">\(X_{22} \geq 0\)</span>, <span class="math notranslate nohighlight">\(X_{33} \geq 0\)</span>, and <span class="math notranslate nohighlight">\(\varepsilon X_{22} - 1 \geq 0\)</span>.
+The conic constraint of the dual form is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+Z(\delta) = \begin{pmatrix}
+-y_{2} &amp; \frac{1+y_{1}}{2} &amp; -y_{3} \\
+\frac{1+y_{1}}{2} &amp; \delta &amp; -y_{4} \\
+-y_{3} &amp; -y_{4} &amp; \delta \end{pmatrix} \in \mathbb{S}^{3}_{+}.
+\end{split}\]</div>
+<p>Hence, for</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\varepsilon \leq 0\)</span>: the problem is <strong>primal infeasible</strong> <span class="math notranslate nohighlight">\(\hat{f}_{p} = +\infty\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta &lt; 0\)</span>: the problem is <strong>dual infeasible</strong> <span class="math notranslate nohighlight">\(\hat{f}_{d} = -\infty\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\varepsilon = \delta = 0\)</span>: the problem is <strong>ill-posed</strong>
+and there is a duality gap with <span class="math notranslate nohighlight">\(\hat{f}_{p} = +\infty\)</span> and <span class="math notranslate nohighlight">\(\hat{f}_{d} = -1\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(\varepsilon &gt; 0\)</span> and <span class="math notranslate nohighlight">\(\delta &gt; 0\)</span>: the problem is <strong>feasible</strong> with
+<span class="math notranslate nohighlight">\(\hat{f}_{p} = \hat{f}_{d} = -1 + \delta / \varepsilon\)</span>.</p></li>
+</ul>
+<p>To obtain a feasible solution,
+we set <span class="math notranslate nohighlight">\(\delta = 10^{-2}\)</span> and <span class="math notranslate nohighlight">\(\varepsilon = 2\delta\)</span>.
+Thus the primal and dual optimal objective function value is
+<span class="math notranslate nohighlight">\(\hat{f}_{p} = \hat{f}_{d} = -0.5\)</span>
+and one can start the computations with VSDP.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DELTA</span>   <span class="o">=</span> <span class="mf">1e-4</span><span class="p">;</span>
+<span class="n">EPSILON</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">DELTA</span><span class="p">;</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">(</span><span class="n">EPSILON</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="n">DELTA</span><span class="p">),</span> <span class="n">K</span><span class="p">);</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="p">()</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 6 variables
+       m  = 4 constraints
+
+  and cones:
+
+     K.s = [ 3 ]
+
+  obj.solutions.approximate:
+
+      Solver &#39;sdpt3&#39;: Normal termination, 0.6 seconds.
+
+        c&#39;*x = -4.999999947476755e-01
+        b&#39;*y = -5.000000065021177e-01
+
+
+  obj.solutions.rigorous_lower_bound:
+
+      Normal termination, 0.0 seconds, 0 iterations.
+
+          fL = -5.000000065021177e-01
+
+  obj.solutions.rigorous_upper_bound:
+
+      Solver &#39;sdpt3&#39;: Normal termination, 0.7 seconds, 1 iterations.
+
+          fU = -4.999999933708725e-01
+
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>Everything works as expected.
+VSDP computes finite rigorous lower and upper bounds <code class="docutils literal notranslate"><span class="pre">fU</span></code> and <code class="docutils literal notranslate"><span class="pre">fL</span></code>.
+Weak duality,
+e.g. <span class="math notranslate nohighlight">\(\hat{f}_{p} \geq \hat{f}_{d}\)</span> and <code class="docutils literal notranslate"><span class="pre">fU</span> <span class="pre">&gt;=</span> <span class="pre">fL</span></code>,
+holds for the approximate and rigorous solutions.
+The accuracy of rigorous the error bounds can again be measured by</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">shorte</span>
+<span class="n">fL</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">fU</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>mu =    1.3131e-08
+</pre></div>
+</div>
+</div>
+</div>
+<p>Nevertheless,
+successful termination reported by an approximate solver gives no guarantee
+on the quality of the computed solution.
+Only <code class="docutils literal notranslate"><span class="pre">fU</span></code> and <code class="docutils literal notranslate"><span class="pre">fL</span></code> are reliable results,
+which are computed by the functions <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_lower_bound</span></code>
+and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_upper_bound</span></code>,
+respectively.</p>
+<p>To emphasize this,
+one can apply SeDuMi to the same problem:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">SOLVER</span> <span class="o">=</span> <span class="s1">&#39;sedumi&#39;</span><span class="p">;</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_lower_bound</span> <span class="p">()</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_upper_bound</span> <span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 6 variables
+       m  = 4 constraints
+
+  and cones:
+
+     K.s = [ 3 ]
+
+  obj.solutions.approximate:
+
+      Solver &#39;sedumi&#39;: Normal termination, 0.5 seconds.
+
+        c&#39;*x = -4.999990761443555e-01
+        b&#39;*y = -4.999968121457571e-01
+
+
+  obj.solutions.rigorous_lower_bound:
+
+      Solver &#39;sedumi&#39;: Normal termination, 0.5 seconds, 1 iterations.
+
+          fL = -5.000035760394096e-01
+
+  obj.solutions.rigorous_upper_bound:
+
+      Solver &#39;sedumi&#39;: Normal termination, 0.5 seconds, 1 iterations.
+
+          fU = -4.999953448740588e-01
+
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>SeDuMi terminates without any warning, but the approximate results are poor.
+Since the approximate primal optimal objective function value is smaller than the dual one.
+Weak duality is not satisfied.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">f_objective</span><span class="p">;</span>
+
+<span class="n">f_obj</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">f_obj</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 0
+</pre></div>
+</div>
+</div>
+</div>
+<p>As already mentioned, weak duality holds for the rigorous error bounds by VSDP:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fL</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">fU</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+
+<span class="n">fU</span> <span class="o">&gt;=</span> <span class="n">fL</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+</pre></div>
+</div>
+</div>
+</div>
+<p>In general the quality of the rigorous error bounds strongly depends on the computed approximate solution
+and therefore on the used approximate conic solver.
+For example compare the accuracy of SeDuMi below with SDPT3 above:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">short</span> <span class="n">e</span>
+<span class="n">acc_mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>acc_mu =    8.2312e-06
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="s04_second_order_cone_programming.html" title="previous page">Second-order Cone Programming</a>
+    <a class='right-next' id="next-link" href="s06_a_priori_bounds.html" title="next page">A Priori Bounds</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

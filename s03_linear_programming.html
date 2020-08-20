@@ -1,0 +1,817 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Linear Programming &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Second-order Cone Programming" href="s04_second_order_cone_programming.html" />
+    <link rel="prev" title="Conic Programming" href="s02_conic_programming.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s00_getting_started.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s02_conic_programming.html">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s05_semidefinite_programming.html">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s07_certificates_of_infeasibility.html">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s09_numerical_results.html">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s10_conic_solvers.html">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s03_linear_programming.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#first-example">
+   First example
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#second-example-with-free-variables">
+   Second example with free variables
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="linear-programming">
+<h1>Linear Programming<a class="headerlink" href="#linear-programming" title="Permalink to this headline">¶</a></h1>
+<p>In this section we describe how linear programming problems can be solved with VSDP.
+In particular, two linear programs are considered in detail.</p>
+<div class="section" id="first-example">
+<h2>First example<a class="headerlink" href="#first-example" title="Permalink to this headline">¶</a></h2>
+<p>Consider the linear program in primal standard form
+<span class="math notranslate nohighlight">\($
+\begin{array}{ll}
+\text{minimize}   &amp; 2x_{2} + 3x_{4} + 5x_{5}, \\
+\text{subject to} &amp;
+\begin{pmatrix}
+-1 &amp; 2 &amp;  0 &amp; 1 &amp; 1 \\
+ 0 &amp; 0 &amp; -1 &amp; 0 &amp; 2
+\end{pmatrix} x = \begin{pmatrix} 2 \\ 3 \end{pmatrix}, \\
+&amp; x \in \mathbb{R}^{5}_{+},
+\end{array}
+$\)</span>
+with its corresponding dual problem
+<span class="math notranslate nohighlight">\($
+\begin{array}{ll}
+\text{maximize}   &amp; 2 y_{1} + 3 y_{2}, \\
+\text{subject to} &amp;
+z = \begin{pmatrix} 0 \\ 2 \\ 0 \\ 3 \\ 5 \end{pmatrix} -
+\begin{pmatrix}
+-1 &amp;  0 \\
+ 2 &amp;  0 \\
+ 0 &amp; -1 \\
+ 1 &amp;  0 \\
+ 1 &amp;  2
+\end{pmatrix} y \in \mathbb{R}^{5}_{+}.
+\end{array}
+$\)</span></p>
+<p>The unique exact optimal solution is given by
+<span class="math notranslate nohighlight">\(x^{*} = (0, 0.25, 0, 0, 1.5)^{T}\)</span>,
+<span class="math notranslate nohighlight">\(y^{*} = (1, 2)^{T}\)</span>
+with <span class="math notranslate nohighlight">\(\hat{f}_{p} = \hat{f}_{d} = 8\)</span>.</p>
+<p>The input data of the problem in VSDP are:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">];</span>
+<span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">5</span><span class="p">];</span>
+<span class="n">K</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To create a VSDP object of the linear program data above,
+we call the VSDP class constructor
+and do not suppress the output by terminating the statement with a semicolon <code class="docutils literal notranslate"><span class="pre">;</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>obj =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 5 variables
+       m  = 2 constraints
+
+  and cones:
+
+     K.l = 5
+
+  Compute an approximate solution:
+
+    &#39;obj = obj.solve()&#39;
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>The output contains all relevant information about the conic problem
+and includes the command <code class="docutils literal notranslate"><span class="pre">obj.solve</span></code> to proceed.</p>
+<p>By calling the <code class="docutils literal notranslate"><span class="pre">obj.solve</span></code> method on the VSDP object <code class="docutils literal notranslate"><span class="pre">obj</span></code>,
+we can compute an approximate solution <code class="docutils literal notranslate"><span class="pre">x</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, and <code class="docutils literal notranslate"><span class="pre">z</span></code>,
+for example by using SDPT3.
+When calling <code class="docutils literal notranslate"><span class="pre">obj.solve</span></code> without any arguments,
+the user is asked to choose one of the supported solvers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>
+ num. of constraints =  2
+ dim. of linear var  =  5
+*******************************************************************
+   SDPT3: Infeasible path-following algorithms
+*******************************************************************
+ version  predcorr  gam  expon  scale_data
+    NT      1      0.000   1        0    
+it pstep dstep pinfeas dinfeas  gap      prim-obj      dual-obj    cputime
+-------------------------------------------------------------------
+ 0|0.000|0.000|6.3e+00|2.6e+00|5.0e+02| 1.000000e+02  0.000000e+00| 0:0:00| chol  1  1 
+ 1|1.000|0.867|9.5e-07|3.7e-01|8.7e+01| 4.535853e+01  2.191628e+00| 0:0:00| chol  1  1 
+ 2|1.000|1.000|1.9e-06|3.1e-03|1.1e+01| 1.670044e+01  5.453562e+00| 0:0:00| chol  1  1 
+ 3|0.928|1.000|1.6e-07|3.1e-04|1.1e+00| 8.503754e+00  7.407909e+00| 0:0:00| chol  1  1 
+ 4|1.000|0.591|1.0e-07|1.5e-04|7.9e-01| 8.626424e+00  7.841794e+00| 0:0:00| chol  1  1 
+ 5|0.971|0.984|3.0e-09|5.4e-06|2.2e-02| 8.015560e+00  7.993623e+00| 0:0:00| chol  1  1 
+ 6|0.988|0.988|7.1e-10|3.7e-07|2.6e-04| 8.000185e+00  7.999926e+00| 0:0:00| chol  1  1 
+ 7|0.989|0.989|1.1e-10|4.3e-09|2.9e-06| 8.000002e+00  7.999999e+00| 0:0:00| chol  1  1 
+ 8|0.997|1.000|9.4e-13|2.2e-11|3.9e-08| 8.000000e+00  8.000000e+00| 0:0:00|
+  stop: max(relative gap, infeasibilities) &lt; 1.00e-08
+-------------------------------------------------------------------
+ number of iterations   =  8
+ primal objective value =  8.00000003e+00
+ dual   objective value =  7.99999999e+00
+ gap := trace(XZ)       = 3.88e-08
+ relative gap           = 2.28e-09
+ actual relative gap    = 2.27e-09
+ rel. primal infeas (scaled problem)   = 9.39e-13
+ rel. dual     &quot;        &quot;       &quot;      = 2.19e-11
+ rel. primal infeas (unscaled problem) = 0.00e+00
+ rel. dual     &quot;        &quot;       &quot;      = 0.00e+00
+ norm(X), norm(y), norm(Z) = 1.5e+00, 2.2e+00, 3.0e+00
+ norm(A), norm(b), norm(C) = 4.5e+00, 4.6e+00, 7.2e+00
+ Total CPU time (secs)  = 0.21  
+ CPU time per iteration = 0.03  
+ termination code       =  0
+ DIMACS: 1.1e-12  0.0e+00  2.6e-11  0.0e+00  2.3e-09  2.3e-09
+-------------------------------------------------------------------
+</pre></div>
+</div>
+</div>
+</div>
+<p>The solver output is often quite verbose.
+Especially for large problems it is recommended to display the solver progress.
+To suppress solver messages,
+the following option can be set:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To permanently assign an approximate solver to a VSDP object,
+use the following option:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">SOLVER</span> <span class="o">=</span> <span class="s1">&#39;sdpt3&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>By simply typing the VSDP object’s name, the user gets a short summary of the solution state.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>obj =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 5 variables
+       m  = 2 constraints
+
+  and cones:
+
+     K.l = 5
+
+  obj.solutions.approximate:
+
+      Solver &#39;sdpt3&#39;: Normal termination, 0.3 seconds.
+
+        c&#39;*x = 8.000000025993693e+00
+        b&#39;*y = 7.999999987362061e+00
+
+
+  Compute a rigorous lower bound:
+
+    &#39;obj = obj.rigorous_lower_bound()&#39;
+
+  Compute a rigorous upper bound:
+
+    &#39;obj = obj.rigorous_upper_bound()&#39;
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>On success,
+one can obtain the approximate solutions for further processing.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">short</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">x</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>x =
+   0.0000000092324
+   0.2500000014452
+   0.0000000040905
+   0.0000000042923
+   1.5000000020453
+
+y =
+   1.00000
+   2.00000
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>The approximate solution is close to the optimal solution
+<span class="math notranslate nohighlight">\(x^{*} = (0, 0.25, 0, 0, 1.5)^{T}\)</span>, <span class="math notranslate nohighlight">\(y^{*} = (1, 2)^{T}\)</span>.</p>
+<p>With this approximate solution, a rigorous lower bound <code class="docutils literal notranslate"><span class="pre">fL</span></code>
+of the primal optimal value <span class="math notranslate nohighlight">\(\hat{f}_{p} = 8\)</span> can be computed by calling:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">long</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">rigorous_lower_bound</span> <span class="p">();</span>
+<span class="n">fL</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>fL =  7.999999987362061
+</pre></div>
+</div>
+</div>
+</div>
+<p>Similarly,
+a rigorous upper bound <code class="docutils literal notranslate"><span class="pre">fU</span></code> of the dual optimal value <span class="math notranslate nohighlight">\(\hat{f_{d}}\)</span> can be computed by calling:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">rigorous_upper_bound</span> <span class="p">();</span>
+<span class="n">fU</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>fU =  8.000000025997927
+</pre></div>
+</div>
+</div>
+</div>
+<p>The summary output of the VSDP object contains the information about
+the rigorous error bounds, as well.
+It can be extracted if necessary.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>obj =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 5 variables
+       m  = 2 constraints
+
+  and cones:
+
+     K.l = 5
+
+  obj.solutions.approximate:
+
+      Solver &#39;sdpt3&#39;: Normal termination, 0.3 seconds.
+
+        c&#39;*x = 8.000000025993693e+00
+        b&#39;*y = 7.999999987362061e+00
+
+
+  obj.solutions.rigorous_lower_bound:
+
+      Normal termination, 0.0 seconds, 0 iterations.
+
+          fL = 7.999999987362061e+00
+
+  obj.solutions.rigorous_upper_bound:
+
+      Normal termination, 0.0 seconds, 0 iterations.
+
+          fU = 8.000000025997927e+00
+
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>Despite the rigorous lower bound <code class="docutils literal notranslate"><span class="pre">fL</span></code>,
+the solution object <code class="docutils literal notranslate"><span class="pre">obj.solutions.rigorous_lower_bound</span></code>
+contains more information:</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Y</span></code> is a rigorous interval enclosure of a dual feasible near optimal solution and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Zl</span></code> a lower bound of each cone in <span class="math notranslate nohighlight">\(z = c - A^{*} y\)</span>.
+For a linear program this is a lower bound on each component of <code class="docutils literal notranslate"><span class="pre">z</span></code>.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">short</span>
+<span class="nb">format</span> <span class="n">infsup</span>
+ <span class="n">Y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">y</span>
+<span class="n">Zl</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">z</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval Y = 
+[    0.9999,    1.0000] 
+[    2.0000,    2.0001] 
+Zl =
+   0.9999999873621
+   0.0000000252759
+   2.0000000042126
+   2.0000000126379
+   0.0000000042126
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since <code class="docutils literal notranslate"><span class="pre">Zl</span></code> is positive, the dual problem is strictly feasible,
+and the rigorous interval vector <code class="docutils literal notranslate"><span class="pre">Y</span></code> contains a dual interior solution.
+Here only some significant digits of this interval vector are displayed.
+The upper and lower bounds of the interval <code class="docutils literal notranslate"><span class="pre">Y</span></code>
+can be obtained by using the <code class="docutils literal notranslate"><span class="pre">sup</span></code> and <code class="docutils literal notranslate"><span class="pre">inf</span></code> routines of INTLAB.
+For more information about the <code class="docutils literal notranslate"><span class="pre">intval</span></code> data type see
+<a class="reference external" href="s10_references.ipynb#Rump1999">[Rump1999]</a>.</p>
+<p>The information returned by <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_upper_bound</span></code> is similar:</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X</span></code> is a rigorous interval enclosure of a primal feasible near optimal solution and</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Xl</span></code> a lower bound of each cone in <code class="docutils literal notranslate"><span class="pre">X</span></code>.
+Again, for a linear program this is a lower bound on each component of <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">X</span>  <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">x</span>
+<span class="n">Xl</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">z</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval X = 
+[    0.0000,    0.0001] 
+[    0.2500,    0.2501] 
+[    0.0000,    0.0001] 
+[    0.0000,    0.0001] 
+[    1.5000,    1.5001] 
+Xl =
+   0.0000000092324
+   0.2500000014474
+   0.0000000040905
+   0.0000000042923
+   1.5000000020452
+
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since <code class="docutils literal notranslate"><span class="pre">Xl</span></code> is a positive vector,
+<code class="docutils literal notranslate"><span class="pre">X</span></code> is contained in the positive orthant and
+the primal problem is strictly feasible.</p>
+<p>Summarizing,
+we have obtained a primal-dual interval solution pair with an accuracy measured by
+<span class="math notranslate nohighlight">\($
+\mu(a, b) = \dfrac{a-b}{\max\{1.0, (|a| + |b|)/2\}},
+$\)</span>
+see <a class="reference external" href="s10_references.ipynb#Jansson2006">[Jansson2006]</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">shorte</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>mu =    4.8295e-09
+</pre></div>
+</div>
+</div>
+</div>
+<p>This means,
+that the computed rigorous upper and lower error bounds have an accuracy
+of eight to nine decimal digits.</p>
+</div>
+<div class="section" id="second-example-with-free-variables">
+<h2>Second example with free variables<a class="headerlink" href="#second-example-with-free-variables" title="Permalink to this headline">¶</a></h2>
+<p>How a linear program with free variables can be rigorously solved by VSDP
+is demonstrated by the following example with one free variable <span class="math notranslate nohighlight">\(x_{3}\)</span>:
+<span class="math notranslate nohighlight">\($
+\begin{array}{ll}
+\text{minimize}   &amp; \begin{pmatrix} 1 &amp; 1 &amp; -0.5 \end{pmatrix} x, \\
+\text{subject to}
+&amp; \begin{pmatrix} 1 &amp; -1 &amp; 2 \\ 1 &amp; 1 &amp; -1 \end{pmatrix} x
+= \begin{pmatrix} 0.5 \\ 1 \end{pmatrix} \\
+&amp; x_{1}, x_{2} \in \mathbb{R}_{+}^{2}, \\
+&amp; x_{3} \in \mathbb{R}.
+\end{array}
+$\)</span></p>
+<p>The optimal solution pair of this problem is
+<span class="math notranslate nohighlight">\(x^{*} = (\frac{5}{6}, 0, -\frac{1}{6})^{T}\)</span>,
+<span class="math notranslate nohighlight">\(y^{*} = (\frac{1}{6}, \frac{5}{6})^{T}\)</span>
+with <span class="math notranslate nohighlight">\(\hat{f}_{p} = \hat{f}_{d} = \frac{11}{12} \approx 9.166\ldots\)</span>.</p>
+<p>When entering a conic problem the order of the variables is important:</p>
+<ol class="simple">
+<li><p>free variables,</p></li>
+<li><p>non-negative variables,</p></li>
+<li><p>second-order cone variables,</p></li>
+<li><p>semidefinite variables.</p></li>
+</ol>
+<p>All involved VSDP quantities,
+the constraint matrix <code class="docutils literal notranslate"><span class="pre">A</span></code>,
+the primal objective <code class="docutils literal notranslate"><span class="pre">c</span></code>,
+the primal solution <code class="docutils literal notranslate"><span class="pre">x</span></code>,
+as well as <code class="docutils literal notranslate"><span class="pre">z</span></code>,
+follow this order.
+In the second linear programming example,
+the free variable is <span class="math notranslate nohighlight">\(x_{3}\)</span> and the non-negative variables are <span class="math notranslate nohighlight">\(x_{1}\)</span> and <span class="math notranslate nohighlight">\(x_{2}\)</span>,
+respectively.
+Second-order cone variables and semidefinite variables are not present.</p>
+<p>Therefore, the problem data are:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">K</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="o">%</span> <span class="n">number</span> <span class="n">of</span> <span class="n">free</span> <span class="n">variables</span>
+<span class="n">K</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>  <span class="o">%</span> <span class="n">number</span> <span class="n">of</span> <span class="n">non</span><span class="o">-</span><span class="n">negative</span> <span class="n">variables</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>   <span class="o">%</span> <span class="n">first</span> <span class="n">column</span> <span class="n">corresponds</span> <span class="n">to</span> <span class="n">free</span> <span class="n">variable</span> <span class="n">x3</span>
+     <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">];</span>  <span class="o">%</span> <span class="n">second</span> <span class="ow">and</span> <span class="n">third</span> <span class="n">to</span> <span class="n">bounded</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span>
+<span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span> <span class="o">%</span> <span class="n">the</span> <span class="n">same</span> <span class="n">applies</span> <span class="n">to</span> <span class="n">c</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The whole VSDP computation can be done in a few lines of code:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_lower_bound</span> <span class="p">()</span> <span class="o">...</span>
+   <span class="o">.</span><span class="n">rigorous_upper_bound</span> <span class="p">();</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Yielding</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>obj =
+  VSDP conic programming problem with dimensions:
+
+    [n,m] = size(obj.At)
+     n    = 3 variables
+       m  = 2 constraints
+
+  and cones:
+
+     K.f = 1
+     K.l = 2
+
+  obj.solutions.approximate:
+
+      Solver &#39;sdpt3&#39;: Normal termination, 0.3 seconds.
+
+        c&#39;*x = 9.166666669227741e-01
+        b&#39;*y = 9.166666662221519e-01
+
+
+  obj.solutions.rigorous_lower_bound:
+
+      Normal termination, 0.0 seconds, 0 iterations.
+
+          fL = 9.166666662221495e-01
+
+  obj.solutions.rigorous_upper_bound:
+
+      Normal termination, 0.0 seconds, 0 iterations.
+
+          fU = 9.166666669227844e-01
+
+
+
+  Detailed information:  &#39;obj.info()&#39;
+
+
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="s02_conic_programming.html" title="previous page">Conic Programming</a>
+    <a class='right-next' id="next-link" href="s04_second_order_cone_programming.html" title="next page">Second-order Cone Programming</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>

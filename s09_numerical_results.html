@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Numerical Results &#8212; VSDP manual</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/mystnb.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Conic solvers" href="s10_conic_solvers.html" />
+    <link rel="prev" title="Free Variables" href="s08_free_variables.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/sdp_cone.png" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">VSDP manual</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s00_getting_started.html">
+   Getting started
+  </a>
+ </li>
+</ul>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="s01_installation.html">
+   Installation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s02_conic_programming.html">
+   Conic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s03_linear_programming.html">
+   Linear Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s04_second_order_cone_programming.html">
+   Second-order Cone Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s05_semidefinite_programming.html">
+   Semidefinite Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s06_a_priori_bounds.html">
+   A Priori Bounds
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s07_certificates_of_infeasibility.html">
+   Rigorous Certificates of Infeasibility
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s08_free_variables.html">
+   Free Variables
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Numerical Results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s10_conic_solvers.html">
+   Conic solvers
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/s09_numerical_results.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/vsdp/vsdp-2020"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sdplib">
+   SDPLIB
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sparse-sdp">
+   SPARSE_SDP
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dimacs">
+   DIMACS
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#esc">
+   ESC
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#rdm">
+   RDM
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="numerical-results">
+<h1>Numerical Results<a class="headerlink" href="#numerical-results" title="Permalink to this headline">¶</a></h1>
+<p>In this section,
+we present statistics for the numerical results obtained by VSDP for conic programming problems.
+The tests were performed using approximations computed by the conic solvers:
+CSDP, MOSEK, SDPA, SDPT3, and SeDuMi.
+For second-order cone programming problems only MOSEK, SDPT3, and SeDuMi were used.
+The solvers have been called with their default parameters.
+Almost all of the problems that could not be solved with a guaranteed accuracy of about <span class="math notranslate nohighlight">\(10^{-7}\)</span>
+are known to be ill-posed (cf. <a class="reference external" href="s10_references.ipynb#Ordonez2003">[Ordonez2003]</a>).</p>
+<p>In particular,
+the results were obtained by using the following two systems:</p>
+<ul class="simple">
+<li><p><strong>System 1</strong></p>
+<ul>
+<li><p>GNU Octave (4.4.1)</p></li>
+<li><p>CPU: Intel(R) Xeon(R) E3-1220 (4 cores)</p></li>
+<li><p>RAM: 12 GB</p></li>
+<li><p>OS:  Linux (openSUSE 15.0)</p></li>
+<li><p>Interval arithmetic: INTLAB 11</p></li>
+<li><p>Conic Solver: CSDP (6.2.0), SDPA (7.3.8), SDPT3 (4.0), SeDuMi (1.32)</p></li>
+</ul>
+</li>
+<li><p><strong>System 2</strong></p>
+<ul>
+<li><p>MATLAB(R) (R2018b)</p></li>
+<li><p>CPU: Intel(R) Xeon(R) E5-2640v3 (8 cores)</p></li>
+<li><p>RAM: 128 GB</p></li>
+<li><p>OS:  Linux (Ubuntu 18.04)</p></li>
+<li><p>Interval arithmetic: INTLAB 11</p></li>
+<li><p>Conic Solver: MOSEK (8.1.0.62), SDPT3 (4.0)</p></li>
+</ul>
+</li>
+</ul>
+<p>The relative accuracy of two numbers is measured by
+<span class="math notranslate nohighlight">\($
+\mu(a,b) := \dfrac{a-b}{\max\{1.0, (|a|+|b|)/2\}}.
+$\)</span></p>
+<p>Notice that we do not use the absolute value of <span class="math notranslate nohighlight">\(a - b\)</span>.
+Hence, a negative sign implies that <span class="math notranslate nohighlight">\(a &lt; b\)</span>.</p>
+<div class="section" id="sdplib">
+<h2>SDPLIB<a class="headerlink" href="#sdplib" title="Permalink to this headline">¶</a></h2>
+<p>In the following,
+we describe the numerical results for 92 problems from the SDPLIB suite
+of Borchers <a class="reference external" href="s10_references.ipynb#Borchers1999">[Borchers1999]</a>.
+In <a class="reference external" href="s10_references.ipynb#Freund2007">[Freund2007]</a> it is shown
+that four problems are infeasible and 32 problems are ill-posed.</p>
+<p>VSDP could compute rigorous bounds of the optimal values
+for all feasible well-posed problems
+and verify the existence of strictly primal and dual feasible solutions.
+Hence,
+strong duality is proved.
+For the 32 ill-posed problems VSDP has computed the upper bound <span class="math notranslate nohighlight">\(\overline{f_{d}} = \text{Inf}\)</span>,
+which reflects the fact that the distance to the next primal infeasible problem is zero.
+For the four infeasible problems
+VSDP could compute rigorous certificates of infeasibility.
+Detailed numerical results can be found in the tables for
+<span class="xref myst">System 1</span> and <span class="xref myst">System 2</span>,
+where the computed rigorous upper bound <span class="math notranslate nohighlight">\(\overline{f_{d}}\)</span>,
+the rigorous lower bound <span class="math notranslate nohighlight">\(\underline{f_{p}}\)</span>,
+and the rigorous error bound <span class="math notranslate nohighlight">\(\mu(\overline{f_{d}},\underline{f_{p}})\)</span> are displayed.
+We have set <span class="math notranslate nohighlight">\(\mu(\overline{f_{d}},\underline{f_{p}}) = \text{NaN}\)</span>
+if the upper or the lower bound is infinite.
+Both tables also contain running times in seconds,
+where <span class="math notranslate nohighlight">\(t_{s}\)</span> is the time for computing the approximations
+and <span class="math notranslate nohighlight">\(\overline{t}\)</span> and <span class="math notranslate nohighlight">\(\underline{t}\)</span> are the times
+for computing the upper and the lower rigorous error bounds,
+respectively.</p>
+<p>Some major characteristics the numerical results for the SDPLIB
+are summarized by the following figures.</p>
+<blockquote>
+<div><p><img alt="SDPLIB relative accuracies." src="_images/SDPLIB_mu.png" /></p>
+<p><strong>Figure 1:</strong> Relative accuracies <span class="math notranslate nohighlight">\(\mu(\overline{f_{d}},\underline{f_{p}})\)</span>.
+Only results for which both rigorous error bounds were computed
+are taken into account.
+With the exception of SDPA,
+all approximate conic solvers can compute rigorous error bounds
+with 7 or 8 significant decimal digits.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="SDPLIB computation times tL." src="_images/SDPLIB_tL.png" /></p>
+<p><strong>Figure 2:</strong> Computation times for <span class="math notranslate nohighlight">\(\underline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="SDPLIB computation times tU." src="_images/SDPLIB_tU.png" /></p>
+<p><strong>Figure 3:</strong> Computation times for <span class="math notranslate nohighlight">\(\overline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+<p>Furthermore,
+the figures show,
+that the error bounds as well as the time ratios
+depend significantly on the used conic solver.
+Even the largest problem <em>MaxG60</em>
+with about 24 million variables and 7000 constraints
+can be solved rigorously by VSDP
+with high accuracy and in a reasonable time.</p>
+</div>
+<div class="section" id="sparse-sdp">
+<h2>SPARSE_SDP<a class="headerlink" href="#sparse-sdp" title="Permalink to this headline">¶</a></h2>
+<p>In this section a statistic of the numerical results
+for problems from structural and topological optimization is presented.
+Structural and especially free material optimization
+gained more and more interest in the recent years.
+The most prominent example is the design of ribs
+in the leading edge of the Airbus A380.
+We performed tests on problems from the test library collected by Kočvara.
+This is a collection of 26 sparse semidefinite programming problems.
+More details on these problems can be found in
+<a class="reference external" href="s10_references.ipynb#Ben-Tal2000">[Ben-Tal2000]</a>,
+<a class="reference external" href="s10_references.ipynb#Kocvara2002">[Kocvara2002]</a>, and
+<a class="reference external" href="s10_references.ipynb#Zowe1997">[Zowe1997]</a>.
+For 22 problems out of this collection VSDP could compute
+a rigorous primal and dual <span class="math notranslate nohighlight">\(\varepsilon\)</span>-optimal solution,
+using SeDuMi as approximate solver.
+The largest problem that was rigorously solved by VSDP is <em>shmup5</em>.
+This problem has 1800 equality constraints and 13 million variables.</p>
+<p>Detailed results can be found in the tables for
+<span class="xref myst">System 1</span> and <span class="xref myst">System 2</span>.
+A statistic of these numerical experiments is given in the following figures.</p>
+<blockquote>
+<div><p><img alt="SPARSE_SDP relative accuracies." src="_images/SPARSE_SDP_mu.png" /></p>
+<p><strong>Figure 4:</strong> Relative accuracies <span class="math notranslate nohighlight">\(\mu(\overline{f_{d}},\underline{f_{p}})\)</span>.
+Only results for which both rigorous error bounds were computed
+are taken into account.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="SPARSE_SDP computation times tL." src="_images/SPARSE_SDP_tL.png" /></p>
+<p><strong>Figure 5:</strong> Computation times for <span class="math notranslate nohighlight">\(\underline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="SDPLIB computation times tU." src="_images/SPARSE_SDP_tU.png" /></p>
+<p><strong>Figure 6:</strong> Computation times for <span class="math notranslate nohighlight">\(\overline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="dimacs">
+<h2>DIMACS<a class="headerlink" href="#dimacs" title="Permalink to this headline">¶</a></h2>
+<p>We present some statistics of numerical results
+for the DIMACS test library of  semidefinte-quadratic-linear programs.
+This library was assembled for the purposes of the 7-th DIMACS Implementation Challenge.
+There are 47 challenging problems that are divided into 12 groups.
+For details see <a class="reference external" href="s10_references.ipynb#Pataki2002">[Pataki2002]</a>.
+In each group there are about five instances,
+from routinely solvable ones
+to those at or beyond the capabilities of current solvers.
+Due to the large problem sizes
+this test library was only run on System 2 using MOSEK
+and the problem <em>fap25</em> had to be omitted in our test.</p>
+<p>One of the largest problems which could be solved by VSDP is the problem
+<em>torusg3-15</em>, with 3375 equality constraints and about 5 million variables.</p>
+<p>Detailed results can be found in the table for <span class="xref myst">System 2</span>.
+A statistic of these numerical experiments is given in the following figures.</p>
+<blockquote>
+<div><p><img alt="DIMACS relative accuracies." src="_images/DIMACS_mu.png" /></p>
+<p><strong>Figure 7:</strong> Relative accuracies <span class="math notranslate nohighlight">\(\mu(\overline{f_{d}},\underline{f_{p}})\)</span>.
+Only results for which both rigorous error bounds were computed
+are taken into account.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="DIMACS computation times tL." src="_images/DIMACS_tL.png" /></p>
+<p><strong>Figure 8:</strong> Computation times for <span class="math notranslate nohighlight">\(\underline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="DIMACS computation times tU." src="_images/DIMACS_tU.png" /></p>
+<p><strong>Figure 9:</strong> Computation times for <span class="math notranslate nohighlight">\(\overline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="esc">
+<h2>ESC<a class="headerlink" href="#esc" title="Permalink to this headline">¶</a></h2>
+<p>The ESC library contains 47 semidefinite programs
+from electronic structure calculations in quantum chemistry.
+In particular,
+the semidefinite programs are a relaxation of a variational approach
+for computing the ground state energy of <span class="math notranslate nohighlight">\(N\)</span>-electron molecules.
+For more details see <a class="reference external" href="s10_references.ipynb#Zhao2004">[Zhao2004]</a>.
+The size of the resulting problems
+ranges between 100,000 and 2 million variables,
+and between 948 and 7230 constraints.</p>
+<p>Approximate solutions and rigorous bounds
+were obtained for all problem instances,
+with the exception of the test problem <em>CF</em>,
+where the problem data is inconsistent.</p>
+<p>Detailed results can be found in the table for <span class="xref myst">System 2</span>.
+All energy values are given in Hartree units
+and are the negative computed values plus the nuclear repulsion energy,
+see <a class="reference external" href="s10_references.ipynb#Zhao2004">[Zhao2004]</a> for details.</p>
+<p>In the table,
+the rigorous upper and lower error bounds of the optimal value are denoted by
+<span class="math notranslate nohighlight">\(\overline{E}\)</span>, <span class="math notranslate nohighlight">\(\underline{E}\)</span>, and <span class="math notranslate nohighlight">\(\underline{E}_{2}\)</span>,
+respectively.
+The value <span class="math notranslate nohighlight">\(\underline{E}_{2}\)</span> is the rigorous lower energy error bound
+calculated by using our a priori eigenvalue bounds
+as derived in <a class="reference external" href="s10_references.ipynb#Chaykin2016">[Chaykin2016]</a>.
+The quantities
+<span class="math notranslate nohighlight">\(\tilde{t}\)</span>, <span class="math notranslate nohighlight">\(\overline{t}\)</span>, <span class="math notranslate nohighlight">\(\underline{t}\)</span>, and <span class="math notranslate nohighlight">\(\underline{t}_2\)</span>
+denote the running times in seconds for
+<span class="math notranslate nohighlight">\(E_{p}\)</span> and <span class="math notranslate nohighlight">\(E_{d}\)</span>, <span class="math notranslate nohighlight">\(\overline{E}\)</span>, <span class="math notranslate nohighlight">\(\underline{E}\)</span>,
+and <span class="math notranslate nohighlight">\(\underline{E}_{2}\)</span>,
+respectively.</p>
+<p>A statistic of these numerical experiments is given in the following figures.</p>
+<blockquote>
+<div><p><img alt="ESC relative accuracies." src="_images/ESC_mu.png" /></p>
+<p><strong>Figure 10:</strong> Relative accuracies <span class="math notranslate nohighlight">\(\mu(\overline{f_{d}},\underline{f_{p}})\)</span>.
+Only results for which both rigorous error bounds were computed
+are taken into account.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="ESC computation times tL." src="_images/ESC_tL.png" /></p>
+<p><strong>Figure 11:</strong> Computation times for <span class="math notranslate nohighlight">\(\underline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+<blockquote>
+<div><p><img alt="ESC computation times tU." src="_images/ESC_tU.png" /></p>
+<p><strong>Figure 12:</strong> Computation times for <span class="math notranslate nohighlight">\(\overline{t}\)</span> relative to <span class="math notranslate nohighlight">\(t_{s}\)</span>.</p>
+</div></blockquote>
+</div>
+<div class="section" id="rdm">
+<h2>RDM<a class="headerlink" href="#rdm" title="Permalink to this headline">¶</a></h2>
+<p>The RDM library <a class="reference external" href="s10_references.ipynb#Nakata2008">[Nakata2008]</a>
+contains eight additional and larger problem instances,
+compared to the ESC benchmark library.
+The size of the resulting semidefinite problems
+ranges between 2 million and 19 million variables,
+and between 7230 and 27888 constraints.</p>
+<p>Using the same notation as for the ESC table,
+the detailed results can be found for <span class="xref myst">System 2</span>.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "octave"
+        },
+        kernelOptions: {
+            kernelName: "octave",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'octave'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="s08_free_variables.html" title="previous page">Free Variables</a>
+    <a class='right-next' id="next-link" href="s10_conic_solvers.html" title="next page">Conic solvers</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By C. Jansson et al.<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>
