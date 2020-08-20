@@ -1,21 +1,17 @@
-# Conversion from Jupyter Notebook format to Markdown (for the GitHub website)
-# and to LaTeX for the published manual.
+# Makefile to work with JupyterBook
 
-SRC_FILES       := $(wildcard *.ipynb)
-LATEX_FILES     := $(patsubst %.ipynb,latex/%.tex,$(SRC_FILES))
-WEBSITE_FILES   := $(patsubst %.ipynb,html/%.html,$(SRC_FILES)) html/README.md
+SRC=$(wildcard *.ipynb) $(wildcard *.yml)
 
-all: $(LATEX_FILES) $(WEBSITE_FILES)
+all: $(SRC) | jupyterbook
+	( \
+	  source jupyterbook/bin/activate; \
+	  jupyter-book build .; \
+	)
+	#xdg-open _build/html/index.html
 
-latex/%.tex: %.ipynb
-	jupyter nbconvert --output-dir=latex --to latex    $^
-
-html/%.html: %.ipynb
-	jupyter nbconvert --output-dir=html  --to html     $^
-	# Fix URLs for displayed in browser.
-	sed -i -e 's/\.ipynb/.html/g' $@
-
-html/%.md: %.ipynb
-	jupyter nbconvert --output-dir=html  --to markdown $^
-	# Fix URLs for displayed in browser.
-	sed -i -e 's/\.ipynb/.html/g' $@
+jupyterbook:
+	python3 -m venv jupyterbook
+	( \
+	  source jupyterbook/bin/activate; \
+	  pip install --upgrade pip jupyter-book ghp-import; \
+	)

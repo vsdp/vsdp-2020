@@ -1,6 +1,6 @@
 *.asv
 .ipynb_checkpoints
 vsdp_settings_*.mat
-doc/html/*
-doc/latex/*
+doc/jupyterbook/*
+doc/_build/*
 download/*
