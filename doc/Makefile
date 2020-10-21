@@ -1,17 +1,13 @@
 # Makefile to work with JupyterBook
 
-SRC=$(wildcard *.ipynb) $(wildcard *.yml)
+SRC=$(wildcard *.ipynb) $(wildcard *.yml) references.bib
+TARGET=_build/html/index.html
 
-all: $(SRC) | jupyterbook
-	( \
-	  source jupyterbook/bin/activate; \
-	  jupyter-book build .; \
-	)
-	#xdg-open _build/html/index.html
+all: $(TARGET)
 
-jupyterbook:
-	python3 -m venv jupyterbook
-	( \
-	  source jupyterbook/bin/activate; \
-	  pip install --upgrade pip jupyter-book ghp-import; \
-	)
+$(TARGET): $(SRC)
+	$(RM) -R _build
+	jupyter-book build .
+
+publish: $(TARGET)
+	ghp-import --no-jekyll --push --force 
