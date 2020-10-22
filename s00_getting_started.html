@@ -1,22 +1,41 @@
 
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <title>Getting started &#8212; VSDP manual</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
-    <link href="_static/css/index.css" rel="stylesheet">
-    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    
+  <link rel="stylesheet" href="_static/css/index.d431a4ee1c1efae0e38bdfebc22debff.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.30270b6e4c972e43c488.js">
+
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -24,12 +43,10 @@
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/mystnb.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script src="_static/sphinx-book-theme.be0a4a0c39cd630af62a2fcf693f3f06.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -41,8 +58,8 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="s01_installation.html" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="docsearch:language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
 
 
 
@@ -200,7 +217,8 @@
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
@@ -209,6 +227,7 @@
 
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
+        
         <div class="tocsection onthispage pt-5 pb-3">
             <i class="fas fa-list"></i> Contents
         </div>
@@ -227,6 +246,7 @@
 </ul>
 
         </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -243,13 +263,15 @@ second-order cones, and the non-negative orthant.
 VSDP provides functions for computing rigorous error bounds of the true optimal value,
 verified enclosures of epsilon-optimal  solutions, and verified certificates of infeasibility.
 All rounding errors due to floating-point arithmetic are taken into account.</p>
+<p>For theoretical details of the implemented algorithms,
+we refer to <a class="bibtex reference internal" href="s11_references.html#jansson2004" id="id1">[12]</a><a class="bibtex reference internal" href="s11_references.html#jansson2007" id="id2">[13]</a><a class="bibtex reference internal" href="s11_references.html#jansson2007a" id="id3">[11]</a><a class="bibtex reference internal" href="s11_references.html#jansson2009" id="id4">[14]</a>.</p>
 <p>The software is completely written in <a class="reference external" href="https://www.mathworks.com">MATLAB</a> /
 <a class="reference external" href="https://www.gnu.org/software/octave">GNU Octave</a> and requires the interval
 toolbox <a class="reference external" href="http://www.ti3.tuhh.de/rump/intlab">INTLAB</a>.  Thus interval input is
 supported as well.</p>
 <p><img alt="VSDP workflow" src="_images/vsdp_workflow.svg" /></p>
 <p>The latest version of VSDP provides easy access to the
-<span class="xref myst">conic solvers</span>:</p>
+<a class="reference internal" href="s10_conic_solvers.html"><span class="doc std std-doc">conic solvers</span></a>:</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/coin-or/Csdp">CSDP</a>,
 <a class="reference external" href="https://www.gnu.org/software/glpk">GLPK</a>,
@@ -275,13 +297,13 @@ documentation.</p></li>
 <ul>
 <li><p>Improvements: additional support of second-order cones, linear cones, and
 free variables, vectorized internal structure.
-See <a class="reference external" href="s10_references.ipynb#H%C3%A4rter2012">[Härter2012]</a>.</p></li>
+See <a class="bibtex reference internal" href="s11_references.html#harter2012" id="id5">[9]</a>.</p></li>
 </ul>
 </li>
 <li><p><a class="reference external" href="https://github.com/vsdp/vsdp-2006">VSDP 2006</a></p>
 <ul>
 <li><p>Support for large scale semidefinite problems, comprehensible code.
-See <a class="reference external" href="s10_references.ipynb#Jansson2006">[Jansson2006]</a>.</p></li>
+See <a class="bibtex reference internal" href="s11_references.html#jansson2006" id="id6">[10]</a>.</p></li>
 </ul>
 </li>
 </ul>
@@ -348,7 +370,10 @@ See <a class="reference external" href="s10_references.ipynb#Jansson2006">[Janss
       </div>
     </div>
 
-    <script src="_static/js/index.js"></script>
+    
+  <script src="_static/js/index.30270b6e4c972e43c488.js"></script>
+
+
     
   </body>
 </html>

@@ -1,22 +1,41 @@
 
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <title>A Priori Bounds &#8212; VSDP manual</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
-    <link href="_static/css/index.css" rel="stylesheet">
-    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    
+  <link rel="stylesheet" href="_static/css/index.d431a4ee1c1efae0e38bdfebc22debff.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.30270b6e4c972e43c488.js">
+
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -24,12 +43,10 @@
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/mystnb.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script src="_static/sphinx-book-theme.be0a4a0c39cd630af62a2fcf693f3f06.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -42,8 +59,8 @@
     <link rel="next" title="Rigorous Certificates of Infeasibility" href="s07_certificates_of_infeasibility.html" />
     <link rel="prev" title="Semidefinite Programming" href="s05_semidefinite_programming.html" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="docsearch:language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
 
 
 
@@ -201,7 +218,8 @@
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
@@ -210,12 +228,7 @@
 
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
-        <div class="tocsection onthispage pt-5 pb-3">
-            <i class="fas fa-list"></i> Contents
-        </div>
-        <nav id="bd-toc-nav">
-            
-        </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -223,9 +236,9 @@
         
               <div>
                 
-  <div class="cell docutils container">
+  <div class="cell tag_hide-input tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="nb">run</span> <span class="p">(</span><span class="nb">fullfile</span> <span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -237,57 +250,56 @@ optimal solution is known a priori.  This is the case in many combinatorial
 optimization problems, or, for instance, in truss topology design where the
 design variables such as bar volumes can be roughly bounded.  If such bounds
 are available they can speed up the computation of rigorous error bounds
-for the optimal value substantially, see
-<a class="reference external" href="s10_references.ipynb#Jansson2006">[Jansson2006]</a>.</p>
+for the optimal value substantially, see <a class="bibtex reference internal" href="s11_references.html#jansson2006" id="id1">[10]</a>.</p>
 <p>For linear programming problems the upper bound for the variable <span class="math notranslate nohighlight">\(x^{l}\)</span>
 is a vector <span class="math notranslate nohighlight">\(\bar{x}\)</span> such that <span class="math notranslate nohighlight">\(x^{l} \leq \bar{x}\)</span>.
 For second-order cone programming the upper bounds for block variables
 <span class="math notranslate nohighlight">\(x_{i}^{q}\)</span> with <span class="math notranslate nohighlight">\(i = 1,\ldots,n_{q}\)</span>
 can be entered as a vector of upper bounds <span class="math notranslate nohighlight">\(\overline{\lambda}_{i}\)</span>
-of the largest eigenvalues
-<span class="math notranslate nohighlight">\($
+of the largest eigenvalues</p>
+<div class="math notranslate nohighlight">
+\[
 \lambda_{\max}(x_{i}^{q}) = (x_{i}^{q})_{1} + ||(x_{i}^{q})_{:}||_{2}.
-$\)</span>
-Similarly, in semidefinite programs upper bounds for the primal variables
+\]</div>
+<p>Similarly, in semidefinite programs upper bounds for the primal variables
 <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span> can be entered as a vector of upper bounds of the largest
 eigenvalues <span class="math notranslate nohighlight">\(\lambda_{\max}(X_{j}^{s})\)</span>, <span class="math notranslate nohighlight">\(j = 1,\ldots,n_{s}\)</span>.
 An upper bound <span class="math notranslate nohighlight">\(\bar{y}\)</span> for the dual optimal solution <span class="math notranslate nohighlight">\(y\)</span> is a vector
 which is elementwise larger than <span class="math notranslate nohighlight">\(y\)</span>.
 Analogously, for conic programs with free variables the upper bound
 can be entered as a vector <span class="math notranslate nohighlight">\(\bar{x}\)</span> such that <span class="math notranslate nohighlight">\(|x^{f}| \leq \bar{x}\)</span>.</p>
-<p>As an example, we consider the
-<a class="reference external" href="s04_semidefinite_programming.ipynb#Second-SDP-Example">previous SDP problem</a>
+<p>As an example, we consider the <a class="reference internal" href="s05_semidefinite_programming.html#sdp-example-2"><span class="std std-ref">Second SDP-Example</span></a>
 with an upper bound <span class="math notranslate nohighlight">\(xu = 10^{5}\)</span> for <span class="math notranslate nohighlight">\(\lambda_{\max}(X)\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DELTA</span>   <span class="o">=</span> <span class="mf">1e-4</span><span class="p">;</span>
-<span class="n">EPSILON</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">DELTA</span><span class="p">;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">DELTA</span>   <span class="p">=</span> <span class="mf">1e-4</span><span class="p">;</span>
+<span class="n">EPSILON</span> <span class="p">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">DELTA</span><span class="p">;</span>
 
-<span class="n">c</span> <span class="o">=</span> <span class="p">[</span>  <span class="mi">0</span><span class="p">;</span>   <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>    <span class="mi">0</span><span class="p">;</span>
+<span class="n">c</span> <span class="p">=</span> <span class="p">[</span>  <span class="mi">0</span><span class="p">;</span>   <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>    <span class="mi">0</span><span class="p">;</span>
       <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="n">DELTA</span><span class="p">;</span>   <span class="mi">0</span><span class="p">;</span>
        <span class="mi">0</span><span class="p">;</span>    <span class="mi">0</span><span class="p">;</span>   <span class="n">DELTA</span> <span class="p">];</span>
 
-<span class="n">At</span> <span class="o">=</span> <span class="p">{};</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">At</span> <span class="p">=</span> <span class="p">{};</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
         <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span>   <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">3</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">4</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">4</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span> <span class="o">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
+<span class="n">At</span> <span class="p">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
 
-<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="n">EPSILON</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">b</span> <span class="p">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="n">EPSILON</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
 
-<span class="n">K</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="n">K</span><span class="p">.</span><span class="n">s</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>
 
-<span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+<span class="n">obj</span> <span class="p">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="p">=</span> <span class="nb">false</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -296,17 +308,17 @@ with an upper bound <span class="math notranslate nohighlight">\(xu = 10^{5}\)</
 error bounds by using <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_lower_bound</span></code> and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_upper_bound</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">xu</span> <span class="o">=</span> <span class="mf">1e5</span><span class="p">;</span>
-<span class="n">yu</span> <span class="o">=</span> <span class="mf">1e5</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span><span class="s1">&#39;;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">xu</span> <span class="p">=</span> <span class="mf">1e5</span><span class="p">;</span>
+<span class="n">yu</span> <span class="p">=</span> <span class="mf">1e5</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span><span class="p">;</span>
 
-<span class="n">obj</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="s1">&#39;sedumi&#39;</span><span class="p">)</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="p">(</span><span class="n">xu</span><span class="p">)</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="p">(</span><span class="n">yu</span><span class="p">)</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="s">&#39;sedumi&#39;</span><span class="p">)</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">(</span><span class="n">xu</span><span class="p">)</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_upper_bound</span><span class="p">(</span><span class="n">yu</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans =
   VSDP conic programming problem with dimensions:
 
     [n,m] = size(obj.At)
@@ -340,8 +352,6 @@ error bounds by using <code class="docutils literal notranslate"><span class="pr
 
 
   Detailed information:  &#39;obj.info()&#39;
-
-
 </pre></div>
 </div>
 </div>
@@ -349,15 +359,15 @@ error bounds by using <code class="docutils literal notranslate"><span class="pr
 <p>yielding rigorous error bounds with reasonable accuracy:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">shorte</span>
-<span class="n">fL</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">fU</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">format</span> <span class="n">shorte</span>
+<span class="n">fL</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">fU</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_upper_bound</span><span class="p">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">mu</span> <span class="p">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>mu =    3.3735e-04
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mu =    3.3735e-04
 </pre></div>
 </div>
 </div>
@@ -415,7 +425,10 @@ that the computational effort can be neglected.</p>
       </div>
     </div>
 
-    <script src="_static/js/index.js"></script>
+    
+  <script src="_static/js/index.30270b6e4c972e43c488.js"></script>
+
+
     
   </body>
 </html>

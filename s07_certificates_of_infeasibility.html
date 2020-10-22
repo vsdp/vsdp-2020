@@ -1,22 +1,41 @@
 
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <title>Rigorous Certificates of Infeasibility &#8212; VSDP manual</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
-    <link href="_static/css/index.css" rel="stylesheet">
-    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    
+  <link rel="stylesheet" href="_static/css/index.d431a4ee1c1efae0e38bdfebc22debff.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.30270b6e4c972e43c488.js">
+
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -24,12 +43,10 @@
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/mystnb.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script src="_static/sphinx-book-theme.be0a4a0c39cd630af62a2fcf693f3f06.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -42,8 +59,8 @@
     <link rel="next" title="Free Variables" href="s08_free_variables.html" />
     <link rel="prev" title="A Priori Bounds" href="s06_a_priori_bounds.html" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="docsearch:language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
 
 
 
@@ -201,7 +218,8 @@
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
@@ -210,6 +228,7 @@
 
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
+        
         <div class="tocsection onthispage pt-5 pb-3">
             <i class="fas fa-list"></i> Contents
         </div>
@@ -233,6 +252,7 @@
 </ul>
 
         </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -240,9 +260,9 @@
         
               <div>
                 
-  <div class="cell docutils container">
+  <div class="cell tag_hide-input tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="nb">run</span> <span class="p">(</span><span class="nb">fullfile</span> <span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -255,33 +275,36 @@ For the verification of infeasibility the functions
 <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code> and <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code> can be applied.
 In this section we show how to use these functions.</p>
 <div class="section" id="theorems-of-alternatives">
-<h2>Theorems of alternatives<a class="headerlink" href="#theorems-of-alternatives" title="Permalink to this headline">¶</a></h2>
-<p>Both functions are based upon a theorem of alternatives
-<a class="reference external" href="s10_references.ipynb#Jansson2007">[Jansson2007]</a>.
+<span id="id1"></span><h2>Theorems of alternatives<a class="headerlink" href="#theorems-of-alternatives" title="Permalink to this headline">¶</a></h2>
+<p>Both functions are based upon a theorem of alternatives <a class="bibtex reference internal" href="s11_references.html#jansson2007" id="id2">[13]</a>.
 Such a theorem states that for two systems of equations or inequalities,
 one or the other system has a solution,
 but not both.
 A solution of one of the systems is called a certificate of infeasibility for the other
 which has no solution.</p>
 <p>For a conic program those two theorems of alternatives are as follows:</p>
-<ol class="simple">
-<li><p>Suppose that some <span class="math notranslate nohighlight">\(\tilde{y}\)</span> satisfies
+<blockquote>
+<div><p><strong>Primal Infeasibility Theorem</strong></p>
+<p>Suppose that some <span class="math notranslate nohighlight">\(\tilde{y}\)</span> satisfies
 <span class="math notranslate nohighlight">\(-A^{T}y \in \mathcal{K}^{*}\)</span> and <span class="math notranslate nohighlight">\(b^{T}\tilde{y} &gt; 0\)</span>.
 Then the system of primal constraints
-<span class="math notranslate nohighlight">\(Ax = b\)</span> with <span class="math notranslate nohighlight">\(x \in \mathcal{K}\)</span> has no solution.</p></li>
-<li><p>Suppose that some <span class="math notranslate nohighlight">\(\tilde{x} \in \mathcal{K}\)</span> satisfies
+<span class="math notranslate nohighlight">\(Ax = b\)</span> with <span class="math notranslate nohighlight">\(x \in \mathcal{K}\)</span> has no solution.</p>
+</div></blockquote>
+<blockquote>
+<div><p><strong>Dual Infeasibility Theorem</strong></p>
+<p>Suppose that some <span class="math notranslate nohighlight">\(\tilde{x} \in \mathcal{K}\)</span> satisfies
 <span class="math notranslate nohighlight">\(A\tilde{x} = 0\)</span> and <span class="math notranslate nohighlight">\(c^{T}\tilde{x} &lt; 0\)</span>.
 Then the system of dual constraints
-<span class="math notranslate nohighlight">\(c - A^{T}y \in \mathcal{K}^{*}\)</span> has no solution.</p></li>
-</ol>
-<p>The first theorem is the foundation of <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>
-and the second of <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code>.
-For a proof, see <a class="reference external" href="s10_references.ipynb#Jansson2007">[Jansson2007]</a>.</p>
+<span class="math notranslate nohighlight">\(c - A^{T}y \in \mathcal{K}^{*}\)</span> has no solution.</p>
+</div></blockquote>
+<p>For a proof, see <a class="bibtex reference internal" href="s11_references.html#jansson2007" id="id3">[13]</a>.
+The first theorem is the foundation of <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>
+and the second of <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code>.</p>
 </div>
 <div class="section" id="example-primal-infeasible-socp">
 <h2>Example: primal infeasible SOCP<a class="headerlink" href="#example-primal-infeasible-socp" title="Permalink to this headline">¶</a></h2>
 <p>We consider a slightly modified second-order cone problem from
-<a class="reference external" href="s10_references.ipynb#Ben-Tal2001">[Ben-Tal2001]</a> (Example 2.4.2)</p>
+<a class="bibtex reference internal" href="s11_references.html#ben-tal2001" id="id4">[28]</a> (Example 2.4.2)</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{array}{ll}
@@ -316,11 +339,11 @@ Thus the maximization of the dual problem yields <span class="math notranslate n
 <p>To show primal infeasibility using VSDP, one first has to specify the input data:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="p">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">;</span>
      <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span>
-<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span>
-<span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
-<span class="n">K</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="n">b</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span>
+<span class="n">c</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">K</span><span class="p">.</span><span class="n">q</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -330,18 +353,17 @@ we obtain a rigorous certificate of infeasibility with the routine
 <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">K</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
-                   <span class="o">.</span><span class="n">check_primal_infeasible</span> <span class="p">()</span> <span class="o">...</span>
-                   <span class="o">.</span><span class="n">check_dual_infeasible</span> <span class="p">();</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="p">=</span> <span class="n">vsdp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">K</span><span class="p">).</span><span class="n">solve</span> <span class="p">(</span><span class="s">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="p">...</span>
+                   <span class="p">.</span><span class="n">check_primal_infeasible</span> <span class="p">()</span> <span class="p">...</span>
+                   <span class="p">.</span><span class="n">check_dual_infeasible</span> <span class="p">();</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>
- num. of constraints =  2
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> num. of constraints =  2
  dim. of socp   var  =  3,   num. of socp blk  =  1
 *******************************************************************
    SDPT3: Infeasible path-following algorithms
@@ -380,18 +402,16 @@ As expected,
 <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code> proves the infeasiblity of the primal problem</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">certificate_primal_infeasibility</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans =
       Normal termination, 0.0 seconds.
 
       A certificate of primal infeasibility &#39;y&#39; was found.
       The conic problem is primal infeasible.
-
-
 </pre></div>
 </div>
 </div>
@@ -399,17 +419,15 @@ As expected,
 <p>while dual infeasibility cannot be shown:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_dual_infeasibility</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">certificate_dual_infeasibility</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans =
       Normal termination, 0.0 seconds.
 
       NO certificate of dual infeasibility was found.
-
-
 </pre></div>
 </div>
 </div>
@@ -419,12 +437,12 @@ matches the theoretical considerations.
 It diverges to infinite values:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span><span class="o">.</span><span class="n">y</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">certificate_primal_infeasibility</span><span class="p">.</span><span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval y = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval y = 
   1.0e+017 *
    -2.0060
     1.7369
@@ -435,12 +453,12 @@ It diverges to infinite values:</p>
 <p>and the first entry of <code class="docutils literal notranslate"><span class="pre">y</span></code> multiplied by <span class="math notranslate nohighlight">\(-\sqrt{3}/2\)</span> is almost the second entry of <code class="docutils literal notranslate"><span class="pre">y</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="nb">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval ans = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval ans = 
   1.0e+017 *
     1.7372
 </pre></div>
@@ -452,25 +470,25 @@ but for illustration we evaluate the conditions to prove primal infeasibility
 from the first theorem of alternatives <span class="math notranslate nohighlight">\(-A^{T}y \in \mathcal{K}^{*}\)</span> and <span class="math notranslate nohighlight">\(b^{T}\tilde{y} &gt; 0\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="s1">&#39; * y;</span>
-<span class="n">z</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">norm</span> <span class="p">(</span><span class="n">z</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="n">end</span><span class="p">))</span>  <span class="o">%</span> <span class="n">Check</span> <span class="n">z</span> <span class="n">to</span> <span class="n">be</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">cone</span><span class="o">.</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="p">=</span> <span class="o">-</span><span class="n">A</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span><span class="p">;</span>
+<span class="n">z</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span><span class="p">=</span> <span class="nb">norm</span> <span class="p">(</span><span class="n">z</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">))</span>  <span class="c">% Check z to be in the Lorentz-cone.</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans = 1
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sa">b</span><span class="s1">&#39; * y &gt; 0</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">b</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans = 1
 </pre></div>
 </div>
 </div>
@@ -481,16 +499,16 @@ when used with another approximate solver.
 Compare for example the certificate computed by SeDuMi:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">K</span><span class="p">);</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sedumi&#39;</span><span class="p">)</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">check_primal_infeasible</span> <span class="p">();</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span><span class="o">.</span><span class="n">y</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="p">=</span> <span class="n">vsdp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">K</span><span class="p">);</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="p">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">solve</span> <span class="p">(</span><span class="s">&#39;sedumi&#39;</span><span class="p">)</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">check_primal_infeasible</span> <span class="p">();</span>
+<span class="n">y</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">certificate_primal_infeasibility</span><span class="p">.</span><span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval y = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval y = 
    -2.3924
     1.0000
 </pre></div>
@@ -499,25 +517,25 @@ Compare for example the certificate computed by SeDuMi:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="o">=</span> <span class="o">-</span><span class="n">A</span><span class="s1">&#39; * y;</span>
-<span class="n">z</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">norm</span> <span class="p">(</span><span class="n">z</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="n">end</span><span class="p">))</span>  <span class="o">%</span> <span class="n">Check</span> <span class="n">z</span> <span class="n">to</span> <span class="n">be</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Lorentz</span><span class="o">-</span><span class="n">cone</span><span class="o">.</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">z</span> <span class="p">=</span> <span class="o">-</span><span class="n">A</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span><span class="p">;</span>
+<span class="n">z</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span><span class="p">=</span> <span class="nb">norm</span> <span class="p">(</span><span class="n">z</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">))</span>  <span class="c">% Check z to be in the Lorentz-cone.</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans = 1
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="sa">b</span><span class="s1">&#39; * y &gt; 0</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">b</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans = 1
 </pre></div>
 </div>
 </div>
@@ -527,7 +545,7 @@ Compare for example the certificate computed by SeDuMi:</p>
 <div class="section" id="example-primal-infeasible-sdp">
 <h2>Example: primal infeasible SDP<a class="headerlink" href="#example-primal-infeasible-sdp" title="Permalink to this headline">¶</a></h2>
 <p>In the following we consider another conic optimization problem from
-<a class="reference external" href="s10_references.ipynb#Jansson2006">[Jansson2006]</a>.
+<a class="bibtex reference internal" href="s11_references.html#jansson2006" id="id5">[10]</a>.
 The two SDP constraints of that problem
 depend on two arbitrary fixed chosen parameters
 <span class="math notranslate nohighlight">\(\delta = 0.1\)</span> and <span class="math notranslate nohighlight">\(\varepsilon = -0.01\)</span>.</p>
@@ -546,17 +564,17 @@ X \right\rangle = 1, \
 <p>The problem data is entered in the VSDP 2006 format:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clear</span> <span class="nb">all</span><span class="p">;</span>
-<span class="n">EPSILON</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">;</span>
-<span class="n">DELTA</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
-<span class="n">blk</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;s&#39;</span><span class="p">;</span> <span class="mi">2</span><span class="p">};</span>
-<span class="n">C</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
-<span class="n">A</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
-<span class="n">A</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">1</span> <span class="n">DELTA</span><span class="p">];</span>
-<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="n">EPSILON</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">clear</span> <span class="nb">all</span><span class="p">;</span>
+<span class="n">EPSILON</span> <span class="p">=</span> <span class="o">-</span><span class="mf">0.01</span><span class="p">;</span>
+<span class="n">DELTA</span> <span class="p">=</span> <span class="mf">0.1</span><span class="p">;</span>
+<span class="n">blk</span><span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="p">=</span> <span class="p">{</span><span class="s">&#39;s&#39;</span><span class="p">;</span> <span class="mi">2</span><span class="p">};</span>
+<span class="n">C</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">A</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">A</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">1</span> <span class="n">DELTA</span><span class="p">];</span>
+<span class="n">b</span> <span class="p">=</span> <span class="p">[</span><span class="n">EPSILON</span><span class="p">;</span> <span class="mi">1</span><span class="p">];</span>
 
-<span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">blk</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
+<span class="n">obj</span> <span class="p">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">blk</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="p">=</span> <span class="nb">false</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -591,15 +609,15 @@ is a certificate of primal infeasibility.</p>
 one can make use of the <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>-function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solve</span> <span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
-         <span class="o">.</span><span class="n">rigorous_upper_bound</span> <span class="p">()</span> <span class="o">...</span>
-         <span class="o">.</span><span class="n">check_primal_infeasible</span> <span class="p">()</span> <span class="o">...</span>
-         <span class="o">.</span><span class="n">check_dual_infeasible</span> <span class="p">()</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solve</span> <span class="p">(</span><span class="s">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="p">...</span>
+         <span class="p">.</span><span class="n">rigorous_upper_bound</span> <span class="p">()</span> <span class="p">...</span>
+         <span class="p">.</span><span class="n">check_primal_infeasible</span> <span class="p">()</span> <span class="p">...</span>
+         <span class="p">.</span><span class="n">check_dual_infeasible</span> <span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>warning: rigorous_upper_bound: Conic solver could not find a solution for perturbed problem
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>warning: rigorous_upper_bound: Conic solver could not find a solution for perturbed problem
 warning: called from
     rigorous_upper_bound&gt;rigorous_upper_bound_infinite_bounds at line 191 column 5
     rigorous_upper_bound at line 58 column 7
@@ -649,8 +667,6 @@ obj =
 
 
   Detailed information:  &#39;obj.info()&#39;
-
-
 </pre></div>
 </div>
 </div>
@@ -663,15 +679,14 @@ and the upper error bound is set to infinity (<code class="docutils literal notr
 <p>Using the approximate dual solution</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yt</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">y</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">yt</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">approximate</span><span class="p">.</span><span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>yt =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>yt =
   -100.007983163
     -0.000079832
-
 </pre></div>
 </div>
 </div>
@@ -682,29 +697,30 @@ This is done by a rigorous evaluation of the theorem of alternatives
 using interval arithmetic:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">infsup</span>
-<span class="n">yy</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_primal_infeasibility</span><span class="o">.</span><span class="n">y</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">format</span> <span class="n">infsup</span>
+<span class="n">yy</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">certificate_primal_infeasibility</span><span class="p">.</span><span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval yy = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval yy = 
 [ -100.0080, -100.0079] 
 [   -0.0001,   -0.0000] 
 </pre></div>
 </div>
 </div>
 </div>
-<p>According to the <a class="reference external" href="#Theorems-of-alternatives">theorem of alternatives</a>
+<p>According to the Primal Infeasibility Theorem
+(cf. <a class="reference internal" href="#theorems-of-alternatives"><span class="std std-ref">Theorems of alternatives</span></a>)
 <span class="math notranslate nohighlight">\(\langle \tilde{y}, b \rangle\)</span> is positive:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="sa">b</span><span class="s1">&#39; * yy</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">b</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">yy</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval ans = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval ans = 
 [    1.0000,    1.0000] 
 </pre></div>
 </div>
@@ -714,12 +730,12 @@ using interval arithmetic:</p>
 of symmetric positive semidefinite matrices <span class="math notranslate nohighlight">\(\mathbb{S}_{+}^{2}\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">yy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">-</span> <span class="n">yy</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="n">yy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span> <span class="o">-</span> <span class="n">yy</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval ans = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval ans = 
 [  100.0079,  100.0080] [    0.0000,    0.0001] 
 [    0.0000,    0.0001] [    0.0000,    0.0001] 
 </pre></div>
@@ -734,17 +750,15 @@ that VSDP cannot prove a rigorous certificate of dual infeasiblity
 by <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">certificate_dual_infeasibility</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">certificate_dual_infeasibility</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans =
       Normal termination, 0.0 seconds.
 
       NO certificate of dual infeasibility was found.
-
-
 </pre></div>
 </div>
 </div>
@@ -800,7 +814,10 @@ by <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_
       </div>
     </div>
 
-    <script src="_static/js/index.js"></script>
+    
+  <script src="_static/js/index.30270b6e4c972e43c488.js"></script>
+
+
     
   </body>
 </html>

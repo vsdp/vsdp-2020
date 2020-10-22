@@ -1,22 +1,41 @@
 
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <title>Semidefinite Programming &#8212; VSDP manual</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
-    <link href="_static/css/index.css" rel="stylesheet">
-    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    
+  <link rel="stylesheet" href="_static/css/index.d431a4ee1c1efae0e38bdfebc22debff.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.30270b6e4c972e43c488.js">
+
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -24,12 +43,10 @@
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/mystnb.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script src="_static/sphinx-book-theme.be0a4a0c39cd630af62a2fcf693f3f06.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -42,8 +59,8 @@
     <link rel="next" title="A Priori Bounds" href="s06_a_priori_bounds.html" />
     <link rel="prev" title="Second-order Cone Programming" href="s04_second_order_cone_programming.html" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="docsearch:language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
 
 
 
@@ -201,7 +218,8 @@
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
@@ -210,6 +228,7 @@
 
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
+        
         <div class="tocsection onthispage pt-5 pb-3">
             <i class="fas fa-list"></i> Contents
         </div>
@@ -228,6 +247,7 @@
 </ul>
 
         </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -235,22 +255,24 @@
         
               <div>
                 
-  <div class="cell docutils container">
+  <div class="cell tag_hide-input tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="nb">run</span> <span class="p">(</span><span class="nb">fullfile</span> <span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="semidefinite-programming">
 <h1>Semidefinite Programming<a class="headerlink" href="#semidefinite-programming" title="Permalink to this headline">¶</a></h1>
-<p>The primal standard form of a conic program with <span class="math notranslate nohighlight">\(n_{s}\)</span> symmetric positive semidefinite cones
-<span class="math notranslate nohighlight">\($
+<p>The primal standard form of a conic program with <span class="math notranslate nohighlight">\(n_{s}\)</span> symmetric positive
+semidefinite cones</p>
+<div class="math notranslate nohighlight">
+\[
 \mathbb{S}^{s_{j}}_{+} := \left\{ X \in \mathbb{R}^{s_{j} \times s_{j}}
 \colon\; X = X^{T},\; v^{T} X v \geq 0,\; \forall v \in \mathbb{R}^{s_{j}}
 \right\},\quad j = 1,\ldots,n_{s}.
-$\)</span>
-is</p>
+\]</div>
+<p>is</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{array}{lll}
@@ -276,8 +298,7 @@ The dual problem form is</p>
 \end{split}\]</div>
 <div class="section" id="first-sdp-example">
 <h2>First SDP-Example<a class="headerlink" href="#first-sdp-example" title="Permalink to this headline">¶</a></h2>
-<p>We consider an example from the CSDP User’s Guide
-<a class="reference external" href="s10_references.ipynb#Borchers2017">[Borchers2017]</a>:</p>
+<p>We consider an example from the CSDP User’s Guide <a class="bibtex reference internal" href="s11_references.html#borchers2017" id="id1">[4]</a>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{array}{lll}
@@ -313,26 +334,26 @@ The dual problem form is</p>
 and the primal objective vector <code class="docutils literal notranslate"><span class="pre">c</span></code> are</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
           <span class="mi">1</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">3</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">4</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">5</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span> <span class="p">];</span>
-<span class="n">At</span> <span class="o">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
+<span class="n">At</span> <span class="p">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
 
-<span class="n">b</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">b</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span>
       <span class="mi">2</span> <span class="p">];</span>
 
-<span class="n">c</span> <span class="o">=</span> <span class="p">[</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> 
+<span class="n">c</span> <span class="p">=</span> <span class="p">[</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> 
       <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>
       <span class="o">-</span><span class="mi">3</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
        <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>
@@ -346,8 +367,8 @@ and the primal objective vector <code class="docutils literal notranslate"><span
 <p>And the cone structure <code class="docutils literal notranslate"><span class="pre">K</span></code> for this problem is</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">K</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">2</span><span class="p">];</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">K</span><span class="p">.</span><span class="n">s</span> <span class="p">=</span> <span class="p">[</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">2</span><span class="p">];</span>
+<span class="n">obj</span> <span class="p">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">K</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -362,12 +383,12 @@ and secondly,
 VSDP does not have to compute eigenvalues for the cone verification.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">analyze</span> <span class="p">(</span><span class="n">true</span><span class="p">);</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">analyze</span> <span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>warning: analyze: K.s(3) seems to only have diagonal elements.  
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>warning: analyze: K.s(3) seems to only have diagonal elements.  
 warning: called from
     analyze&gt;pattern1 at line 72 column 7
     analyze at line 50 column 5
@@ -378,8 +399,7 @@ warning: called from
 </div>
 <p>When calling <code class="docutils literal notranslate"><span class="pre">vsdp.analyze</span></code> with the argument <code class="docutils literal notranslate"><span class="pre">true</span></code>,
 all possible optimization are applied.
-Note that in the original example by Borchers
-<a class="reference external" href="s10_references.ipynb#Borchers2017">[Borchers2017]</a>
+Note that in the original example by Borchers <a class="bibtex reference internal" href="s11_references.html#borchers2017" id="id2">[4]</a>
 the last cone was already marked as diagonal only.
 This was only changed for the sake of demonstration.</p>
 <p>Now we compute approximate solutions by using <code class="docutils literal notranslate"><span class="pre">vsdp.solve</span></code>
@@ -387,15 +407,15 @@ and then rigorous error bounds by using <code class="docutils literal notranslat
 and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_upper_bound</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="p">()</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="p">()</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="p">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="s">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">()</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_upper_bound</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans =
   VSDP conic programming problem with dimensions:
 
     [n,m] = size(obj.At)
@@ -430,8 +450,6 @@ and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_u
 
 
   Detailed information:  &#39;obj.info()&#39;
-
-
 </pre></div>
 </div>
 </div>
@@ -440,7 +458,7 @@ and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_u
 <span class="math notranslate nohighlight">\(\hat{f}_{d} = \hat{f}_{d} = -2.75\)</span>.</p>
 <p>To compare the approximate solution <code class="docutils literal notranslate"><span class="pre">X</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, and <code class="docutils literal notranslate"><span class="pre">Z</span></code>
 with the unique solution <span class="math notranslate nohighlight">\(\hat{X}\)</span>, <span class="math notranslate nohighlight">\(\hat{y}\)</span>, and <span class="math notranslate nohighlight">\(\hat{Z}\)</span> from
-<a class="reference external" href="s10_references.ipynb#Borchers2017">[Borchers2017]</a>,
+<a class="bibtex reference internal" href="s11_references.html#borchers2017" id="id3">[4]</a>,
 the vectorized solution quantities <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code>
 have to be transformed back to matrices by using <code class="docutils literal notranslate"><span class="pre">vsdp.smat</span></code>
 and the appropriate scaling factor <code class="docutils literal notranslate"><span class="pre">alpha</span></code>:</p>
@@ -458,18 +476,18 @@ and the appropriate scaling factor <code class="docutils literal notranslate"><s
 \end{split}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">short</span>
-<span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>  <span class="o">%</span> <span class="n">Invert</span> <span class="n">scaling</span> <span class="n">by</span> <span class="s2">&quot;vdsp.svec&quot;</span> 
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">format</span> <span class="n">short</span>
+<span class="n">alpha</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>  <span class="c">% Invert scaling by &quot;vdsp.svec&quot; </span>
 
-<span class="n">x</span>  <span class="o">=</span> <span class="n">vsdp_indexable</span> <span class="p">(</span><span class="n">full</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">x</span><span class="p">),</span> <span class="n">obj</span><span class="p">);</span>
-<span class="n">X1</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">x</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">1</span>
-<span class="n">X2</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">x</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">2</span>
-<span class="n">X3</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">l</span>                           <span class="o">%</span> <span class="n">LP</span>  <span class="n">Block</span>
+<span class="n">x</span>  <span class="p">=</span> <span class="n">vsdp_indexable</span> <span class="p">(</span><span class="nb">full</span> <span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">approximate</span><span class="p">.</span><span class="n">x</span><span class="p">),</span> <span class="n">obj</span><span class="p">);</span>
+<span class="n">X1</span> <span class="p">=</span> <span class="n">vsdp</span><span class="p">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">x</span><span class="p">.</span><span class="n">s</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="c">% SDP Block 1</span>
+<span class="n">X2</span> <span class="p">=</span> <span class="n">vsdp</span><span class="p">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">x</span><span class="p">.</span><span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="c">% SDP Block 2</span>
+<span class="n">X3</span> <span class="p">=</span> <span class="n">x</span><span class="p">.</span><span class="n">l</span>                           <span class="c">% LP  Block</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>X1 =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>X1 =
    0.12500   0.12500
    0.12500   0.12500
 
@@ -481,7 +499,6 @@ X2 =
 X3 =
    0.0000000090495
    0.0000000067871
-
 </pre></div>
 </div>
 </div>
@@ -492,15 +509,14 @@ X3 =
 \end{split}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">y</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">approximate</span><span class="p">.</span><span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>y =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>y =
   -0.75000
   -1.00000
-
 </pre></div>
 </div>
 </div>
@@ -519,17 +535,17 @@ X3 =
 \end{split}\]</div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="o">%</span> <span class="n">Invert</span> <span class="n">scaling</span> <span class="n">by</span> <span class="s2">&quot;vdsp.svec&quot;</span> 
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">alpha</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c">% Invert scaling by &quot;vdsp.svec&quot; </span>
 
-<span class="n">z</span>  <span class="o">=</span> <span class="n">vsdp_indexable</span> <span class="p">(</span><span class="n">full</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">z</span><span class="p">),</span> <span class="n">obj</span><span class="p">);</span>
-<span class="n">Z1</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">z</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">1</span>
-<span class="n">Z2</span> <span class="o">=</span> <span class="n">vsdp</span><span class="o">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">z</span><span class="o">.</span><span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">%</span> <span class="n">SDP</span> <span class="n">Block</span> <span class="mi">2</span>
-<span class="n">Z3</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">l</span>                           <span class="o">%</span> <span class="n">LP</span>  <span class="n">Block</span>
+<span class="n">z</span>  <span class="p">=</span> <span class="n">vsdp_indexable</span> <span class="p">(</span><span class="nb">full</span> <span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">approximate</span><span class="p">.</span><span class="n">z</span><span class="p">),</span> <span class="n">obj</span><span class="p">);</span>
+<span class="n">Z1</span> <span class="p">=</span> <span class="n">vsdp</span><span class="p">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">z</span><span class="p">.</span><span class="n">s</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="c">% SDP Block 1</span>
+<span class="n">Z2</span> <span class="p">=</span> <span class="n">vsdp</span><span class="p">.</span><span class="n">smat</span> <span class="p">([],</span> <span class="n">z</span><span class="p">.</span><span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span> <span class="c">% SDP Block 2</span>
+<span class="n">Z3</span> <span class="p">=</span> <span class="n">x</span><span class="p">.</span><span class="n">l</span>                           <span class="c">% LP  Block</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Z1 =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Z1 =
    0.25000  -0.25000
   -0.25000   0.25000
 
@@ -541,7 +557,6 @@ Z2 =
 Z3 =
    0.0000000090495
    0.0000000067871
-
 </pre></div>
 </div>
 </div>
@@ -551,26 +566,25 @@ involves the computation of the smallest eigenvalues
 <code class="docutils literal notranslate"><span class="pre">Zl(j)</span></code> <span class="math notranslate nohighlight">\(= \lambda_{\min}([Z_{j}])\)</span> for <span class="math notranslate nohighlight">\(j = 1,2,3\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Zl</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">z</span><span class="s1">&#39;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">Zl</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">.</span><span class="n">z</span><span class="o">&#39;</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Zl =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Zl =
    0.75000   1.00000   0.00000   0.00000
-
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Y</span>  <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">y</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">Y</span>  <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">.</span><span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval Y = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval Y = 
    -0.7500
    -1.0000
 </pre></div>
@@ -585,14 +599,13 @@ Here lower bounds on the smallest eigenvalue of the primal solution are computed
 <code class="docutils literal notranslate"><span class="pre">Xl(j)</span></code> <span class="math notranslate nohighlight">\(= \lambda_{\min}([X_{j}])\)</span> for <span class="math notranslate nohighlight">\(j = 1,2,3\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Xl</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">z</span><span class="s1">&#39;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">Xl</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_upper_bound</span><span class="p">.</span><span class="n">z</span><span class="o">&#39;</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Xl =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Xl =
    0.0000000090495   0.0000000067871   0.0000000135747   0.0000000029910
-
 </pre></div>
 </div>
 </div>
@@ -606,16 +619,15 @@ strict feasibility for the primal problem is proved.
 Thus strong duality holds for this example.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">clear</span> <span class="nb">all</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">clear</span> <span class="nb">all</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="second-sdp-example">
-<h2>Second SDP-Example<a class="headerlink" href="#second-sdp-example" title="Permalink to this headline">¶</a></h2>
-<p>Now we consider the following example
-(see <a class="reference external" href="s10_references.ipynb#Jansson2007a">[Jansson2007a]</a>):</p>
+<span id="sdp-example-2"></span><h2>Second SDP-Example<a class="headerlink" href="#second-sdp-example" title="Permalink to this headline">¶</a></h2>
+<p>Now we consider the following example (see <a class="bibtex reference internal" href="s11_references.html#jansson2007a" id="id4">[11]</a>):</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{array}{ll}
@@ -642,29 +654,29 @@ Thus strong duality holds for this example.</p>
 <p>where</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="o">@</span><span class="p">(</span><span class="n">DELTA</span><span class="p">)</span> <span class="o">...</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="p">=</span> <span class="p">@(</span><span class="n">DELTA</span><span class="p">)</span> <span class="p">...</span>
     <span class="p">[</span>  <span class="mi">0</span><span class="p">;</span>   <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>    <span class="mi">0</span><span class="p">;</span>
       <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="n">DELTA</span><span class="p">;</span>   <span class="mi">0</span><span class="p">;</span>
        <span class="mi">0</span><span class="p">;</span>    <span class="mi">0</span><span class="p">;</span>   <span class="n">DELTA</span> <span class="p">];</span>
 
-<span class="n">At</span> <span class="o">=</span> <span class="p">{};</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">At</span> <span class="p">=</span> <span class="p">{};</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">1</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
         <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span>   <span class="mi">0</span><span class="p">;</span>  <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">3</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span><span class="p">{</span><span class="mi">4</span><span class="p">}</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">At</span><span class="p">{</span><span class="mi">4</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span>
           <span class="mi">0</span><span class="p">;</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">0</span> <span class="p">];</span>
-<span class="n">At</span> <span class="o">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
+<span class="n">At</span> <span class="p">=</span> <span class="p">[</span><span class="n">At</span><span class="p">{:}];</span>
 
-<span class="n">b</span> <span class="o">=</span> <span class="o">@</span><span class="p">(</span><span class="n">EPSILON</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="n">EPSILON</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">b</span> <span class="p">=</span> <span class="p">@(</span><span class="n">EPSILON</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="n">EPSILON</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">];</span>
 
-<span class="n">K</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="n">K</span><span class="p">.</span><span class="n">s</span> <span class="p">=</span> <span class="mi">3</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -701,19 +713,19 @@ Thus the primal and dual optimal objective function value is
 and one can start the computations with VSDP.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DELTA</span>   <span class="o">=</span> <span class="mf">1e-4</span><span class="p">;</span>
-<span class="n">EPSILON</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">DELTA</span><span class="p">;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">DELTA</span>   <span class="p">=</span> <span class="mf">1e-4</span><span class="p">;</span>
+<span class="n">EPSILON</span> <span class="p">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">DELTA</span><span class="p">;</span>
 
-<span class="n">obj</span> <span class="o">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">(</span><span class="n">EPSILON</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="n">DELTA</span><span class="p">),</span> <span class="n">K</span><span class="p">);</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="o">=</span> <span class="n">false</span><span class="p">;</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="s1">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="p">()</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="p">()</span>
+<span class="n">obj</span> <span class="p">=</span> <span class="n">vsdp</span> <span class="p">(</span><span class="n">At</span><span class="p">,</span> <span class="n">b</span><span class="p">(</span><span class="n">EPSILON</span><span class="p">),</span> <span class="n">c</span><span class="p">(</span><span class="n">DELTA</span><span class="p">),</span> <span class="n">K</span><span class="p">);</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">VERBOSE_OUTPUT</span> <span class="p">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">solve</span><span class="p">(</span><span class="s">&#39;sdpt3&#39;</span><span class="p">)</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">()</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_upper_bound</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans =
   VSDP conic programming problem with dimensions:
 
     [n,m] = size(obj.At)
@@ -747,8 +759,6 @@ and one can start the computations with VSDP.</p>
 
 
   Detailed information:  &#39;obj.info()&#39;
-
-
 </pre></div>
 </div>
 </div>
@@ -761,15 +771,15 @@ holds for the approximate and rigorous solutions.
 The accuracy of rigorous the error bounds can again be measured by</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">shorte</span>
-<span class="n">fL</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">fU</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
-<span class="n">mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">format</span> <span class="n">shorte</span>
+<span class="n">fL</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">fU</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_upper_bound</span><span class="p">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">mu</span> <span class="p">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>mu =    1.3131e-08
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mu =    1.3131e-08
 </pre></div>
 </div>
 </div>
@@ -785,15 +795,15 @@ respectively.</p>
 one can apply SeDuMi to the same problem:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">SOLVER</span> <span class="o">=</span> <span class="s1">&#39;sedumi&#39;</span><span class="p">;</span>
-<span class="n">obj</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_lower_bound</span> <span class="p">()</span> <span class="o">...</span>
-   <span class="o">.</span><span class="n">rigorous_upper_bound</span> <span class="p">()</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">obj</span><span class="p">.</span><span class="n">options</span><span class="p">.</span><span class="n">SOLVER</span> <span class="p">=</span> <span class="s">&#39;sedumi&#39;</span><span class="p">;</span>
+<span class="n">obj</span><span class="p">.</span><span class="n">solve</span><span class="p">()</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_lower_bound</span> <span class="p">()</span> <span class="p">...</span>
+   <span class="p">.</span><span class="n">rigorous_upper_bound</span> <span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans =
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans =
   VSDP conic programming problem with dimensions:
 
     [n,m] = size(obj.At)
@@ -827,8 +837,6 @@ one can apply SeDuMi to the same problem:</p>
 
 
   Detailed information:  &#39;obj.info()&#39;
-
-
 </pre></div>
 </div>
 </div>
@@ -838,14 +846,14 @@ Since the approximate primal optimal objective function value is smaller than th
 Weak duality is not satisfied.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">approximate</span><span class="o">.</span><span class="n">f_objective</span><span class="p">;</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">f_obj</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">approximate</span><span class="p">.</span><span class="n">f_objective</span><span class="p">;</span>
 
-<span class="n">f_obj</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">f_obj</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">f_obj</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span><span class="p">=</span> <span class="n">f_obj</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 0
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans = 0
 </pre></div>
 </div>
 </div>
@@ -853,15 +861,15 @@ Weak duality is not satisfied.</p>
 <p>As already mentioned, weak duality holds for the rigorous error bounds by VSDP:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fL</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_lower_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="n">fU</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">rigorous_upper_bound</span><span class="o">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">fL</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_lower_bound</span><span class="p">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">fU</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">solutions</span><span class="p">.</span><span class="n">rigorous_upper_bound</span><span class="p">.</span><span class="n">f_objective</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
 
-<span class="n">fU</span> <span class="o">&gt;=</span> <span class="n">fL</span>
+<span class="n">fU</span> <span class="o">&gt;</span><span class="p">=</span> <span class="n">fL</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>ans = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ans = 1
 </pre></div>
 </div>
 </div>
@@ -871,13 +879,13 @@ and therefore on the used approximate conic solver.
 For example compare the accuracy of SeDuMi below with SDPT3 above:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">short</span> <span class="n">e</span>
-<span class="n">acc_mu</span> <span class="o">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">format</span> <span class="n">short</span> <span class="nb">e</span>
+<span class="n">acc_mu</span> <span class="p">=</span> <span class="p">(</span><span class="n">fU</span> <span class="o">-</span> <span class="n">fL</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fU</span><span class="p">)</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fL</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>acc_mu =    8.2312e-06
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>acc_mu =    8.2312e-06
 </pre></div>
 </div>
 </div>
@@ -933,7 +941,10 @@ For example compare the accuracy of SeDuMi below with SDPT3 above:</p>
       </div>
     </div>
 
-    <script src="_static/js/index.js"></script>
+    
+  <script src="_static/js/index.30270b6e4c972e43c488.js"></script>
+
+
     
   </body>
 </html>

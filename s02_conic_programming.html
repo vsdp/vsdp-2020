@@ -1,22 +1,41 @@
 
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <title>Conic Programming &#8212; VSDP manual</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
-    <link href="_static/css/index.css" rel="stylesheet">
-    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    
+  <link rel="stylesheet" href="_static/css/index.d431a4ee1c1efae0e38bdfebc22debff.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.30270b6e4c972e43c488.js">
+
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -24,12 +43,10 @@
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/mystnb.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script src="_static/sphinx-book-theme.be0a4a0c39cd630af62a2fcf693f3f06.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -42,8 +59,8 @@
     <link rel="next" title="Linear Programming" href="s03_linear_programming.html" />
     <link rel="prev" title="Installation" href="s01_installation.html" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="docsearch:language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
 
 
 
@@ -201,7 +218,8 @@
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
@@ -210,6 +228,7 @@
 
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
+        
         <div class="tocsection onthispage pt-5 pb-3">
             <i class="fas fa-list"></i> Contents
         </div>
@@ -233,6 +252,7 @@
 </ul>
 
         </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -240,9 +260,9 @@
         
               <div>
                 
-  <div class="cell docutils container">
+  <div class="cell tag_hide-input tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">run</span> <span class="p">(</span><span class="n">fullfile</span> <span class="p">(</span><span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="nb">run</span> <span class="p">(</span><span class="nb">fullfile</span> <span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;install_vsdp.m&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -255,21 +275,27 @@
 that often occur in practical applications.
 These are:</p>
 <ul class="simple">
-<li><p>The non-negative orthant:
-<span class="math notranslate nohighlight">\($
+<li><p>The non-negative orthant:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
 \mathbb{R}^{n}_{+} := \{ x \in \mathbb{R}^{n} \colon\; x_{i} \geq 0, \; i = 1, \ldots, n \}.
-$\)</span></p></li>
-<li><p>The Lorentz cone (see <a class="reference external" href="s10_references.ipynb#Alizadeh2003">[Alizadeh2003]</a>):
-<span class="math notranslate nohighlight">\($
-\mathbb{L}^{n} := \{ x \in \mathbb{R}^{n} \colon x_{1}
-\geq \|x_{2:n}\|_{2}\}.
-$\)</span></p></li>
-<li><p>The cone of symmetric positive semidefinite matrices:
-<span class="math notranslate nohighlight">\($
+\]</div>
+<ul class="simple">
+<li><p>The Lorentz cone (see <a class="bibtex reference internal" href="s11_references.html#alizadeh2003" id="id1">[1]</a>):</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\mathbb{L}^{n} := \{ x \in \mathbb{R}^{n} \colon x_{1} \geq \|x_{2:n}\|_{2}\}.
+\]</div>
+<ul class="simple">
+<li><p>The cone of symmetric positive semidefinite matrices:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
 \mathbb{S}^{n}_{+} := \left\{ X \in \mathbb{R}^{n \times n} \colon\;
 X = X^{T},\; v^{T} X v \geq 0,\; \forall v \in \mathbb{R}^{n} \right\}.
-$\)</span></p></li>
-</ul>
+\]</div>
 <p>If a quantity is in the interior of one of the above cones,
 the definitions above must hold with strict inequalities.</p>
 <p>By <span class="math notranslate nohighlight">\(\langle c, x \rangle := c^{T} x\)</span>
@@ -285,8 +311,10 @@ Let <span class="math notranslate nohighlight">\(c^{f} \in \mathbb{R}^{n_{f}}\)<
 <span class="math notranslate nohighlight">\(b \in \mathbb{R}^{m}\)</span>.
 Moreover, let <span class="math notranslate nohighlight">\(A_{1,j}^{s}, \ldots, A_{m,j}^{s}\)</span>, <span class="math notranslate nohighlight">\(C_{j}^{s}\)</span>, <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span>
 be symmetric <span class="math notranslate nohighlight">\(s_{j} \times s_{j}\)</span> matrices for <span class="math notranslate nohighlight">\(j = 1, \ldots, n_{s}\)</span>.</p>
-<p>Now we can define the conic semidefinite-quadratic-linear programming problem in primal standard form
-<span class="math notranslate nohighlight">\($
+<p>Now we can define the conic semidefinite-quadratic-linear programming problem
+in primal standard form</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \begin{array}{ll}
 \text{minimize} &amp;
 \langle c^{f}, x^{f} \rangle + \langle c^{l}, x^{l} \rangle +
@@ -300,24 +328,26 @@ A^{f} x^{f} + A^{l} x^{l} + \sum_{i=1}^{n_{q}} A_{i}^{q} x_{i}^{q} +
 &amp; x_{i}^{q} \in \mathbb{L}^{q_i}, \quad i = 1, \ldots, n_{q}, \\
 &amp; X_{j}^{s} \in \mathbb{S}^{s_{j}}_{+}, \quad j = 1, \ldots, n_{s},
 \end{array}
-$\)</span>
-where <span class="math notranslate nohighlight">\(x^{f}\)</span> are “free variables”,
+\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(x^{f}\)</span> are “free variables”,
 <span class="math notranslate nohighlight">\(x^{l}\)</span> are “non-negative variables”,
 <span class="math notranslate nohighlight">\(x_{i}^{q}\)</span> are “second-order cone (SOCP) variables”,
 and finally <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span> are “positive semidefinite (SDP) variables”.
-The linear operator
-<span class="math notranslate nohighlight">\($
+The linear operator</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
 \mathcal{A}_{j}^{s}(X_{j}^{s}) :=
 \begin{pmatrix}
 \langle A_{1j}^{s}, X_{j}^{s} \rangle \\
 \vdots \\
 \langle A_{mj}^{s}, X_{j}^{s} \rangle
-\end{pmatrix}\)</span>$
-maps the symmetric matrices <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span> to <span class="math notranslate nohighlight">\(\mathbb{R}^{m}\)</span>.
-The adjoint linear operator is
-<span class="math notranslate nohighlight">\($
+\end{pmatrix}\end{split}\]</div>
+<p>maps the symmetric matrices <span class="math notranslate nohighlight">\(X_{j}^{s}\)</span> to <span class="math notranslate nohighlight">\(\mathbb{R}^{m}\)</span>.
+The adjoint linear operator is</p>
+<div class="math notranslate nohighlight">
+\[
 (\mathcal{A}_{j}^{s})^{*} y := \sum_{k=1}^{m} A_{kj}^{s} y_{k}.
-$\)</span></p>
+\]</div>
 <p>The dual problem associated with the primal standard form is</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -343,7 +373,7 @@ In several applications some solvers (for example SDPA or CSDP) require that
 free variables are converted into the difference of non-negative variables.
 Besides the major disadvantage that this transformation is numerical unstable,
 it also increases the number of variables of the particular problems.
-In VSDP <span class="xref myst">free variables</span>
+In VSDP <a class="reference internal" href="s08_free_variables.html"><span class="doc std std-doc">free variables</span></a>
 can be handled in a numerical stable manner.</p>
 </div>
 <div class="section" id="condensed-form">
@@ -351,14 +381,15 @@ can be handled in a numerical stable manner.</p>
 <p>Occasionally, it is useful to represent the conic programming problem in a
 more compact form by using the symmetric vectorization operator.
 This operator maps a symmetric matrix <span class="math notranslate nohighlight">\(X \in \mathbb{S}^{n}\)</span>
-to an <span class="math notranslate nohighlight">\(n(n + 1)/2\)</span>-dimensional vector
-<span class="math notranslate nohighlight">\($
+to an <span class="math notranslate nohighlight">\(n(n + 1)/2\)</span>-dimensional vector</p>
+<div class="math notranslate nohighlight">
+\[
 svec(X, \alpha) :=
 \begin{pmatrix}
 X_{11} &amp; \alpha X_{12} &amp; X_{22} &amp; \alpha X_{13} &amp; \cdots &amp;  X_{nn}
 \end{pmatrix}^{T},
-$\)</span>
-where <span class="math notranslate nohighlight">\(\alpha\)</span> is a scaling factor for the off diagonal elements.
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha\)</span> is a scaling factor for the off diagonal elements.
 The inverse operation is denoted by <span class="math notranslate nohighlight">\(smat\)</span> such that
 <span class="math notranslate nohighlight">\(smat(svec(X, \alpha), 1/\alpha) = X\)</span>.
 For a vectorized quantity <span class="math notranslate nohighlight">\(x\)</span>, scaled by <span class="math notranslate nohighlight">\(\alpha\)</span>,
@@ -455,9 +486,9 @@ then it is assumed that the corresponding cone does not occur.</p>
 General conic programs satisfy only the weak duality condition <span class="math notranslate nohighlight">\(\hat{f}_{d} \leq \hat{f}_{p}\)</span>.
 Strong duality requires additional constraint qualifications,
 such as <em>Slater’s constraint qualifications</em>
-(see <a class="reference external" href="s10_references.ipynb#Vandenberghe1996">[Vandenberghe1996]</a>
-and <a class="reference external" href="s10_references.ipynb#Ben-Tal2001">[Ben-Tal2001]</a>).</p>
-<p><strong>Strong Duality Theorem</strong></p>
+(see <a class="bibtex reference internal" href="s11_references.html#vandenberghe1996" id="id2">[24]</a> and <a class="bibtex reference internal" href="s11_references.html#ben-tal2001" id="id3">[28]</a>).</p>
+<blockquote>
+<div><p><strong>Strong Duality Theorem</strong></p>
 <ul class="simple">
 <li><p>If the primal problem is strictly feasible (i.e. there exists a primal
 feasible point <span class="math notranslate nohighlight">\(x\)</span> in the interior of <span class="math notranslate nohighlight">\(K\)</span>) and <span class="math notranslate nohighlight">\(\hat{f}_{p}\)</span> is finite,
@@ -467,6 +498,7 @@ that <span class="math notranslate nohighlight">\(z = c - (A)^{T} y\)</span> is 
 is finite, then <span class="math notranslate nohighlight">\(\hat{f}_{d} = \hat{f}_{p}\)</span>, and the primal infimum is
 attained.</p></li>
 </ul>
+</div></blockquote>
 <p>In general, the primal or dual problem formulation may have optimal solutions
 while its respective dual problem is infeasible, or the duality gap may be
 positive at optimality.</p>
@@ -478,7 +510,8 @@ and thirdly, it allows one to compute verified results efficiently.</p>
 </div>
 <div class="section" id="interval-arithmetic">
 <h2>Interval arithmetic<a class="headerlink" href="#interval-arithmetic" title="Permalink to this headline">¶</a></h2>
-<p>For the usage of VSDP a knowledge of interval arithmetic is not required,
+<p>For the usage of VSDP a knowledge of interval arithmetic
+<a class="bibtex reference internal" href="s11_references.html#rump2010" id="id4">[23]</a> is not required,
 but some error bound outputs are intervals.
 Therefore we give a very brief introduction to interval formats.
 An interval vector or an interval matrix is defined as a set of vectors or matrices
@@ -486,17 +519,17 @@ that vary between a lower and an upper vector or matrix,
 respectively.
 In other words,
 these are quantities with interval components.</p>
-<p>In INTLAB <a class="reference external" href="s10_references.ipynb#Rump1999">[Rump1999]</a> these interval quantities
+<p>In INTLAB <a class="bibtex reference internal" href="s11_references.html#rump1999" id="id5">[22]</a> these interval quantities
 can be initialized with the <code class="docutils literal notranslate"><span class="pre">infsup</span></code>-function.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">infsup</span> <span class="n">short</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">infsup</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">format</span> <span class="n">infsup</span> <span class="n">short</span>
+<span class="n">x</span> <span class="p">=</span> <span class="n">infsup</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval x = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval x = 
 [   -1.0000,    2.0000] 
 </pre></div>
 </div>
@@ -507,15 +540,15 @@ these quantities can be defined by a midpoint-radius representation,
 using the <code class="docutils literal notranslate"><span class="pre">midrad</span></code>-function.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">format</span> <span class="n">midrad</span> <span class="n">short</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">midrad</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
-<span class="nb">format</span> <span class="n">infsup</span> <span class="n">short</span>
+<div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="n">format</span> <span class="n">midrad</span> <span class="n">short</span>
+<span class="n">y</span> <span class="p">=</span> <span class="n">midrad</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="n">format</span> <span class="n">infsup</span> <span class="n">short</span>
 <span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>intval y = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>intval y = 
 &lt;    0.5000,   1.5000&gt; 
 intval y = 
 [   -1.0000,    2.0000] 
@@ -574,7 +607,10 @@ intval y =
       </div>
     </div>
 
-    <script src="_static/js/index.js"></script>
+    
+  <script src="_static/js/index.30270b6e4c972e43c488.js"></script>
+
+
     
   </body>
 </html>

@@ -1,22 +1,41 @@
 
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
     <title>Numerical Results &#8212; VSDP manual</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
-    <link href="_static/css/index.css" rel="stylesheet">
-    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    
+  <link rel="stylesheet" href="_static/css/index.d431a4ee1c1efae0e38bdfebc22debff.css">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+  <link rel="stylesheet"
+    href="_static/vendor/open-sans_all/1.44.1/index.css">
+  <link rel="stylesheet"
+    href="_static/vendor/lato_latin-ext/1.44.1/index.css">
+
+    
+    <link rel="stylesheet" href="_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="_static/js/index.30270b6e4c972e43c488.js">
+
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -24,12 +43,10 @@
     <script src="_static/togglebutton.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
-    <script src="_static/mystnb.js"></script>
-    <script src="_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script src="_static/sphinx-book-theme.be0a4a0c39cd630af62a2fcf693f3f06.js"></script>
     <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -42,8 +59,8 @@
     <link rel="next" title="Conic solvers" href="s10_conic_solvers.html" />
     <link rel="prev" title="Free Variables" href="s08_free_variables.html" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="docsearch:language" content="en">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en" />
 
 
 
@@ -201,7 +218,8 @@
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
+                title="Fullscreen mode"><i
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
@@ -210,6 +228,7 @@
 
     <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
+        
         <div class="tocsection onthispage pt-5 pb-3">
             <i class="fas fa-list"></i> Contents
         </div>
@@ -243,6 +262,7 @@
 </ul>
 
         </nav>
+        
     </div>
 </div>
     <div id="main-content" class="row">
@@ -259,7 +279,7 @@ CSDP, MOSEK, SDPA, SDPT3, and SeDuMi.
 For second-order cone programming problems only MOSEK, SDPT3, and SeDuMi were used.
 The solvers have been called with their default parameters.
 Almost all of the problems that could not be solved with a guaranteed accuracy of about <span class="math notranslate nohighlight">\(10^{-7}\)</span>
-are known to be ill-posed (cf. <a class="reference external" href="s10_references.ipynb#Ordonez2003">[Ordonez2003]</a>).</p>
+are known to be ill-posed (cf. <a class="bibtex reference internal" href="s11_references.html#ordonez2003" id="id1">[19]</a>).</p>
 <p>In particular,
 the results were obtained by using the following two systems:</p>
 <ul class="simple">
@@ -285,17 +305,17 @@ the results were obtained by using the following two systems:</p>
 </li>
 </ul>
 <p>The relative accuracy of two numbers is measured by
-<span class="math notranslate nohighlight">\($
+$<span class="math notranslate nohighlight">\(
 \mu(a,b) := \dfrac{a-b}{\max\{1.0, (|a|+|b|)/2\}}.
-$\)</span></p>
+\)</span>$</p>
 <p>Notice that we do not use the absolute value of <span class="math notranslate nohighlight">\(a - b\)</span>.
 Hence, a negative sign implies that <span class="math notranslate nohighlight">\(a &lt; b\)</span>.</p>
 <div class="section" id="sdplib">
 <h2>SDPLIB<a class="headerlink" href="#sdplib" title="Permalink to this headline">¶</a></h2>
 <p>In the following,
 we describe the numerical results for 92 problems from the SDPLIB suite
-of Borchers <a class="reference external" href="s10_references.ipynb#Borchers1999">[Borchers1999]</a>.
-In <a class="reference external" href="s10_references.ipynb#Freund2007">[Freund2007]</a> it is shown
+of Borchers <a class="bibtex reference internal" href="s11_references.html#borchers1999" id="id2">[5]</a>.
+In <a class="bibtex reference internal" href="s11_references.html#freund2007" id="id3">[8]</a> it is shown
 that four problems are infeasible and 32 problems are ill-posed.</p>
 <p>VSDP could compute rigorous bounds of the optimal values
 for all feasible well-posed problems
@@ -307,7 +327,8 @@ which reflects the fact that the distance to the next primal infeasible problem 
 For the four infeasible problems
 VSDP could compute rigorous certificates of infeasibility.
 Detailed numerical results can be found in the tables for
-<span class="xref myst">System 1</span> and <span class="xref myst">System 2</span>,
+<a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/SDPLIB_SYS1.html">System 1</a> and
+<a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/SDPLIB_SYS2.html">System 2</a>,
 where the computed rigorous upper bound <span class="math notranslate nohighlight">\(\overline{f_{d}}\)</span>,
 the rigorous lower bound <span class="math notranslate nohighlight">\(\underline{f_{p}}\)</span>,
 and the rigorous error bound <span class="math notranslate nohighlight">\(\mu(\overline{f_{d}},\underline{f_{p}})\)</span> are displayed.
@@ -357,16 +378,15 @@ in the leading edge of the Airbus A380.
 We performed tests on problems from the test library collected by Kočvara.
 This is a collection of 26 sparse semidefinite programming problems.
 More details on these problems can be found in
-<a class="reference external" href="s10_references.ipynb#Ben-Tal2000">[Ben-Tal2000]</a>,
-<a class="reference external" href="s10_references.ipynb#Kocvara2002">[Kocvara2002]</a>, and
-<a class="reference external" href="s10_references.ipynb#Zowe1997">[Zowe1997]</a>.
+<a class="bibtex reference internal" href="s11_references.html#ben-tal2000" id="id4">[27]</a><a class="bibtex reference internal" href="s11_references.html#kocvara2002" id="id5">[16]</a><a class="bibtex reference internal" href="s11_references.html#zowe1997" id="id6">[26]</a>.
 For 22 problems out of this collection VSDP could compute
 a rigorous primal and dual <span class="math notranslate nohighlight">\(\varepsilon\)</span>-optimal solution,
 using SeDuMi as approximate solver.
 The largest problem that was rigorously solved by VSDP is <em>shmup5</em>.
 This problem has 1800 equality constraints and 13 million variables.</p>
 <p>Detailed results can be found in the tables for
-<span class="xref myst">System 1</span> and <span class="xref myst">System 2</span>.
+<a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/SPARSE_SDP_SYS1.html">System 1</a> and
+<a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/SPARSE_SDP_SYS2.html">System 2</a>.
 A statistic of these numerical experiments is given in the following figures.</p>
 <blockquote>
 <div><p><img alt="SPARSE_SDP relative accuracies." src="_images/SPARSE_SDP_mu.png" /></p>
@@ -389,7 +409,7 @@ are taken into account.</p>
 for the DIMACS test library of  semidefinte-quadratic-linear programs.
 This library was assembled for the purposes of the 7-th DIMACS Implementation Challenge.
 There are 47 challenging problems that are divided into 12 groups.
-For details see <a class="reference external" href="s10_references.ipynb#Pataki2002">[Pataki2002]</a>.
+For details see <a class="bibtex reference internal" href="s11_references.html#pataki2002" id="id7">[20]</a>.
 In each group there are about five instances,
 from routinely solvable ones
 to those at or beyond the capabilities of current solvers.
@@ -398,7 +418,8 @@ this test library was only run on System 2 using MOSEK
 and the problem <em>fap25</em> had to be omitted in our test.</p>
 <p>One of the largest problems which could be solved by VSDP is the problem
 <em>torusg3-15</em>, with 3375 equality constraints and about 5 million variables.</p>
-<p>Detailed results can be found in the table for <span class="xref myst">System 2</span>.
+<p>Detailed results can be found in the table for
+<a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/DIMACS_SYS2.html">System 2</a>.
 A statistic of these numerical experiments is given in the following figures.</p>
 <blockquote>
 <div><p><img alt="DIMACS relative accuracies." src="_images/DIMACS_mu.png" /></p>
@@ -422,7 +443,7 @@ from electronic structure calculations in quantum chemistry.
 In particular,
 the semidefinite programs are a relaxation of a variational approach
 for computing the ground state energy of <span class="math notranslate nohighlight">\(N\)</span>-electron molecules.
-For more details see <a class="reference external" href="s10_references.ipynb#Zhao2004">[Zhao2004]</a>.
+For more details see <a class="bibtex reference internal" href="s11_references.html#zhao2004" id="id8">[25]</a>.
 The size of the resulting problems
 ranges between 100,000 and 2 million variables,
 and between 948 and 7230 constraints.</p>
@@ -430,17 +451,18 @@ and between 948 and 7230 constraints.</p>
 were obtained for all problem instances,
 with the exception of the test problem <em>CF</em>,
 where the problem data is inconsistent.</p>
-<p>Detailed results can be found in the table for <span class="xref myst">System 2</span>.
+<p>Detailed results can be found in the table for
+<a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/ESC_SYS2.html">System 2</a>.
 All energy values are given in Hartree units
 and are the negative computed values plus the nuclear repulsion energy,
-see <a class="reference external" href="s10_references.ipynb#Zhao2004">[Zhao2004]</a> for details.</p>
+see <a class="bibtex reference internal" href="s11_references.html#zhao2004" id="id9">[25]</a> for details.</p>
 <p>In the table,
 the rigorous upper and lower error bounds of the optimal value are denoted by
 <span class="math notranslate nohighlight">\(\overline{E}\)</span>, <span class="math notranslate nohighlight">\(\underline{E}\)</span>, and <span class="math notranslate nohighlight">\(\underline{E}_{2}\)</span>,
 respectively.
 The value <span class="math notranslate nohighlight">\(\underline{E}_{2}\)</span> is the rigorous lower energy error bound
 calculated by using our a priori eigenvalue bounds
-as derived in <a class="reference external" href="s10_references.ipynb#Chaykin2016">[Chaykin2016]</a>.
+as derived in <a class="bibtex reference internal" href="s11_references.html#chaykin2016" id="id10">[6]</a>.
 The quantities
 <span class="math notranslate nohighlight">\(\tilde{t}\)</span>, <span class="math notranslate nohighlight">\(\overline{t}\)</span>, <span class="math notranslate nohighlight">\(\underline{t}\)</span>, and <span class="math notranslate nohighlight">\(\underline{t}_2\)</span>
 denote the running times in seconds for
@@ -465,14 +487,15 @@ are taken into account.</p>
 </div>
 <div class="section" id="rdm">
 <h2>RDM<a class="headerlink" href="#rdm" title="Permalink to this headline">¶</a></h2>
-<p>The RDM library <a class="reference external" href="s10_references.ipynb#Nakata2008">[Nakata2008]</a>
+<p>The RDM library <a class="bibtex reference internal" href="s11_references.html#nakata2008" id="id11">[18]</a>
 contains eight additional and larger problem instances,
 compared to the ESC benchmark library.
 The size of the resulting semidefinite problems
 ranges between 2 million and 19 million variables,
 and between 7230 and 27888 constraints.</p>
 <p>Using the same notation as for the ESC table,
-the detailed results can be found for <span class="xref myst">System 2</span>.</p>
+the detailed results can be found for
+<a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/RDM_SYS2.html">System 2</a>.</p>
 </div>
 </div>
 
@@ -524,7 +547,10 @@ the detailed results can be found for <span class="xref myst">System 2</span>.</
       </div>
     </div>
 
-    <script src="_static/js/index.js"></script>
+    
+  <script src="_static/js/index.30270b6e4c972e43c488.js"></script>
+
+
     
   </body>
 </html>
