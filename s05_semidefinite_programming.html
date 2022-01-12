@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Semidefinite Programming &#8212; VSDP manual</title>
+    <title>Semidefinite Programming &#8212; VSDP 2020 manual</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -83,7 +83,7 @@
       <img src="_static/sdp_cone.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">VSDP manual</h1>
+      <h1 class="site-logo" id="site-title">VSDP 2020 manual</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -100,7 +100,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Contents
+  Manual
  </span>
 </p>
 <ul class="current nav bd-sidenav">
@@ -159,11 +159,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="s10_conic_solvers.html">
    Conic solvers
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="s11_references.html">
-   References
   </a>
  </li>
 </ul>
@@ -341,7 +336,7 @@ The dual problem form is</p>
 \end{split}\]</div>
 <div class="section" id="first-sdp-example">
 <h2>First SDP-Example<a class="headerlink" href="#first-sdp-example" title="Permalink to this headline">¶</a></h2>
-<p>We consider an example from the CSDP User’s Guide <span id="id1">[<a class="reference internal" href="s11_references.html#id8">4</a>]</span>:</p>
+<p>We consider an example from the CSDP User’s Guide <span id="id1">[<a class="reference internal" href="s10_conic_solvers.html#id9">4</a>]</span>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{array}{lll}
@@ -442,7 +437,7 @@ warning: called from
 </div>
 <p>When calling <code class="docutils literal notranslate"><span class="pre">vsdp.analyze</span></code> with the argument <code class="docutils literal notranslate"><span class="pre">true</span></code>,
 all possible optimization are applied.
-Note that in the original example by Borchers <span id="id2">[<a class="reference internal" href="s11_references.html#id8">4</a>]</span>
+Note that in the original example by Borchers <span id="id2">[<a class="reference internal" href="s10_conic_solvers.html#id9">4</a>]</span>
 the last cone was already marked as diagonal only.
 This was only changed for the sake of demonstration.</p>
 <p>Now we compute approximate solutions by using <code class="docutils literal notranslate"><span class="pre">vsdp.solve</span></code>
@@ -501,7 +496,7 @@ and <code class="docutils literal notranslate"><span class="pre">vsdp.rigorous_u
 <span class="math notranslate nohighlight">\(\hat{f}_{d} = \hat{f}_{d} = -2.75\)</span>.</p>
 <p>To compare the approximate solution <code class="docutils literal notranslate"><span class="pre">X</span></code>, <code class="docutils literal notranslate"><span class="pre">y</span></code>, and <code class="docutils literal notranslate"><span class="pre">Z</span></code>
 with the unique solution <span class="math notranslate nohighlight">\(\hat{X}\)</span>, <span class="math notranslate nohighlight">\(\hat{y}\)</span>, and <span class="math notranslate nohighlight">\(\hat{Z}\)</span> from
-<span id="id3">[<a class="reference internal" href="s11_references.html#id8">4</a>]</span>,
+<span id="id3">[<a class="reference internal" href="s10_conic_solvers.html#id9">4</a>]</span>,
 the vectorized solution quantities <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code>
 have to be transformed back to matrices by using <code class="docutils literal notranslate"><span class="pre">vsdp.smat</span></code>
 and the appropriate scaling factor <code class="docutils literal notranslate"><span class="pre">alpha</span></code>:</p>
@@ -670,7 +665,7 @@ Thus strong duality holds for this example.</p>
 </div>
 <div class="section" id="second-sdp-example">
 <span id="sdp-example-2"></span><h2>Second SDP-Example<a class="headerlink" href="#second-sdp-example" title="Permalink to this headline">¶</a></h2>
-<p>Now we consider the following example (see <span id="id4">[<a class="reference internal" href="s11_references.html#id16">11</a>]</span>):</p>
+<p>Now we consider the following example (see <span id="id4">[<a class="reference internal" href="s10_conic_solvers.html#id17">11</a>]</span>):</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{array}{ll}

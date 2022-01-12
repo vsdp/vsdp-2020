@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Conic solvers &#8212; VSDP manual</title>
+    <title>Conic solvers &#8212; VSDP 2020 manual</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -51,7 +51,6 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="References" href="s11_references.html" />
     <link rel="prev" title="Numerical Results" href="s09_numerical_results.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -81,7 +80,7 @@
       <img src="_static/sdp_cone.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">VSDP manual</h1>
+      <h1 class="site-logo" id="site-title">VSDP 2020 manual</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -98,7 +97,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Contents
+  Manual
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -157,11 +156,6 @@
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Conic solvers
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="s11_references.html">
-   References
   </a>
  </li>
 </ul>
@@ -357,7 +351,7 @@
               <div>
                 
   <div class="tex2jax_ignore mathjax_ignore section" id="conic-solvers">
-<h1>Conic solvers<a class="headerlink" href="#conic-solvers" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>Conic solvers<a class="headerlink" href="#conic-solvers" title="Permalink to this headline">¶</a></h1>
 <p>In this section we provide some notes about our usage experience with VSDP
 and the following approximate conic solvers.</p>
 <p>For our tests we tried the following four combinations to run the conic solver:</p>
@@ -493,6 +487,93 @@ or MATLAB command prompt.</p></li>
 <li><p>Notes: In case of errors with the MEX-Interface,
 run <code class="docutils literal notranslate"><span class="pre">install_sedumi</span> <span class="pre">-rebuild</span></code> from the Octave or MATLAB command prompt.</p></li>
 </ul>
+<p id="id2"><dl class="citation">
+<dt class="label" id="id3"><span class="brackets">1</span></dt>
+<dd><p>F. Alizadeh and D. Goldfarb. Second-order cone programming. <em>Mathematical Programming</em>, 95(1):3–51, 2003. <a class="reference external" href="https://doi.org/10.1007/s10107-002-0339-5">doi:10.1007/s10107-002-0339-5</a>.</p>
+</dd>
+<dt class="label" id="id4"><span class="brackets">2</span></dt>
+<dd><p>E. D. Andersen. Handling free variables in primal-dual interior-point methods using a quadratic cone. 2002. URL: <a class="reference external" href="https://meetings.siam.org/sess/dsp_talk.cfm?p=3815">https://meetings.siam.org/sess/dsp_talk.cfm?p=3815</a>.</p>
+</dd>
+<dt class="label" id="id5"><span class="brackets">3</span></dt>
+<dd><p>M. Anjos and S. Burer. On Handling Free Variables in Interior-Point Methods for Conic Linear Optimization. <em>SIAM Journal on Optimization</em>, 18(4):1310–1325, 2007. <a class="reference external" href="https://doi.org/10.1137/06066847X">doi:10.1137/06066847X</a>.</p>
+</dd>
+<dt class="label" id="id9"><span class="brackets">4</span></dt>
+<dd><p>B. Borchers. CSDP 6.2.0 User's Guide. 2017. URL: <a class="reference external" href="https://github.com/coin-or/Csdp/blob/master/doc/csdpuser.pdf">https://github.com/coin-or/Csdp/blob/master/doc/csdpuser.pdf</a>.</p>
+</dd>
+<dt class="label" id="id8"><span class="brackets">5</span></dt>
+<dd><p>Brian Borchers. CSDP 2.3 user's guide. <em>Optimization Methods and Software</em>, 11(1-4):597–611, 1999. <a class="reference external" href="https://doi.org/10.1080/10556789908805764">doi:10.1080/10556789908805764</a>.</p>
+</dd>
+<dt class="label" id="id10"><span class="brackets">6</span></dt>
+<dd><p>D. Chaykin, C. Jansson, F. Keil, M. Lange, K. T. Ohlhus, and S. M. Rump. Rigorous results in electronic structure calculations. 2016. URL: <a class="reference external" href="http://www.optimization-online.org/DB_HTML/2016/11/5730.html">http://www.optimization-online.org/DB_HTML/2016/11/5730.html</a>.</p>
+</dd>
+<dt class="label" id="id11"><span class="brackets">7</span></dt>
+<dd><p>L. El Ghaoui and H. Lebret. Robust Solutions to Least-Squares Problems with Uncertain Data. <em>SIAM Journal on Matrix Analysis and Applications</em>, 18(4):1035–1064, 1997. <a class="reference external" href="https://doi.org/10.1137/S0895479896298130">doi:10.1137/S0895479896298130</a>.</p>
+</dd>
+<dt class="label" id="id12"><span class="brackets">8</span></dt>
+<dd><p>Robert M. Freund, Fernando Ordóñez, and Kim-Chuan Toh. Behavioral measures and their correlation with IPM iteration counts on semi-definite programming problems. <em>Mathematical Programming</em>, 109(2):445–475, 2007. <a class="reference external" href="https://doi.org/10.1007/s10107-006-0035-y">doi:10.1007/s10107-006-0035-y</a>.</p>
+</dd>
+<dt class="label" id="id13"><span class="brackets">9</span></dt>
+<dd><p>V. Härter, C. Jansson, and M. Lange. VSDP: A Matlab toolbox for verified semidefinite-quadratic-linear programming. 2012. URL: <a class="reference external" href="http://www.optimization-online.org/DB_HTML/2013/01/3724.html">http://www.optimization-online.org/DB_HTML/2013/01/3724.html</a>.</p>
+</dd>
+<dt class="label" id="id15"><span class="brackets">10</span></dt>
+<dd><p>C. Jansson. VSDP: Verified SemiDefinite Programming. 2006. URL: <a class="reference external" href="http://www.optimization-online.org/DB_HTML/2006/12/1547.html">http://www.optimization-online.org/DB_HTML/2006/12/1547.html</a>.</p>
+</dd>
+<dt class="label" id="id17"><span class="brackets">11</span></dt>
+<dd><p>C. Jansson, D. Chaykin, and C. Keil. Rigorous Error Bounds for the Optimal Value in Semidefinite Programming. <em>SIAM Journal on Numerical Analysis</em>, 46(1):180–200, 2007. <a class="reference external" href="https://doi.org/10.1137/050622870">doi:10.1137/050622870</a>.</p>
+</dd>
+<dt class="label" id="id14"><span class="brackets">12</span></dt>
+<dd><p>Christian Jansson. A Rigorous Lower Bound for the Optimal Value of Convex Optimization Problems. <em>Journal of Global Optimization</em>, 28(1):121–137, 2004. <a class="reference external" href="https://doi.org/10.1023/B:JOGO.0000006720.68398.8c">doi:10.1023/B:JOGO.0000006720.68398.8c</a>.</p>
+</dd>
+<dt class="label" id="id16"><span class="brackets">13</span></dt>
+<dd><p>Christian Jansson. Guaranteed Accuracy for Conic Programming Problems in Vector Lattices. <em>arXiv:0707.4366 [math]</em>, 2007. <a class="reference external" href="https://arxiv.org/abs/0707.4366">arXiv:0707.4366</a>.</p>
+</dd>
+<dt class="label" id="id18"><span class="brackets">14</span></dt>
+<dd><p>Christian Jansson. On verified numerical computations in convex programming. <em>Japan Journal of Industrial and Applied Mathematics</em>, 26(2):337–363, 2009. <a class="reference external" href="https://doi.org/10.1007/BF03186539">doi:10.1007/BF03186539</a>.</p>
+</dd>
+<dt class="label" id="id19"><span class="brackets">15</span></dt>
+<dd><p>Kazuhiro Kobayashi, Kazuhide Nakata, and Masakazu Kojima. A conversion of an SDP having free variables into the standard form SDP. <em>Computational Optimization and Applications</em>, 36(2):289–307, 2007. <a class="reference external" href="https://doi.org/10.1007/s10589-006-9002-z">doi:10.1007/s10589-006-9002-z</a>.</p>
+</dd>
+<dt class="label" id="id20"><span class="brackets">16</span></dt>
+<dd><p>M. Kočvara. On the modelling and solving of the truss design problem with global stability constraints. <em>Structural and Multidisciplinary Optimization</em>, 23(3):189–203, 2002. <a class="reference external" href="https://doi.org/10.1007/s00158-002-0177-3">doi:10.1007/s00158-002-0177-3</a>.</p>
+</dd>
+<dt class="label" id="id21"><span class="brackets">17</span></dt>
+<dd><p>Csaba Mészáros. On free variables in interior point methods. <em>Optimization Methods and Software</em>, 9(1-3):121–139, 1998. <a class="reference external" href="https://doi.org/10.1080/10556789808805689">doi:10.1080/10556789808805689</a>.</p>
+</dd>
+<dt class="label" id="id22"><span class="brackets">18</span></dt>
+<dd><p>Maho Nakata, Bastiaan J. Braams, Katsuki Fujisawa, Mituhiro Fukuda, Jerome K. Percus, Makoto Yamashita, and Zhengji Zhao. Variational calculation of second-order reduced density matrices by strong N-representability conditions and an accurate semidefinite programming solver. <em>The Journal of Chemical Physics</em>, 128(16):164113, 2008. <a class="reference external" href="https://doi.org/10.1063/1.2911696">doi:10.1063/1.2911696</a>.</p>
+</dd>
+<dt class="label" id="id23"><span class="brackets">19</span></dt>
+<dd><p>F. Ordóñez and R. Freund. Computational Experience and the Explanatory Value of Condition Measures for Linear Optimization. <em>SIAM Journal on Optimization</em>, 14(2):307–333, 2003. <a class="reference external" href="https://doi.org/10.1137/S1052623402401804">doi:10.1137/S1052623402401804</a>.</p>
+</dd>
+<dt class="label" id="id24"><span class="brackets">20</span></dt>
+<dd><p>G. Pataki and S. H. Schmieta. The DIMACS library of mixed semidefinite-quadratic-linear programs. Techreport, Columbia University, 2002. URL: <a class="reference external" href="http://dimacs.rutgers.edu/archive/Challenges/Seventh/">http://dimacs.rutgers.edu/archive/Challenges/Seventh/</a>.</p>
+</dd>
+<dt class="label" id="id25"><span class="brackets">21</span></dt>
+<dd><p>James Renegar. Some perturbation theory for linear programming. <em>Mathematical Programming</em>, 65(1):73–91, 1994. <a class="reference external" href="https://doi.org/10.1007/BF01581690">doi:10.1007/BF01581690</a>.</p>
+</dd>
+<dt class="label" id="id26"><span class="brackets">22</span></dt>
+<dd><p>Siegfried M. Rump. INTLAB — INTerval LABoratory. In Tibor Csendes, editor, <em>Developments in Reliable Computing</em>, pages 77–104. Springer Netherlands, 1999. <a class="reference external" href="https://doi.org/10.1007/978-94-017-1247-7_7">doi:10.1007/978-94-017-1247-7_7</a>.</p>
+</dd>
+<dt class="label" id="id27"><span class="brackets">23</span></dt>
+<dd><p>Siegfried M. Rump. Verification methods: Rigorous results using floating-point arithmetic. <em>Acta Numerica</em>, 19:287–449, 2010. <a class="reference external" href="https://doi.org/10.1017/S096249291000005X">doi:10.1017/S096249291000005X</a>.</p>
+</dd>
+<dt class="label" id="id28"><span class="brackets">24</span></dt>
+<dd><p>L. Vandenberghe and S. Boyd. Semidefinite Programming. <em>SIAM Review</em>, 38(1):49–95, 1996. <a class="reference external" href="https://doi.org/10.1137/1038003">doi:10.1137/1038003</a>.</p>
+</dd>
+<dt class="label" id="id29"><span class="brackets">25</span></dt>
+<dd><p>Zhengji Zhao, Bastiaan J. Braams, Mituhiro Fukuda, Michael L. Overton, and Jerome K. Percus. The reduced density matrix method for electronic structure calculations and the role of three-index representability conditions. <em>The Journal of Chemical Physics</em>, 120(5):2095–2104, 2004. <a class="reference external" href="https://doi.org/10.1063/1.1636721">doi:10.1063/1.1636721</a>.</p>
+</dd>
+<dt class="label" id="id30"><span class="brackets">26</span></dt>
+<dd><p>Jochem Zowe, Michal Kočvara, and Martin P. Bendsøe. Free material optimization via mathematical programming. <em>Mathematical Programming</em>, 79(1):445–466, 1997. <a class="reference external" href="https://doi.org/10.1007/BF02614328">doi:10.1007/BF02614328</a>.</p>
+</dd>
+<dt class="label" id="id6"><span class="brackets">27</span></dt>
+<dd><p>A. Ben-Tal, M. Kovara, A. Nemirovski, and J. Zowe. Free Material Design via Semidefinite Programming: The Multiload Case with Contact Conditions. <em>SIAM Review</em>, 42(4):695–715, 2000. <a class="reference external" href="https://doi.org/10.1137/S0036144500372081">doi:10.1137/S0036144500372081</a>.</p>
+</dd>
+<dt class="label" id="id7"><span class="brackets">28</span></dt>
+<dd><p>A. Ben-Tal and A. Nemirovski. <em>Lectures on Modern Convex Optimization</em>. MOS-SIAM Series on Optimization. Society for Industrial and Applied Mathematics, 2001. ISBN 978-0-89871-491-3. <a class="reference external" href="https://doi.org/10.1137/1.9780898718829">doi:10.1137/1.9780898718829</a>.</p>
+</dd>
+</dl>
+</p>
 </div>
 </div>
 
@@ -527,13 +608,6 @@ run <code class="docutils literal notranslate"><span class="pre">install_sedumi<
             <p class="prev-next-subtitle">previous</p>
             <p class="prev-next-title">Numerical Results</p>
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="s11_references.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">References</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             

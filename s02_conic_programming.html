@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Conic Programming &#8212; VSDP manual</title>
+    <title>Conic Programming &#8212; VSDP 2020 manual</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -83,7 +83,7 @@
       <img src="_static/sdp_cone.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">VSDP manual</h1>
+      <h1 class="site-logo" id="site-title">VSDP 2020 manual</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -100,7 +100,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Contents
+  Manual
  </span>
 </p>
 <ul class="current nav bd-sidenav">
@@ -159,11 +159,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="s10_conic_solvers.html">
    Conic solvers
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="s11_references.html">
-   References
   </a>
  </li>
 </ul>
@@ -330,7 +325,7 @@ These are:</p>
 \mathbb{R}^{n}_{+} := \{ x \in \mathbb{R}^{n} \colon\; x_{i} \geq 0, \; i = 1, \ldots, n \}.
 \]</div>
 <ul class="simple">
-<li><p>The Lorentz cone (see <span id="id1">[<a class="reference internal" href="s11_references.html#id2">1</a>]</span>):</p></li>
+<li><p>The Lorentz cone (see <span id="id1">[<a class="reference internal" href="s10_conic_solvers.html#id3">1</a>]</span>):</p></li>
 </ul>
 <div class="math notranslate nohighlight">
 \[
@@ -421,8 +416,7 @@ In several applications some solvers (for example SDPA or CSDP) require that
 free variables are converted into the difference of non-negative variables.
 Besides the major disadvantage that this transformation is numerical unstable,
 it also increases the number of variables of the particular problems.
-In VSDP <a class="reference internal" href="s08_free_variables.html"><span class="doc std std-doc">free variables</span></a>
-can be handled in a numerical stable manner.</p>
+In VSDP <a class="reference internal" href="s08_free_variables.html#free-variables"><span class="std std-ref">free variables</span></a> can be handled in a numerical stable manner.</p>
 </div>
 <div class="section" id="condensed-form">
 <h2>Condensed form<a class="headerlink" href="#condensed-form" title="Permalink to this headline">¶</a></h2>
@@ -487,7 +481,7 @@ svec(A_{n_{s}1}^{s},1) &amp; \cdots &amp; svec(A_{n_{s}m}^{s},1)
 <p>Let the constraint cone <span class="math notranslate nohighlight">\(K\)</span> and its dual cone <span class="math notranslate nohighlight">\(K^{*}\)</span> be</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{align}
+\begin{aligned}
 \mathcal{K} &amp;:=&amp;
 \mathbb{R}^{n_{f}} &amp;\times
 \mathbb{R}^{n_{l}}_{+} \times
@@ -498,7 +492,7 @@ svec(A_{n_{s}1}^{s},1) &amp; \cdots &amp; svec(A_{n_{s}m}^{s},1)
 \mathbb{R}^{n_{l}}_{+} \times
 \mathbb{L}^{q_{1}} \times \ldots \times \mathbb{L}^{q_{n_{q}}} \times
 \mathbb{S}^{s_{1}}_{+} \times \ldots \times \mathbb{S}^{s_{n_{s}}}_{+}.
-\end{align}
+\end{aligned}
 \end{split}\]</div>
 <p>With these abbreviations we obtain the following block form of the conic problem:</p>
 <div class="math notranslate nohighlight">
@@ -534,7 +528,7 @@ then it is assumed that the corresponding cone does not occur.</p>
 General conic programs satisfy only the weak duality condition <span class="math notranslate nohighlight">\(\hat{f}_{d} \leq \hat{f}_{p}\)</span>.
 Strong duality requires additional constraint qualifications,
 such as <em>Slater’s constraint qualifications</em>
-(see <span id="id2">[<a class="reference internal" href="s11_references.html#id27">24</a>]</span> and <span id="id3">[<a class="reference internal" href="s11_references.html#id6">28</a>]</span>).</p>
+(see <span id="id2">[<a class="reference internal" href="s10_conic_solvers.html#id28">24</a>]</span> and <span id="id3">[<a class="reference internal" href="s10_conic_solvers.html#id7">28</a>]</span>).</p>
 <blockquote>
 <div><p><strong>Strong Duality Theorem</strong></p>
 <ul class="simple">
@@ -559,7 +553,7 @@ and thirdly, it allows one to compute verified results efficiently.</p>
 <div class="section" id="interval-arithmetic">
 <h2>Interval arithmetic<a class="headerlink" href="#interval-arithmetic" title="Permalink to this headline">¶</a></h2>
 <p>For the usage of VSDP a knowledge of interval arithmetic
-<span id="id4">[<a class="reference internal" href="s11_references.html#id26">23</a>]</span> is not required,
+<span id="id4">[<a class="reference internal" href="s10_conic_solvers.html#id27">23</a>]</span> is not required,
 but some error bound outputs are intervals.
 Therefore we give a very brief introduction to interval formats.
 An interval vector or an interval matrix is defined as a set of vectors or matrices
@@ -567,7 +561,7 @@ that vary between a lower and an upper vector or matrix,
 respectively.
 In other words,
 these are quantities with interval components.</p>
-<p>In INTLAB <span id="id5">[<a class="reference internal" href="s11_references.html#id25">22</a>]</span> these interval quantities
+<p>In INTLAB <span id="id5">[<a class="reference internal" href="s10_conic_solvers.html#id26">22</a>]</span> these interval quantities
 can be initialized with the <code class="docutils literal notranslate"><span class="pre">infsup</span></code>-function.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">

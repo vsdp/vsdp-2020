@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Numerical Results &#8212; VSDP manual</title>
+    <title>Numerical Results &#8212; VSDP 2020 manual</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -83,7 +83,7 @@
       <img src="_static/sdp_cone.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">VSDP manual</h1>
+      <h1 class="site-logo" id="site-title">VSDP 2020 manual</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -100,7 +100,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
-  Contents
+  Manual
  </span>
 </p>
 <ul class="nav bd-sidenav">
@@ -159,11 +159,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="s10_conic_solvers.html">
    Conic solvers
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="s11_references.html">
-   References
   </a>
  </li>
 </ul>
@@ -337,7 +332,7 @@ CSDP, MOSEK, SDPA, SDPT3, and SeDuMi.
 For second-order cone programming problems only MOSEK, SDPT3, and SeDuMi were used.
 The solvers have been called with their default parameters.
 Almost all of the problems that could not be solved with a guaranteed accuracy of about <span class="math notranslate nohighlight">\(10^{-7}\)</span>
-are known to be ill-posed (cf. <span id="id1">[<a class="reference internal" href="s11_references.html#id22">19</a>]</span>).</p>
+are known to be ill-posed (cf. <span id="id1">[<a class="reference internal" href="s10_conic_solvers.html#id23">19</a>]</span>).</p>
 <p>In particular,
 the results were obtained by using the following two systems:</p>
 <ul class="simple">
@@ -372,8 +367,8 @@ Hence, a negative sign implies that <span class="math notranslate nohighlight">\
 <h2>SDPLIB<a class="headerlink" href="#sdplib" title="Permalink to this headline">¶</a></h2>
 <p>In the following,
 we describe the numerical results for 92 problems from the SDPLIB suite
-of Borchers <span id="id2">[<a class="reference internal" href="s11_references.html#id7">5</a>]</span>.
-In <span id="id3">[<a class="reference internal" href="s11_references.html#id11">8</a>]</span> it is shown
+of Borchers <span id="id2">[<a class="reference internal" href="s10_conic_solvers.html#id8">5</a>]</span>.
+In <span id="id3">[<a class="reference internal" href="s10_conic_solvers.html#id12">8</a>]</span> it is shown
 that four problems are infeasible and 32 problems are ill-posed.</p>
 <p>VSDP could compute rigorous bounds of the optimal values
 for all feasible well-posed problems
@@ -436,7 +431,7 @@ in the leading edge of the Airbus A380.
 We performed tests on problems from the test library collected by Kočvara.
 This is a collection of 26 sparse semidefinite programming problems.
 More details on these problems can be found in
-<span id="id4">[<a class="reference internal" href="s11_references.html#id19">16</a>, <a class="reference internal" href="s11_references.html#id29">26</a>, <a class="reference internal" href="s11_references.html#id5">27</a>]</span>.
+<span id="id4">[<a class="reference internal" href="s10_conic_solvers.html#id20">16</a>, <a class="reference internal" href="s10_conic_solvers.html#id30">26</a>, <a class="reference internal" href="s10_conic_solvers.html#id6">27</a>]</span>.
 For 22 problems out of this collection VSDP could compute
 a rigorous primal and dual <span class="math notranslate nohighlight">\(\varepsilon\)</span>-optimal solution,
 using SeDuMi as approximate solver.
@@ -467,7 +462,7 @@ are taken into account.</p>
 for the DIMACS test library of  semidefinte-quadratic-linear programs.
 This library was assembled for the purposes of the 7-th DIMACS Implementation Challenge.
 There are 47 challenging problems that are divided into 12 groups.
-For details see <span id="id5">[<a class="reference internal" href="s11_references.html#id23">20</a>]</span>.
+For details see <span id="id5">[<a class="reference internal" href="s10_conic_solvers.html#id24">20</a>]</span>.
 In each group there are about five instances,
 from routinely solvable ones
 to those at or beyond the capabilities of current solvers.
@@ -501,7 +496,7 @@ from electronic structure calculations in quantum chemistry.
 In particular,
 the semidefinite programs are a relaxation of a variational approach
 for computing the ground state energy of <span class="math notranslate nohighlight">\(N\)</span>-electron molecules.
-For more details see <span id="id6">[<a class="reference internal" href="s11_references.html#id28">25</a>]</span>.
+For more details see <span id="id6">[<a class="reference internal" href="s10_conic_solvers.html#id29">25</a>]</span>.
 The size of the resulting problems
 ranges between 100,000 and 2 million variables,
 and between 948 and 7230 constraints.</p>
@@ -513,14 +508,14 @@ where the problem data is inconsistent.</p>
 <a class="reference external" href="https://vsdp.github.io/benchmark/2018_12/ESC_SYS2.html">System 2</a>.
 All energy values are given in Hartree units
 and are the negative computed values plus the nuclear repulsion energy,
-see <span id="id7">[<a class="reference internal" href="s11_references.html#id28">25</a>]</span> for details.</p>
+see <span id="id7">[<a class="reference internal" href="s10_conic_solvers.html#id29">25</a>]</span> for details.</p>
 <p>In the table,
 the rigorous upper and lower error bounds of the optimal value are denoted by
 <span class="math notranslate nohighlight">\(\overline{E}\)</span>, <span class="math notranslate nohighlight">\(\underline{E}\)</span>, and <span class="math notranslate nohighlight">\(\underline{E}_{2}\)</span>,
 respectively.
 The value <span class="math notranslate nohighlight">\(\underline{E}_{2}\)</span> is the rigorous lower energy error bound
 calculated by using our a priori eigenvalue bounds
-as derived in <span id="id8">[<a class="reference internal" href="s11_references.html#id9">6</a>]</span>.
+as derived in <span id="id8">[<a class="reference internal" href="s10_conic_solvers.html#id10">6</a>]</span>.
 The quantities
 <span class="math notranslate nohighlight">\(\tilde{t}\)</span>, <span class="math notranslate nohighlight">\(\overline{t}\)</span>, <span class="math notranslate nohighlight">\(\underline{t}\)</span>, and <span class="math notranslate nohighlight">\(\underline{t}_2\)</span>
 denote the running times in seconds for
@@ -545,7 +540,7 @@ are taken into account.</p>
 </div>
 <div class="section" id="rdm">
 <h2>RDM<a class="headerlink" href="#rdm" title="Permalink to this headline">¶</a></h2>
-<p>The RDM library <span id="id9">[<a class="reference internal" href="s11_references.html#id21">18</a>]</span>
+<p>The RDM library <span id="id9">[<a class="reference internal" href="s10_conic_solvers.html#id22">18</a>]</span>
 contains eight additional and larger problem instances,
 compared to the ESC benchmark library.
 The size of the resulting semidefinite problems
