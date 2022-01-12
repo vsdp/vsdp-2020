@@ -161,6 +161,11 @@
    Conic solvers
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
 </ul>
 
     </div>
@@ -319,7 +324,7 @@ For the verification of infeasibility the functions
 In this section we show how to use these functions.</p>
 <div class="section" id="theorems-of-alternatives">
 <span id="id1"></span><h2>Theorems of alternatives<a class="headerlink" href="#theorems-of-alternatives" title="Permalink to this headline">¶</a></h2>
-<p>Both functions are based upon a theorem of alternatives <span id="id2">[<a class="reference internal" href="s10_conic_solvers.html#id16">13</a>]</span>.
+<p>Both functions are based upon a theorem of alternatives <span id="id2">[<a class="reference internal" href="s11_references.html#id15">13</a>]</span>.
 Such a theorem states that for two systems of equations or inequalities,
 one or the other system has a solution,
 but not both.
@@ -340,14 +345,14 @@ Then the system of primal constraints
 Then the system of dual constraints
 <span class="math notranslate nohighlight">\(c - A^{T}y \in \mathcal{K}^{*}\)</span> has no solution.</p>
 </div></blockquote>
-<p>For a proof, see <span id="id3">[<a class="reference internal" href="s10_conic_solvers.html#id16">13</a>]</span>.
+<p>For a proof, see <span id="id3">[<a class="reference internal" href="s11_references.html#id15">13</a>]</span>.
 The first theorem is the foundation of <code class="docutils literal notranslate"><span class="pre">vsdp.check_primal_infeasible</span></code>
 and the second of <code class="docutils literal notranslate"><span class="pre">vsdp.check_dual_infeasible</span></code>.</p>
 </div>
 <div class="section" id="example-primal-infeasible-socp">
 <h2>Example: primal infeasible SOCP<a class="headerlink" href="#example-primal-infeasible-socp" title="Permalink to this headline">¶</a></h2>
 <p>We consider a slightly modified second-order cone problem from
-<span id="id4">[<a class="reference internal" href="s10_conic_solvers.html#id7">28</a>]</span> (Example 2.4.2)</p>
+<span id="id4">[<a class="reference internal" href="s11_references.html#id6">28</a>]</span> (Example 2.4.2)</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{array}{ll}
@@ -588,7 +593,7 @@ Compare for example the certificate computed by SeDuMi:</p>
 <div class="section" id="example-primal-infeasible-sdp">
 <h2>Example: primal infeasible SDP<a class="headerlink" href="#example-primal-infeasible-sdp" title="Permalink to this headline">¶</a></h2>
 <p>In the following we consider another conic optimization problem from
-<span id="id5">[<a class="reference internal" href="s10_conic_solvers.html#id15">10</a>]</span>.
+<span id="id5">[<a class="reference internal" href="s11_references.html#id14">10</a>]</span>.
 The two SDP constraints of that problem
 depend on two arbitrary fixed chosen parameters
 <span class="math notranslate nohighlight">\(\delta = 0.1\)</span> and <span class="math notranslate nohighlight">\(\varepsilon = -0.01\)</span>.</p>

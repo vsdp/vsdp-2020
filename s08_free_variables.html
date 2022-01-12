@@ -161,6 +161,11 @@
    Conic solvers
   </a>
  </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="s11_references.html">
+   References
+  </a>
+ </li>
 </ul>
 
     </div>
@@ -269,14 +274,14 @@
 <span id="id1"></span><h1>Free Variables<a class="headerlink" href="#free-variables" title="Permalink to this headline">¶</a></h1>
 <p>Free variables often occur in practice.
 Handling free variables in interior-point algorithms is a pending issue
-(see for example <span id="id2">[<a class="reference internal" href="s10_conic_solvers.html#id4">2</a>, <a class="reference internal" href="s10_conic_solvers.html#id5">3</a>, <a class="reference internal" href="s10_conic_solvers.html#id19">15</a>, <a class="reference internal" href="s10_conic_solvers.html#id21">17</a>]</span>).
+(see for example <span id="id2">[<a class="reference internal" href="s11_references.html#id3">2</a>, <a class="reference internal" href="s11_references.html#id4">3</a>, <a class="reference internal" href="s11_references.html#id18">15</a>, <a class="reference internal" href="s11_references.html#id20">17</a>]</span>).
 Frequently problems with free variables are converted
 into one with restricted variables by representing the free variables
 as a difference of two non-negative variables.
 This approach increases the problem size and introduces ill-posedness,
 which may lead to numerical difficulties.</p>
 <p>For example we consider the test problem <em>nb_L1</em>
-from the DIMACS test library <span id="id3">[<a class="reference internal" href="s10_conic_solvers.html#id24">20</a>]</span>.
+from the DIMACS test library <span id="id3">[<a class="reference internal" href="s11_references.html#id23">20</a>]</span>.
 The problem originates from side lobe minimization in antenna engineering.
 This is a second-order cone programming problem with 915 equality constraints,
 793 SOCP blocks each of size 3,
@@ -287,7 +292,7 @@ that are described as the difference of four non-negative variables.
 This problem can be loaded from the <code class="docutils literal notranslate"><span class="pre">test</span></code> directory of VSDP.</p>
 <p>SDPT3 solves the problem without warnings,
 although it is ill-posed according to Renegar’s definition
-(see <span id="id4">[<a class="reference internal" href="s10_conic_solvers.html#id25">21</a>]</span>):</p>
+(see <span id="id4">[<a class="reference internal" href="s11_references.html#id24">21</a>]</span>):</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-octave notranslate"><div class="highlight"><pre><span></span><span class="nb">load</span> <span class="p">(</span><span class="nb">fullfile</span> <span class="p">(</span><span class="s">&#39;..&#39;</span><span class="p">,</span> <span class="s">&#39;test&#39;</span><span class="p">,</span> <span class="s">&#39;nb_L1.mat&#39;</span><span class="p">));</span>
