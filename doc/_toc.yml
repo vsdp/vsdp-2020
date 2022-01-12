@@ -1,7 +1,7 @@
 format: jb-book
 root: s00_getting_started.ipynb
 parts:
-  - caption: Contents
+  - caption: Manual
     chapters:
     - file: s01_installation.ipynb
     - file: s02_conic_programming.ipynb
@@ -16,4 +16,6 @@ parts:
     chapters:
     - file: s09_numerical_results.ipynb
     - file: s10_conic_solvers.ipynb
+    # For PDF move section of s11_references.ipynb
+    # into previous file, to avoid double header.
     - file: s11_references.ipynb

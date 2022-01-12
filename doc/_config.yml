@@ -1,7 +1,7 @@
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
-title: "VSDP manual"
+title: "VSDP 2020 manual"
 author: "C. Jansson et al."
 copyright: "2018-2022"
 logo: "res/sdp_cone.png"

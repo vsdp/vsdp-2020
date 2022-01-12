@@ -24,7 +24,6 @@ $(TARGET_LATEX): $(SRC)
 
 $(TARGET_PDF): $(SRC)
 	sed -i 's/\\begin{split}\\tag\*{\$$\\Box\$$}\\end{split}/\\tag\*{\$$\\Box\$$}/g' $(TARGET_LATEX)
-	sed -i '/^\\setmainlanguage.*/i \\\\usepackage{xeCJK}\n\\setCJKmainfont{IPAMincho}\n\\setCJKsansfont{IPAGothic}\n\\setCJKmonofont{IPAGothic}' $(TARGET_LATEX)
 	cd $(TARGET_LATEX_DIR) && $(MAKE)
 
 publish: $(TARGET_HTML)
