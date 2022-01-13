@@ -1,6 +1,6 @@
 *.asv
 .ipynb_checkpoints
-vsdp_settings_*.mat
+vsdp_settings*.yaml
 doc/jupyterbook/*
 doc/_build/*
 download/*
