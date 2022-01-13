@@ -12,7 +12,7 @@ arithmetic are taken into account.
 
 The software is completely written in [MATLAB](https://www.mathworks.com) /
 [GNU Octave](https://www.gnu.org/software/octave) and requires the interval
-toolbox [INTLAB](http://www.ti3.tuhh.de/rump/intlab).  Thus interval input is
+toolbox [INTLAB](https://www.tuhh.de/ti3/rump/intlab/).  Thus interval input is
 supported as well.
 
 This version of VSDP provides easy access to the conic solvers:

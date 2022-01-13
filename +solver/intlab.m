@@ -3,7 +3,7 @@ classdef intlab < handle
   %
   % For information about INTLAB, see:
   %
-  %      http://www.ti3.tuhh.de/rump/intlab
+  %      https://www.tuhh.de/ti3/rump/intlab/
   %
   %   See also vsdp.solve.
   %
@@ -33,7 +33,7 @@ classdef intlab < handle
           '%s.  %s\n\n\t%s\n\n%s.\n\n', ...
           'Cannot find interval toolbox "INTLAB"', ...
           'Get a recent version from', ...
-          'http://www.ti3.tuhh.de/rump/intlab', ...
+          'https://www.tuhh.de/ti3/rump/intlab/', ...
           'and run "startintlab" from the root directory');
       end
     end
