@@ -15,6 +15,7 @@ vsdp_path = fullfile (fileparts (which ('install_vsdp')));
 addpath (vsdp_path);
 addpath (fullfile (vsdp_path, 'test'));
 if (exist ('OCTAVE_VERSION', 'builtin'))
+  warning ('off', 'octave:get_input:invalid_utf8');  % INTLAB has old encoding
   warning ('off', 'Octave:shadowed-function', 'local');
   addpath (fullfile (vsdp_path, 'octave'));
 end

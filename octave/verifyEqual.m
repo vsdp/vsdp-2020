@@ -12,6 +12,14 @@ function verifyEqual (~, a, b, varargin)
 
 % Copyright 2016-2020 Kai T. Ohlhus (kai.ohlhus@tuhh.de)
 
+% Octave's assert has problems with "intval" class.
+if (isa (a, "intval") || isa (b, "intval"))
+  if (~ isequal (a, b))
+    error ("verifyEqual: intval test for a == b failed.");
+  endif
+  return;
+endif
+
 if (nargin == 3)
   assert(a, b);
 else
